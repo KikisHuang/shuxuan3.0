@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--按钮按下时的设置  -->
+
+    <item android:state_pressed="true" >
+
+        <layer-list >
+            <!-- 边 -->
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="2dp"
+                        android:left="2dp"
+                        android:right="2dp"
+                        android:top="2dp" />
+                    <solid android:color="#10e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="3dp"
+                        android:left="3dp"
+                        android:right="3dp"
+                        android:top="3dp" />
+                    <solid android:color="#30e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="1dp"
+                        android:left="1dp"
+                        android:right="1dp"
+                        android:top="1dp" />
+                    <solid android:color="#50e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+
+
+            <!-- 中心背景 -->
+            <item>
+                <shape android:shape="rectangle"
+                    android:useLevel="false">
+                    <!-- 实心 -->
+                    <solid android:color="#66e19b" />
+                    <corners android:radius="25dp" />
+
+                </shape>
+            </item>
+
+        </layer-list>
+
+    </item>
+
+    <!--按钮松开时的设置  -->
+    <item android:state_pressed="false">
+        <layer-list >
+            <!-- 边 -->
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="2dp"
+                        android:left="2dp"
+                        android:right="2dp"
+                        android:top="2dp" />
+                    <solid android:color="#10e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="3dp"
+                        android:left="3dp"
+                        android:right="3dp"
+                        android:top="3dp" />
+                    <solid android:color="#30e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+
+            <item>
+                <shape android:shape="rectangle">
+                    <padding
+                        android:bottom="1dp"
+                        android:left="1dp"
+                        android:right="1dp"
+                        android:top="1dp" />
+                    <solid android:color="#50e0f6e7" />
+                    <corners android:radius="25dp" />
+                </shape>
+            </item>
+
+
+            <!-- 中心背景 -->
+            <item>
+                <shape android:shape="rectangle"
+                    android:useLevel="false">
+                    <!-- 实心 -->
+                    <solid android:color="#72f7ab" />
+                    <corners android:radius="25dp" />
+
+                </shape>
+            </item>
+
+        </layer-list>
+
+
+    </item>
+
+</selector>

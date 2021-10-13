@@ -1,0 +1,122 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+
+        versionCode rootProject.ext.android.commnlibraryversionCode
+        versionName rootProject.ext.android.commnlibraryversionName
+
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    //noinspection GradleCompatible
+    api rootProject.ext.dependencies.appCompat
+    api rootProject.ext.dependencies.constraint
+    api rootProject.ext.dependencies.material
+    //noinspection GradleCompatible
+
+
+    //rxlifecycle
+    api rootProject.ext.dependencies.rxlifecyclecomponents
+    api rootProject.ext.dependencies.rxlifecyclenavi
+    api rootProject.ext.dependencies.glide
+    annotationProcessor rootProject.ext.dependencies.glidecompiler
+    api rootProject.ext.dependencies.glideokhttp3
+
+    //照片查看器
+    api rootProject.ext.dependencies.bigimageviewpager
+
+    //glide-transformations
+    api rootProject.ext.dependencies.glidetransformations
+
+    api rootProject.ext.dependencies.gson
+
+    //EventBus
+    api rootProject.ext.dependencies.eventbus
+
+    //ButterKnife
+    implementation rootProject.ext.dependencies.butterknife
+    annotationProcessor rootProject.ext.dependencies.butterknifecompiler
+
+    //circleimageview
+    api rootProject.ext.dependencies.circleimageview
+
+    //recyclerview
+    //noinspection GradleCompatible
+    api rootProject.ext.dependencies.recyclerView
+
+    //zhy  base-adapter
+    api rootProject.ext.dependencies.rvadapter
+
+    //cardview
+    //noinspection GradleCompatible
+    api rootProject.ext.dependencies.cardView
+    //loading anima
+    api rootProject.ext.dependencies.avilibrary
+
+    //沉侵状态栏;
+    api rootProject.ext.dependencies.barlibrary
+
+//    api rootProject.ext.dependencies.smartRefreshLayout
+//    api rootProject.ext.dependencies.smartRefreshHeader//没有使用特殊Header，可以不加这行
+
+    //smartRefreshLayout
+    api rootProject.ext.dependencies.smart_kernel
+    api rootProject.ext.dependencies.smart_material
+    api rootProject.ext.dependencies.smart_classics_header
+    api rootProject.ext.dependencies.smart_classics_footer
+
+    //常用方法工具类
+    api rootProject.ext.dependencies.utilcodex
+
+    api rootProject.ext.dependencies.flycotablayout
+    //腾讯bugly
+    api rootProject.ext.dependencies.buglycrashreport_upgrade
+    api rootProject.ext.dependencies.buglynativecrashreport
+
+    //权限框架
+    api rootProject.ext.dependencies.rxpermissions
+    //supertextview
+    api rootProject.ext.dependencies.supertextview
+
+    //skeleton 骨架屏
+    api rootProject.ext.dependencies.skeleton
+    api rootProject.ext.dependencies.shimmerlayout
+
+    //xpopup
+    api rootProject.ext.dependencies.xpopup
+
+    //地址选择器
+    api rootProject.ext.dependencies.pickerview
+    //banner
+    api rootProject.ext.dependencies.banner
+    //通用适配器
+    api rootProject.ext.dependencies.baseRecyclerAdapter
+
+
+    //相册、拍照库
+//    api rootProject.ext.dependencies.takephoto_library
+
+}

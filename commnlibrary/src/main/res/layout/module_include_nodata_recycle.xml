@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    >
+
+    <include layout="@layout/module_include_standard_recycle"></include>
+
+    <include
+        android:id="@+id/nodata_layout"
+        layout="@layout/module_include_no_data_background"></include>
+
+</FrameLayout>

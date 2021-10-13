@@ -1,0 +1,136 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.aliyun.ams.emas-services'
+apply plugin: 'bugly'
+
+//plugins {
+//    id 'com.android.application'
+//}
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        flavorDimensions "default"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // 设置支持的SO库架构
+//            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a',"x86"
+        }
+    }
+
+    productFlavors {
+        HuaWei {}
+        OPPO {}
+        VIVO {}
+        MI {}
+        YingYongBao {}
+
+        //遍历productFlavors
+        productFlavors.all {
+                //动态设置UMENG_CHANNEL_VALUE对应的值
+            flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+    }
+
+    signingConfigs {
+        debug{
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        config {
+            keyAlias 'shugou'
+            keyPassword '123456'
+            storeFile file('C:/ApkSignInfo/shugou.jks')
+            storePassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            // 移除无用的resource文件
+            shrinkResources true
+            //启用代码混淆
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.config
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.dependencies.multidex
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    api(name: 'nuisdk-release', ext: 'aar')
+    implementation project(path: ':commnlibrary')
+    //alipay
+    implementation(name: 'alipaysdk-noutdid-15.8.03.210428205839', ext: 'aar')
+
+    //ButterKnife
+    implementation rootProject.ext.dependencies.butterknife
+    annotationProcessor rootProject.ext.dependencies.butterknifecompiler
+
+    //x5内核
+    implementation rootProject.ext.dependencies.tbssdk
+
+    //rxeasyhttp
+    implementation rootProject.ext.dependencies.rxeasyhttp
+
+    //相册库
+    implementation rootProject.ext.dependencies.pictureselector
+
+    //标签库
+    implementation rootProject.ext.dependencies.labelsview
+
+    //友盟统计
+    implementation rootProject.ext.dependencies.umengcommon
+    implementation rootProject.ext.dependencies.umengasms
+
+    //友盟分享
+    implementation rootProject.ext.dependencies.umengshare
+    implementation rootProject.ext.dependencies.umengshareboard
+    implementation rootProject.ext.dependencies.umengsharewechat
+    implementation rootProject.ext.dependencies.wechatopensdk
+
+
+    //九宫格
+    implementation rootProject.ext.dependencies.ninegridview
+    //banner
+    implementation rootProject.ext.dependencies.banner
+    //websocket
+    implementation rootProject.ext.dependencies.websocket
+
+    //高德3D地图so及jar
+    implementation 'com.amap.api:3dmap:latest.integration'
+    //高德定位功能
+    implementation 'com.amap.api:location:latest.integration'
+    implementation 'com.amap.api:search:latest.integration'
+
+}

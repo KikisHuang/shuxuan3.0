@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/logo_img"
+        android:layout_width="86dp"
+        android:layout_height="86dp"
+        android:layout_marginBottom="12dp"
+        android:src="@mipmap/ic_logo"
+        android:layout_marginTop="60dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/certify_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="66dp"
+        app:layout_constraintTop_toBottomOf="@+id/logo_img">
+
+        <com.gxdingo.sg.view.RegexEditText
+            android:id="@+id/et_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:paddingHorizontal="20dp"
+            android:textColorHint="@color/text_secondary"
+            android:textSize="14sp"
+            app:regexType="mobile" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide_color" />
+
+        <LinearLayout
+            android:id="@+id/vf_ll"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal">
+
+            <com.gxdingo.sg.view.RegexEditText
+                android:id="@+id/verification_code_ed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:hint="@string/please_input_verification_code"
+                android:inputType="number"
+                android:maxLength="10"
+                android:paddingHorizontal="20dp"
+                android:textColorHint="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="@color/grayf8" />
+
+            <com.gxdingo.sg.view.CountdownView
+                android:id="@+id/send_verification_code_bt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_weight="2.5"
+                android:background="@color/white"
+                android:gravity="center"
+                android:stateListAnimator="@null"
+                android:text="@string/send_verification_code"
+                android:textColor="@color/main_tone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide_color" />
+
+        <Button
+            android:id="@+id/login_bt"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="135dp"
+            android:layout_weight="2"
+            android:background="@drawable/module_bg_main_color_round6"
+            android:stateListAnimator="@null"
+            android:text="@string/confirm_login"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/one_click_login_panel"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:layout_marginTop="66dp"
+        app:layout_constraintTop_toBottomOf="@+id/logo_img">
+        <Button
+            android:id="@+id/one_click_login_bt"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_weight="2"
+            android:background="@drawable/module_bg_main_color_round6"
+            android:stateListAnimator="@null"
+            android:text="本机号码一键登录"
+            android:textSize="16sp"
+            android:textColor="@color/white" />
+
+
+        <Button
+            android:id="@+id/certify_login_bt"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="100dp"
+            android:layout_weight="2"
+            android:background="@drawable/module_border_main_color_round6"
+            android:stateListAnimator="@null"
+            android:text="验证码登录"
+            android:textSize="16sp"
+            android:textColor="@color/main_tone" />
+
+        <Button
+            android:id="@+id/switch_login_bt"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="2"
+            android:background="@drawable/module_border_main_color_round6"
+            android:stateListAnimator="@null"
+            android:text="商家身份登录"
+            android:textSize="16sp"
+            android:textColor="@color/main_tone" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/other_login_ll">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/divide_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:gravity="center"
+                android:text="@string/other_login_methods"
+                android:textColor="@color/text_secondary2"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/divide_color" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/other_login_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/alipay_login"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:src="@mipmap/module_ic_alipay_login" />
+
+            <ImageView
+                android:id="@+id/wechat_login"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="34dp"
+                android:drawablePadding="10dp"
+                android:gravity="center"
+                android:src="@drawable/module_svg_wechat_login" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
