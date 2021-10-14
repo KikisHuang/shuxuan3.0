@@ -6,6 +6,7 @@ import android.view.WindowManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
@@ -31,7 +32,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private List<Fragment> mFragmentList;
 
-    @BindViews({R.id.home_page_layout, R.id.message_layout, R.id.settle_in,R.id.business_layout, R.id.mine_layout})
+    @BindViews({R.id.home_page_layout, R.id.message_layout,R.id.business_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
@@ -141,6 +142,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 break;
             case R.id.settle_in:
 //                getP().checkTab(2);
+                ToastUtils.showLong("hi!索嗨，来入驻");
                 break;
             case R.id.business_layout:
                 getP().checkTab(2);
@@ -178,6 +180,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onSeleted(int checkTab, int oldTab) {
+
         mMenuLayout.get(checkTab).setonSelected(true);
 
         mMenuLayout.get(oldTab).setonSelected(false);

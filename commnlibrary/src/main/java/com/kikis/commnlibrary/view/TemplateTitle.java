@@ -64,7 +64,7 @@ public class TemplateTitle extends RelativeLayout {
     private void setUpView() {
 
         title_layout = findViewById(R.id.title_layout);
-//        title_layout.setBackgroundColor(titleBackGroundColor);
+        title_layout.setBackgroundColor(titleBackGroundColor);
         TextView tvTitle = (TextView) findViewById(R.id.title);
         tvTitle.setText(titleText);
         if (TextColor != 0)

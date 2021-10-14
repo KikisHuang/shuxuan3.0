@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
@@ -16,6 +17,8 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+
 /**
  * @author: Weaving
  * @date: 2021/10/12
@@ -23,8 +26,15 @@ import butterknife.OnClick;
  */
 public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter> implements LoginContract.LoginListener {
 
+    //用户身份登录
+    private boolean isUserId = true;
+
+
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
+
+    @BindView(R.id.img_back)
+    public ImageView img_back;
 
 
     //------- 一键登陆面板 ------
@@ -82,12 +92,12 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
     protected int StatusBarColors() {
-        return 0;
+        return R.color.white;
     }
 
     @Override
@@ -132,7 +142,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected void init() {
-
+        getP().switchPanel(false,true);
+        isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        switch_login_bt.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
     }
 
     @Override
@@ -145,41 +157,62 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.img_back:
+                getP().switchPanel(false,true);
                 break;
             case R.id.one_click_login_bt:
                 break;
             case R.id.certify_login_bt:
+                getP().switchPanel(true,false);
                 break;
             case R.id.switch_login_bt:
+                isUserId = !isUserId;
+                getP().switchUrl(isUserId);
                 break;
             case R.id.alipay_login:
+                getP().alipayAuth();
                 break;
             case R.id.wechat_login:
+                getP().getWechatAuth();
                 break;
             case R.id.send_verification_code_bt:
+                getP().sendVerificationCode();
                 break;
             case R.id.login_bt:
+                getP().login();
                 break;
         }
     }
 
     @Override
     public String getCode() {
-        return null;
+        return verification_code_ed.getText().toString();
     }
 
     @Override
     public String getMobile() {
-        return null;
+        return et_phone_number.getText().toString();
     }
 
     @Override
     public boolean isClient() {
-        return false;
+        return isUserId;
     }
 
     @Override
     public void setVerificationCodeTime(int time) {
 
+    }
+
+    @Override
+    public void setPanel(int showBack, int oneClick,int certify) {
+        img_back.setVisibility(showBack);
+        one_click_login_panel.setVisibility(oneClick);
+        certify_panel.setVisibility(certify);
+    }
+
+    //身份切换
+    @Override
+    public void showIdButton() {
+        switch_login_bt.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
     }
 }

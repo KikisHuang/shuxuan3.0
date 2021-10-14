@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
@@ -16,6 +17,7 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -32,6 +34,11 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     private LoginModel mModdel;
 
+    public LoginPresenter() {
+
+        mModdel = new LoginModel();
+        mNetworkModel = new NetworkModel(this);
+    }
 
     @Override
     public void onSucceed(int type) {
@@ -117,6 +124,18 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     }
 
     @Override
+    public void switchUrl(boolean isUserId) {
+        getV().showIdButton();
+        switchGlobalUrl(isUserId);
+    }
+
+    @Override
+    public void switchPanel(boolean showBack, boolean oneClick) {
+        if (isViewAttached())
+            getV().setPanel(showBack? View.VISIBLE:View.GONE,oneClick?View.VISIBLE:View.GONE,oneClick?View.GONE:View.VISIBLE);
+    }
+
+    @Override
     public void getWechatAuth() {
         if (!isViewAttached() || mModdel == null)
             return;
@@ -155,7 +174,9 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     @Override
     public void weChatLogin(String code) {
-
+        if (mNetworkModel != null && isViewAttached()) {
+            mNetworkModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, getV().isClient());
+        }
     }
 
     @Override
@@ -178,7 +199,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
                 String authCode = bundle.getString("auth_code");
                 if (mNetworkModel != null) {
                     if (!isEmpty(authCode)) {
-//                        mNetworkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY, getV().isClient());
+                        mNetworkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY, getV().isClient());
                     } else
                         onMessage("没有获取到authCode");
                 }

@@ -57,7 +57,9 @@
             android:layout_marginVertical="5dp"
             app:anim_show="false"
             app:defocus_color="@color/gray202"
+            app:focus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_main_menu_client_settle_in"
+            app:focus_icon="@drawable/module_svg_main_menu_client_settle_in"
             app:is_selected="false"
             app:text="@string/settle_in" />
 

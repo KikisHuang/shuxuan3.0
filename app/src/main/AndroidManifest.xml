@@ -72,8 +72,6 @@
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-
-
         </activity>
 
         <!--登录页面 -->
@@ -81,7 +79,26 @@
             android:name=".activity.LoginActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
+        </activity>
+
+        <!--绑定手机号 -->
+        <activity
+            android:name=".activity.BindingPhoneActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--输入验证码 -->
+        <activity
+            android:name=".activity.InputVerificationCodeActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -91,13 +108,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-            </intent-filter>
         </activity>
 
 
