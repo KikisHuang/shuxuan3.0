@@ -35,6 +35,7 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
+                    android:id="@+id/check_bill_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -94,6 +95,7 @@
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <com.allen.library.SuperTextView
+                android:id="@+id/username_stv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:sLeftTextString="136****8888"

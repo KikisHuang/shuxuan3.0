@@ -26,4 +26,10 @@
     <string name="verification">验证</string>
     <string name="send_verificatione_code_hint">如果没有收到验证码，可以在倒计时结束后重新发送</string>
     <string name="dont_get_phone_number">未获取到手机号码</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="edit_profile">编辑资料</string>
+    <string name="my_catransition">my_catransition</string>
+    <string name="alipay">支付宝</string>
+    <string name="version_update">版本更新</string>
+    <string name="account_security">账户安全</string>
 </resources>

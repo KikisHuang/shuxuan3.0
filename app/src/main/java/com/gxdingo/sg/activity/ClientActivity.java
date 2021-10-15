@@ -54,12 +54,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
     protected int StatusBarColors() {
-        return 0;
+        return R.color.white;
     }
 
     @Override

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="account_record">账户记录</string>
+    <string name="pay_password">支付密码</string>
+    <string name="binding_phone">绑定手机</string>
+    <string name="back_card">银行卡</string>
+    <string name="confirm_cash">确认提现</string>
+    <string name="balance_cash">余额提现</string>
+</resources>
