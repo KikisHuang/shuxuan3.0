@@ -2,54 +2,57 @@ package com.gxdingo.sg.activity;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CountdownView;
-import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
-import static android.text.TextUtils.isEmpty;
-import static com.blankj.utilcode.util.TimeUtils.getNowMills;
-import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
  * @page:
  */
-public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ChangeBindingPhoneActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.hint_tv)
-    public TextView hint_tv;
+    @BindView(R.id.text_change_phone_hint)
+    public TextView text_change_phone_hint;
 
-    @BindView(R.id.password_layout)
-    public PasswordLayout password_layout;
+    @BindView(R.id.country_code_tv)
+    public TextView country_code_tv;
 
-    @BindView(R.id.pay_pwd_hint)
-    public TextView pay_pwd_hint;
+    @BindView(R.id.et_certify_code)
+    public EditText et_certify_code;
 
-    @BindView(R.id.pay_psw_cdv)
-    public CountdownView pay_psw_cdv;
+    @BindView(R.id.text_change_phone)
+    public TextView text_change_phone;
 
-    @BindView(R.id.btn_next_or_confirm)
-    public Button btn_next_or_confirm;
+    @BindView(R.id.btn_send_code)
+    public CountdownView btn_send_code;
 
-    private boolean isUpdate;
+    @BindView(R.id.new_phone_btn_send_code)
+    public CountdownView new_phone_btn_send_code;
 
+    @BindView(R.id.bottom_hint_tv)
+    public TextView bottom_hint_tv;
+
+    @BindView(R.id.btn_next)
+    public Button btn_next;
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
         return new ClientAccountSecurityPresenter();
@@ -102,7 +105,7 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_client_setting_pay_pwd;
+        return R.layout.module_activity_change_binding_phone;
     }
 
     @Override
@@ -117,31 +120,14 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     protected void init() {
-        if (isUpdate)
-            title_layout.setTitleText(gets(R.string.update_pay_pwd));
-        else
-            title_layout.setTitleText(gets(R.string.setting_pay_pwd));
+        title_layout.setTitleText(gets(R.string.update_phone));
 
-        hint_tv.setText("输入当前支付密码，用以身份验证");
-        pay_pwd_hint.setVisibility(View.GONE);
-        pay_psw_cdv.setVisibility(View.GONE);
-        btn_next_or_confirm.setVisibility(View.GONE);
-        password_layout.setPwdChangeListener(new PasswordLayout.pwdChangeListener() {
-            @Override
-            public void onChange(String pwd) {
+        btn_send_code.setTotalTime(60);
+        new_phone_btn_send_code.setTotalTime(60);
 
-            }
-
-            @Override
-            public void onNull() {
-
-            }
-
-            @Override
-            public void onFinished(String pwd) {
-                getP().certifyPwd();
-            }
-        });
+        getP().getUserPhone();
+//        getP().checkCode();
+//        getP().sendVerificationCode();
     }
 
     @Override
@@ -149,15 +135,40 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSe
 
     }
 
+    @OnClick({R.id.title_back, R.id.new_phone_btn_send_code, R.id.btn_send_code, R.id.btn_next})
+    public void onViewClicked(View v) {
+        if (!checkClickInterval(v.getId()))
+            return;
+        switch (v.getId()) {
+            case R.id.title_back:
+                getP().lastStep();
+                break;
+            case R.id.btn_send_code:
+                getP().sendOldPhoneVerificationCode();
+
+                break;
+            case R.id.new_phone_btn_send_code:
+                getP().sendNewPhoneVerificationCode(UserInfoUtils.getInstance().getUserPhone());
+
+                break;
+            case R.id.btn_next:
+                getP().nextStep(et_certify_code.getText().toString());
+
+                break;
+
+        }
+    }
+
     @Override
-    public void onSucceed(int type) {
-        super.onSucceed(type);
-        goToPage(this,ClientSettingPayPwd2Activity.class,null);
+    public void onFailed() {
+        super.onFailed();
+        sendEvent(new ReLoginBean());
+        finish();
     }
 
     @Override
     public void setUserPhone(String phone) {
-
+        changeHint("为确认身份，请输入" + getUserPhone(phone) + "收到的短信验证码");
     }
 
     @Override
@@ -170,75 +181,76 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSe
 
     }
 
+//    @Override
+//    public String getOldPhoneNum() {
+//        return null;
+//    }
+
     @Override
     public void oldPhoneNumberCountDown() {
-
+        if (btn_send_code.getCurrentSecond() <= 0)
+            btn_send_code.start();
     }
 
     @Override
     public void newPhoneNumberCountDown() {
-
+        if (new_phone_btn_send_code.getCurrentSecond() <= 0)
+            new_phone_btn_send_code.start();
     }
 
     @Override
     public void changeTitle(String title) {
-
+        text_change_phone.setText(title);
     }
 
     @Override
     public void changeHint(String hint) {
-
+        text_change_phone_hint.setText(hint);
     }
 
     @Override
     public void changeNextBtnText(String text) {
-
+        btn_next.setText(text);
     }
 
     @Override
     public void bottomHintVisibility(int visib) {
-
+        bottom_hint_tv.setVisibility(visib);
     }
 
     @Override
     public void oldPhoneCodeCountdownVisibility(int visib) {
-
+        btn_send_code.setVisibility(visib);
     }
 
     @Override
     public void newPhoneCodeCountdownVisibility(int visib) {
-
+        new_phone_btn_send_code.setVisibility(visib);
     }
 
     @Override
     public void countryCodeShow(boolean show) {
-
+        country_code_tv.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void setEdittextInputType(int type) {
-
+        et_certify_code.setInputType(type);
     }
 
     @Override
     public void setEdittextContent(String content) {
-
+        et_certify_code.setText(content);
+        et_certify_code.setSelection(et_certify_code.length());
     }
 
     @Override
     public void setEdittextHint(String hint) {
-
+        et_certify_code.setHint(hint);
     }
 
     @Override
     public int getNumberCountDown() {
-        return 0;
-    }
-
-    @Override
-    public void onMessage(String msg) {
-        super.onMessage(msg);
-        if (!isEmpty(password_layout.getPassString()))
-            password_layout.removeAllPwd();
+        return new_phone_btn_send_code.getCurrentSecond();
     }
 }

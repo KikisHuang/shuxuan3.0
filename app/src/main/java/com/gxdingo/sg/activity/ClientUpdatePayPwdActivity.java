@@ -23,7 +23,70 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
  * @page:
  */
 public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+    @Override
+    public void oldPhoneNumberCountDown() {
 
+    }
+
+    @Override
+    public void newPhoneNumberCountDown() {
+
+    }
+
+    @Override
+    public void changeTitle(String title) {
+
+    }
+
+    @Override
+    public void changeHint(String hint) {
+
+    }
+
+    @Override
+    public void changeNextBtnText(String text) {
+
+    }
+
+    @Override
+    public void bottomHintVisibility(int visib) {
+
+    }
+
+    @Override
+    public void oldPhoneCodeCountdownVisibility(int visib) {
+
+    }
+
+    @Override
+    public void newPhoneCodeCountdownVisibility(int visib) {
+
+    }
+
+    @Override
+    public void countryCodeShow(boolean show) {
+
+    }
+
+    @Override
+    public void setEdittextInputType(int type) {
+
+    }
+
+    @Override
+    public void setEdittextContent(String content) {
+
+    }
+
+    @Override
+    public void setEdittextHint(String hint) {
+
+    }
+
+    @Override
+    public int getNumberCountDown() {
+        return 0;
+    }
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;

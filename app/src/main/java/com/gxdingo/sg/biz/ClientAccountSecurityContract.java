@@ -19,11 +19,46 @@ public class ClientAccountSecurityContract {
         void updatePsw();
         void saveStatus();
         void getUserPhone();
+
+        void sendOldPhoneVerificationCode();
+
+        void sendNewPhoneVerificationCode(String phone);
+
+        void nextStep(String edttcontent);
+
+        void lastStep();
     }
 
     public interface ClientAccountSecurityListener{
         void setUserPhone(String phone);
         String getCode();
         void next();
+//        String getOldPhoneNum();
+
+        void oldPhoneNumberCountDown();
+
+        void newPhoneNumberCountDown();
+
+        void changeTitle(String title);
+
+        void changeHint(String hint);
+
+        void changeNextBtnText(String text);
+
+        void bottomHintVisibility(int visib);
+
+        void oldPhoneCodeCountdownVisibility(int visib);
+
+        void newPhoneCodeCountdownVisibility(int visib);
+
+        void countryCodeShow(boolean show);
+
+        void setEdittextInputType(int type);
+
+        void setEdittextContent(String content);
+
+        void setEdittextHint(String hint);
+
+        int getNumberCountDown();
     }
 }

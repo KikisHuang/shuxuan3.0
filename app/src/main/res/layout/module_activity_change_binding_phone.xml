@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingHorizontal="20dp">
+
+    <TextView
+        android:id="@+id/text_change_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:text="@string/change_bind_phone_number"
+        android:textColor="@color/title_color"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_change_phone_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="#A9A9A9"
+        app:layout_constraintStart_toStartOf="@+id/text_change_phone"
+        app:layout_constraintTop_toBottomOf="@+id/text_change_phone"
+        android:text="为确认身份，请输入182****6969收到的短信验证码" />
+
+    <LinearLayout
+        android:id="@+id/edt_ll"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="60dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btn_send_code"
+        app:layout_constraintTop_toBottomOf="@+id/text_change_phone_hint"
+
+        >
+
+        <TextView
+            android:id="@+id/country_code_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+86"
+            android:visibility="visible"
+            android:textColor="@color/title_color"
+            />
+
+        <com.gxdingo.sg.view.RegexEditText
+            android:id="@+id/et_certify_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:layout_weight="1"
+            android:hint="输入验证码"
+            android:textSize="14sp"
+            android:padding="8dp"
+            android:textColorHint="#A9A9A9"
+            android:background="@color/white"/>
+
+    </LinearLayout>
+
+    <com.gxdingo.sg.view.CountdownView
+        android:id="@+id/btn_send_code"
+        android:layout_width="89dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_ll"
+        app:layout_constraintTop_toTopOf="@+id/edt_ll"
+        android:background="@drawable/module_bg_main_color_round6"
+        android:gravity="center"
+        android:text="发送验证码"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_change_phone_hint" />
+
+    <com.gxdingo.sg.view.CountdownView
+        android:id="@+id/new_phone_btn_send_code"
+        android:layout_width="89dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/edt_ll"
+        app:layout_constraintTop_toTopOf="@+id/edt_ll"
+        android:background="@drawable/module_bg_main_color_round6"
+        android:gravity="center"
+        android:text="发送验证码"
+        android:visibility="gone"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_change_phone_hint"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="6dp"
+        android:background="@color/divide_color"
+        app:layout_constraintTop_toBottomOf="@+id/edt_ll" />
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/module_shape_bg_gray_6r"
+        android:stateListAnimator="@null"
+        android:text="下一步"
+        android:textColor="@color/title_color"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/bottom_hint_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:textColor="#A9A9A9"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_next"
+        android:text="如果没有收到验证码，可以在倒计时结束后重新发送" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
