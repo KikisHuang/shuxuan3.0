@@ -12,9 +12,18 @@ public class ClientAccountSecurityContract {
 
     public interface ClientAccountSecurityPresenter extends MvpPresenter<BasicsListener,ClientAccountSecurityListener>{
 
+        void sendVerificationCode();
+        void certify();
+        void certifyPwd();
+        void checkPayPsw();
+        void updatePsw();
+        void saveStatus();
+        void getUserPhone();
     }
 
     public interface ClientAccountSecurityListener{
-
+        void setUserPhone(String phone);
+        String getCode();
+        void next();
     }
 }

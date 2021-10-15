@@ -7,4 +7,7 @@
     <string name="back_card">银行卡</string>
     <string name="confirm_cash">确认提现</string>
     <string name="balance_cash">余额提现</string>
+    <string name="setting_pay_pwd">设置支付密码</string>
+    <string name="update_pay_pwd">修改支付密码</string>
+    <string name="next">下一步</string>
 </resources>

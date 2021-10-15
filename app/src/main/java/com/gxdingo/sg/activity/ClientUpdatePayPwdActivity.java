@@ -1,8 +1,8 @@
 package com.gxdingo.sg.activity;
 
 import android.view.View;
+import android.widget.TextView;
 
-import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
@@ -12,60 +12,35 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
  * @page:
  */
-public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.pay_psw_stv)
-    public SuperTextView pay_psw_stv;
+    @BindView(R.id.hint_tv)
+    public TextView hint_tv;
 
-    @BindView(R.id.binding_phone_stv)
-    public SuperTextView binding_phone_stv;
-
-    @BindView(R.id.binding_ali_stv)
-    public SuperTextView binding_ali_stv;
-
-    @BindView(R.id.binding_wechat_stv)
-    public SuperTextView binding_wechat_stv;
-
-    @BindView(R.id.binding_bankcard_stv)
-    public SuperTextView binding_bankcard_stv;
-
-    @BindView(R.id.version_stv)
-    public SuperTextView version_stv;
-
-    @BindView(R.id.cancel_account_stv)
-    public SuperTextView cancel_account_stv;
-
-
-    @OnClick({R.id.pay_psw_stv,R.id.binding_phone_stv,R.id.binding_ali_stv,R.id.binding_wechat_stv,R.id.binding_bankcard_stv,R.id.version_stv,R.id.cancel_account_stv,})
-    public void onClickViews(View v){
+    @OnClick({R.id.btn_no,R.id.btn_yes})
+    public void OnClickViews(View v){
         switch (v.getId()){
-            case R.id.pay_psw_stv:
-                goToPage(this,ClientSettingPayPwd1Activity.class,null);
+            case R.id.btn_no:
+                goToPage(this,ClientSettingPayPwd1Activity.class,getIntentMap(new String[]{String.valueOf(1)}));
+                finish();
                 break;
-            case R.id.binding_phone_stv:
-                break;
-            case R.id.binding_ali_stv:
-                break;
-            case R.id.binding_wechat_stv:
-                break;
-            case R.id.binding_bankcard_stv:
-                break;
-            case R.id.version_stv:
-                break;
-            case R.id.cancel_account_stv:
+            case R.id.btn_yes:
+//                goToPage(this,StoreCertifyPayPswActivity.class,getIntentMap(new String[]{String.valueOf(1)}));
+                finish();
                 break;
         }
     }
@@ -123,7 +98,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_client_account_security;
+        return R.layout.module_activity_client_update_pay_pwd;
     }
 
     @Override
@@ -138,17 +113,17 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected void init() {
-        title_layout.setTitleText(gets(R.string.account_security));
+        title_layout.setTitleText(gets(R.string.update_pay_pwd));
     }
 
     @Override
     protected void initData() {
-
+        getP().getUserPhone();
     }
 
     @Override
     public void setUserPhone(String phone) {
-
+        hint_tv.setText("您是否还记得账号"+getUserPhone(phone)+"当前所使用的支付 密码");
     }
 
     @Override
@@ -160,4 +135,5 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     public void next() {
 
     }
+
 }

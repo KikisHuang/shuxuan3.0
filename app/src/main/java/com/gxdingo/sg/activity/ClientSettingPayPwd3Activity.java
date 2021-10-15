@@ -1,75 +1,53 @@
 package com.gxdingo.sg.activity;
 
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.allen.library.SuperTextView;
+import androidx.constraintlayout.solver.state.State;
+
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.view.CountdownView;
+import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
+import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
  * @page:
  */
-public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.pay_psw_stv)
-    public SuperTextView pay_psw_stv;
+    @BindView(R.id.hint_tv)
+    public TextView hint_tv;
 
-    @BindView(R.id.binding_phone_stv)
-    public SuperTextView binding_phone_stv;
+    @BindView(R.id.password_layout)
+    public PasswordLayout password_layout;
 
-    @BindView(R.id.binding_ali_stv)
-    public SuperTextView binding_ali_stv;
+    @BindView(R.id.pay_pwd_hint)
+    public TextView pay_pwd_hint;
 
-    @BindView(R.id.binding_wechat_stv)
-    public SuperTextView binding_wechat_stv;
+    @BindView(R.id.pay_psw_cdv)
+    public CountdownView pay_psw_cdv;
 
-    @BindView(R.id.binding_bankcard_stv)
-    public SuperTextView binding_bankcard_stv;
+    @BindView(R.id.btn_next_or_confirm)
+    public Button btn_next_or_confirm;
 
-    @BindView(R.id.version_stv)
-    public SuperTextView version_stv;
+    private String password;
 
-    @BindView(R.id.cancel_account_stv)
-    public SuperTextView cancel_account_stv;
-
-
-    @OnClick({R.id.pay_psw_stv,R.id.binding_phone_stv,R.id.binding_ali_stv,R.id.binding_wechat_stv,R.id.binding_bankcard_stv,R.id.version_stv,R.id.cancel_account_stv,})
-    public void onClickViews(View v){
-        switch (v.getId()){
-            case R.id.pay_psw_stv:
-                goToPage(this,ClientSettingPayPwd1Activity.class,null);
-                break;
-            case R.id.binding_phone_stv:
-                break;
-            case R.id.binding_ali_stv:
-                break;
-            case R.id.binding_wechat_stv:
-                break;
-            case R.id.binding_bankcard_stv:
-                break;
-            case R.id.version_stv:
-                break;
-            case R.id.cancel_account_stv:
-                break;
-        }
-    }
-
+    private boolean isUpdate;
 
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
@@ -123,7 +101,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_client_account_security;
+        return R.layout.module_activity_client_setting_pay_pwd;
     }
 
     @Override
@@ -138,13 +116,39 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected void init() {
-        title_layout.setTitleText(gets(R.string.account_security));
+        if (isUpdate)
+            title_layout.setTitleText(gets(R.string.update_pay_pwd));
+        else
+            title_layout.setTitleText(gets(R.string.setting_pay_pwd));
+        password = getIntent().getStringExtra(Constant.PARAMAS+0);
+        hint_tv.setText("再次输入");
+        pay_pwd_hint.setVisibility(View.GONE);
+        pay_psw_cdv.setVisibility(View.GONE);
+        btn_next_or_confirm.setText(gets(R.string.confirm));
+
+        password_layout.setPwdChangeListener(new PasswordLayout.pwdChangeListener() {
+            @Override
+            public void onChange(String pwd) {
+
+            }
+
+            @Override
+            public void onNull() {
+
+            }
+
+            @Override
+            public void onFinished(String pwd) {
+                btn_next_or_confirm.setEnabled(true);
+            }
+        });
     }
 
     @Override
     protected void initData() {
-
+        getP().sendVerificationCode();
     }
+
 
     @Override
     public void setUserPhone(String phone) {
