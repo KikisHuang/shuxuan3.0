@@ -10,4 +10,17 @@
     <string name="setting_pay_pwd">设置支付密码</string>
     <string name="update_pay_pwd">修改支付密码</string>
     <string name="next">下一步</string>
+    <string name="receiving_address">收货地址</string>
+    <string name="add_address">新增地址</string>
+    <string name="house_number">门牌号：</string>
+    <string name="contacts">联系人</string>
+    <string name="hint_contacts">请填写收货人姓名</string>
+    <string name="phone_number_colon">手机号</string>
+    <string name="hint_mobile">请填写收货人手机号</string>
+    <string name="label">标签</string>
+    <string name="edit_receiving_address">编辑收货地址</string>
+    <string name="text_edit">编辑</string>
+    <string name="not_get_address_info">没有获取到地址信息</string>
+    <string name="contact_name_can_not_null">联系人名字不能为空</string>
+    <string name="address_detal_can_not_null">详细地址不能为空</string>
 </resources>

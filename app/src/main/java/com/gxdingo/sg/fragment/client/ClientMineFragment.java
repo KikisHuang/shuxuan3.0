@@ -4,8 +4,10 @@ import android.view.View;
 
 import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ChangeBindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
+import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientCashActivity;
 import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.biz.ClientMineContract;
@@ -98,6 +100,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientCashActivity.class,null);
                 break;
             case R.id.ll_address_manage:
+                goToPage(getContext(), ClientAddressListActivity.class,null);
                 break;
             case R.id.ll_account_security:
                 goToPage(getContext(), ClientAccountSecurityActivity.class,null);

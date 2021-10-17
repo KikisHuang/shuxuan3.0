@@ -133,6 +133,28 @@
 
         </activity>
 
+        <!--客户端地址管理页面 -->
+        <activity
+            android:name=".activity.ClientAddressListActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端新增、编辑地址管理页面 -->
+        <activity
+            android:name=".activity.ClientNewAddressActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--选择地址管理页面 -->
+        <activity
+            android:name=".activity.SelectAddressActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+
         <!--客户端账户安全页面 -->
         <activity
             android:name=".activity.ClientAccountSecurityActivity"

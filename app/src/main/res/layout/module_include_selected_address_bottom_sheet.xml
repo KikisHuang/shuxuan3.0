@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="1dp"
+    tools:ignore="MissingConstraints">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/arrows_img"
+            android:layout_width="28dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center|top"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/module_shape_bg_expend"/>
+
+        <include layout="@layout/module_include_selected_address_search" />
+
+        <include layout="@layout/module_include_nodata_recycle"></include>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

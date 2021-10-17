@@ -37,4 +37,8 @@
     <string name="input_new_phone_number">输入新号码</string>
     <string name="binding_new_phone_number">绑定新号码</string>
     <string name="done">完成</string>
+    <string name="hint_house_number">详细地址，例：1栋8层0801室</string>
+    <string name="shipping_address_can_not_null">收货地址不能为空</string>
+    <string name="search_poi_hint">请输入地址名称</string>
+    <string name="select_receiving_address">选择地址</string>
 </resources>
