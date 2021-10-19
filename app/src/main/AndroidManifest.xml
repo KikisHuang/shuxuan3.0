@@ -112,6 +112,13 @@
             </intent-filter>
         </activity>
 
+        <!--客户端搜索页面 -->
+        <activity
+            android:name=".activity.ClientSearchActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <!--客户端账户记录页面 -->
         <activity
             android:name=".activity.ClientAccountRecordActivity"

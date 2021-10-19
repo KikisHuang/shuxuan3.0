@@ -23,4 +23,6 @@
     <string name="not_get_address_info">没有获取到地址信息</string>
     <string name="contact_name_can_not_null">联系人名字不能为空</string>
     <string name="address_detal_can_not_null">详细地址不能为空</string>
+    <string name="send_message">发消息</string>
+    <string name="phone_cantract">电话联系</string>
 </resources>

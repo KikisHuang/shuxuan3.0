@@ -130,7 +130,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_default_avatar"/>
+                    android:src="@drawable/module_svg_client_address_manage"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -152,7 +152,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_default_avatar"/>
+                    android:src="@drawable/module_svg_client_account_security"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -174,7 +174,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_default_avatar"/>
+                    android:src="@drawable/module_svg_client_contract_server"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -196,7 +196,7 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_default_avatar"/>
+                    android:src="@drawable/module_svg_client_about_us"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -214,8 +214,8 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="20dp"
-            app:sLeftIconMarginLeft="20dp"
-            app:sLeftIconRes="@drawable/module_svg_client_fill_invitation_code"
+            app:sLeftIconMarginLeft="27dp"
+            app:sLeftIconRes="@drawable/module_svg_fill_invitation_code"
             app:sLeftTextString="填写邀请码"
             app:sLeftTextSize="16sp"
             app:sLeftTextColor="#1F1F1F"
@@ -225,8 +225,8 @@
             android:id="@+id/private_protocol_stv"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:sLeftIconMarginLeft="20dp"
-            app:sLeftIconRes="@drawable/module_svg_client_fill_invitation_code"
+            app:sLeftIconMarginLeft="27dp"
+            app:sLeftIconRes="@drawable/module_svg_client_private_protocol"
             app:sLeftTextString="隐私协议"
             app:sLeftTextSize="16sp"
             app:sLeftTextColor="#1F1F1F"
@@ -236,8 +236,8 @@
             android:id="@+id/logout_stv"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:sLeftIconMarginLeft="20dp"
-            app:sLeftIconRes="@drawable/module_svg_client_fill_invitation_code"
+            app:sLeftIconMarginLeft="27dp"
+            app:sLeftIconRes="@drawable/module_svg_client_logout"
             app:sLeftTextString="退出登录"
             app:sLeftTextSize="16sp"
             app:sLeftTextColor="#1F1F1F"
