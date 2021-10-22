@@ -108,5 +108,8 @@ public class ClientLocalConstant {
     public static final int ITEMS2 = 8;
     public static final int ITEMS3 = 9;
 
+    public static final String STATUS = "status";
+    public static final String DATE = "date";
+
 
 }

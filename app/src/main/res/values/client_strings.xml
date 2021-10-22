@@ -25,4 +25,10 @@
     <string name="address_detal_can_not_null">详细地址不能为空</string>
     <string name="send_message">发消息</string>
     <string name="phone_cantract">电话联系</string>
+    <string name="new_address">新增地址</string>
+    <string name="add_address_succeed">添加地址成功</string>
+    <string name="del_address_succeed">删除地址成功</string>
+    <string name="no_get_store_mobile_phone_number">商家未填写手机号</string>
+    <string name="common_year">年</string>
+    <string name="common_month">月</string>
 </resources>

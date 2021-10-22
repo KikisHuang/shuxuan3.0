@@ -3,10 +3,15 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 import android.widget.EditText;
 
+import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
+import com.gxdingo.sg.model.ClientMainModel;
+import com.gxdingo.sg.model.ClientMineModel;
+import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
@@ -21,7 +26,9 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.List;
 
+import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 /**
@@ -31,17 +38,20 @@ import static com.luck.picture.lib.config.PictureMimeType.ofImage;
  */
 public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, ClientMineContract.ClientMineListener> implements OnResultCallbackListener<LocalMedia>, ClientMineContract.ClientMinePresenter, NetWorkListener {
 
-//    private ClientNetworkModel clientNetworkModel;
+    private ClientNetworkModel clientNetworkModel;
 
     private NetworkModel networkModel;
 
     private CommonModel mClientCommonModel;
 
+    private ClientMineModel mineModel;
+
 
     public ClientMinePresenter() {
-
+        clientNetworkModel = new ClientNetworkModel(this);
         networkModel = new NetworkModel(this);
         mClientCommonModel = new CommonModel();
+        mineModel = new ClientMineModel();
     }
 
     @Override
@@ -64,6 +74,11 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onData(boolean refresh, Object o) {
+        if (isViewAttached()){
+            if (o instanceof ClientMineBean)
+                getV().onMineDataResult((ClientMineBean) o);
+        }
+
 
     }
 
@@ -126,9 +141,18 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
         addDisposable(subscriber);
     }
 
+
     @Override
     public void editsetInit(EditText nick_name_edt, int limit) {
-
+        if (isViewAttached()) {
+            CommonModel clientCommonModel = new CommonModel();
+            clientCommonModel.editTextFilters(nick_name_edt, limit);
+            mineModel.edittextFocusChangeListener(nick_name_edt, (v, hasFocus) -> {
+                // 获得焦点
+//                if (isViewAttached())
+//                    getV().showSaveBtn(hasFocus);
+            });
+        }
     }
 
     @Override
@@ -157,12 +181,16 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void getUserInfo() {
-
+        if (clientNetworkModel!=null)
+            clientNetworkModel.getMineData(getContext());
     }
 
     @Override
-    public void modityNickName(String toString) {
-
+    public void modityNickName(String name) {
+        if (!isEmpty(name))
+            clientNetworkModel.userEdit(getContext(), "", name);
+        else
+            onMessage(gets(R.string.nickname_cannot_null));
     }
 
     @Override
@@ -173,9 +201,9 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
             networkModel.upLoadImage(getContext(), url, new UpLoadImageListener() {
                 @Override
                 public void loadSucceed(String path) {
-//                    if (clientNetworkModel != null) {
-//                        clientNetworkModel.userEdit(getContext(), path, "");
-//                    }
+                    if (clientNetworkModel != null) {
+                        clientNetworkModel.userEdit(getContext(), path, "");
+                    }
                     getV().changeAvatar(getPhotoUrl(result.get(0)));
                 }
 

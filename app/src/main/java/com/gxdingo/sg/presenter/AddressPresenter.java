@@ -8,6 +8,7 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.blankj.utilcode.util.LogUtils;
+import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -25,6 +26,10 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.ClientLocalConstant.ADDADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.ClientLocalConstant.DELADDRESS_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 /**
@@ -41,6 +46,8 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     private ClientNetworkModel clientNetworkModel;
 
     private AMapLocation mMapLocation;
+
+    private long delId = 0;
 
     private String cityCode;
 
@@ -71,7 +78,17 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void checkCompileInfo() {
+        if (model != null && isViewAttached())
+            model.checkStatus(getV().getAddress(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(),getV().getDoorplate(), b -> getV().saveBtnEnable(b));
+    }
 
+    @Override
+    public void delAddress(int id) {
+        if (!isViewAttached() || clientNetworkModel == null)
+            return;
+
+        delId = id;
+        clientNetworkModel.deleteAddress(getContext(), id);
     }
 
     @Override
@@ -235,8 +252,22 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void onSucceed(int type) {
-        if (isBViewAttached())
+
+        if (type == ADDADDRESS_SUCCEED)
+            onMessage(gets(R.string.add_address_succeed));
+        else if (type == DELADDRESS_SUCCEED) {
+            //清除缓存地址
+            if (mClientCommonModel != null && mClientCommonModel.getCacheDefaultAddress() != null && mClientCommonModel.getCacheDefaultAddress().getId() == delId)
+                mClientCommonModel.clearCacheDefaultAddress();
+
+            onMessage(gets(R.string.del_address_succeed));
+        } else if (type == COMPILEADDRESS_SUCCEED)
+            onMessage(gets(R.string.compile_address_succeed));
+
+        if (isViewAttached())
             getBV().onSucceed(type);
+//        if (isBViewAttached())
+//            getBV().onSucceed(type);
     }
 
     @Override

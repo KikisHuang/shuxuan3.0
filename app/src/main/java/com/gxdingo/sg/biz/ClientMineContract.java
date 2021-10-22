@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import android.widget.EditText;
 
+import com.gxdingo.sg.bean.ClientMineBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -14,6 +15,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 public class ClientMineContract {
 
     public interface ClientMinePresenter extends MvpPresenter<BasicsListener,ClientMineListener>{
+
+
         void editsetInit(EditText nick_name_edt, int limit);
 
         void photoItemClick(int pos);
@@ -27,5 +30,7 @@ public class ClientMineContract {
         void changeAvatar(T t);
 
         RxPermissions getPermissions();
+
+        void onMineDataResult(ClientMineBean mineBean);
     }
 }

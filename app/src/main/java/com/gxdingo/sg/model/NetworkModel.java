@@ -59,6 +59,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_DETAILS;
 import static com.gxdingo.sg.http.Api.MESSAGE_HISTORY;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SEND_SMS;
@@ -451,6 +452,61 @@ public class NetworkModel {
 
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 一键登录
+     *
+     * @param context
+     * @param
+     * @param
+     */
+    public void oneClickLogin(Context context, String accessToken, boolean isUse) {
+
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("accessToken",accessToken);
+
+        Observable<UserBean> observable = HttpClient.post(ONE_CLICK_LOGIN, map)
+                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
+
+                UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                }
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
     }
 
     /**

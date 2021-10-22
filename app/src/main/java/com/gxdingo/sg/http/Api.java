@@ -62,6 +62,10 @@ public class Api {
 
 
     /**
+     * 一键登录
+     */
+    public static final String ONE_CLICK_LOGIN = HIERARCHY + "user/login";
+    /**
      * 登录
      */
     public static final String USER_LOGIN = HIERARCHY + "user/login";

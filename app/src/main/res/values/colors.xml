@@ -14,4 +14,7 @@
     
     <color name="main_tone">#599252</color>
     <color name="divide_color">#F6F6F6</color>
+    <color name="gray_a9">#A9A9A9</color>
+    <color name="gray_2e">#2E2E2E</color>
+    <color name="gray_ac">#ACACAC</color>
 </resources>

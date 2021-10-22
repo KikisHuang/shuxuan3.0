@@ -142,6 +142,21 @@ public class ClientApi {
      */
     public static final String WALLPAPER_WALLPAPERS = HIERARCHY + "wallpaper/wallpapers";
 
+
+    /**
+     * 我的主页
+     */
+    public static final String MINE_HOME = HIERARCHY + "user/home";
+
+    /**
+     * 交易记录
+     */
+    public static final String TRANSACTION_RECORD = HIERARCHY + "wallet/transaction/list";
+
+    /**
+     * 提现信息
+     */
+    public static final String Cash_ACCOUNT_INFO = HIERARCHY + "wallet/bank/list";
     /**
      * 获取地址列表
      */

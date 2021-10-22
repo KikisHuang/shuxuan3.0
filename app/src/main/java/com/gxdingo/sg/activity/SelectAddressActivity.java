@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -92,7 +93,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -356,6 +357,37 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        PoiItem poiItem = (PoiItem) adapter.getItem(position);
+        sendEvent(poiItem);
+        finish();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mapView!=null)
+            mapView.onResume();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mapView != null)
+            mapView.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        if (mapView != null)
+            mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
+        if (mapView != null)
+            mapView.onPause();
     }
 }

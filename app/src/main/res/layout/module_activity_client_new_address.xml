@@ -302,24 +302,23 @@
         android:layout_height="40dp"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="96dp"
-        android:background="@drawable/module_bg_main_color_round6"
+        android:background="@drawable/module_shape_bg_gray_6r"
         android:enabled="false"
         android:gravity="center"
         android:text="@string/save"
-        android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/cl_set_label"
         tools:layout_editor_absoluteX="20dp" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/del_tv"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="40dp"-->
-<!--        android:layout_marginHorizontal="20dp"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:background="@drawable/module_selector_save_btn"-->
-<!--        android:gravity="center"-->
-<!--        android:text="@string/delete"-->
-<!--        android:textColor="@color/blue_dominant_tone"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/save_tv" />-->
+    <TextView
+        android:id="@+id/del_tv"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/module_bg_main_color_round6"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/save_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

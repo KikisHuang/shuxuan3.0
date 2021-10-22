@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -125,7 +126,8 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
             nick_name_edt.setText(nickname);
 
         title_layout.setTitleText(gets(R.string.edit_profile));
-//        getP().editsetInit(nick_name_edt, 15);
+        title_layout.setTitleText(gets(R.string.done));
+        getP().editsetInit(nick_name_edt, 15);
     }
 
     @Override
@@ -133,7 +135,7 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
 
     }
 
-    @OnClick({R.id.title_back,R.id.avatar_stv, R.id.save_tv})
+    @OnClick({R.id.title_back,R.id.avatar_stv, R.id.txt_more,R.id.save_tv})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -154,6 +156,9 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
             case R.id.title_back:
                 finishac(reference.get());
                 break;
+            case R.id.txt_more:
+                finish();
+                break;
 
         }
 
@@ -168,5 +173,10 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
     @Override
     public RxPermissions getPermissions() {
         return getRxPermissions();
+    }
+
+    @Override
+    public void onMineDataResult(ClientMineBean mineBean) {
+
     }
 }

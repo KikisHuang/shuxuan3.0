@@ -66,7 +66,19 @@
             </intent-filter>
         </activity>
 
+        <!-- 高德地图sdk key-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="9680339642d6b3328a3532f8bf173661" />
 
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
         <!--引导页面 -->
         <activity
             android:name=".activity.SplashActivity"
@@ -77,7 +89,7 @@
         <!--登录页面 -->
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
 
 
@@ -115,6 +127,13 @@
         <!--客户端搜索页面 -->
         <activity
             android:name=".activity.ClientSearchActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端店铺详情页面 -->
+        <activity
+            android:name=".activity.ClientStoreDetailsActivity"
             android:screenOrientation="portrait">
 
         </activity>

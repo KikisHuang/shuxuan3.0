@@ -42,4 +42,7 @@
     <string name="search_poi_hint">请输入地址名称</string>
     <string name="select_receiving_address">选择地址</string>
     <string name="navigation">导航</string>
+    <string name="delete">删除</string>
+    <string name="compile_address_succeed">编辑地址成功</string>
+    <string name="modify_succeed">修改成功</string>
 </resources>

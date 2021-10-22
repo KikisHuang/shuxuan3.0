@@ -12,12 +12,20 @@ import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.view.CountdownView;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.ReLoginBean;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
@@ -29,6 +37,8 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     //用户身份登录
     private boolean isUserId = true;
 
+    //登录页登录成功是否返回首页
+    private boolean backHome = true;
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -82,7 +92,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -142,6 +152,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected void init() {
+        backHome = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0, true);
         getP().switchPanel(false,true);
         isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         switch_login_bt.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
@@ -182,6 +193,41 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                 break;
         }
     }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == CODE_SEND) {
+            SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
+            onMessage(gets(R.string.captcha_code_sent));
+            send_verification_code_bt.setText(gets(R.string.resend));
+            send_verification_code_bt.setTotalTime(60);
+            send_verification_code_bt.start();
+        }
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == CLIENT_LOGIN_SUCCEED || type == STORE_LOGIN_SUCCEED) {
+            if (type == STORE_LOGIN_SUCCEED) {
+                sendEvent(new ReLoginBean());
+                SPUtils.getInstance().put(LOGIN_WAY, false);
+
+//                goToPage(reference.get(), StoreActivity.class, null);
+
+            } else {
+
+                SPUtils.getInstance().put(LOGIN_WAY, true);
+                if (backHome){
+                    sendEvent(new ReLoginBean());
+                    goToPage(reference.get(), ClientActivity.class, null);
+                }
+            }
+            finish();
+        }
+    }
+
 
     @Override
     public String getCode() {

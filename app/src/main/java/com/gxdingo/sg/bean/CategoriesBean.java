@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import java.util.List;
+
 /**
  * @author: Weaving
  * @date: 2021/10/18
@@ -7,26 +9,28 @@ package com.gxdingo.sg.bean;
  */
 public class CategoriesBean {
 
-    private int id;
-    private String name;
+
+    /**
+     * image : http://oss.dgkjmm.com/upload/20210419/352f2c98c8d94bc5882f4e975c8a4159.png
+     * name : 分类11.11
+     * id : 13
+     * keyword : [""]
+     * status : 1
+     */
+
     private String image;
+    private String name;
+    private Integer id;
+    private List<String> keyword;
+    private Integer status;
+    public boolean isSelected;
 
-    public boolean isSelected = false;
-
-    public CategoriesBean() {
+    public String getImage() {
+        return image;
     }
 
-    public CategoriesBean(String name, String image) {
-        this.name = name;
+    public void setImage(String image) {
         this.image = image;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -37,19 +41,29 @@ public class CategoriesBean {
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public Integer getId() {
+        return id;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    public List<String> getKeyword() {
+        return keyword;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setKeyword(List<String> keyword) {
+        this.keyword = keyword;
     }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+
 }

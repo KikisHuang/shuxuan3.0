@@ -26,6 +26,8 @@ public class AddressContract {
 
         void checkCompileInfo();
 
+        void delAddress(int id);
+
         void checkPermissions(RxPermissions rxPermissions);
 
         void searchPOIAsyn(boolean refresh, String keyword, String cityCode);
@@ -77,5 +79,11 @@ public class AddressContract {
         void searchResult(boolean refresh, List<PoiItem> poiItems);
 
         AMap getAMap();
+    }
+
+    public interface AddressCompileModelListener {
+
+        void isEnable(boolean en);
+
     }
 }

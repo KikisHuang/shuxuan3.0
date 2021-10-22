@@ -14,7 +14,9 @@ import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
+import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import java.util.List;
 
 import butterknife.BindViews;
 import butterknife.OnClick;
+
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
@@ -36,6 +40,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     public List<CircularRevealButton> mMenuLayout;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
+
+    private boolean showLogin = true;
 
     @Override
     protected ClientMainContract.ClientMainPresenter createPresenter() {
@@ -59,7 +65,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected int StatusBarColors() {
-        return R.color.white;
+        return R.color.main_tone;
     }
 
     @Override
@@ -109,6 +115,15 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
+            goToPage(this, LoginActivity.class,null);
+            showLogin = !showLogin;
+        }
+    }
+
+    @Override
     protected void onBaseCreate() {
         super.onBaseCreate();
         // 显示状态栏
@@ -135,9 +150,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
         switch (v.getId()) {
             case R.id.home_page_layout:
+                ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
                 getP().checkTab(0);
                 break;
             case R.id.message_layout:
+                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(1);
                 break;
             case R.id.settle_in:
@@ -145,9 +162,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 ToastUtils.showLong("hi!索嗨，来入驻");
                 break;
             case R.id.business_layout:
+                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(2);
                 break;
             case R.id.mine_layout:
+                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(3);
                 break;
         }

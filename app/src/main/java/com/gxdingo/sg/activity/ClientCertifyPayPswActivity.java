@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.view.CountdownView;
@@ -13,6 +15,8 @@ import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -153,6 +157,17 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<ClientAccountSe
     public void onSucceed(int type) {
         super.onSucceed(type);
         goToPage(this,ClientSettingPayPwd2Activity.class,null);
+    }
+
+
+    @Override
+    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
+
+    }
+
+    @Override
+    public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
+
     }
 
     @Override

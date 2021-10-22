@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.bean.AddressBean;
+import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
 import com.gxdingo.sg.biz.PermissionsListener;
@@ -29,6 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.isToday;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
@@ -167,39 +169,39 @@ public class CommonModel {
     /**
      * 获取缓存默认地址
      */
-//    public AddressBean getCacheDefaultAddress() {
-//
-//        String json = SPUtils.getInstance().getString(ADDRESS_CACHE);
-//        if (isDebug)
-//            LogUtils.i("CommonModel DefaultAddress Cache === " + json);
-//        if (isEmpty(json))
-//            return null;
-//
-//        AddressBean addressBean = GsonUtil.GsonToBean(json, AddressBean.class);
-//        //不是同一天
-//        if (!isToday(addressBean.defaultCacheTime))
-//            return null;
-//
-//        return addressBean;
-//    }
+    public AddressBean getCacheDefaultAddress() {
+
+        String json = SPUtils.getInstance().getString(ADDRESS_CACHE);
+        if (isDebug)
+            LogUtils.i("CommonModel DefaultAddress Cache === " + json);
+        if (isEmpty(json))
+            return null;
+
+        AddressBean addressBean = GsonUtil.GsonToBean(json, AddressBean.class);
+        //不是同一天
+        if (!isToday(addressBean.defaultCacheTime))
+            return null;
+
+        return addressBean;
+    }
 
 
     /**
      * 缓存默认地址
      */
-//    public void cacheDefaultAddress(AddressBean addressBean) {
-//
-//        if (addressBean.getLatitude() == 0 || addressBean.getLongitude() == 0) {
-//            LogUtils.i("缓存地址信息的经纬度有误，取消缓存");
-//            return;
-//        }
-//
-//        if (isDebug)
-//            LogUtils.i("CommonModel Cache DefaultAddress" + GsonUtil.gsonToStr(addressBean));
-//        addressBean.defaultCacheTime = getNowString();
-//
-//        SPUtils.getInstance().put(ADDRESS_CACHE, GsonUtil.gsonToStr(addressBean));
-//    }
+    public void cacheDefaultAddress(AddressBean addressBean) {
+
+        if (addressBean.getLatitude() == 0 || addressBean.getLongitude() == 0) {
+            LogUtils.i("缓存地址信息的经纬度有误，取消缓存");
+            return;
+        }
+
+        if (isDebug)
+            LogUtils.i("CommonModel Cache DefaultAddress" + GsonUtil.gsonToStr(addressBean));
+        addressBean.defaultCacheTime = getNowString();
+
+        SPUtils.getInstance().put(ADDRESS_CACHE, GsonUtil.gsonToStr(addressBean));
+    }
 
     /**
      * 清除缓存默认地址

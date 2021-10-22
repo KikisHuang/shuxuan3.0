@@ -67,10 +67,18 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/dp_10"/>
 
+<!--            <include-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@drawable/module_shape_bg_white_top_20r"-->
+<!--                layout="@layout/module_include_refresh" />-->
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/store_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="450dp"
                 android:padding="@dimen/dp_10"
                 android:background="@drawable/module_shape_bg_white_top_20r"/>
 

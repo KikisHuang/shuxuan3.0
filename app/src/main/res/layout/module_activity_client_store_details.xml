@@ -60,26 +60,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/address_tv"
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="16dp"
-            android:text="青秀区金湖路68号金源CBD现代城B座"
-            android:textColor="#262626"
-            app:layout_constraintStart_toEndOf="@+id/address_text"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/address_text">
+            <TextView
+                android:id="@+id/address_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxEms="18"
+                android:text="青秀区金湖路68号金源CBD现代城B座"
+                android:textColor="#262626"/>
+            <TextView
+                android:id="@+id/distance_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:text="距离 1.2km"
+                android:textColor="#ACACAC"/>
 
-        <TextView
-            android:id="@+id/distance_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:text="距离 1.2km"
-            android:textColor="#ACACAC"
-            app:layout_constraintStart_toStartOf="@+id/address_tv"
-            app:layout_constraintTop_toBottomOf="@+id/address_tv" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,6 +107,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/store_photo_rv"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/right_arrow_iv"
+            app:layout_constraintStart_toEndOf="@+id/business_circle_text"/>
+
+        <ImageView
+            android:id="@+id/right_arrow_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:src="@drawable/module_svg_right_gray_arrow_little"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -128,6 +151,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_phone_contract"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="1dp"

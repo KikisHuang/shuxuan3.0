@@ -22,6 +22,7 @@ public class ClientAddressAdapter extends BaseQuickAdapter<AddressBean, BaseView
 
     public ClientAddressAdapter() {
         super(R.layout.module_item_client_address);
+        addChildClickViewIds(R.id.btn_edit);
     }
 
     @Override

@@ -23,7 +23,9 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.biz.AddressContract;
 
+import static android.text.TextUtils.isEmpty;
 import static com.amap.api.maps.model.MyLocationStyle.LOCATION_TYPE_SHOW;
 import static com.gxdingo.sg.utils.ClientLocalConstant.LOCATION_LATITUDE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.LOCATION_LONGITUDE_KEY;
@@ -223,5 +225,9 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
     @Override
     public void onMapClick(LatLng latLng) {
         moveCamera(latLng);
+    }
+
+    public void checkStatus(String add, String adddt, String con, String mob, String doorplate, AddressContract.AddressCompileModelListener addressCompileModelListener) {
+        addressCompileModelListener.isEnable(!isEmpty(add) && !isEmpty(adddt) && !isEmpty(con) && !isEmpty(mob)&& !isEmpty(doorplate));
     }
 }

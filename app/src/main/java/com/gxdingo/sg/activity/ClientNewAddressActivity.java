@@ -17,6 +17,7 @@ import com.gxdingo.sg.presenter.AddressPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
@@ -62,7 +65,12 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @BindView(R.id.labels)
     public LabelsView labels;
 
+    @BindView(R.id.del_tv)
+    public TextView del_tv;
+
     private AddressBean addressBean;
+
+    private PoiItem poiItem;
 
     //类型 1新增 2修改
     private boolean isAdd = false;
@@ -81,7 +89,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -141,7 +149,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     protected void init() {
-        title_layout.setTitleText(gets(R.string.edit_receiving_address));
+
         title_layout.setMoreText(gets(R.string.cancel));
 
         isAdd = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
@@ -158,6 +166,10 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             regionPath = addressBean.getRegionPath();
             mPoint = new LatLonPoint(addressBean.getLatitude(), addressBean.getLongitude());
         }
+        title_layout.setTitleText(isAdd ? getString(R.string.new_address) : getString(R.string.edit_receiving_address));
+
+        del_tv.setVisibility(isAdd ? View.GONE : View.VISIBLE);
+
         List<String> label = new ArrayList<>();
         label.add("家");
         label.add("公司");
@@ -178,14 +190,14 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         getP().checkCompileInfo();
     }
 
-    @OnClick({ R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
+    @OnClick({R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
-//            case R.id.del_tv:
-//                showDelDialog();
-//                break;
+            case R.id.del_tv:
+                showDelDialog();
+                break;
             case R.id.save_tv:
                 getP().compileOrAdd(isAdd);
                 break;
@@ -202,6 +214,29 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             case R.id.ll_selected_lady:
                 selectGender(true);
                 break;
+        }
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+
+        //收货地址实体类回调
+        if (object instanceof PoiItem) {
+
+            poiItem = (PoiItem) object;
+
+            String a = poiItem.getProvinceCode();
+            String b = poiItem.getAdCode();
+
+            mPoint = poiItem.getLatLonPoint();
+            //regionPath = a + "/" + b;
+            regionPath = b;
+
+            addressBean.setStreet(poiItem.getTitle());
+
+            tv_receive_address.setText(poiItem.getTitle());
+            getP().checkCompileInfo();
         }
     }
 
@@ -263,7 +298,10 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     public void saveBtnEnable(boolean en) {
-
+        save_tv.setEnabled(en);
+        save_tv.setTextColor(en ? getc(R.color.white) : getc(R.color.gray));
+        save_tv.setBackground(en?getd(R.drawable.module_bg_main_color_round6):getd(R.drawable.module_shape_bg_gray_6r));
+        save_tv.setSelected(en);
     }
 
     @Override
@@ -316,7 +354,13 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     public void showDelDialog() {
-
+//        new XPopup.Builder(reference.get())
+//                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+//                .isDarkTheme(false)
+//                .asCustom(new SgConfirmPopupView(reference.get(), gets(R.string.confirm_del_address), "", () -> {
+//                    getP().delAddress(addressBean.getId());
+//                }).show());
+        getP().delAddress(addressBean.getId());
     }
 
     @Override
@@ -337,5 +381,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @Override
     public AMap getAMap() {
         return null;
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        finish();
     }
 }

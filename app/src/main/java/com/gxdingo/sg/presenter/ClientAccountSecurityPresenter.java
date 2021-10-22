@@ -4,6 +4,8 @@ import android.text.InputType;
 import android.view.View;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.ChangePhoneModel;
@@ -60,6 +62,13 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void onData(boolean refresh, Object o) {
+        if (o instanceof ClientCashInfoBean)
+            getV().onCashInfoResult((ClientCashInfoBean) o);
+        else if (o instanceof ClientAccountTransactionBean){
+            ClientAccountTransactionBean transactionBean = (ClientAccountTransactionBean) o;
+            if (transactionBean.getList() != null)
+                getV().onTransactionResult(refresh,transactionBean.getList());
+        }
 
     }
 
@@ -120,6 +129,21 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
         addDisposable(subscriber);
+    }
+
+
+
+    @Override
+    public void getAccountRecord(boolean refresh, int status, String date) {
+        if (clientNetworkModel!=null)
+            clientNetworkModel.getAccountTransaction(getContext(),refresh,status,date);
+    }
+
+    @Override
+    public void getCashInfo() {
+        if (clientNetworkModel != null){
+            clientNetworkModel.getCashInfo(getContext());
+        }
     }
 
     @Override

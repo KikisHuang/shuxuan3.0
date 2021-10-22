@@ -4,10 +4,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -182,6 +186,17 @@ public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSec
     @Override
     protected void initData() {
         getP().getUserPhone();
+    }
+
+
+    @Override
+    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
+
+    }
+
+    @Override
+    public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
+
     }
 
     @Override

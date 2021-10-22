@@ -29,7 +29,9 @@ import butterknife.OnClick;
 import static com.gxdingo.sg.utils.ClientLocalConstant.REFRESH_ADDRESS_LIST;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -56,7 +58,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -143,7 +145,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-
+        goToPagePutSerializable(this, ClientNewAddressActivity.class, getIntentEntityMap(new Object[]{false, mAdapter.getData().get(position)}));
     }
 
     @Override
@@ -155,8 +157,8 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-//        if (type == REFRESH_ADDRESS_LIST)
-//            getP().getAddressData(true);
+        if (type == REFRESH_ADDRESS_LIST)
+            getP().getAddressList(true);
     }
 
     @Override
