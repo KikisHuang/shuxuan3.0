@@ -17,25 +17,25 @@ public class ClientMineBean {
      * avatar : http://oss.gxdingo.com/uplo64cb7a2a81cacff.png
      */
 
-    private Integer balance;
-    private List<CouponListBean> couponList;
+    private String balance;
+    private List<ClientCouponBean> couponList;
     private List<AdsListBean> adsList;
     private String nickname;
     private String avatar;
 
-    public Integer getBalance() {
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(Integer balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
 
-    public List<CouponListBean> getCouponList() {
+    public List<ClientCouponBean> getCouponList() {
         return couponList;
     }
 
-    public void setCouponList(List<CouponListBean> couponList) {
+    public void setCouponList(List<ClientCouponBean> couponList) {
         this.couponList = couponList;
     }
 
@@ -63,71 +63,6 @@ public class ClientMineBean {
         this.avatar = avatar;
     }
 
-    public static class CouponListBean {
-        /**
-         * couponName : 商家邀请新用户注册活动
-         * couponAmount : 2.0
-         * expireTime : 2021-10-27T05:10:31.000+00:00
-         * id : 20
-         * storeId : 1
-         * useAmount : 0.0
-         */
-
-        private String couponName;
-        private Double couponAmount;
-        private String expireTime;
-        private Integer id;
-        private Integer storeId;
-        private Double useAmount;
-
-        public String getCouponName() {
-            return couponName;
-        }
-
-        public void setCouponName(String couponName) {
-            this.couponName = couponName;
-        }
-
-        public Double getCouponAmount() {
-            return couponAmount;
-        }
-
-        public void setCouponAmount(Double couponAmount) {
-            this.couponAmount = couponAmount;
-        }
-
-        public String getExpireTime() {
-            return expireTime;
-        }
-
-        public void setExpireTime(String expireTime) {
-            this.expireTime = expireTime;
-        }
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public Integer getStoreId() {
-            return storeId;
-        }
-
-        public void setStoreId(Integer storeId) {
-            this.storeId = storeId;
-        }
-
-        public Double getUseAmount() {
-            return useAmount;
-        }
-
-        public void setUseAmount(Double useAmount) {
-            this.useAmount = useAmount;
-        }
-    }
 
     public static class AdsListBean {
         /**

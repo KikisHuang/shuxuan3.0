@@ -9,6 +9,8 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
+import com.gxdingo.sg.bean.ArticleListBean;
+import com.gxdingo.sg.bean.BankcardListBean;
 import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
@@ -17,6 +19,7 @@ import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.ClientLocalConstant;
@@ -33,18 +36,22 @@ import com.zhouyou.http.model.ApiResult;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADDRESSES;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_DEFAULT;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_DELETE;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_UPDATE;
+import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
+import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
 import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
 import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
 import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
@@ -53,6 +60,11 @@ import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
 import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
 import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
 import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
+import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
+import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
+import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
+import static com.gxdingo.sg.http.StoreApi.UNBIND_BANK_CARD;
+import static com.gxdingo.sg.http.StoreApi.UPDATE_WITHDRAWAL_PASSWORD;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -445,7 +457,6 @@ public class ClientNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-                    resetPage();
                 }
 
             }
@@ -559,6 +570,7 @@ public class ClientNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onData(true,transactionBean);
                     netWorkListener.onAfters();
+                    pageNext(refresh, transactionBean.getList().size());
                 }
 
 
@@ -612,6 +624,92 @@ public class ClientNetworkModel {
         observable.subscribe(subscriber);
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 获取提现信息
+     *
+     * @param context
+     */
+    public void getBankList(Context context,boolean refresh) {
+
+
+        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
+                .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ClientCashInfoBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                    resetPage();
+                }
+
+            }
+
+            @Override
+            public void onNext(ClientCashInfoBean cashInfoBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onData(refresh,cashInfoBean);
+                    netWorkListener.onAfters();
+                    pageNext(refresh, cashInfoBean.getBankList().size());
+                }
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 额度提现
+     *
+     * @param
+     */
+    public void balanceCash(Context context,int type ,String amount, String withdrawalPassword, long bankCardId) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.TYPE,String.valueOf(type));
+        map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
+        map.put(ClientLocalConstant.AMOUNT, amount);
+        if (type == 0 && bankCardId>0)
+            map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
+
+        netWorkListener.onStarts();
+
+        Observable<NormalBean> observable = HttpClient.post(BALANCE_CASH, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onSucceed(1);
+                netWorkListener.onAfters();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
     }
 
     /**
@@ -846,6 +944,283 @@ public class ClientNetworkModel {
                     EventBus.getDefault().post(ClientLocalConstant.REFRESH_ADDRESS_LIST);
                 }
 
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 修改支付密码
+     *
+     * @param
+     */
+    public void updatePayPassword(Context context,  String payPassword) {
+        Map<String, String> map = new HashMap<>();
+//        if (!isEmpty(oldPassword))
+//            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
+        map.put("newPassword", payPassword);
+        netWorkListener.onStarts();
+        Observable<NormalBean> observable = HttpClient.post(UPDATE_WITHDRAWAL_PASSWORD, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 添加银行卡
+     *
+     * @param
+     */
+    public void addBankCard(Context context, String bankType, String personOfCard, String idCard, String name, String number, String mobile, String smsCode) {
+
+        if (isEmpty(bankType)||isEmpty(name)){
+            netWorkListener.onMessage("请选择开户行！");
+            return;
+        }else if (isEmpty(personOfCard)){
+            netWorkListener.onMessage("请输入持卡人姓名！");
+            return;
+        }else if (!isIDCard18(idCard)){
+            netWorkListener.onMessage("请输入正确的身份证号码！");
+            return;
+        }else if (isEmpty(number)){
+            netWorkListener.onMessage("请输入银行卡号码！");
+            return;
+        }
+        else if (mobile.length()<11){
+            netWorkListener.onMessage("请输入正确手机号码！");
+            return;
+        }else if(smsCode.length()!=6){
+            netWorkListener.onMessage("请输入6位数字验证码！");
+            return;
+        }
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.BANK_TYPE, bankType);
+        map.put(LocalConstant.PERSON_OF_CARD, personOfCard);
+        map.put(LocalConstant.ID_CARD, idCard);
+        map.put(Constant.NAME, name);
+        map.put(LocalConstant.NUMBER, number);
+        map.put(Constant.MOBILE, mobile);
+        map.put(LocalConstant.SMS_CODE, smsCode);
+
+        netWorkListener.onStarts();
+
+        Observable<NormalBean> observable = HttpClient.post(ADD_CARD, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onSucceed(1);
+                netWorkListener.onAfters();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 支持绑定的银行卡
+     *
+     * @param
+     */
+    public void supportBank(Context context) {
+
+
+        netWorkListener.onStarts();
+
+        Observable<BankcardListBean> observable = HttpClient.post(SUPPORT_CARD_LIST)
+                .execute(new CallClazzProxy<ApiResult<BankcardListBean>, BankcardListBean>(new TypeToken<BankcardListBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<BankcardListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(BankcardListBean supportBankBean) {
+                netWorkListener.onSucceed(1);
+                netWorkListener.onAfters();
+                netWorkListener.onData(true, supportBankBean);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 支持绑定的银行卡
+     *
+     * @param
+     */
+    public void unbindBankCard(Context context, long id) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("bankCardId", String.valueOf(id));
+
+        netWorkListener.onStarts();
+
+        Observable<NormalBean> observable = HttpClient.post(UNBIND_BANK_CARD, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onSucceed(1);
+                netWorkListener.onAfters();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 获取文章详情
+     *
+     * @param context
+     * @param articleId
+     * @param identifier
+     */
+    public void getArticleDetail(Context context, int articleId, String identifier) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        if (articleId > 0)
+            map.put(LocalConstant.ARTICLEID, String.valueOf(articleId));
+
+        if (!isEmpty(identifier))
+            map.put(LocalConstant.IDENTIFIER, String.valueOf(identifier));
+
+        Observable<WebBean> observable = HttpClient.post(ARTICLE_DETAIL, map)
+                .execute(new CallClazzProxy<ApiResult<WebBean>, WebBean>(new TypeToken<WebBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<WebBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(WebBean webBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onData(true, webBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 获取文章列表
+     *
+     * @param context
+     * @param articleId
+     * @param identifier
+     */
+    public void getArticleList(Context context, int articleId, String identifier) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        if (articleId > 0)
+            map.put(LocalConstant.ARTICLEID, String.valueOf(articleId));
+
+        if (!isEmpty(identifier))
+            map.put(LocalConstant.IDENTIFIER, String.valueOf(identifier));
+
+        Observable<ArticleListBean> observable = HttpClient.post(ARTICLE_LIST, map)
+                .execute(new CallClazzProxy<ApiResult<ArticleListBean>, ArticleListBean>(new TypeToken<ArticleListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ArticleListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(ArticleListBean articleListBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onData(true, articleListBean);
+                }
             }
         };
 

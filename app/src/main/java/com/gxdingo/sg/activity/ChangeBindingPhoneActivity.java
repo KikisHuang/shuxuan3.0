@@ -8,7 +8,9 @@ import android.widget.TextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.biz.ChangeBindPhoneContract;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.presenter.ChangeBindPhonePresenter;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CountdownView;
@@ -29,7 +31,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
  * @date: 2021/10/15
  * @page:
  */
-public class ChangeBindingPhoneActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ChangeBindingPhoneActivity extends BaseMvpActivity<ChangeBindPhoneContract.ChangeBindPhonePresenter> implements ChangeBindPhoneContract.ChangeBindPhoneListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -58,8 +60,8 @@ public class ChangeBindingPhoneActivity extends BaseMvpActivity<ClientAccountSec
     @BindView(R.id.btn_next)
     public Button btn_next;
     @Override
-    protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
-        return new ClientAccountSecurityPresenter();
+    protected ChangeBindPhoneContract.ChangeBindPhonePresenter createPresenter() {
+        return new ChangeBindPhonePresenter();
     }
 
     @Override
@@ -171,28 +173,8 @@ public class ChangeBindingPhoneActivity extends BaseMvpActivity<ClientAccountSec
     }
 
     @Override
-    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
-
-    }
-
-    @Override
-    public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
-
-    }
-
-    @Override
     public void setUserPhone(String phone) {
         changeHint("为确认身份，请输入" + getUserPhone(phone) + "收到的短信验证码");
-    }
-
-    @Override
-    public String getCode() {
-        return null;
-    }
-
-    @Override
-    public void next() {
-
     }
 
 //    @Override

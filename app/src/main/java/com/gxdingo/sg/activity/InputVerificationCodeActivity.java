@@ -57,7 +57,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
     @Override
     protected int initContentView() {
-        return 0;
+        return R.layout.module_activity_input_verification_code;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
                 getP().sendVerificationCode();
                 break;
             case R.id.verificatione_bt:
-//                getP().bindPhone(mOpenId, mAppName);
+                getP().bindPhone(mOpenId, mAppName);
                 break;
         }
 
@@ -172,12 +172,12 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
     @Override
     public String getMobile() {
-        return null;
+        return mPhoneNumber;
     }
 
     @Override
     public boolean isClient() {
-        return false;
+        return mIsUse;
     }
 
     @Override
@@ -187,10 +187,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
         send_code.start();
     }
 
-    @Override
-    public void setPanel(int showBack, int oneClick, int certify) {
 
-    }
 
     @Override
     public void showIdButton() {

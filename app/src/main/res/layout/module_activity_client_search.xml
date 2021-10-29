@@ -29,6 +29,7 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
@@ -66,9 +67,15 @@
             android:background="@null"/>
     </LinearLayout>
 
+    <com.donkingliang.labels.LabelsView
+        android:id="@+id/history_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ll_search"/>
+
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/ll_search"
+        app:layout_constraintTop_toBottomOf="@+id/history_lv"
         layout="@layout/module_include_refresh"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,11 +6,15 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.solver.state.State;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.biz.PayPwdContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.presenter.PayPwdPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.view.CountdownView;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -20,16 +24,19 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
  * @page:
  */
-public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener{
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -49,13 +56,18 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountS
     @BindView(R.id.btn_next_or_confirm)
     public Button btn_next_or_confirm;
 
-    private String password;
+    private String firstPassword;
 
     private boolean isUpdate;
 
+    @OnClick(R.id.btn_next_or_confirm)
+    public void confirm(){
+        getP().changePayPwd();
+    }
+
     @Override
-    protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
-        return new ClientAccountSecurityPresenter();
+    protected PayPwdContract.PayPwdPresenter createPresenter() {
+        return new PayPwdPresenter();
     }
 
     @Override
@@ -119,12 +131,23 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountS
     }
 
     @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == 1){
+            sendEvent(ClientLocalConstant.UPDATE_SUCCESS);
+            ToastUtils.showLong("修改成功!");
+            finish();
+        }
+
+    }
+
+    @Override
     protected void init() {
         if (isUpdate)
             title_layout.setTitleText(gets(R.string.update_pay_pwd));
         else
             title_layout.setTitleText(gets(R.string.setting_pay_pwd));
-        password = getIntent().getStringExtra(Constant.PARAMAS+0);
+        firstPassword = getIntent().getStringExtra(Constant.PARAMAS+0);
         hint_tv.setText("再次输入");
         pay_pwd_hint.setVisibility(View.GONE);
         pay_psw_cdv.setVisibility(View.GONE);
@@ -150,28 +173,29 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountS
 
     @Override
     protected void initData() {
-        getP().sendVerificationCode();
-    }
-
-
-    @Override
-    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
 
     }
 
-    @Override
-    public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
-
-    }
 
     @Override
     public void setUserPhone(String phone) {
 
     }
 
+    /*
+     * 第一次输入的密码
+     * */
+    @Override
+    public String getFirstPwd() {
+        return firstPassword;
+    }
+
+    /*
+    * 输入完成密码
+    * */
     @Override
     public String getCode() {
-        return null;
+        return password_layout.getPassString();
     }
 
     @Override
@@ -180,67 +204,8 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<ClientAccountS
     }
 
     @Override
-    public void oldPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void newPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void changeTitle(String title) {
-
-    }
-
-    @Override
-    public void changeHint(String hint) {
-
-    }
-
-    @Override
-    public void changeNextBtnText(String text) {
-
-    }
-
-    @Override
-    public void bottomHintVisibility(int visib) {
-
-    }
-
-    @Override
-    public void oldPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void newPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void countryCodeShow(boolean show) {
-
-    }
-
-    @Override
-    public void setEdittextInputType(int type) {
-
-    }
-
-    @Override
-    public void setEdittextContent(String content) {
-
-    }
-
-    @Override
-    public void setEdittextHint(String hint) {
-
-    }
-
-    @Override
-    public int getNumberCountDown() {
-        return 0;
+    public void onMessage(String msg) {
+        super.onMessage(msg);
+        password_layout.removeAllPwd();
     }
 }

@@ -56,12 +56,11 @@ public class UserInfoUtils {
             if (!isEmpty(userBean.getToken()))
                 saveUserToken(userBean.getToken());
 
-            saveUserId(userBean.getUserId());
+//            saveUserId(userBean.getUserId());
             saveUserAvatar(userBean.getAvatar());
             saveUserPhone(userBean.getMobile());
             saveUserNickName(userBean.getNickname());
             saveIdentifier(userBean.getIdentifier());
-            saveWallpaper(userBean.getWallpaper());
             saveOpenId(userBean.getOpenid());
             SPUtils.getInstance().put(USER_INFO_KEY, GsonUtil.gsonToStr(userBean));
 

@@ -31,4 +31,15 @@
     <string name="no_get_store_mobile_phone_number">商家未填写手机号</string>
     <string name="common_year">年</string>
     <string name="common_month">月</string>
+    <string name="please_select_cash_account">请选择提现账户</string>
+    <string name="please_input_valid_amount">请输入有效提现金额</string>
+    <string name="full_name">姓名</string>
+    <string name="idcard_number">身份证号码</string>
+    <string name="bank_card_number">银行卡号</string>
+    <string name="mobile_phone_number">手机号码</string>
+    <string name="certify_code">验证码</string>
+    <string name="hint_full_name">请输入真实姓名</string>
+    <string name="hint_idcart_number">请输入身份证号</string>
+    <string name="hint_certify_code">请填写验证码</string>
+    <string name="add_success">添加成功！</string>
 </resources>

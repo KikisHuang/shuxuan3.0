@@ -22,6 +22,8 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -48,8 +50,14 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     @BindView(R.id.account_record_lv)
     public LabelsView account_record_lv;
 
+    @BindView(R.id.smartrefreshlayout)
+    public SmartRefreshLayout smartrefreshlayout;
+
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
+
+    @BindView(R.id.nodata_layout)
+    public View nodata_layout;
 
     private ClientTransactionRecordAdapter mAdapter;
 
@@ -97,12 +105,12 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     protected View noDataLayout() {
-        return null;
+        return nodata_layout;
     }
 
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
     @Override
@@ -117,12 +125,24 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     protected boolean refreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean loadmoreEnable() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
+        super.onRefresh(refreshLayout);
+        getP().getAccountRecord(true,status,date);
+    }
+
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        super.onLoadMore(refreshLayout);
+        getP().getAccountRecord(false,status,date);
     }
 
     @Override
@@ -141,8 +161,8 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         labels.add("其他");
         account_record_lv.setLabels(labels);
 
-        date_tv.setText(Calendar.getInstance().get(Calendar.YEAR)+gets(R.string.common_year)+Calendar.getInstance().get(Calendar.MONTH)+gets(R.string.common_month));
-        date = Calendar.getInstance().get(Calendar.YEAR)+"-"+Calendar.getInstance().get(Calendar.MONTH);
+        date_tv.setText(Calendar.getInstance().get(Calendar.YEAR)+gets(R.string.common_year)+(Calendar.getInstance().get(Calendar.MONTH)+1)+gets(R.string.common_month));
+        date = Calendar.getInstance().get(Calendar.YEAR)+"-"+(Calendar.getInstance().get(Calendar.MONTH)+1);
         getP().getAccountRecord(true,status,date);
     }
 
@@ -185,82 +205,18 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     }
 
     @Override
-    public void setUserPhone(String phone) {
-
-    }
-
-    @Override
-    public String getCode() {
+    public String getCashAmount() {
         return null;
     }
 
     @Override
-    public void next() {
-
-    }
-
-    @Override
-    public void oldPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void newPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void changeTitle(String title) {
-
-    }
-
-    @Override
-    public void changeHint(String hint) {
-
-    }
-
-    @Override
-    public void changeNextBtnText(String text) {
-
-    }
-
-    @Override
-    public void bottomHintVisibility(int visib) {
-
-    }
-
-    @Override
-    public void oldPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void newPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void countryCodeShow(boolean show) {
-
-    }
-
-    @Override
-    public void setEdittextInputType(int type) {
-
-    }
-
-    @Override
-    public void setEdittextContent(String content) {
-
-    }
-
-    @Override
-    public void setEdittextHint(String hint) {
-
-    }
-
-    @Override
-    public int getNumberCountDown() {
+    public long getBackCardId() {
         return 0;
     }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
 }

@@ -17,8 +17,11 @@ import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Weaving
@@ -48,6 +52,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientHomeContra
 
     @BindView(R.id.store_photo_rv)
     public RecyclerView store_photo_rv;
+
+    private BasePopupView mNavigationPopupView;
 
     private int storeId;
 
@@ -141,6 +147,14 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientHomeContra
             case R.id.txt_more:
                 break;
             case R.id.ll_navigation:
+                if (mNavigationPopupView == null) {
+                    mNavigationPopupView = new XPopup.Builder(reference.get())
+                            .isDarkTheme(false)
+                            .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.gaode_map), gets(R.string.baidu_map), gets(R.string.tencent_map)).setItemClickListener((itemv, pos) -> {
+                                getP().goOutSideNavigation(pos);
+                            })).show();
+                } else
+                    mNavigationPopupView.show();
                 break;
             case R.id.business_district_cl:
                 break;

@@ -421,7 +421,8 @@ public class MyApplication extends Application {
                 .setCacheVersion(1)//缓存版本为1
                 //.setHttpCache(new Cache())//设置Okhttp缓存，在缓存模式为DEFAULT才起作用
                 //可以设置https的证书,以下几种方案根据需要自己设置
-                .setCertificates()                                  //方法一：信任所有证书,不安全有风险
+                .setCertificates()//方法一：信任所有证书,不安全有风险
+                .addCommonHeaders(headers)
                 //.setCertificates(new SafeTrustManager())            //方法二：自定义信任规则，校验服务端证书
                 //配置https的域名匹配规则，不需要就不要加入，使用不当会导致https握手失败
                 //.setHostnameVerifier(new SafeHostnameVerifier())

@@ -7,6 +7,9 @@ import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 /**
  * @author: Weaving
  * @date: 2021/10/17
@@ -88,5 +91,14 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void initData() {
 
+    }
+
+    @OnClick(R.id.btn_cancel)
+    public void onClickViews(View v){
+        switch (v.getId()){
+            case R.id.btn_cancel:
+                finish();
+                break;
+        }
     }
 }

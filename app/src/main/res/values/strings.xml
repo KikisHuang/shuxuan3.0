@@ -45,4 +45,12 @@
     <string name="delete">删除</string>
     <string name="compile_address_succeed">编辑地址成功</string>
     <string name="modify_succeed">修改成功</string>
+    <string name="get_share_pictures_failed">分享图获取失败</string>
+    <string name="hint_bank_cart_number">请填写您的卡号</string>
+    <string name="hint_bank_card_number">请填写您银行预留号码</string>
+    <string name="please_relogin">请重新登录</string>
+    <string name="gaode_map">高德地图</string>
+    <string name="baidu_map">百度地图</string>
+    <string name="tencent_map">腾讯地图</string>
+    <string name="please_input_phone_number">请输入手机号</string>
 </resources>

@@ -14,8 +14,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -41,7 +44,7 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -120,6 +123,15 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
     }
 
     @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == CODE_SEND)
+            goToPagePutSerializable(this, InputVerificationCodeActivity.class, getIntentEntityMap(new Object[]{et_phone_number.getText().toString(), openId, appName, mIsUse}));
+        else
+            finish();
+    }
+
+    @Override
     protected void initData() {
 
     }
@@ -144,10 +156,6 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
 
     }
 
-    @Override
-    public void setPanel(int showBack, int oneClick, int certify) {
-
-    }
 
     @Override
     public void showIdButton() {

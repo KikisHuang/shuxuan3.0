@@ -37,6 +37,7 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.yalantis.ucrop.immersion.CropLightStatusBarUtils;
 
@@ -48,6 +49,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -59,13 +61,19 @@ import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientHomeFragment extends BaseMvpFragment< ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, BaseRecyclerAdapter.OnItemClickListener, OnItemChildClickListener, OnItemClickListener {
+public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, BaseRecyclerAdapter.OnItemClickListener, OnItemChildClickListener, OnItemClickListener {
 
     @BindView(R.id.scrollView)
     public NestedScrollView scrollView;
 
     @BindView(R.id.title_layout)
     public RelativeLayout title_layout;
+
+    @BindView(R.id.smartrefreshlayout)
+    public SmartRefreshLayout smartrefreshlayout;
+
+    @BindView(R.id.location_tv)
+    public TextView location_tv;
 
     @BindView(R.id.location_tt_tv)
     public TextView location_tt_tv;
@@ -116,7 +124,7 @@ public class ClientHomeFragment extends BaseMvpFragment< ClientHomeContract.Clie
 
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
     @Override
@@ -128,6 +136,7 @@ public class ClientHomeFragment extends BaseMvpFragment< ClientHomeContract.Clie
     protected boolean loadmoreEnable() {
         return true;
     }
+
 
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
@@ -231,6 +240,12 @@ public class ClientHomeFragment extends BaseMvpFragment< ClientHomeContract.Clie
         });
     }
 
+    @Override
+    public void onFailed() {
+        super.onFailed();
+        mStoreAdapter.setEmptyView(R.layout.module_include_client_home_nodata);
+    }
+
     private void setTitleViewAlpha(float alpha) {
         title_layout.setAlpha(alpha);
         location_tt_tv.setAlpha(alpha);
@@ -238,7 +253,8 @@ public class ClientHomeFragment extends BaseMvpFragment< ClientHomeContract.Clie
 
     @Override
     public void setDistrict(String district) {
-
+        location_tv.setText(district);
+        location_tt_tv.setText(district);
     }
 
     @Override

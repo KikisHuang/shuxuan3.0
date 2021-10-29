@@ -18,29 +18,22 @@ public class ClientAccountSecurityContract {
 
         void getAccountRecord(boolean refresh,int status,String date);
 
-        void getCashInfo();
-
         void sendVerificationCode();
 
-        void certify();
+//        void saveStatus();
 
-        void certifyPwd();
+//        void getUserPhone();
 
-        void checkPayPsw();
+        void getCashInfo();
 
-        void updatePsw();
+        void bind(String code,int type);
 
-        void saveStatus();
+        void bindAli();
 
-        void getUserPhone();
+        void bindWechat();
 
-        void sendOldPhoneVerificationCode();
+        void cash(String pwd);
 
-        void sendNewPhoneVerificationCode(String phone);
-
-        void nextStep(String edttcontent);
-
-        void lastStep();
     }
 
     public interface ClientAccountSecurityListener{
@@ -49,37 +42,15 @@ public class ClientAccountSecurityContract {
 
         void onCashInfoResult(ClientCashInfoBean cashInfoBean);
 
-        void setUserPhone(String phone);
+        String getCashAmount();
 
-        String getCode();
+        long getBackCardId();
 
-        void next();
-//        String getOldPhoneNum();
+        int getType();
 
-        void oldPhoneNumberCountDown();
+//        void setUserPhone(String phone);
+//
+//        String getCode();
 
-        void newPhoneNumberCountDown();
-
-        void changeTitle(String title);
-
-        void changeHint(String hint);
-
-        void changeNextBtnText(String text);
-
-        void bottomHintVisibility(int visib);
-
-        void oldPhoneCodeCountdownVisibility(int visib);
-
-        void newPhoneCodeCountdownVisibility(int visib);
-
-        void countryCodeShow(boolean show);
-
-        void setEdittextInputType(int type);
-
-        void setEdittextContent(String content);
-
-        void setEdittextHint(String hint);
-
-        int getNumberCountDown();
     }
 }

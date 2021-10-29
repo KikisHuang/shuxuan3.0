@@ -4,9 +4,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.view.CountdownView;
@@ -19,6 +21,7 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
@@ -46,31 +49,17 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @BindView(R.id.img_back)
     public ImageView img_back;
 
-
-    //------- 一键登陆面板 ------
-
-    @BindView(R.id.one_click_login_panel)
-    public LinearLayout one_click_login_panel;
-
-    @BindView(R.id.one_click_login_bt)
-    public Button one_click_login_bt;
-
-    @BindView(R.id.certify_login_bt)
-    public Button certify_login_bt;
+    @BindView(R.id.role_tv)
+    public TextView role_tv;
 
     @BindView(R.id.switch_login_bt)
-    public Button switch_login_bt;
+    public TextView switch_login_bt;
 
     @BindView(R.id.alipay_login)
     public ImageView alipay_login;
 
     @BindView(R.id.wechat_login)
     public ImageView wechat_login;
-
-    //-------验证码登陆面板 ------
-
-    @BindView(R.id.certify_panel)
-    public LinearLayout certify_panel;
 
     @BindView(R.id.et_phone_number)
     public RegexEditText et_phone_number;
@@ -153,9 +142,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void init() {
         backHome = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0, true);
-        getP().switchPanel(false,true);
-        isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-        switch_login_bt.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
+//        getP().switchPanel(false,true);
+//        isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        role_tv.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
     }
 
     @Override
@@ -163,18 +152,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     }
 
-    @OnClick({R.id.img_back,R.id.one_click_login_bt,R.id.certify_login_bt,R.id.switch_login_bt,R.id.alipay_login
+    @OnClick({R.id.switch_login_bt,R.id.alipay_login
             ,R.id.wechat_login,R.id.send_verification_code_bt,R.id.login_bt})
     public void onClickViews(View v){
         switch (v.getId()){
-            case R.id.img_back:
-                getP().switchPanel(false,true);
-                break;
-            case R.id.one_click_login_bt:
-                break;
-            case R.id.certify_login_bt:
-                getP().switchPanel(true,false);
-                break;
             case R.id.switch_login_bt:
                 isUserId = !isUserId;
                 getP().switchUrl(isUserId);
@@ -228,6 +209,16 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         }
     }
 
+    @Override
+    protected void onBaseEvent(Object object) {
+        //微信登录事件
+        if (object instanceof WeChatLoginEvent) {
+            WeChatLoginEvent event = (WeChatLoginEvent) object;
+            if (!isEmpty(event.code))
+                getP().weChatLogin(event.code);
+        }
+    }
+
 
     @Override
     public String getCode() {
@@ -249,16 +240,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     }
 
-    @Override
-    public void setPanel(int showBack, int oneClick,int certify) {
-        img_back.setVisibility(showBack);
-        one_click_login_panel.setVisibility(oneClick);
-        certify_panel.setVisibility(certify);
-    }
-
     //身份切换
     @Override
     public void showIdButton() {
-        switch_login_bt.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
+        role_tv.setText(isUserId?"树享客户端":"树享商家端");
+        switch_login_bt.setText(isUserId?gets(R.string.store_id_login):gets(R.string.user_id_login));
     }
 }

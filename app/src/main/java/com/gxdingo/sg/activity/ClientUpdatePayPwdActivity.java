@@ -7,7 +7,9 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.biz.PayPwdContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.presenter.PayPwdPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
@@ -26,71 +28,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
  * @date: 2021/10/15
  * @page:
  */
-public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
-    @Override
-    public void oldPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void newPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void changeTitle(String title) {
-
-    }
-
-    @Override
-    public void changeHint(String hint) {
-
-    }
-
-    @Override
-    public void changeNextBtnText(String text) {
-
-    }
-
-    @Override
-    public void bottomHintVisibility(int visib) {
-
-    }
-
-    @Override
-    public void oldPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void newPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void countryCodeShow(boolean show) {
-
-    }
-
-    @Override
-    public void setEdittextInputType(int type) {
-
-    }
-
-    @Override
-    public void setEdittextContent(String content) {
-
-    }
-
-    @Override
-    public void setEdittextHint(String hint) {
-
-    }
-
-    @Override
-    public int getNumberCountDown() {
-        return 0;
-    }
+public class ClientUpdatePayPwdActivity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener{
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -106,7 +44,7 @@ public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSec
                 finish();
                 break;
             case R.id.btn_yes:
-//                goToPage(this,StoreCertifyPayPswActivity.class,getIntentMap(new String[]{String.valueOf(1)}));
+                goToPage(this,ClientCertifyPayPswActivity.class,getIntentMap(new String[]{String.valueOf(1)}));
                 finish();
                 break;
         }
@@ -114,8 +52,8 @@ public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSec
 
 
     @Override
-    protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
-        return new ClientAccountSecurityPresenter();
+    protected PayPwdContract.PayPwdPresenter createPresenter() {
+        return new PayPwdPresenter();
     }
 
     @Override
@@ -190,18 +128,13 @@ public class ClientUpdatePayPwdActivity extends BaseMvpActivity<ClientAccountSec
 
 
     @Override
-    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
-
-    }
-
-    @Override
-    public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
-
-    }
-
-    @Override
     public void setUserPhone(String phone) {
         hint_tv.setText("您是否还记得账号"+getUserPhone(phone)+"当前所使用的支付 密码");
+    }
+
+    @Override
+    public String getFirstPwd() {
+        return null;
     }
 
     @Override

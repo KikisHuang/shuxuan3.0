@@ -1,5 +1,7 @@
 package com.gxdingo.sg.activity;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
 import com.allen.library.SuperTextView;
@@ -8,12 +10,19 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.dialog.ClientCashSelectDialog;
+import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.view.PasswordLayout;
+import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.BigDecimalUtils;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.CenterPopupView;
 
 import java.util.List;
 
@@ -38,9 +47,18 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.cash_account_stv)
     public SuperTextView cash_account_stv;
 
+    @BindView(R.id.et_cash_amount)
+    public RegexEditText et_cash_amount;
+
+    private String amount;
+
     private int type = -1;
 
+    private int bankCardId = -1;
+
     private ClientCashInfoBean cashInfoBean;
+
+    private PasswordLayout mPasswordLayout;
 
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
@@ -110,6 +128,9 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.balance_cash));
+        et_cash_amount.addTextChangedListener(textWatcher);
+        amount=getIntent().getStringExtra(Constant.PARAMAS+0);
+        et_cash_amount.setHint("可转出到卡"+amount+"元");
     }
 
     @Override
@@ -118,7 +139,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
 
-    @OnClick({R.id.cash_account_stv,R.id.btn_confirm})
+    @OnClick({R.id.cash_account_stv,R.id.btn_all,R.id.btn_confirm})
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.cash_account_stv:
@@ -128,9 +149,32 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                             .asCustom(new ClientCashSelectDialog(reference.get(),cashInfoBean))
                             .show();
                 break;
+            case R.id.btn_all:
+                et_cash_amount.setText(amount);
+                break;
             case R.id.btn_confirm:
+                String balance = et_cash_amount.getText().toString();
+                if (!BigDecimalUtils.compare(balance,"0")){
+                    onMessage("请输入有效提现金额");
+                    return;
+                }
+                showPayPswDialog();
                 break;
         }
+    }
+
+    private void showPayPswDialog(){
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .dismissOnTouchOutside(false)
+                .asCustom(new PayPasswordPopupView(reference.get(), new PayPasswordListener() {
+                    @Override
+                    public void finished(CenterPopupView popupView, PasswordLayout passwordLayout, String password) {
+                        mPasswordLayout = passwordLayout;
+                        getP().cash(password);
+                    }
+                }))
+                .show();
     }
 
     @Override
@@ -159,82 +203,75 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
     @Override
-    public void setUserPhone(String phone) {
-
+    public String getCashAmount() {
+        return et_cash_amount.getText().toString();
     }
 
     @Override
-    public String getCode() {
-        return null;
+    public long getBackCardId() {
+        return bankCardId;
     }
 
     @Override
-    public void next() {
+    public int getType() {
+        return type;
+    }
 
+    private TextWatcher textWatcher = new TextWatcher() {
+
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().contains(".")) {
+                if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                    s = s.toString().subSequence(0,
+                            s.toString().indexOf(".") + 3);
+                    et_cash_amount.setText(s);
+                    et_cash_amount.setSelection(s.length());
+                }
+            }
+            if (s.toString().trim().substring(0).equals(".")) {
+                s = "0" + s;
+                et_cash_amount.setText(s);
+                et_cash_amount.setSelection(2);
+            }
+
+            if (s.toString().startsWith("0")
+                    && s.toString().trim().length() > 1) {
+                if (!s.toString().substring(1, 2).equals(".")) {
+                    et_cash_amount.setText(s.subSequence(0, 1));
+                    et_cash_amount.setSelection(1);
+                    return;
+                }
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (!isEmpty(s.toString()))
+                if (BigDecimalUtils.compare(s.toString(),amount))
+                    et_cash_amount.setText(amount);
+        }
+    };
+
+    @Override
+    public void onSucceed(int type) {
+//        sendEvent(StoreLocalConstant.CASH_SUCCESS);
+        finish();
     }
 
     @Override
-    public void oldPhoneNumberCountDown() {
-
+    public void onMessage(String msg) {
+        super.onMessage(msg);
+        if (mPasswordLayout!=null)
+            mPasswordLayout.removeAllPwd();
     }
 
-    @Override
-    public void newPhoneNumberCountDown() {
 
-    }
-
-    @Override
-    public void changeTitle(String title) {
-
-    }
-
-    @Override
-    public void changeHint(String hint) {
-
-    }
-
-    @Override
-    public void changeNextBtnText(String text) {
-
-    }
-
-    @Override
-    public void bottomHintVisibility(int visib) {
-
-    }
-
-    @Override
-    public void oldPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void newPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void countryCodeShow(boolean show) {
-
-    }
-
-    @Override
-    public void setEdittextInputType(int type) {
-
-    }
-
-    @Override
-    public void setEdittextContent(String content) {
-
-    }
-
-    @Override
-    public void setEdittextHint(String hint) {
-
-    }
-
-    @Override
-    public int getNumberCountDown() {
-        return 0;
-    }
 }

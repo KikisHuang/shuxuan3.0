@@ -23,7 +23,7 @@ public class ClientLocalConstant {
     public static final String DEVICE = "device";
     public static final String YI_TARGET = "YI-Target";
     public static final String YI_VERSION = "YI-Version";
-    public static final String YI_VERSION_NUMBER = "1.0";
+    public static final String YI_VERSION_NUMBER = "2.0";
 
     //http params
     public static final String REGIONPATH = "regionPath";
@@ -110,6 +110,12 @@ public class ClientLocalConstant {
 
     public static final String STATUS = "status";
     public static final String DATE = "date";
+
+    public static final String WITHDRAWAL_PASSWORD = "withdrawalPassword";
+    public static final String AMOUNT = "amount";
+    public static final String BANK_CARD_ID = "bankCardId";
+
+    public static final String UPDATE_SUCCESS = "update_success";
 
 
 }

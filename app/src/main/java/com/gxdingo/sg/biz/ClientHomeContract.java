@@ -31,6 +31,10 @@ public class ClientHomeContract {
         void mapInit(double latitude,double longitude);
 
         void callStore(String s);
+
+        void goOutSideNavigation(int pos);
+
+        void search(boolean refresh,int categoryId,String content);
     }
 
     public interface ClientHomeListener{

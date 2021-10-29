@@ -9,14 +9,24 @@ import java.util.List;
  */
 public class StoreListBean {
 
-    private List<StoreBean> stores;
+    private AddressBean  userAddress;
 
-    public List<StoreBean> getList() {
-        return stores;
+    private List<StoreBean> list;
+
+    public AddressBean getUserAddress() {
+        return userAddress;
     }
 
-    public void setList(List<StoreBean> stores) {
-        this.stores = stores;
+    public void setUserAddress(AddressBean userAddress) {
+        this.userAddress = userAddress;
+    }
+
+    public List<StoreBean> getList() {
+        return list;
+    }
+
+    public void setList(List<StoreBean> list) {
+        this.list = list;
     }
 
     public static class StoreBean {

@@ -34,7 +34,7 @@ public class ClientCashInfoBean {
     private String explain;
     private String alipay;
     private String wechat;
-    private List<BankListBean> bankList;
+    private List<BankcardBean> bankList;
 
     public String getMobile() {
         return mobile;
@@ -108,77 +108,12 @@ public class ClientCashInfoBean {
         this.wechat = wechat;
     }
 
-    public List<BankListBean> getBankList() {
+    public List<BankcardBean> getBankList() {
         return bankList;
     }
 
-    public void setBankList(List<BankListBean> bankList) {
+    public void setBankList(List<BankcardBean> bankList) {
         this.bankList = bankList;
     }
 
-    public static class BankListBean {
-        /**
-         * number : ***************0235
-         * cardName : 储蓄卡
-         * name : 工商银行
-         * icon : https://apimg.alipay.com/combo.png?d=cashier&t=ICBC
-         * id : 1
-         * type : DC
-         */
-
-        private String number;
-        private String cardName;
-        private String name;
-        private String icon;
-        private Integer id;
-        private String type;
-
-        public String getNumber() {
-            return number;
-        }
-
-        public void setNumber(String number) {
-            this.number = number;
-        }
-
-        public String getCardName() {
-            return cardName;
-        }
-
-        public void setCardName(String cardName) {
-            this.cardName = cardName;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getIcon() {
-            return icon;
-        }
-
-        public void setIcon(String icon) {
-            this.icon = icon;
-        }
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-    }
 }

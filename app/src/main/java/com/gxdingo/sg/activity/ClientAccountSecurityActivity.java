@@ -6,16 +6,21 @@ import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.utils.pay.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -52,12 +57,19 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @BindView(R.id.cancel_account_stv)
     public SuperTextView cancel_account_stv;
 
+    private ClientCashInfoBean cashInfoBean;
+
 
     @OnClick({R.id.pay_psw_stv,R.id.binding_phone_stv,R.id.binding_ali_stv,R.id.binding_wechat_stv,R.id.binding_bankcard_stv,R.id.version_stv,R.id.cancel_account_stv,})
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.pay_psw_stv:
-                goToPage(this,ClientSettingPayPwd1Activity.class,null);
+                if (cashInfoBean==null)
+                    return;
+                if (cashInfoBean.getWithdrawalPassword()==0)
+                    goToPage(this,ClientSettingPayPwd1Activity.class,null);
+                else
+                    goToPage(this,ClientUpdatePayPwdActivity.class,null);
                 break;
             case R.id.binding_phone_stv:
                 goToPage(this,ChangeBindingPhoneActivity.class,null);
@@ -65,8 +77,10 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
             case R.id.binding_ali_stv:
                 break;
             case R.id.binding_wechat_stv:
+                getP().bindWechat();
                 break;
             case R.id.binding_bankcard_stv:
+                goToPage(this, BankcardListActivity.class,null);
                 break;
             case R.id.version_stv:
                 break;
@@ -75,6 +89,12 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
         }
     }
 
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof WeChatLoginEvent)
+            getP().bind(((WeChatLoginEvent) object).code, 1);
+    }
 
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
@@ -83,7 +103,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -148,7 +168,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     protected void initData() {
-
+        getP().getCashInfo();
     }
 
     @Override
@@ -158,86 +178,44 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
+        this.cashInfoBean = cashInfoBean;
+        if (cashInfoBean.getWithdrawalPassword()==0)
+            pay_psw_stv.setRightString("去设置");
+        else
+            pay_psw_stv.setRightString("修改");
+        if (!isEmpty(cashInfoBean.getMobile()))
+            binding_phone_stv.setRightString(cashInfoBean.getMobile());
 
+        if (isEmpty(cashInfoBean.getAlipay())){
+            binding_ali_stv.setRightString("去绑定");
+            binding_ali_stv.setRightTextColor(getc(R.color.blue_text));
+        }else {
+            binding_ali_stv.setRightString("解绑");
+            binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
+        }
+
+        if (isEmpty(cashInfoBean.getWechat())){
+            binding_wechat_stv.setRightString("去绑定");
+            binding_wechat_stv.setRightTextColor(getc(R.color.blue_text));
+        }else {
+            binding_wechat_stv.setRightString("解绑");
+            binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));
+        }
     }
 
     @Override
-    public void setUserPhone(String phone) {
-
-    }
-
-    @Override
-    public String getCode() {
+    public String getCashAmount() {
         return null;
     }
 
     @Override
-    public void next() {
-
-    }
-
-    @Override
-    public void oldPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void newPhoneNumberCountDown() {
-
-    }
-
-    @Override
-    public void changeTitle(String title) {
-
-    }
-
-    @Override
-    public void changeHint(String hint) {
-
-    }
-
-    @Override
-    public void changeNextBtnText(String text) {
-
-    }
-
-    @Override
-    public void bottomHintVisibility(int visib) {
-
-    }
-
-    @Override
-    public void oldPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void newPhoneCodeCountdownVisibility(int visib) {
-
-    }
-
-    @Override
-    public void countryCodeShow(boolean show) {
-
-    }
-
-    @Override
-    public void setEdittextInputType(int type) {
-
-    }
-
-    @Override
-    public void setEdittextContent(String content) {
-
-    }
-
-    @Override
-    public void setEdittextHint(String hint) {
-
-    }
-
-    @Override
-    public int getNumberCountDown() {
+    public long getBackCardId() {
         return 0;
     }
+
+    @Override
+    public int getType() {
+        return 0;
+    }
+
 }

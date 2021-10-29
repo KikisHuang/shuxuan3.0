@@ -9,7 +9,7 @@ public class Api {
 
     public static String URL;
     //uat服务器开关
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
     
     public static final String SM = ":";
 
@@ -64,7 +64,7 @@ public class Api {
     /**
      * 一键登录
      */
-    public static final String ONE_CLICK_LOGIN = HIERARCHY + "user/login";
+    public static final String ONE_CLICK_LOGIN = HIERARCHY + "user/login/click";
     /**
      * 登录
      */

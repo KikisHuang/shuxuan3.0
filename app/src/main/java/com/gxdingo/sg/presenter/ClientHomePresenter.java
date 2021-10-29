@@ -1,7 +1,12 @@
 package com.gxdingo.sg.presenter;
 
+import android.text.TextUtils;
+
 import com.amap.api.location.AMapLocation;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
@@ -25,12 +30,21 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.model.CommonModel.isLocServiceEnable;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -48,7 +62,9 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private CommonModel commonModel;
 
-//    private ClientNearbyShopsModel clientNearbyShopsModel;
+    private List<String> searchHistory;
+
+    private Gson gson;
 
     private double lon, lat;
 
@@ -139,6 +155,87 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 commonModel.goCallPage(getContext(), s);
             else
                 onMessage(gets(R.string.no_get_store_mobile_phone_number));
+    }
+
+    @Override
+    public void goOutSideNavigation(int pos) {
+        if (!isBViewAttached())
+            return;
+
+        switch (pos) {
+            case 0:
+                if (isAvilible(getContext(), PN_GAODE_MAP)) {
+                    goToGaoDeMap(getContext(), "addressName", lon, lat);
+                } else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
+                break;
+            case 1:
+                if (isAvilible(getContext(), PN_BAIDU_MAP))
+                    goToBaiduActivity(getContext(), "addressName", lon, lat);
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
+
+                break;
+            case 2:
+                if (isAvilible(getContext(), PN_TENCENT_MAP)) {
+                    goToTencentMap(getContext(), "addressName", lon, lat);
+                } else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
+                break;
+
+        }
+    }
+
+    @Override
+    public void search(boolean refresh,int categoryId,String content) {
+        if (clientNetworkModel!=null){
+            saveSearch(content);
+            clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,categoryId,content);
+        }
+
+    }
+
+    /**
+     * 保存成历史搜索
+     */
+    public void saveSearch(String keyword) {
+        if (!TextUtils.isEmpty(keyword)) {
+            if (searchHistory == null) {
+                searchHistory = getSearchHistory();
+            }
+            if (searchHistory != null) {
+                if (searchHistory.size() > 0) {
+                    searchHistory.remove(keyword);
+                }
+                searchHistory.add(0, keyword);
+                if (searchHistory.size() > 12) {
+                    searchHistory.remove(searchHistory.size() - 1);
+                }
+            }
+            if (gson == null) {
+                gson = new Gson();
+            }
+//            SPUtils.getInstance.(SEARCH_HISTORY, gson.toJson(searchHistory));
+            SPUtils.getInstance().put("SEARCH_HISTORY",gson.toJson(searchHistory));
+
+        }
+    }
+
+    public List<String> getSearchHistory() {
+        try {
+            String details = SPUtils.getInstance().getString("SEARCH_HISTORY");
+            if (!TextUtils.isEmpty(details)) {
+                if (gson == null) {
+                    gson = new Gson();
+                }
+                return gson.fromJson(details, new TypeToken<List<String>>() {
+                }.getType());
+            } else {
+                return new ArrayList<String>();
+            }
+        } catch (Exception e) {
+            return new ArrayList<String>();
+        }
     }
 
     @Override

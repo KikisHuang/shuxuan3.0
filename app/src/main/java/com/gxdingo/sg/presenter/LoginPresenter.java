@@ -129,11 +129,6 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         switchGlobalUrl(isUserId);
     }
 
-    @Override
-    public void switchPanel(boolean showBack, boolean oneClick) {
-        if (isViewAttached())
-            getV().setPanel(showBack? View.VISIBLE:View.GONE,oneClick?View.VISIBLE:View.GONE,oneClick?View.GONE:View.VISIBLE);
-    }
 
     @Override
     public void getWechatAuth() {
@@ -170,6 +165,14 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
         if (isBViewAttached())
             getV().setVerificationCodeTime(time);
+    }
+
+    @Override
+    public void bindPhone(String mOpenId, String mAppName) {
+        if (mNetworkModel != null && isViewAttached()) {
+            mNetworkModel.bind(getContext(), getV().getMobile(), getV().getCode(), mOpenId, mAppName, getV().isClient());
+        }
+
     }
 
     @Override

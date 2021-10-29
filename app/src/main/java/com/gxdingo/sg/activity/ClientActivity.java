@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -8,12 +9,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
@@ -25,6 +29,7 @@ import java.util.List;
 import butterknife.BindViews;
 import butterknife.OnClick;
 
+import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -50,7 +55,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -114,20 +119,41 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         getP().persenterInit();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
-            goToPage(this, LoginActivity.class,null);
-            showLogin = !showLogin;
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
+//            goToPage(this, LoginActivity.class,null);
+//            showLogin = !showLogin;
+//        }
+//    }
 
     @Override
     protected void onBaseCreate() {
         super.onBaseCreate();
         // 显示状态栏
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof OneKeyLoginEvent){
+            getP().oneKeyLogin(((OneKeyLoginEvent)object).code);
+        }else if (object instanceof WeChatLoginEvent){
+            WeChatLoginEvent event = (WeChatLoginEvent) object;
+            if (!isEmpty(event.code))
+                getP().wechatLogin(event.code);
+        }
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == LocalConstant.ALIPAY_LOGIN_EVENT){
+            getP().aliLogin();
+        }else if (type == LocalConstant.WECHAT_LOGIN_EVENT)
+            getP().getWechatAuth();
     }
 
     @Override
@@ -204,4 +230,28 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         mMenuLayout.get(oldTab).setonSelected(false);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 判断退出
+            if (timeDValue == 0) {
+                onMessage(getResources().getString(R.string.appfinish));
+                timeDValue = System.currentTimeMillis();
+                return true;
+            } else {
+                timeDValue = System.currentTimeMillis() - timeDValue;
+                if (timeDValue >= 1500) { // 大于1.5秒不处理。
+                    timeDValue = 0;
+                    return true;
+                } else {
+                    //finish();
+                    moveTaskToBack(false);
+                }
+
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 }
