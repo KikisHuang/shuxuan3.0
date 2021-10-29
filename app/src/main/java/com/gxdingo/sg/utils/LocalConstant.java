@@ -52,6 +52,9 @@ public class LocalConstant {
 
     public final static int CONSENT_AGREEMENT = 11111;
 
+    //登录or绑定微信获取code
+    public static boolean isLogin = false;
+
     //前后台标识符
     public static boolean isBackground = false;
 

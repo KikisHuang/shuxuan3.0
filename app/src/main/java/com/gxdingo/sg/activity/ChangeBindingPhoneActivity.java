@@ -168,7 +168,7 @@ public class ChangeBindingPhoneActivity extends BaseMvpActivity<ChangeBindPhoneC
     @Override
     public void onFailed() {
         super.onFailed();
-        sendEvent(new ReLoginBean());
+//        sendEvent(new ReLoginBean());
         finish();
     }
 

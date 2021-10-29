@@ -126,7 +126,7 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
             nick_name_edt.setText(nickname);
 
         title_layout.setTitleText(gets(R.string.edit_profile));
-        title_layout.setTitleText(gets(R.string.done));
+        title_layout.setMoreText(gets(R.string.done));
         getP().editsetInit(nick_name_edt, 15);
     }
 
@@ -157,6 +157,7 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
                 finishac(reference.get());
                 break;
             case R.id.txt_more:
+                getP().modityNickName(nick_name_edt.getText().toString());
                 finish();
                 break;
 

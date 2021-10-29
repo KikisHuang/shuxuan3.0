@@ -11,6 +11,7 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
@@ -135,7 +136,11 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         if (!isViewAttached() || mModdel == null)
             return;
         if (isWeixinAvilible(getContext()))
+        {
+            //普通登录无需过主页面登陆逻辑
+            LocalConstant.isLogin = false;
             mModdel.wxLogin();
+        }
         else {
             if (isBViewAttached())
                 getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));

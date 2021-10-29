@@ -59,7 +59,8 @@ public class PayPwdPresenter extends BaseMvpPresenter<BasicsListener, PayPwdCont
 
     @Override
     public void certifyPwd() {
-
+        if (clientNetworkModel!=null)
+            clientNetworkModel.checkPayPwd(getContext(),getV().getCode());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class PayPwdPresenter extends BaseMvpPresenter<BasicsListener, PayPwdCont
             onMessage("两次输入的密码不一致，请重新输入！");
             return;
         }
-        clientNetworkModel.updatePayPassword(getContext(),getV().getCode());
+        clientNetworkModel.updatePayPassword(getContext(),getV().getFirstPwd());
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
@@ -88,7 +89,7 @@ public class WXEntryActivity extends WXCallbackActivity {
         switch (baseResp.errCode) {
             case 0:
                 String code = ((SendAuth.Resp) baseResp).code;
-                EventBus.getDefault().post(new WeChatLoginEvent(code));
+                EventBus.getDefault().post(new WeChatLoginEvent(code, LocalConstant.isLogin));
                 finish();
                 break;
 

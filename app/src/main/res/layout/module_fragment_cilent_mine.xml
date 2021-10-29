@@ -49,36 +49,48 @@
                     app:layout_constraintTop_toTopOf="@+id/my_balance_text"
                     app:layout_constraintBottom_toBottomOf="@+id/my_balance_text"/>
 
-                <TextView
-                    android:id="@+id/rmb_symbol"
+
+                <RelativeLayout
+                    android:id="@+id/balance_rl"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="￥"
-                    android:textColor="@color/white"
+                    android:clipChildren="false"
                     app:layout_constraintStart_toStartOf="@+id/my_balance_text"
                     app:layout_constraintTop_toBottomOf="@+id/my_balance_text"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0.00"
-                    android:textSize="26sp"
-                    android:textColor="@color/white"
-                    app:layout_constraintStart_toEndOf="@+id/rmb_symbol"
-                    app:layout_constraintBottom_toBottomOf="@+id/rmb_symbol"/>
-                
+                    <TextView
+                        android:id="@+id/rmb_symbol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@+id/balance_tv"
+                        android:text="￥"
+                        android:textColor="@color/white"/>
+                    <TextView
+                        android:id="@+id/balance_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.00"
+                        android:textSize="26sp"
+                        android:textColor="@color/white"
+                        android:layout_toEndOf="@id/rmb_symbol"/>
+
+
+                </RelativeLayout>
+
                 <TextView
                     android:id="@+id/btn_cash"
                     android:layout_width="58dp"
                     android:layout_height="26dp"
                     android:layout_marginEnd="25dp"
+                    android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="提现"
                     android:textSize="12sp"
                     android:textColor="@color/white"
                     android:background="@drawable/module_border_shape_4r_white"
-                    app:layout_constraintBottom_toBottomOf="@+id/rmb_symbol"
+                    app:layout_constraintTop_toTopOf="@+id/balance_rl"
+                    app:layout_constraintBottom_toBottomOf="@+id/balance_rl"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -98,6 +110,7 @@
                 android:id="@+id/username_stv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:sDividerLineType="none"
                 app:sLeftTextString="136****8888"
                 app:sLeftTextColor="#262626"
                 app:sLeftTextSize="18sp"
@@ -214,6 +227,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="20dp"
+            app:sDividerLineType="none"
             app:sLeftIconMarginLeft="27dp"
             app:sLeftIconRes="@drawable/module_svg_fill_invitation_code"
             app:sLeftTextString="填写邀请码"
@@ -225,6 +239,7 @@
             android:id="@+id/private_protocol_stv"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            app:sDividerLineType="none"
             app:sLeftIconMarginLeft="27dp"
             app:sLeftIconRes="@drawable/module_svg_client_private_protocol"
             app:sLeftTextString="隐私协议"
@@ -236,6 +251,7 @@
             android:id="@+id/logout_stv"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            app:sDividerLineType="none"
             app:sLeftIconMarginLeft="27dp"
             app:sLeftIconRes="@drawable/module_svg_client_logout"
             app:sLeftTextString="退出登录"

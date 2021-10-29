@@ -12,12 +12,14 @@ import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
 import com.gxdingo.sg.bean.BankcardListBean;
 import com.gxdingo.sg.bean.CategoryListBean;
+import com.gxdingo.sg.bean.CheckPayPwdBean;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -53,6 +55,7 @@ import static com.gxdingo.sg.http.ClientApi.ADDRESS_UPDATE;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
 import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
+import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
 import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
 import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
 import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
@@ -60,6 +63,8 @@ import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
 import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
 import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
 import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
+import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
+import static com.gxdingo.sg.http.ClientApi.WALLET_UNBINDING;
 import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
 import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
 import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
@@ -520,7 +525,13 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+//                    UserBean userInfo = UserInfoUtils.getInstance().getUserInfo();
+//                    userInfo.setAvatar(userBean.getAvatar());
+//                    userInfo.setNickname(userBean.getNickname());
+                    UserInfoUtils.getInstance().saveUserAvatar(userBean.getAvatar());
+                    UserInfoUtils.getInstance().saveUserNickName(userBean.getNickname());
                     netWorkListener.onMessage(gets(R.string.modify_succeed));
+                    EventBus.getDefault().post(ClientLocalConstant.MODIFY_PERSONAL_SUCCESS);
                 }
 
             }
@@ -953,6 +964,43 @@ public class ClientNetworkModel {
 
     }
 
+
+    /**
+     * 验证旧密码
+     *
+     * @param
+     */
+    public void checkPayPwd(Context context,  String payPassword) {
+        Map<String, String> map = new HashMap<>();
+//        if (!isEmpty(oldPassword))
+//            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
+        map.put("oldPassword", payPassword);
+        netWorkListener.onStarts();
+        Observable<CheckPayPwdBean> observable = HttpClient.post(CHECK_PAY_PASSWORD, map)
+                .execute(new CallClazzProxy<ApiResult<CheckPayPwdBean>, CheckPayPwdBean>(new TypeToken<CheckPayPwdBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<CheckPayPwdBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+
+            }
+
+            @Override
+            public void onNext(CheckPayPwdBean checkPayPwdBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(checkPayPwdBean.getAuthentication());
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
     /**
      * 修改支付密码
      *
@@ -1229,4 +1277,111 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
+
+    /**
+     * 绑定第三方提现账号接口
+     *
+     * @param context
+     * @param code
+     * @param type
+     */
+    public void bindThirdParty(Context context, String code, int type) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        map.put(Constant.CODE, code);
+
+        if (type == 0)
+            map.put(LocalConstant.APPNAME, ClientLocalConstant.ALIPAY);
+        else if (type == 1)
+            map.put(LocalConstant.APPNAME, ClientLocalConstant.WECHAT);
+        Observable<ThirdPartyBean> observable = HttpClient.post(WALLET_BINDING, map)
+                .execute(new CallClazzProxy<ApiResult<ThirdPartyBean>, ThirdPartyBean>(new TypeToken<ThirdPartyBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ThirdPartyBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(ThirdPartyBean thirdPartyBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+//                    netWorkListener.onData(true, thirdPartyBean);
+                    thirdPartyBean.type = type;
+                    EventBus.getDefault().post(thirdPartyBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 解绑第三方提现方式
+     *
+     * @param context
+     * @param type
+     */
+    public void unbindThirdParty(Context context, int type) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+//        map.put(Constant.CODE, code);
+
+        if (type == 0)
+            map.put(LocalConstant.APPNAME, ClientLocalConstant.ALIPAY);
+        else if (type == 1)
+            map.put(LocalConstant.APPNAME, ClientLocalConstant.WECHAT);
+        Observable<NormalBean> observable = HttpClient.post(WALLET_UNBINDING, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onSucceed(1);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+
 }

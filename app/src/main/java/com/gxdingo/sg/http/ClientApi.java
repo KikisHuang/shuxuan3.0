@@ -138,10 +138,14 @@ public class ClientApi {
 
 
     /**
-     * 系统壁纸
+     * 绑定第三方提现账号
      */
-    public static final String WALLPAPER_WALLPAPERS = HIERARCHY + "wallpaper/wallpapers";
+    public static final String WALLET_BINDING = HIERARCHY + "wallet/binding";
 
+    /**
+     * 解绑第三方提现方式
+     */
+    public static final String WALLET_UNBINDING = HIERARCHY + "wallet/unbound";
 
     /**
      * 我的主页
@@ -157,6 +161,10 @@ public class ClientApi {
      * 提现信息
      */
     public static final String Cash_ACCOUNT_INFO = HIERARCHY + "wallet/bank/list";
+    /**
+     * 校验支付密码
+     */
+    public static final String CHECK_PAY_PASSWORD = HIERARCHY + "wallet/authentication/old/password";
     /**
      * 获取地址列表
      */

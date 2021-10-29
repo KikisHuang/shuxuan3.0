@@ -1,6 +1,7 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.view.View;
+import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.ToastUtils;
@@ -18,14 +19,20 @@ import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.biz.ClientMineContract;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StatusBarUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.SimpleImmersionOwner;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.lxj.xpopup.XPopup;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.umeng.commonsdk.debug.E;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
@@ -38,6 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
@@ -55,6 +63,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.username_stv)
     public SuperTextView username_stv;
 
+    @BindView(R.id.balance_tv)
+    public TextView balance_tv;
+
     @BindView(R.id.mine_banner)
     public Banner mine_banner;
 
@@ -65,7 +76,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -105,7 +116,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void initData() {
-//        getP().getUserInfo();
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().getUserInfo();
         mine_banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(Object data, int position) {
@@ -119,6 +131,10 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         super.onTypeEvent(type);
         if (type == LocalConstant.CLIENT_LOGIN_SUCCEED)
             getP().getUserInfo();
+        else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
+            Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
+            username_stv.setLeftString(UserInfoUtils.getInstance().getUserNickName());
+        }
     }
 
     @OnClick({R.id.avatar_cimg,R.id.username_stv,R.id.check_bill_tv,R.id.btn_cash,R.id.ll_address_manage,R.id.ll_account_security
@@ -133,7 +149,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientAccountRecordActivity.class,null);
                 break;
             case R.id.btn_cash:
-                goToPage(getContext(), ClientCashActivity.class,null);
+                goToPage(getContext(), ClientCashActivity.class,getIntentMap(new String[]{balance_tv.getText().toString()}));
                 break;
             case R.id.ll_address_manage:
                 goToPage(getContext(), ClientAddressListActivity.class,null);
@@ -153,6 +169,14 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             case R.id.private_protocol_stv:
                 break;
             case R.id.logout_stv:
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定退出登录？", new MyConfirmListener() {
+                            @Override
+                            public void onConfirm() {
+
+                            }
+                        })).show();
                 break;
         }
     }
@@ -172,6 +196,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(avatar_cimg);
         if (!isEmpty(mineBean.getNickname()))
             username_stv.setLeftString(mineBean.getNickname());
+        if (!isEmpty(mineBean.getBalance()))
+            balance_tv.setText(mineBean.getBalance());
         if (mineBean.getAdsList()!=null){
             mine_banner.setAdapter(new BannerImageAdapter<ClientMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override

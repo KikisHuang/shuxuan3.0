@@ -158,7 +158,12 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
-        goToPage(this,ClientSettingPayPwd2Activity.class,null);
+        //是否与旧密码一致。0=否；1=是
+        if (type == 0){
+            password_layout.removeAllPwd();
+            onMessage("密码错误！");
+        }else if (type == 1)
+            goToPage(this,ClientSettingPayPwd2Activity.class,null);
     }
 
     @Override
@@ -168,7 +173,7 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
 
     @Override
     public String getFirstPwd() {
-        return null;
+        return password_layout.getPassString();
     }
 
     @Override

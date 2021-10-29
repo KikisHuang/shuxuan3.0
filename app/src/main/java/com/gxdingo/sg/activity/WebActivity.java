@@ -71,7 +71,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected int StatusBarColors() {
-        return R.color.page_bg_color;
+        return R.color.white;
     }
 
     @Override

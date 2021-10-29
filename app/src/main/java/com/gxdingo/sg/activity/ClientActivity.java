@@ -142,7 +142,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().oneKeyLogin(((OneKeyLoginEvent)object).code);
         }else if (object instanceof WeChatLoginEvent){
             WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!isEmpty(event.code))
+            if (!isEmpty(event.code)&&event.login)
                 getP().wechatLogin(event.code);
         }
     }
@@ -152,8 +152,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         super.onTypeEvent(type);
         if (type == LocalConstant.ALIPAY_LOGIN_EVENT){
             getP().aliLogin();
-        }else if (type == LocalConstant.WECHAT_LOGIN_EVENT)
+        }else if (type == LocalConstant.WECHAT_LOGIN_EVENT){
+            LocalConstant.isLogin = true;
             getP().getWechatAuth();
+        }
+
     }
 
     @Override

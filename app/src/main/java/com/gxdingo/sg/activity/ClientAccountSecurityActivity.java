@@ -6,12 +6,15 @@ import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.pay.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 
 import java.util.List;
@@ -75,6 +78,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 goToPage(this,ChangeBindingPhoneActivity.class,null);
                 break;
             case R.id.binding_ali_stv:
+                getP().bindAli();
                 break;
             case R.id.binding_wechat_stv:
                 getP().bindWechat();
@@ -85,6 +89,12 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
             case R.id.version_stv:
                 break;
             case R.id.cancel_account_stv:
+                new XPopup.Builder(reference.get())
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .isDarkTheme(false)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.confirm_logoff), "账号注销后无法恢复，请谨慎操作", () -> getP().loginOff()))
+                        .show();
                 break;
         }
     }
@@ -94,6 +104,17 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
         super.onBaseEvent(object);
         if (object instanceof WeChatLoginEvent)
             getP().bind(((WeChatLoginEvent) object).code, 1);
+        else if (object instanceof ThirdPartyBean){
+            ThirdPartyBean thirdPartyBean = (ThirdPartyBean)object;
+            if (thirdPartyBean.type==0){
+                binding_ali_stv.setRightString("解绑");
+                cashInfoBean.setAlipay(thirdPartyBean.getNickname());
+            }else if (thirdPartyBean.type==1){
+                binding_wechat_stv.setRightString("解绑");
+                cashInfoBean.setWechat(thirdPartyBean.getNickname());
+            }
+            binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
+        }
     }
 
     @Override

@@ -1,8 +1,11 @@
 package com.gxdingo.sg.presenter;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 
+import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
@@ -10,7 +13,10 @@ import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.ChangePhoneModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
+import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.pay.AlipayTool;
 import com.gxdingo.sg.utils.pay.WechatUtils;
@@ -22,8 +28,11 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
+import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.HideMobile;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
 
 /**
  * @author: Weaving
@@ -37,13 +46,15 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
 
     private ClientNetworkModel clientNetworkModel;
 
+    private LoginModel mModdel;
+
     private String phone  =  UserInfoUtils.getInstance().getUserInfo().getMobile();
 //    private String phone = "18878759765";
 
     public ClientAccountSecurityPresenter() {
-
         mNetworkModel = new NetworkModel(this);
         clientNetworkModel = new ClientNetworkModel(this);
+        mModdel = new LoginModel();
     }
 
     @Override
@@ -160,17 +171,34 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void bind(String code, int type) {
-
+        if (clientNetworkModel!=null)
+            clientNetworkModel.bindThirdParty(getContext(),code,type);
     }
 
     @Override
     public void bindAli() {
-//        AlipayTool.auth(getContext(),);
+        mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
+            simpleAuth((Activity) getContext(), (String) str, callback);
+        });
     }
 
     @Override
     public void bindWechat() {
+        if (!isViewAttached() || mModdel == null)
+            return;
+        if (isWeixinAvilible(getContext())){
+            LocalConstant.isLogin = false;
+            mModdel.wxLogin();
+        }else {
+            if (isBViewAttached())
+                getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
+        }
+    }
 
+    @Override
+    public void unbindThirdParty(int type) {
+        if (clientNetworkModel!=null)
+            clientNetworkModel.unbindThirdParty(getContext(),type);
     }
 
     @Override
@@ -183,4 +211,33 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
         }
         clientNetworkModel.balanceCash(getContext(),getV().getType(),getV().getCashAmount(),pwd,getV().getBackCardId());
     }
+
+    @Override
+    public void loginOff() {
+        if (mNetworkModel!=null)
+            mNetworkModel.logOff(getContext());
+    }
+
+    /**
+     * 支付宝sdk结果回调，主线程中执行
+     * 为了避免内存泄漏，支付宝sdk内不强引用该回调
+     * 请持有该callback引用，以免callback被回收导致无法获取业务结果
+     */
+    private OpenAuthTask.Callback callback = new OpenAuthTask.Callback() {
+        @Override
+        public void onResult(int i, String s, Bundle bundle) {
+            if (i == OpenAuthTask.OK) {
+
+                String authCode = bundle.getString("auth_code");
+                if (clientNetworkModel != null) {
+                    if (!isEmpty(authCode)) {
+                        clientNetworkModel.bindThirdParty(getContext(),authCode,0);
+                    } else
+                        onMessage("没有获取到authCode");
+                }
+
+                // 执行原有处理逻辑
+            }
+        }
+    };
 }

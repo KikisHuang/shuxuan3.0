@@ -32,8 +32,11 @@ public class ClientAccountSecurityContract {
 
         void bindWechat();
 
+        void unbindThirdParty(int type);
+
         void cash(String pwd);
 
+        void loginOff();
     }
 
     public interface ClientAccountSecurityListener{

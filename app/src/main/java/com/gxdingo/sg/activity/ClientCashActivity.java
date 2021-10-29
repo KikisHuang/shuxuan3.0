@@ -10,6 +10,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.biz.OnAccountSelectListener;
 import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.dialog.ClientCashSelectDialog;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
@@ -22,7 +23,9 @@ import com.kikis.commnlibrary.utils.BigDecimalUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.core.CenterPopupView;
+import com.umeng.commonsdk.debug.E;
 
 import java.util.List;
 
@@ -50,11 +53,11 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
-    private String amount;
+    private String amount = "1.0";
 
-    private int type = -1;
+    private int mtype = -1;
 
-    private int bankCardId = -1;
+    private int mBankCardId = -1;
 
     private ClientCashInfoBean cashInfoBean;
 
@@ -67,7 +70,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -146,7 +149,36 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 if (cashInfoBean!=null)
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
-                            .asCustom(new ClientCashSelectDialog(reference.get(),cashInfoBean))
+                            .asCustom(new ClientCashSelectDialog(reference.get(), cashInfoBean, new OnAccountSelectListener() {
+                                @Override
+                                public void onSelected(BottomPopupView dialog, String account, int type,int bankCardId) {
+                                    if (bankCardId>0){
+                                        mBankCardId = bankCardId;
+                                        dialog.dismiss();
+                                        cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
+                                        cash_account_stv.setLeftString(gets(R.string.back_card));
+                                        mtype= 0;
+                                        return;
+                                    }
+                                    if (isEmpty(account)){
+                                        if (type == 0)
+                                            getP().bindAli();
+                                        else if (type == 1)
+                                            getP().bindWechat();
+                                    }else {
+                                        if (type == 0){
+                                            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
+                                            cash_account_stv.setLeftString(gets(R.string.alipay));
+                                            mtype= 20;
+                                        }else if (type == 1){
+                                            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
+                                            cash_account_stv.setLeftString(gets(R.string.wechat));
+                                            mtype = 10;
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                }
+                            }))
                             .show();
                 break;
             case R.id.btn_all:
@@ -188,15 +220,15 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         if (!isEmpty(cashInfoBean.getAlipay())&&cashInfoBean.getIsShowAlipay()==1){
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
             cash_account_stv.setLeftString(gets(R.string.alipay));
-            type = 20;
+            mtype = 20;
         }else if (!isEmpty(cashInfoBean.getWechat())&&cashInfoBean.getIsShowWechat()==1){
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
             cash_account_stv.setLeftString(gets(R.string.wechat));
-            type = 10;
+            mtype = 10;
         }else if (cashInfoBean.getBankList()!=null&&cashInfoBean.getBankList().size()>0&&cashInfoBean.getIsShowBank()==1){
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
             cash_account_stv.setLeftString(gets(R.string.back_card));
-            type = 0;
+            mtype = 0;
         }else {
             cash_account_stv.setLeftString("选择提现账户");
         }
@@ -209,12 +241,12 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     @Override
     public long getBackCardId() {
-        return bankCardId;
+        return mBankCardId;
     }
 
     @Override
     public int getType() {
-        return type;
+        return mtype;
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

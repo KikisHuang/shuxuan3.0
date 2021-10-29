@@ -24,6 +24,8 @@ public class ClientMineContract {
         void getUserInfo();
 
         void modityNickName(String toString);
+
+        void logout();
     }
 
     public interface ClientMineListener<T>{

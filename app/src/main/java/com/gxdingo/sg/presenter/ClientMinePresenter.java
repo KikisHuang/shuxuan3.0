@@ -194,6 +194,12 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
+    public void logout() {
+        if (networkModel!=null)
+            networkModel.logOut(getContext());
+    }
+
+    @Override
     public void onResult(List<LocalMedia> result) {
         String url = getPhotoUrl(result.get(0));
 

@@ -66,6 +66,8 @@ public class ClientLocalConstant {
     public static final int GET_LOCATION_SUCCEED = 18;
     //录音成功
     public static final int RECORD_SUCCEED = 15;
+    //录音成功
+    public static final int MODIFY_PERSONAL_SUCCESS = 115;
 
     //清除未读消息成功
     public static final int CLEAR_UNREAD_SUCCEED = 28;
