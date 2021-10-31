@@ -23,7 +23,7 @@ public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, Base
         baseViewHolder.setText(R.id.coupon_name_tv,clientCouponBean.getCouponName());
         baseViewHolder.setText(R.id.coupon_amount_tv,String.valueOf(clientCouponBean.getCouponAmount()));
         baseViewHolder.setText(R.id.valid_date_tv,clientCouponBean.getExpireTime());
-        if (clientCouponBean.getOrderAmount() == 0)
-            baseViewHolder.setText(R.id.order_coupon_tv,"无门槛");
+//        if (clientCouponBean.getOrderAmount() == 0)
+//            baseViewHolder.setText(R.id.order_coupon_tv,"无门槛");
     }
 }

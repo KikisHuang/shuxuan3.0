@@ -60,6 +60,7 @@
         tools:text="巴扎黑呀"
         android:textColor="#2E2E2E"
         android:textSize="14sp"
+        android:background="@null"
         app:layout_constraintBottom_toBottomOf="@+id/nick_name_tag"
         app:layout_constraintLeft_toRightOf="@+id/nick_name_tag"
         app:layout_constraintRight_toRightOf="parent"

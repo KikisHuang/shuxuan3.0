@@ -286,6 +286,29 @@
 
         </activity>
 
+        <!--填写邀请码页面 -->
+        <activity
+            android:name=".activity.ClientFillInvitationCodeActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端使用优惠劵页面 -->
+        <activity
+            android:name=".activity.ClientCouponDetailsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+        </activity>
+
+        <!--客户端优惠劵列表页面 -->
+        <activity
+            android:name=".activity.ClientCouponListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+        </activity>
+
 
 
         <!-- 消息接收监听器 （用户可自主扩展） -->

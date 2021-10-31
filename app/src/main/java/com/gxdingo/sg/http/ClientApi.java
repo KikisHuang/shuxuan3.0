@@ -169,6 +169,15 @@ public class ClientApi {
      * 获取地址列表
      */
     public static final String ADDRESS_ADDRESSES = HIERARCHY + "address/addresses";
+
+    /**
+     * 填写商家邀请码（领取优惠券）
+     */
+    public static final String COUPON_RECEIVE = HIERARCHY + "coupon/receive";
+    /**
+     * 已领取的优惠券列表
+     */
+    public static final String COUPON_LIST = HIERARCHY + "coupon/list";
     /**
      * 获取文章列表
      */

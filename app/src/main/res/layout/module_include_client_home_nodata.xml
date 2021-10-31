@@ -1,78 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
+    android:id="@+id/noStores_layout"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:visibility="gone"
+    android:paddingVertical="110dp">
 
-    <LinearLayout
-        android:id="@+id/noStores_layout"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="该地区尚未有商家入驻"
+        android:textSize="20sp"
+        android:textColor="@color/gray_2e"/>
+
+    <TextView
+        android:id="@+id/btn_become_store"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="22dp"
+        android:layout_marginTop="@dimen/dp_40"
         android:gravity="center"
-        android:visibility="gone"
-        android:paddingBottom="100dp">
+        android:text="我要成为商家"
+        android:textSize="16sp"
+        android:textColor="@color/main_tone"
+        android:background="@drawable/module_shape_border_green_6r"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="该地区尚未有商家入驻"
-            android:textSize="20sp"
-            android:textColor="@color/gray_2e"/>
-
-        <TextView
-            android:id="@+id/btn_become_store"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="22dp"
-            android:layout_marginTop="@dimen/dp_40"
-            android:gravity="center"
-            android:text="我要成为商家"
-            android:textSize="16sp"
-            android:textColor="@color/main_tone"
-            android:background="@drawable/module_shape_border_green_6r"/>
-
-        <TextView
-            android:id="@+id/btn_invitation"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="22dp"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="邀请好友成为商家"
-            android:textSize="16sp"
-            android:textColor="@color/main_tone"
-            android:background="@drawable/module_shape_border_green_6r"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/noLocation_layout"
+    <TextView
+        android:id="@+id/btn_invitation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="22dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:paddingBottom="100dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="无法获取定位"
-            android:textSize="20sp"
-            android:textColor="@color/gray_2e"/>
-
-        <TextView
-            android:id="@+id/btn_empower"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginHorizontal="22dp"
-            android:layout_marginTop="@dimen/dp_40"
-            android:gravity="center"
-            android:text="去授权"
-            android:textSize="16sp"
-            android:textColor="@color/main_tone"
-            android:background="@drawable/module_shape_border_green_6r"/>
-
-    </LinearLayout>
+        android:text="邀请好友成为商家"
+        android:textSize="16sp"
+        android:textColor="@color/main_tone"
+        android:background="@drawable/module_shape_border_green_6r"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

@@ -86,13 +86,29 @@
                 <!--                android:background="@drawable/module_shape_bg_white_top_20r"-->
                 <!--                layout="@layout/module_include_refresh" />-->
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/store_rv"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="-15dp"
-                    android:padding="@dimen/dp_10"
-                    android:background="@drawable/module_shape_bg_white_top_20r"/>
+                    android:minHeight="400dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/module_shape_bg_white_top_20r">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/store_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="@dimen/dp_10"/>
+
+                    <include layout="@layout/module_include_client_home_nodata"/>
+
+<!--                    <include layout="@layout/module_include_client_home_nolocation"/>-->
+
+
+                </LinearLayout>
+
+
+
+
 
             </LinearLayout>
 

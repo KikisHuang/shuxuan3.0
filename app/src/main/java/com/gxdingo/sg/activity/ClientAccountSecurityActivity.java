@@ -15,6 +15,7 @@ import com.gxdingo.sg.utils.pay.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
+import com.tencent.bugly.beta.Beta;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -87,6 +89,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 goToPage(this, BankcardListActivity.class,null);
                 break;
             case R.id.version_stv:
+                Beta.checkUpgrade(true, false);
                 break;
             case R.id.cancel_account_stv:
                 new XPopup.Builder(reference.get())
@@ -185,6 +188,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.account_security));
+        version_stv.setRightString("当前版本 v"+getAppVersionName());
     }
 
     @Override

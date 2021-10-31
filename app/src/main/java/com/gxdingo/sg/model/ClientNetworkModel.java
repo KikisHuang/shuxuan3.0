@@ -15,6 +15,8 @@ import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.CheckPayPwdBean;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.ClientCouponBean;
+import com.gxdingo.sg.bean.ClientCouponsBean;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreDetail;
@@ -56,6 +58,8 @@ import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
 import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
 import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
+import static com.gxdingo.sg.http.ClientApi.COUPON_LIST;
+import static com.gxdingo.sg.http.ClientApi.COUPON_RECEIVE;
 import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
 import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
 import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
@@ -626,6 +630,94 @@ public class ClientNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onData(true,cashInfoBean);
                     netWorkListener.onAfters();
+                }
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 领取优惠券
+     *
+     * @param context
+     */
+    public void receiveCoupon(Context context,String activeCode) {
+        Map<String, String> map = getJsonMap();
+
+        map.put(ClientLocalConstant.ACTIVE_CODE,activeCode);
+
+        Observable<NormalBean> observable = HttpClient.post(COUPON_RECEIVE,map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                    resetPage();
+                }
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(1);
+                    netWorkListener.onAfters();
+                }
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 领取优惠券
+     *
+     * @param context
+     */
+    public void getCoupons(Context context,boolean refresh) {
+
+        Observable<ClientCouponsBean> observable = HttpClient.post(COUPON_LIST)
+                .execute(new CallClazzProxy<ApiResult<ClientCouponsBean>, ClientCouponsBean>(new TypeToken<ClientCouponsBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ClientCouponsBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                    resetPage();
+                }
+
+            }
+
+            @Override
+            public void onNext(ClientCouponsBean couponsBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onData(refresh,couponsBean);
+                    netWorkListener.onAfters();
+                    pageNext(refresh,couponsBean.getList().size());
                 }
 
 

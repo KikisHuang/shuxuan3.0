@@ -15,6 +15,7 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.biz.OnAccountSelectListener;
 import com.lxj.xpopup.core.BottomPopupView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -63,6 +64,7 @@ public class ClientCashSelectDialog extends BottomPopupView {
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
+        EventBus.getDefault().register(this);
         ButterKnife.bind(this, bottomPopupContainer);
 
         if (cashInfoBean.getIsShowAlipay()==0)

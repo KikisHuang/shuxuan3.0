@@ -42,4 +42,5 @@
     <string name="hint_idcart_number">请输入身份证号</string>
     <string name="hint_certify_code">请填写验证码</string>
     <string name="add_success">添加成功！</string>
+    <string name="fill_invitation_code">填写邀请码</string>
 </resources>

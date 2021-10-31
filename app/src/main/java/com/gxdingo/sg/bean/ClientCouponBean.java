@@ -1,11 +1,13 @@
 package com.gxdingo.sg.bean;
 
+import java.io.Serializable;
+
 /**
  * @author: Weaving
  * @date: 2021/10/25
  * @page:
  */
-public class ClientCouponBean {
+public class ClientCouponBean implements Serializable {
 
     /**
      * id : 11

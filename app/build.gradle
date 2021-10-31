@@ -123,6 +123,8 @@ dependencies {
     implementation rootProject.ext.dependencies.umengsharewechat
     implementation rootProject.ext.dependencies.wechatopensdk
 
+    //二维码生成
+    implementation rootProject.ext.dependencies.zxingcore
 
     //九宫格
     implementation rootProject.ext.dependencies.ninegridview

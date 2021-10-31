@@ -3,11 +3,17 @@ package com.gxdingo.sg.fragment.client;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ChangeBindingPhoneActivity;
@@ -15,8 +21,12 @@ import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientCashActivity;
+import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
+import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.adapter.ClientCouponAdapter;
+import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
@@ -54,7 +64,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener {
+public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener, OnItemChildClickListener {
 
 
     @BindView(R.id.avatar_cimg)
@@ -68,6 +78,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.mine_banner)
     public Banner mine_banner;
+
+    @BindView(R.id.cash_coupon_rv)
+    public RecyclerView cash_coupon_rv;
+
+    private ClientCouponAdapter mAdapter;
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -111,7 +126,10 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void init() {
-
+        mAdapter = new ClientCouponAdapter();
+        cash_coupon_rv.setAdapter(mAdapter);
+        cash_coupon_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
+        mAdapter.setOnItemChildClickListener(this);
     }
 
     @Override
@@ -129,7 +147,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED)
+        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED||type == LocalConstant.CLIENT_REFRESH_USER_HOME)
             getP().getUserInfo();
         else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
@@ -165,6 +183,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about_us"}));
                 break;
             case R.id.fill_invitation_code_stv:
+                goToPage(getContext(), ClientFillInvitationCodeActivity.class,null);
                 break;
             case R.id.private_protocol_stv:
                 break;
@@ -210,13 +229,22 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             });
             mine_banner.start();
         }
+        if (mineBean.getCouponList()!=null)
+            mAdapter.setList(mineBean.getCouponList());
 
     }
+
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mine_banner!=null)
             mine_banner.stop();
+    }
+
+    @Override
+    public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+        ClientCouponBean item =(ClientCouponBean) adapter.getItem(position);
+        goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class,getIntentEntityMap(new Object[]{item}));
     }
 }

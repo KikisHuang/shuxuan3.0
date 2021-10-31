@@ -243,7 +243,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onFailed() {
         super.onFailed();
-        mStoreAdapter.setEmptyView(R.layout.module_include_client_home_nodata);
+        mStoreAdapter.setEmptyView(R.layout.module_include_client_home_nolocation);
     }
 
     private void setTitleViewAlpha(float alpha) {

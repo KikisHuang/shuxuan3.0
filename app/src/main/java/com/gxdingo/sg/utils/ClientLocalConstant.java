@@ -117,6 +117,8 @@ public class ClientLocalConstant {
     public static final String AMOUNT = "amount";
     public static final String BANK_CARD_ID = "bankCardId";
 
+    public static final String ACTIVE_CODE = "activeCode";
+
     public static final String UPDATE_SUCCESS = "update_success";
 
 
