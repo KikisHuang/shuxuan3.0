@@ -1,6 +1,7 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,11 +19,13 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -84,6 +87,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @BindView(R.id.store_rv)
     public RecyclerView store_rv;
 
+    @BindView(R.id.noStores_layout)
+    public LinearLayout noStores_layout;
+
+    @BindView(R.id.noLocation_layout)
+    public LinearLayout noLocation_layout;
+
     private ClientStoreAdapter mStoreAdapter;
 
     private ClientCategoryAdapter mCategoryAdapter;
@@ -92,9 +101,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     private List<CategoriesBean> mAllTypeData;
 
+    //是否获取定位
+    private boolean location = true ;
+
     private int categoryId = 0;
 
-    private int mTitleHeight = dp2px(60);
+    private int mTitleHeight = dp2px(80);
 
 
     @Override
@@ -119,7 +131,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     protected View noDataLayout() {
-        return null;
+        return noStores_layout;
     }
 
     @Override
@@ -141,19 +153,31 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
-        getP().getNearbyStore(true,categoryId);
+        if (location)
+            getP().getNearbyStore(true,categoryId);
+        else{
+            getP().checkPermissions(getRxPermissions());
+            smartrefreshlayout.finishRefresh();
+        }
+
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
-        getP().getNearbyStore(false,categoryId);
+        if (location)
+            getP().getNearbyStore(false,categoryId);
+        else{
+            getP().checkPermissions(getRxPermissions());
+            smartrefreshlayout.finishLoadMore();
+        }
+
     }
 
     @Override
     protected void init() {
         scrollViewInit();
-        mStoreAdapter = new ClientStoreAdapter();
+        mStoreAdapter = new ClientStoreAdapter(0);
         store_rv.setAdapter(mStoreAdapter);
         store_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mStoreAdapter.setOnItemChildClickListener(this);
@@ -169,16 +193,35 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         mCategoryAdapter.setOnItemClickListener(this);
     }
 
-    @OnClick({R.id.ll_search,R.id.btn_search})
+    @OnClick({R.id.location_tv,R.id.location_tt_tv,R.id.ll_search,R.id.btn_search,R.id.btn_empower,R.id.btn_become_store,R.id.btn_invitation})
     public void OnClickViews(View v){
         switch (v.getId()){
+            case R.id.location_tt_tv:
+            case R.id.location_tv:
+                goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                break;
             case R.id.btn_search:
             case R.id.ll_search:
                 goToPage(getContext(), ClientSearchActivity.class,null);
                 break;
+            case R.id.btn_empower:
+                getP().checkPermissions(getRxPermissions());
+                break;
+            case R.id.btn_become_store:
+                break;
+            case R.id.btn_invitation:
+                break;
         }
     }
 
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof AddressBean){
+            this.location = true;
+            getP().getNearbyStore((AddressBean) object,categoryId);
+        }
+    }
 
     @Override
     protected void initData() {
@@ -243,7 +286,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onFailed() {
         super.onFailed();
-        mStoreAdapter.setEmptyView(R.layout.module_include_client_home_nolocation);
+        location = false;
+        if (noLocation_layout.getVisibility() == View.INVISIBLE)
+            noLocation_layout.setVisibility(View.VISIBLE);
     }
 
     private void setTitleViewAlpha(float alpha) {
@@ -253,6 +298,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void setDistrict(String district) {
+        if (noLocation_layout.getVisibility() == View.VISIBLE)
+            noLocation_layout.setVisibility(View.INVISIBLE);
         location_tv.setText(district);
         location_tt_tv.setText(district);
     }
@@ -272,13 +319,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     }
 
     @Override
-    public void onStoreDetailResult(StoreDetail storeDetail) {
+    public void onHistoryResult(List<String> searchHistories) {
 
-    }
-
-    @Override
-    public AMap getMap() {
-        return null;
     }
 
     @Override
@@ -292,6 +334,13 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             ((CategoriesBean) mCategoryAdapter.getData().get(mCategoryAdapter.getData().size() - 1)).isSelected = !expan;
 
             mCategoryAdapter.notifyDataSetChanged();
+        }else {
+            CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
+            categoryId = categoriesBean.getId();
+            if (!location)
+                getP().checkPermissions(getRxPermissions());
+            else
+                getP().getNearbyStore(true,categoryId);
         }
     }
 

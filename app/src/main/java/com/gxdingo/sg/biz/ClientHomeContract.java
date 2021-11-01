@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
+import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -26,15 +27,13 @@ public class ClientHomeContract {
 
         void getNearbyStore(boolean refresh,int categoryId);
 
-        void getStoreDetails(int storeId);
-
-        void mapInit(double latitude,double longitude);
+        void getNearbyStore(AddressBean addressBean,int categoryId);
 
         void callStore(String s);
 
-        void goOutSideNavigation(int pos);
+        void getSearchHistory();
 
-        void search(boolean refresh,int categoryId,String content);
+        void search(boolean refresh,String content);
     }
 
     public interface ClientHomeListener{
@@ -45,8 +44,6 @@ public class ClientHomeContract {
 
         void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans);
 
-        void onStoreDetailResult(StoreDetail storeDetail);
-
-        AMap getMap();
+        void onHistoryResult(List<String> searchHistories);
     }
 }

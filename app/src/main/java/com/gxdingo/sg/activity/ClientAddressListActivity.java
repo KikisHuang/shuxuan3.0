@@ -19,6 +19,7 @@ import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import java.util.List;
@@ -50,6 +51,9 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     public RecyclerView mRecyclerView;
 
     private ClientAddressAdapter mAdapter;
+
+    //是否是选择地址
+    private boolean isSelect;
 
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
@@ -127,8 +131,8 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     protected void init() {
+        isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
         title_layout.setTitleText(gets(R.string.receiving_address));
-
         title_layout.setMoreText(gets(R.string.add_address));
         mAdapter = new ClientAddressAdapter();
         mAdapter.setOnItemChildClickListener(this);
@@ -150,7 +154,11 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-
+        if (isSelect){
+            AddressBean item =(AddressBean) adapter.getItem(position);
+            sendEvent(item);
+            finish();
+        }
     }
 
 

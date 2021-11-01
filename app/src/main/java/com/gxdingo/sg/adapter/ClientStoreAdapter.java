@@ -21,9 +21,14 @@ import static android.text.TextUtils.isEmpty;
  */
 public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean, BaseViewHolder> {
 
-    public ClientStoreAdapter() {
-        super(R.layout.module_recycle_item_store);
-        addChildClickViewIds(R.id.call_phone_iv);
+    //0首页店铺item 1搜索店铺item
+    private int mType;
+
+    public ClientStoreAdapter(int type) {
+        super(type==0?R.layout.module_recycle_item_store:R.layout.module_recycle_item_search_store);
+        mType = type;
+        if (type == 0)
+            addChildClickViewIds(R.id.call_phone_iv);
     }
 
 
@@ -35,6 +40,7 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
         baseViewHolder.setText(R.id.store_name_tv,storeBean.getName());
         baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance());
-        baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
+        if (mType == 0)
+            baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
     }
 }

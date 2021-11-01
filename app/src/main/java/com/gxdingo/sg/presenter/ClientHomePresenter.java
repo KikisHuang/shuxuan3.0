@@ -26,6 +26,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
@@ -58,22 +59,19 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private ClientNetworkModel clientNetworkModel;
 
-//    private NetworkModel mNetworkModel;
-
     private CommonModel commonModel;
 
     private List<String> searchHistory;
-
-    private Gson gson;
 
     private double lon, lat;
 
     public ClientHomePresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
-//        mNetworkModel = new NetworkModel(this);
+
         commonModel = new CommonModel();
+
         model = new ClientHomeModel();
-//        clientNearbyShopsModel = new ClientNearbyShopsModel();
+
     }
 
     @Override
@@ -129,24 +127,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void getStoreDetails(int storeId) {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lon, lat, new CustomResultListener() {
-                @Override
-                public void onResult(Object o) {
-                    StoreDetail storeDetail=(StoreDetail) o;
-                    mapInit(storeDetail.getLatitude(),storeDetail.getLongitude());
-                    getV().onStoreDetailResult(storeDetail);
-                }
-            });
-
+    public void getNearbyStore(AddressBean addressBean, int categoryId) {
+        lon = addressBean.getLongitude();
+        lat = addressBean.getLatitude();
+        if (isViewAttached())
+            getV().setDistrict(addressBean.getStreet());
+        getNearbyStore(true,categoryId);
     }
 
-    @Override
-    public void mapInit(double latitude, double longitude) {
-        if (model!=null)
-            model.mapInit(getV().getMap(),latitude,longitude);
-    }
 
     @Override
     public void callStore(String s) {
@@ -158,39 +146,10 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void goOutSideNavigation(int pos) {
-        if (!isBViewAttached())
-            return;
-
-        switch (pos) {
-            case 0:
-                if (isAvilible(getContext(), PN_GAODE_MAP)) {
-                    goToGaoDeMap(getContext(), "addressName", lon, lat);
-                } else
-                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
-                break;
-            case 1:
-                if (isAvilible(getContext(), PN_BAIDU_MAP))
-                    goToBaiduActivity(getContext(), "addressName", lon, lat);
-                else
-                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
-
-                break;
-            case 2:
-                if (isAvilible(getContext(), PN_TENCENT_MAP)) {
-                    goToTencentMap(getContext(), "addressName", lon, lat);
-                } else
-                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
-                break;
-
-        }
-    }
-
-    @Override
-    public void search(boolean refresh,int categoryId,String content) {
+    public void search(boolean refresh,String content) {
         if (clientNetworkModel!=null){
             saveSearch(content);
-            clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,categoryId,content);
+            clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,0,content);
         }
 
     }
@@ -201,7 +160,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void saveSearch(String keyword) {
         if (!TextUtils.isEmpty(keyword)) {
             if (searchHistory == null) {
-                searchHistory = getSearchHistory();
+                searchHistory = getSearch();
             }
             if (searchHistory != null) {
                 if (searchHistory.size() > 0) {
@@ -212,24 +171,29 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     searchHistory.remove(searchHistory.size() - 1);
                 }
             }
-            if (gson == null) {
-                gson = new Gson();
-            }
-//            SPUtils.getInstance.(SEARCH_HISTORY, gson.toJson(searchHistory));
-            SPUtils.getInstance().put("SEARCH_HISTORY",gson.toJson(searchHistory));
+
+            SPUtils.getInstance().put("SEARCH_HISTORY",GsonUtil.gsonToStr(searchHistory));
 
         }
     }
 
-    public List<String> getSearchHistory() {
+    @Override
+    public void getSearchHistory() {
+        if (isViewAttached())
+            try{
+                String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
+                if (!isEmpty(details))
+                    getV().onHistoryResult(GsonUtil.GsonToList(details,String.class));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+    }
+
+    public List<String> getSearch() {
         try {
-            String details = SPUtils.getInstance().getString("SEARCH_HISTORY");
-            if (!TextUtils.isEmpty(details)) {
-                if (gson == null) {
-                    gson = new Gson();
-                }
-                return gson.fromJson(details, new TypeToken<List<String>>() {
-                }.getType());
+            String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
+            if (!isEmpty(details)) {
+                return GsonUtil.GsonToList(details,String.class);
             } else {
                 return new ArrayList<String>();
             }

@@ -15,13 +15,16 @@ import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
+import com.gxdingo.sg.presenter.ClientStorePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.List;
 
@@ -36,7 +39,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
  * @date: 2021/10/19
  * @page:
  */
-public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener{
+public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> implements ClientStoreContract.ClientStoreListener{
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -62,8 +65,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientHomeContra
     private ClientStorePhotoAdapter mPhotoAdapter;
 
     @Override
-    protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+    protected ClientStoreContract.ClientStorePresenter createPresenter() {
+        return new ClientStorePresenter();
     }
 
     @Override
@@ -202,23 +205,9 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientHomeContra
 
     @Override
     protected void initData() {
-        getP().getStoreDetails(storeId);
+        getP().getStoreDetail(storeId);
     }
 
-    @Override
-    public void setDistrict(String district) {
-
-    }
-
-    @Override
-    public void onCategoryResult(List<CategoriesBean> categories) {
-
-    }
-
-    @Override
-    public void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans) {
-
-    }
 
     @Override
     public void onStoreDetailResult(StoreDetail storeDetail) {

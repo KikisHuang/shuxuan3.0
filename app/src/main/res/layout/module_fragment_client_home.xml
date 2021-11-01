@@ -101,7 +101,7 @@
 
                     <include layout="@layout/module_include_client_home_nodata"/>
 
-<!--                    <include layout="@layout/module_include_client_home_nolocation"/>-->
+                    <include layout="@layout/module_include_client_home_nolocation"/>
 
 
                 </LinearLayout>
