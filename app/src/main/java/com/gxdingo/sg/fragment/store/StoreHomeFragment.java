@@ -1,0 +1,250 @@
+package com.gxdingo.sg.fragment.store;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.IMChatActivity;
+import com.gxdingo.sg.activity.StoreHomeSearchActivity;
+import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.biz.StoreHomeContract;
+import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
+import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
+import com.gxdingo.sg.presenter.StoreHomePresenter;
+import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.ScreenUtils;
+import com.kikis.commnlibrary.view.RoundAngleImageView;
+import com.kikis.commnlibrary.view.RoundImageView;
+import com.lxj.xpopup.XPopup;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.umeng.commonsdk.debug.I;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * 商家端主页
+ *
+ * @author: JM
+ */
+public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHomePresenter> implements ClientHomeContract.ClientHomeListener, OnItemClickListener {
+    Context mContext;
+    StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
+    @BindView(R.id.tv_status_bar)
+    LinearLayout tvStatusBar;
+    @BindView(R.id.ll_search_layout)
+    LinearLayout llSearchLayout;
+    @BindView(R.id.iv_more)
+    ImageView ivMore;
+    @BindView(R.id.iv_more2)
+    ImageView ivMore2;
+    @BindView(R.id.top_layout)
+    ConstraintLayout topLayout;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.app_bar)
+    AppBarLayout appBar;
+    @BindView(R.id.niv_store_avatar)
+    RoundImageView nivStoreAvatar;
+    @BindView(R.id.tv_store_name)
+    TextView tvStoreName;
+    @BindView(R.id.tv_business_status)
+    TextView tvBusinessStatus;
+    @BindView(R.id.tv_business_time)
+    TextView tvBusinessTime;
+    @BindView(R.id.ll_business_info_layout)
+    LinearLayout llBusinessInfoLayout;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.hint_img)
+    ImageView hintImg;
+    @BindView(R.id.hint_tv)
+    TextView hintTv;
+    @BindView(R.id.function_bt)
+    TextView functionBt;
+    @BindView(R.id.classics_footer)
+    ClassicsFooter classicsFooter;
+    @BindView(R.id.smartrefreshlayout)
+    SmartRefreshLayout smartrefreshlayout;
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.cl_store_name_layout)
+    ConstraintLayout clStoreNameLayout;
+    @BindView(R.id.tv_search)
+    TextView tvSearch;
+    @BindView(R.id.iv_search2)
+    ImageView ivSearch2;
+    @BindView(R.id.ll_search_layout2)
+    LinearLayout llSearchLayout2;
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+
+    @Override
+    protected StoreHomeContract.StoreHomePresenter createPresenter() {
+        return new StoreHomePresenter();
+    }
+
+    @Override
+    protected boolean eventBusRegister() {
+        return false;
+    }
+
+    @Override
+    protected int activityTitleLayout() {
+        return 0;
+    }
+
+    @Override
+    protected int initContentView() {
+        return R.layout.module_fragment_store_home;
+    }
+
+    @Override
+    protected View noDataLayout() {
+        return null;
+    }
+
+    @Override
+    protected View refreshLayout() {
+        return null;
+    }
+
+    @Override
+    protected boolean refreshEnable() {
+        return false;
+    }
+
+    @Override
+    protected boolean loadmoreEnable() {
+        return false;
+    }
+
+    @Override
+    protected void init() {
+
+        int statusBarHeight = ScreenUtils.getStatusHeight(getContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+        tvStatusBar.setLayoutParams(params);
+        setAppBarLayoutListener();
+
+        mStoreHomeIMMessageAdapter = new StoreHomeIMMessageAdapter();
+        recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+        mStoreHomeIMMessageAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                //跳转到IM聊天界面
+                startActivity(new Intent(mContext, IMChatActivity.class));
+            }
+        });
+        recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
+        List<Object> tempData = new ArrayList<>();
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        tempData.add(new Object());
+        mStoreHomeIMMessageAdapter.setList(tempData);
+
+
+    }
+
+    private void setAppBarLayoutListener() {
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+
+            @SuppressLint("ResourceType")
+            @Override
+            public void onOffsetChanged(AppBarLayout arg0, int arg1) {
+                if (Math.abs(arg1) >= arg0.getTotalScrollRange()) {
+                    llBusinessInfoLayout.setVisibility(View.INVISIBLE);
+                    llSearchLayout2.setVisibility(View.VISIBLE);
+                } else {
+                    llBusinessInfoLayout.setVisibility(View.VISIBLE);
+                    llSearchLayout2.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
+    }
+
+
+    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_search:
+                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                break;
+            case R.id.iv_search2:
+                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                break;
+            case R.id.iv_more:
+                showSelectBusinessStatusDialog();
+                break;
+            case R.id.iv_more2:
+                showSelectBusinessStatusDialog();
+                break;
+        }
+    }
+
+    /**
+     * 显示选择营业状态弹窗
+     */
+    private void showSelectBusinessStatusDialog() {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
+
+                    @Override
+                    public void onStatus(int code,String name) {
+                        tvBusinessStatus.setText(name);
+                    }
+                }).show());
+    }
+}

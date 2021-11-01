@@ -15,6 +15,15 @@ import android.widget.PopupWindow;
 import com.kikis.commnlibrary.R;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
 
+/**
+ * The keyboard height provider, this class uses a PopupWindow
+ * to calculate the window height when the floating keyboard is opened and closed.
+ */
+
+/**
+ * The keyboard height provider, this class uses a PopupWindow
+ * to calculate the window height when the floating keyboard is opened and closed.
+ */
 public class KeyboardHeightProvider extends PopupWindow {
 
     /**
@@ -52,9 +61,6 @@ public class KeyboardHeightProvider extends PopupWindow {
      */
     private Activity activity;
 
-
-    private int lasTimekeyboardHeight = 0;
-
     /**
      * Construct a new KeyboardHeightProvider
      *
@@ -72,22 +78,20 @@ public class KeyboardHeightProvider extends PopupWindow {
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
 
         parentView = activity.findViewById(android.R.id.content);
-        setWidth(0);//  这样既能测量高度，又不会导致界面不能点击
-//        setWidth(LayoutParams.MATCH_PARENT);
+
+        setWidth(0);
         setHeight(WindowManager.LayoutParams.MATCH_PARENT);
 
-        popupView.getViewTreeObserver().addOnGlobalLayoutListener(mOnGlobalLayoutListener);
-    }
+        popupView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-    ViewTreeObserver.OnGlobalLayoutListener mOnGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-
-        @Override
-        public void onGlobalLayout() {
-            if (popupView != null) {
-                handleOnGlobalLayout();
+            @Override
+            public void onGlobalLayout() {
+                if (popupView != null) {
+                    handleOnGlobalLayout();
+                }
             }
-        }
-    };
+        });
+    }
 
     /**
      * Start the KeyboardHeightProvider, this must be called after the onResume of the Activity.
@@ -150,12 +154,6 @@ public class KeyboardHeightProvider extends PopupWindow {
         int orientation = getScreenOrientation();
         int keyboardHeight = screenSize.y - rect.bottom;
 
-        if(lasTimekeyboardHeight == keyboardHeight){
-            return;
-        }else{
-            lasTimekeyboardHeight = keyboardHeight;
-        }
-
         if (keyboardHeight == 0) {
             notifyKeyboardHeightChanged(0, orientation);
         } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -167,22 +165,9 @@ public class KeyboardHeightProvider extends PopupWindow {
         }
     }
 
-    /**
-     *
-     */
     private void notifyKeyboardHeightChanged(int height, int orientation) {
         if (observer != null) {
             observer.onKeyboardHeightChanged(height, orientation);
         }
     }
-
-    public void recycle(){
-        dismiss();
-        popupView.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
-        observer = null;
-        activity = null;
-        parentView = null;
-        popupView = null;
-    }
-
 }

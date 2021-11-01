@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    tools:ignore="MissingConstraints">
+
+    <RelativeLayout
+        android:id="@+id/rl_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/module_include_new_custom_title" />
+    </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_other_side_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#FFFFFF"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rl_title_layout">
+
+        <!--对方地址布局-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_other_side_address_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_other_side_nick_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="10dp"
+                android:text="Siwuliu"
+                android:textColor="#FF2E2E2E"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tv_other_side_phone"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_other_side_phone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="11dp"
+                android:text="13766666969"
+                android:textColor="#FF2E2E2E"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_other_side_nick_name"
+                app:layout_constraintRight_toLeftOf="@+id/right_arrow"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_other_side_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:text="金源CBD现代城·B座13楼1301室"
+                android:textColor="#FFA9A9A9"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/right_arrow"
+                app:layout_constraintTop_toBottomOf="@+id/tv_other_side_nick_name" />
+
+            <TextView
+                android:id="@+id/right_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="12dp"
+                android:drawableRight="@drawable/module_svg_right_arrow_8934"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!--没有收货地址提示布局-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_no_address_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_no_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"
+                android:text="没有收货地址去添加"
+                android:textColor="#2E2E2E"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.kikis.commnlibrary.view.recycler_view.PullRecyclerView
+        android:id="@+id/chat_content_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/cl_input_content"
+        app:layout_constraintTop_toBottomOf="@+id/cv_other_side_address" />
+
+    <!--灰色透明视图(用来当录音的时候当灰色半透明背景用再显示,默认隐藏)-->
+    <View
+        android:id="@+id/view_occlusion_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#50000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--当输入发送内容布局展开子菜单功能布局的时候显示，触摸则收缩子菜单功能布局，有点像点击输入法外面一样-->
+    <View
+        android:id="@+id/view_input_content_layout_touch_shrink"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cl_input_content" />
+
+    <!--输入发送内容布局-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_input_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!--主要功能菜单，如语音按钮，表情按钮，输入框，发送按钮等默认看得见的控件-->
+        <LinearLayout
+            android:id="@+id/ll_main_function_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EDEDED"
+
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_voice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:src="@drawable/module_svg_im_voice_8938" />
+
+            <EditText
+                android:id="@+id/et_content_input_box"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/module_im_content_input_box"
+                android:gravity="top|left"
+                android:lineSpacingExtra="1dp"
+                android:minHeight="40dp"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="15sp" />
+
+            <!--语音录制布局-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_voice_recording_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone">
+
+                <!--取消录音区域-->
+                <RelativeLayout
+                    android:id="@+id/rl_cancel_recording_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:background="@drawable/module_create_voice_head_background"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/rl_recording_area">
+
+                    <ImageView
+                        android:id="@+id/recorded_voice_scrolling"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="30dp" />
+
+                    <ImageView
+                        android:id="@+id/iv_voice_recording_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="30dp"
+                        android:src="@drawable/module_svg_im_voice_recording_status_open" />
+                </RelativeLayout>
+
+                <!--录音区域-->
+                <RelativeLayout
+                    android:id="@+id/rl_recording_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/btn_long_press_to_speak"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="6dp"
+                        android:background="@drawable/module_im_content_input_box"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="长按说话"
+                        android:textColor="#2E2E2E"
+                        android:textSize="14sp" />
+                </RelativeLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <ImageView
+                android:id="@+id/iv_expression"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:src="@drawable/module_svg_im_expression" />
+
+
+            <ImageView
+                android:id="@+id/iv_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp"
+                android:src="@drawable/module_svg_im_add_8937" />
+
+            <Button
+                android:id="@+id/btn_send_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/module_im_send_button"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="6dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="6dp"
+                android:text="发送"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!--子功能菜单布局（添加Fragment）-->
+        <RelativeLayout
+            android:id="@+id/rl_child_function_menu_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            app:layout_constraintTop_toBottomOf="@+id/ll_main_function_menu" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

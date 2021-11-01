@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Skeleton 骨架屏不能用在该布局上 否则上滑加载会有问题-->
+<com.scwang.smart.refresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smartrefreshlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="@color/white"
+    app:srlEnableNestedScrolling="true"
+    app:srlEnablePreviewInEditMode="false">
+
+    <include layout="@layout/module_include_nodata_recycle"></include>
+
+    <com.scwang.smart.refresh.footer.ClassicsFooter
+        android:id="@+id/classics_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srlAccentColor="@color/gray666"
+        app:srlClassicsSpinnerStyle="Translate"
+        app:srlTextFinish="@string/loading"
+        app:srlTextLoading="@string/loading" />
+
+</com.scwang.smart.refresh.layout.SmartRefreshLayout>

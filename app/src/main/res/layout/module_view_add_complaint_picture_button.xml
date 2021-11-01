@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.kikis.commnlibrary.view.RoundAngleImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        app:leftTop="5dp"
+        app:rightTop="5dp"
+        app:leftBottom="5dp"
+        app:rightBottom="5dp"
+        android:src="@drawable/module_svg_upload_image_8715" />
+</LinearLayout>

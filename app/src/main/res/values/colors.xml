@@ -10,4 +10,9 @@
     
     <color name="main_tone">#599252</color>
     <color name="divide_color">#F6F6F6</color>
+    <color name="button_color">#EEF0FA</color>
+    <color name="main_text_color">#8A97CE</color>
+    <color name="divider_line_color">#EEF0FA</color>
+
+
 </resources>

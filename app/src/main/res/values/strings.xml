@@ -15,4 +15,5 @@
     <string name="settle_in">入驻</string>
     <string name="business_district">商圈</string>
     <string name="mine">我的</string>
+    <string name="im_chat_unknown_content_hint">系统提示：当前版本不支持该内容，请升级到最新版本!</string>
 </resources>
