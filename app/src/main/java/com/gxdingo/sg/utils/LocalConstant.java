@@ -30,13 +30,18 @@ public class LocalConstant {
     //他人发送的文件类型
     public static final int OtherFile = 77785;
 
+    public static final String AUTH_SECRET ="WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
 
     public static final int CODE_SEND = 10;
     public static final int CLIENT_LOGIN_SUCCEED = 20;
+    public static final int ALIPAY_LOGIN_EVENT = 254;
+    public static final int WECHAT_LOGIN_EVENT = 934946;
     public static final int CLIENT_COMMENT_SUCCEED = 32;
     public static final int CLIENT_REFRESH_COMMENT_LIST = 33;
     public static final int CLIENT_REFRESH_COMMONLY_USED_STORE_LIST = 34;
     public static final int CLIENT_REFRESH_ORDER = 35;
+    public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
+    public static final int CLIENT_REFRESH_USER_HOME = 40;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int STORE_LOGIN_SUCCEED = 21;
@@ -47,6 +52,9 @@ public class LocalConstant {
     public final static int EMOTION_LAYOUT_IS_SHOWING = 1848;
 
     public final static int CONSENT_AGREEMENT = 11111;
+
+    //登录or绑定微信获取code
+    public static boolean isLogin = false;
 
     //前后台标识符
     public static boolean isBackground = false;
@@ -84,6 +92,15 @@ public class LocalConstant {
     public static final String VOICE_APPKEY = "hy2ITS9TkPbaguBd";
     public static final String URL = "url";
     public static final String TOID = "toId";
+
+    public static final String BANK_TYPE = "bankType";
+    public static final String PERSON_OF_CARD = "personOfCard";
+    public static final String ID_CARD = "idCard";
+    public static final String NUMBER = "number";
+    public static final String SMS_CODE = "smsCode";
+
+
+
 
     public static String SIGN = "sign";
 

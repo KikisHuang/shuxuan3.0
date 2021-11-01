@@ -84,6 +84,10 @@ dependencies {
     implementation rootProject.ext.dependencies.multidex
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
+    implementation(name:'auth_number_product-2.12.3-log-online-standard-release', ext:'aar')
+    implementation(name:'crashshield-2.1.2-release', ext:'aar')
+    implementation(name:'logger-2.1.2-release', ext:'aar')
+    implementation(name:'main-2.1.2-release', ext:'aar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -119,6 +123,8 @@ dependencies {
     implementation rootProject.ext.dependencies.umengsharewechat
     implementation rootProject.ext.dependencies.wechatopensdk
 
+    //二维码生成
+    implementation rootProject.ext.dependencies.zxingcore
 
     //九宫格
     implementation rootProject.ext.dependencies.ninegridview
@@ -132,5 +138,7 @@ dependencies {
     //高德定位功能
     implementation 'com.amap.api:location:latest.integration'
     implementation 'com.amap.api:search:latest.integration'
+
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
 }

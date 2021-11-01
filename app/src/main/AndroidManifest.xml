@@ -50,6 +50,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="allowBackup">
         <!-- 为了使用 "通用跳转 SDK" 的能力，需要在您的 App 的 AndroidManifest.xml 中添加这一项 -->
         <!-- 并合理设置 android:scheme 的值 -->
@@ -66,22 +67,64 @@
             </intent-filter>
         </activity>
 
+        <!-- 高德地图sdk key-->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="9680339642d6b3328a3532f8bf173661" />
 
+        <!--适配华为（huawei）刘海屏-->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <!--适配小米（xiaomi）刘海屏-->
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape" />
         <!--引导页面 -->
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-
-
         </activity>
+
+
+        <!--联通电信授权⻚--> <!--如果不需要使⽤窗⼝模式，不要使⽤authsdk_activity_dialog主题，会出现异常动画--> <!--如果需要使⽤authsdk_activity_dialog主题，则screenOrientation⼀定不能指定明确的 ⽅向， ⽐如portrait、sensorPortrait，在8.0的系统上不允许窗⼝模式指定orientation，会 发⽣crash，需要指定为behind， 然后在授权⻚的前⼀个⻚⾯指定具体的orientation-->
+        <activity android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false" android:theme="@style/authsdk_activity_dialog"
+            android:launchMode="singleTop" />
+        <!--协议⻚⾯webview-->
+        <activity android:name="com.mobile.auth.gatewayauth.activity.AuthWebVeiwActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="behind" />
+        <!--移动授权⻚-->
+        <activity android:name="com.cmic.sso.sdk.activity.LoginAuthActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:launchMode="singleTop" />
 
         <!--登录页面 -->
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait">
 
+
+        </activity>
+
+        <!--绑定手机号 -->
+        <activity
+            android:name=".activity.BindingPhoneActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--输入验证码 -->
+        <activity
+            android:name=".activity.InputVerificationCodeActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -98,6 +141,172 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
+        </activity>
+
+        <!--客户端搜索页面 -->
+        <activity
+            android:name=".activity.ClientSearchActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端店铺详情页面 -->
+        <activity
+            android:name=".activity.ClientStoreDetailsActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端账户记录页面 -->
+        <activity
+            android:name=".activity.ClientAccountRecordActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端编辑资料页面 -->
+        <activity
+            android:name=".activity.ClientPersonalDataActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端提现页面 -->
+        <activity
+            android:name=".activity.ClientCashActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端地址管理页面 -->
+        <activity
+            android:name=".activity.ClientAddressListActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端新增、编辑地址管理页面 -->
+        <activity
+            android:name=".activity.ClientNewAddressActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--选择地址管理页面 -->
+        <activity
+            android:name=".activity.SelectAddressActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+
+        <!--客户端账户安全页面 -->
+        <activity
+            android:name=".activity.ClientAccountSecurityActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端设置密码页面 -->
+        <activity
+            android:name=".activity.ClientUpdatePayPwdActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端设置密码页面 -->
+        <activity
+            android:name=".activity.ClientCertifyPayPswActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端设置密码页面 -->
+        <activity
+            android:name=".activity.ClientSettingPayPwd1Activity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端设置密码页面 -->
+        <activity
+            android:name=".activity.ClientSettingPayPwd2Activity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端设置密码页面 -->
+        <activity
+            android:name=".activity.ClientSettingPayPwd3Activity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--修改绑定手机页面 -->
+        <activity
+            android:name=".activity.ChangeBindingPhoneActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--银行列表页面 -->
+        <activity
+            android:name=".activity.BankcardListActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--银行列表页面 -->
+        <activity
+            android:name=".activity.AddBankcardActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!--选择银行页面 -->
+        <activity
+            android:name=".activity.SupportBankActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <!--解绑银行卡页面 -->
+        <activity
+            android:name=".activity.UnbindBankcardActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <!--文章列表页面 -->
+        <activity
+            android:name=".activity.ArticleListActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--网页页面 -->
+        <activity
+            android:name=".activity.WebActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--填写邀请码页面 -->
+        <activity
+            android:name=".activity.ClientFillInvitationCodeActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--客户端使用优惠劵页面 -->
+        <activity
+            android:name=".activity.ClientCouponDetailsActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
+        </activity>
+
+        <!--客户端优惠劵列表页面 -->
+        <activity
+            android:name=".activity.ClientCouponListActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+
         </activity>
 
 

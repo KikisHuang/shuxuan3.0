@@ -138,14 +138,46 @@ public class ClientApi {
 
 
     /**
-     * 系统壁纸
+     * 绑定第三方提现账号
      */
-    public static final String WALLPAPER_WALLPAPERS = HIERARCHY + "wallpaper/wallpapers";
+    public static final String WALLET_BINDING = HIERARCHY + "wallet/binding";
 
+    /**
+     * 解绑第三方提现方式
+     */
+    public static final String WALLET_UNBINDING = HIERARCHY + "wallet/unbound";
+
+    /**
+     * 我的主页
+     */
+    public static final String MINE_HOME = HIERARCHY + "user/home";
+
+    /**
+     * 交易记录
+     */
+    public static final String TRANSACTION_RECORD = HIERARCHY + "wallet/transaction/list";
+
+    /**
+     * 提现信息
+     */
+    public static final String Cash_ACCOUNT_INFO = HIERARCHY + "wallet/bank/list";
+    /**
+     * 校验支付密码
+     */
+    public static final String CHECK_PAY_PASSWORD = HIERARCHY + "wallet/authentication/old/password";
     /**
      * 获取地址列表
      */
     public static final String ADDRESS_ADDRESSES = HIERARCHY + "address/addresses";
+
+    /**
+     * 填写商家邀请码（领取优惠券）
+     */
+    public static final String COUPON_RECEIVE = HIERARCHY + "coupon/receive";
+    /**
+     * 已领取的优惠券列表
+     */
+    public static final String COUPON_LIST = HIERARCHY + "coupon/list";
     /**
      * 获取文章列表
      */

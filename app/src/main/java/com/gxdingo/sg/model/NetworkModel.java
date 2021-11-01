@@ -13,6 +13,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.BindingPhoneActivity;
+import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.MessageDetails;
@@ -59,6 +60,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_DETAILS;
 import static com.gxdingo.sg.http.Api.MESSAGE_HISTORY;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SEND_SMS;
@@ -454,6 +456,62 @@ public class NetworkModel {
     }
 
     /**
+     * 一键登录
+     *
+     * @param context
+     * @param
+     * @param
+     */
+    public void oneClickLogin(Context context, String accessToken, boolean isUse) {
+
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("accessToken",accessToken);
+
+        Observable<UserBean> observable = HttpClient.post(ONE_CLICK_LOGIN, map)
+                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                    OneKeyModel.hideLoginLoading();
+                }
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
+                OneKeyModel.quitLoginPage();
+                UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                }
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
      * 登录
      *
      * @param context
@@ -497,7 +555,7 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-
+                OneKeyModel.quitLoginPage();
                 UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
 
                 if (netWorkListener != null)
@@ -595,7 +653,7 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-
+                OneKeyModel.quitLoginPage();
                 if (netWorkListener == null)
                     return;
                 netWorkListener.onAfters();
@@ -604,7 +662,7 @@ public class NetworkModel {
 
                     netWorkListener.onMessage(gets(R.string.please_bind_phone));
                     netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
-//                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
+                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
@@ -648,7 +706,7 @@ public class NetworkModel {
         map.put(LocalConstant.APPNAME, appname);
         map.put(Constant.OPENID, openid);
 
-        Observable<UserBean> observable = HttpClient.post(USER_MOBILE_BIND, map)
+        Observable<UserBean> observable = HttpClient.post(USER_LOGIN, map)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
                 }.getType()) {
                 });

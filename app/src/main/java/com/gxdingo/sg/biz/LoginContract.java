@@ -12,6 +12,9 @@ public class LoginContract {
 
     public interface LoginPresenter extends MvpPresenter<BasicsListener,LoginListener>{
 
+
+        void switchUrl(boolean isUserId);
+
         void getWechatAuth();
 
         void alipayAuth();
@@ -19,6 +22,8 @@ public class LoginContract {
         void sendVerificationCode();
 
         void getVerificationCodeTime();
+
+        void bindPhone(String mOpenId, String mAppName);
 
         void weChatLogin(String code);
 
@@ -33,5 +38,8 @@ public class LoginContract {
         boolean isClient();
 
         void setVerificationCodeTime(int time);
+
+        void showIdButton();
+
     }
 }

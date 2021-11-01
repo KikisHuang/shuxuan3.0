@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/store_avatar_iv"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/module_svg_client_default_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/store_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:text="金源便利店"
+        android:textSize="16sp"
+        android:textColor="#1F1F1F"
+        app:layout_constraintTop_toTopOf="@+id/store_avatar_iv"
+        app:layout_constraintStart_toEndOf="@+id/store_avatar_iv"
+        tools:text="金源便利店"/>
+
+    <TextView
+        android:id="@+id/store_label_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingHorizontal="3dp"
+        android:gravity="center"
+        android:text="商店"
+        android:textSize="12sp"
+        android:textColor="@color/main_tone"
+        android:background="@drawable/module_shape_border_blue_2r"
+        app:layout_constraintTop_toBottomOf="@+id/store_name_tv"
+        app:layout_constraintStart_toStartOf="@+id/store_name_tv"
+        tools:text="商店"/>
+
+    <TextView
+        android:id="@+id/distance_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="距离150m"
+        android:textSize="11sp"
+        android:textColor="#A9A9A9"
+        app:layout_constraintStart_toEndOf="@+id/store_label_tv"
+        app:layout_constraintTop_toTopOf="@+id/store_label_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/store_label_tv"
+        tools:text="距离150m"/>
+
+
+    <ImageView
+        android:id="@+id/call_phone_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:src="@drawable/module_svg_item_call_phone"
+        app:layout_constraintTop_toTopOf="@+id/store_name_tv"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/phone_number_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
+        android:text="13877778888"
+        android:textSize="12sp"
+        android:textColor="#A9A9A9"
+        app:layout_constraintTop_toBottomOf="@+id/call_phone_iv"
+        app:layout_constraintEnd_toEndOf="@+id/call_phone_iv"
+        tools:text="13877778888"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide_color"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:orientation="vertical"
+    android:layout_marginHorizontal="@dimen/dp_10"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/module_shape_bg_white_top_20r">
+
+    <ImageView
+        android:id="@+id/iv_btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_gravity="end"
+        android:padding="6dp"
+        android:src="@drawable/module_svg_black_close"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="输入密码"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/gray202" />
+
+    <com.gxdingo.sg.view.PasswordLayout
+        android:id="@+id/password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        app:box_draw_type="rect"
+        app:draw_txt_size="16sp"
+        app:input_line_color="@color/gray_33"
+        app:interval_width="10dp"
+        app:item_height="50dp"
+        app:item_width="50dp"
+        app:pass_inputed_type="circle"
+        app:pass_leng="six"
+        app:text_input_color="@color/gray_33"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+
+    <TextView
+        android:id="@+id/btn_forget_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="忘记密码"
+        android:layout_gravity="center"
+        android:textColor="@color/main_tone"/>
+
+</LinearLayout>

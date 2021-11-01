@@ -16,10 +16,10 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:text="加载更多信息"
-        android:textColor="@color/text_secondary2" />
+        android:textColor="@color/main_tone" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/button_color" />
+        android:background="@color/divide_color" />
 </LinearLayout>

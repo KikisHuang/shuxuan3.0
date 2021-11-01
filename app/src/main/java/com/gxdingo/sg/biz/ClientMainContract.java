@@ -22,6 +22,14 @@ public class ClientMainContract {
 
         void checkTab(int tab);
 
+        void oneKeyLogin(String code);
+
+        void aliLogin();
+
+        void getWechatAuth();
+
+        void wechatLogin(String code);
+
         void getSocketUrl();
 
         void destroySocket();

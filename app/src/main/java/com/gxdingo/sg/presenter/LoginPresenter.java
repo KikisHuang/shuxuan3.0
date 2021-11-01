@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
@@ -10,12 +11,14 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -32,6 +35,11 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     private LoginModel mModdel;
 
+    public LoginPresenter() {
+
+        mModdel = new LoginModel();
+        mNetworkModel = new NetworkModel(this);
+    }
 
     @Override
     public void onSucceed(int type) {
@@ -117,11 +125,22 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     }
 
     @Override
+    public void switchUrl(boolean isUserId) {
+        getV().showIdButton();
+        switchGlobalUrl(isUserId);
+    }
+
+
+    @Override
     public void getWechatAuth() {
         if (!isViewAttached() || mModdel == null)
             return;
         if (isWeixinAvilible(getContext()))
+        {
+            //普通登录无需过主页面登陆逻辑
+            LocalConstant.isLogin = false;
             mModdel.wxLogin();
+        }
         else {
             if (isBViewAttached())
                 getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
@@ -154,8 +173,18 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     }
 
     @Override
-    public void weChatLogin(String code) {
+    public void bindPhone(String mOpenId, String mAppName) {
+        if (mNetworkModel != null && isViewAttached()) {
+            mNetworkModel.bind(getContext(), getV().getMobile(), getV().getCode(), mOpenId, mAppName, getV().isClient());
+        }
 
+    }
+
+    @Override
+    public void weChatLogin(String code) {
+        if (mNetworkModel != null && isViewAttached()) {
+            mNetworkModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, getV().isClient());
+        }
     }
 
     @Override
@@ -178,7 +207,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
                 String authCode = bundle.getString("auth_code");
                 if (mNetworkModel != null) {
                     if (!isEmpty(authCode)) {
-//                        mNetworkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY, getV().isClient());
+                        mNetworkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY, getV().isClient());
                     } else
                         onMessage("没有获取到authCode");
                 }
