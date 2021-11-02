@@ -155,8 +155,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }else if (type == LocalConstant.WECHAT_LOGIN_EVENT){
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
+        }else if (type == LocalConstant.LOGOUT_SUCCEED){
+            ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
+            getP().checkTab(0);
         }
-
     }
 
     @Override
@@ -183,6 +185,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(0);
                 break;
             case R.id.message_layout:
+                if (!UserInfoUtils.getInstance().isLogin()){
+                    getP().goLogin();
+                    return;
+                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(1);
                 break;
@@ -195,6 +201,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(2);
                 break;
             case R.id.mine_layout:
+                if (!UserInfoUtils.getInstance().isLogin()){
+                    getP().goLogin();
+                    return;
+                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(3);
                 break;

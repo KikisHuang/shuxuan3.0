@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.LoginActivity;
+import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.bean.UserBean;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
@@ -183,7 +184,7 @@ public class UserInfoUtils {
     }
 
     public void goToLoginPage(Context context, String errormsg) {
-//        goToPage(context, LoginActivity.class, null);
+        goToPage(context, LoginActivity.class, null);
         if (!isEmpty(errormsg))
             customToast(errormsg);
         else
@@ -193,7 +194,7 @@ public class UserInfoUtils {
 
     public void goToLoginPageBack(Context context, String errormsg) {
 
-//        goToPagePutSerializable(context, LoginActivity.class, getIntentEntityMap(new Object[]{false}));
+        goToPagePutSerializable(context, LoginActivity.class, getIntentEntityMap(new Object[]{false}));
         if (!isEmpty(errormsg))
             customToast(errormsg);
         else

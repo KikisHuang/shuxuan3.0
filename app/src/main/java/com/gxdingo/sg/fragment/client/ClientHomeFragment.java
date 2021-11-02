@@ -31,6 +31,7 @@ import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.StatusBarUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -198,7 +199,10 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         switch (v.getId()){
             case R.id.location_tt_tv:
             case R.id.location_tv:
-                goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                if (UserInfoUtils.getInstance().isLogin())
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                else
+                    new OneKeyModel().sdkInit(getContext());
                 break;
             case R.id.btn_search:
             case R.id.ll_search:

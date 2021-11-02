@@ -14,6 +14,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.AuthUIConfig;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
@@ -71,7 +72,8 @@ public class OneKeyModel {
             public void onTokenFailed(String s) {
                 Log.e("oneKey-login", "获取token失败：" + s);
 
-                goToPage(context, LoginActivity.class,null);
+//                goToPage(context, LoginActivity.class,null);
+                UserInfoUtils.getInstance().goToLoginPage(context,"");
                 TokenRet tokenRet = null;
                 try {
                     tokenRet = TokenRet.fromJson(s);

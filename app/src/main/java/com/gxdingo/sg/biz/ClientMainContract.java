@@ -30,6 +30,8 @@ public class ClientMainContract {
 
         void wechatLogin(String code);
 
+        void goLogin();
+
         void getSocketUrl();
 
         void destroySocket();

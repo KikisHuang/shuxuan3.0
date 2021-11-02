@@ -201,7 +201,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
                 SPUtils.getInstance().put(LOGIN_WAY, true);
                 if (backHome){
-                    sendEvent(new ReLoginBean());
+//                    sendEvent(new ReLoginBean());
                     goToPage(reference.get(), ClientActivity.class, null);
                 }
             }
