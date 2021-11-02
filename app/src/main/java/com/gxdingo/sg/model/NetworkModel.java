@@ -783,7 +783,6 @@ public class NetworkModel {
                 UserInfoUtils.getInstance().clearLoginStatus();
                 WebSocketModel.getInstance(context).setUnReadMessageNum(0);
                 UserInfoUtils.getInstance().goToLoginPage(context, "");
-                EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
 
             }
         };
@@ -830,7 +829,6 @@ public class NetworkModel {
                 UserInfoUtils.getInstance().clearLoginStatus();
                 WebSocketModel.getInstance(context).setUnReadMessageNum(0);
                 UserInfoUtils.getInstance().goToLoginPage(context, "");
-                EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
             }
         };
 

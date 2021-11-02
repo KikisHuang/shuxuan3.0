@@ -30,6 +30,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -155,7 +156,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }else if (type == LocalConstant.WECHAT_LOGIN_EVENT){
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
-        }else if (type == LocalConstant.LOGOUT_SUCCEED){
+        }else if (type == LOGOUT){
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
             getP().checkTab(0);
         }
