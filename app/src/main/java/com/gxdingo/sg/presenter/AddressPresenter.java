@@ -4,6 +4,7 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
@@ -133,7 +134,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void searchPOIAsyn(boolean refresh, String keyword, String cityCode) {
+    public void searchPOIAsyn(boolean refresh, String keyword, String cityCode)  {
         isPOIAsyn = true;
 
         if (refresh)
@@ -168,7 +169,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void loadmoreData(String key) {
+    public void loadmoreData(String key)  {
         if (isPOIAsyn)
             searchPOIAsyn(false, key, cityCode);
         else
@@ -183,7 +184,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void searchBound(boolean refresh, LatLng latLng, String cityCode) {
+    public void searchBound(boolean refresh, LatLng latLng, String cityCode)  {
         LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         isPOIAsyn = false;

@@ -54,4 +54,6 @@
     <string name="tencent_map">腾讯地图</string>
     <string name="please_input_phone_number">请输入手机号</string>
     <string name="confirm_logoff">确定注销账号？</string>
+    <string name="skip">跳过</string>
+    <string name="experience_immediately">立即体验</string>
 </resources>

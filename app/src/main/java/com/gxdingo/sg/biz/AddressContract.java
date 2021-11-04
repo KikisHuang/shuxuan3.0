@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.gxdingo.sg.bean.AddressBean;
@@ -33,12 +34,12 @@ public class AddressContract {
         void searchPOIAsyn(boolean refresh, String keyword, String cityCode);
 
 
-        void loadmoreData(String key);
+        void loadmoreData(String key) ;
 
         void searchBound(boolean refresh, String keyword, String cityCode);
 
 
-        void searchBound(boolean refresh, LatLng latLng, String cityCode);
+        void searchBound(boolean refresh, LatLng latLng, String cityCode) throws AMapException;
 
         void mapInit();
 

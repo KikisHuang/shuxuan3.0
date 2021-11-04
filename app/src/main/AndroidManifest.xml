@@ -105,13 +105,26 @@
             android:exported="false"
             android:launchMode="singleTop" />
 
+
+        <!--欢迎页面 -->
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
+
+        </activity>
+
         <!--登录页面 -->
         <activity
             android:name=".activity.LoginActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
-
-
         </activity>
 
         <!--绑定手机号 -->
@@ -135,12 +148,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-            </intent-filter>
         </activity>
 
         <!--客户端搜索页面 -->

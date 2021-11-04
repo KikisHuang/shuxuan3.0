@@ -5,6 +5,7 @@ import android.content.Context;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
 import com.amap.api.location.AMapLocationListener;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceSearch;
@@ -983,7 +984,7 @@ public class NetworkModel {
      * @param latitude
      * @param list
      */
-    public void aMapdistanceSearch(Context context, double longitude, double latitude, List<CommonlyUsedStoreBean> list, DistanceSearch.OnDistanceSearchListener distanceSearchListener) {
+    public void aMapdistanceSearch(Context context, double longitude, double latitude, List<CommonlyUsedStoreBean> list, DistanceSearch.OnDistanceSearchListener distanceSearchListener) throws AMapException {
 
         DistanceSearch distanceSearch = new DistanceSearch(context);
 
