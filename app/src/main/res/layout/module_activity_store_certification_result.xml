@@ -28,7 +28,7 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_result_status" />
 
     <Button
-        android:id="@+id/btn_submit"
+        android:id="@+id/btn_result_botton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/module_btn_theme_button_can_be_clicked"

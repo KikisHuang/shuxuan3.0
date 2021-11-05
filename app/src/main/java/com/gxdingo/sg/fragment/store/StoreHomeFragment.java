@@ -16,6 +16,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.TimeUtils;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
@@ -24,11 +26,16 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
+import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
@@ -43,6 +50,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 
 /**
  * 商家端主页
@@ -114,7 +124,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -204,7 +214,39 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     }
 
     @Override
+    public void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        //店铺审核成功重新初始化数据
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+            initData();
+        }
+    }
+
+    @Override
     protected void initData() {
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+        if (userBean != null) {
+            UserBean.StoreBean storeBean = userBean.getStore();
+            Glide.with(mContext).load(storeBean.getAvatar()).into(nivStoreAvatar);
+            tvStoreName.setText(storeBean.getName());
+            setBusinessStatus(storeBean);
+        }
+    }
+
+    /**
+     * 设置营业状态
+     */
+    private void setBusinessStatus(UserBean.StoreBean storeBean) {
+        tvBusinessStatus.setText(storeBean.getBusinessStatus() == 0 ? "暂停营业" : "正常营业");
+        String openTime = getP().onInterceptionBusinessHours(storeBean.getOpenTime());
+        String closeTime = getP().onInterceptionBusinessHours(storeBean.getCloseTime());
+        tvBusinessTime.setText(openTime + "-" + closeTime);
 
     }
 
@@ -242,9 +284,29 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
 
                     @Override
-                    public void onStatus(int code,String name) {
+                    public void onStatus(int code, String name) {
                         tvBusinessStatus.setText(name);
                     }
                 }).show());
+    }
+
+    @Override
+    public void setDistrict(String district) {
+
+    }
+
+    @Override
+    public void onCategoryResult(List<CategoriesBean> categories) {
+
+    }
+
+    @Override
+    public void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans) {
+
+    }
+
+    @Override
+    public void onHistoryResult(List<String> searchHistories) {
+
     }
 }

@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.utils.EmotionsUtils;
+import com.gxdingo.sg.utils.TextViewUtils;
 import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
@@ -136,24 +137,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
         if (contentViewHolder instanceof TextViewHolder) {
             TextViewHolder textViewHolder = (TextViewHolder) contentViewHolder;
             Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(textViewHolder.ivAvatar);
-
-            //通过正则表达式将消息内容里面的表情标签转换成图片
-            CharSequence text = chatTest.nr2;
-            SpannableStringBuilder builder = new SpannableStringBuilder(text);
-            String rexgString = "(\\[(.*?)])";//表示[]中括号里面任意内容的都视为表情，含中括号
-            Pattern pattern = Pattern.compile(rexgString);
-            Matcher matcher = pattern.matcher(text);
-
-            while (matcher.find()) {
-                int emotionResId = EmotionsUtils.getValue(matcher.group());
-                if (emotionResId != 0) {
-                    Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), emotionResId);
-                    int bitmapWH = (int) mContext.getResources().getDimension(R.dimen.emoji_size);
-                    Bitmap newBitmap = BitmapUtils.updateBitmapWidthAndHeight(bitmap, bitmapWH, bitmapWH);
-                    builder.setSpan(new ImageSpan(mContext, newBitmap), matcher.start(), matcher.end(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-            }
-            textViewHolder.tvSendText.setText(builder);
+            textViewHolder.tvSendText.setText(TextViewUtils.contentConversion(mContext,chatTest.nr2));
         }
         //图片视图
         else if (contentViewHolder instanceof PictureViewHolder) {

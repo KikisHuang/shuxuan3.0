@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
@@ -32,6 +33,7 @@ import butterknife.OnClick;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * Created by Kikis on 2021/4/6
@@ -272,17 +274,22 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         }
     }
 
+    /**
+     * 检查用户状态
+     */
     private void checkUserStatus() {
-//        if (!UserInfoUtils.getInstance().isLogin()) {
-//            UserInfoUtils.getInstance().goToLoginPage(reference.get(), "");
-//            finish();
-//            return;
-//        }
-//
-//        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-//        if (userBean.getStore().getId() == 0 || userBean.getStore().getId() == 20 || userBean.getStore().getStatus() == 0 || userBean.getStore().getStatus() == 20) {
-//            goToPage(reference.get(), StoreCertificationActivity.class, null);
-//        }
+        if (!UserInfoUtils.getInstance().isLogin()) {
+            UserInfoUtils.getInstance().goToLoginPage(reference.get(), "");
+            finish();
+            return;
+        }
+
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+        //当store.id == 0（表示未填写过入驻信息）或store.status == 0（表示正在审核）或store.status == 20 （表示被驳回）的时候需要跳转到商家认证界面获取显示状态或者填写入驻信息
+        if (userBean.getStore().getId() == 0 || userBean.getStore().getStatus() == 0 || userBean.getStore().getStatus() == 20) {
+            //跳转到商家认证界面
+            goToPage(reference.get(), StoreCertificationActivity.class, null);
+        }
     }
 
     @Override

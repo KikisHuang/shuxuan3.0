@@ -1,5 +1,6 @@
 package com.kikis.commnlibrary.activitiy;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -668,6 +669,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
      * @param object
      */
     protected void onBaseEvent(Object object) {
+
+        Activity activity = this;
+
         //重新登录全局事件
         if (object instanceof ReLoginBean)
             finish();

@@ -76,7 +76,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
     ConstraintLayout clInputContent;
 
 
-    String mHint;
+    String mHint = "";
     IMEmotionFragment mIMEmotionFragment;//菜单-表情
 
     FragmentManager mFragmentManager;
@@ -100,6 +100,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
         EventBus.getDefault().register(this);
         //监听全局布局（用来监听软键盘显示和关闭）
         ((Activity) mContext).getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
+
     }
 
     @Override
@@ -113,6 +114,8 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
         super.initPopupContent();
         ButterKnife.bind(this);
         SystemUtils.showKeyboard(mContext);
+
+        etContentInputBox.setHint(mHint);
         //表情功能
         mIMEmotionFragment = new IMEmotionFragment();
         mFragments.add(mIMEmotionFragment);
@@ -128,8 +131,20 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
                 onExpressionClick(view);
                 break;
             case R.id.btn_send_info:
+                if (mOnCommentContentListener != null)
+                    mOnCommentContentListener.commentContent(etContentInputBox.getText().toString());
                 break;
         }
+    }
+
+    boolean mIsDirectlyClosed = false;//是否直接关闭窗口（不考虑表情正在显示）
+
+    /**
+     * 直接关闭窗口
+     */
+    public void directlyDismiss() {
+        mIsDirectlyClosed = true;
+        super.dismiss();
     }
 
     @Override

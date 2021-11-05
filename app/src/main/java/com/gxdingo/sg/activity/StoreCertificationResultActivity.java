@@ -101,6 +101,14 @@ public class StoreCertificationResultActivity extends BaseMvpActivity<StoreCerti
     @Override
     protected void init() {
         titleLayout.setTitleText("");
+
+        String status = getIntent().getStringExtra("static");
+        //状态 0=待审核 10=已认证 20=已驳回 40=已禁用 90=永久关闭
+        if (status.equals("0")) {
+
+        } else if (status.equals("10")) {
+
+        }
     }
 
     @Override

@@ -116,7 +116,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="12dp"
                         android:scaleType="centerCrop"
-                        android:src="@mipmap/p1"
+                        android:src="@mipmap/ic_user_default_avatar"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -130,7 +130,7 @@
                         android:layout_marginRight="15dp"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="金源便利店"
+                        android:text="■■■"
                         android:textColor="#FFFFFFFF"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -146,6 +146,7 @@
                         android:layout_marginRight="12dp"
                         android:layout_marginBottom="10dp"
                         android:orientation="vertical"
+                        android:gravity="right"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -154,7 +155,7 @@
                             android:id="@+id/tv_business_status"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="正常营业"
+                            android:text="■■"
                             android:textColor="#ffffff"
                             android:textSize="14sp" />
 
@@ -162,7 +163,7 @@
                             android:id="@+id/tv_business_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="--:-----:--"
+                            android:text="■■"
                             android:textColor="#ffffff"
                             android:textSize="14sp" />
                     </LinearLayout>

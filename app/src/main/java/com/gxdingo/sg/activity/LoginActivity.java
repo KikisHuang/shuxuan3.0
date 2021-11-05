@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -141,10 +142,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected void init() {
-        backHome = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0, true);
+        backHome = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
 //        getP().switchPanel(false,true);
 //        isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-        role_tv.setText(isUserId?getString(R.string.store_id_login):getString(R.string.user_id_login));
+        role_tv.setText(isUserId ? getString(R.string.store_id_login) : getString(R.string.user_id_login));
     }
 
     @Override
@@ -152,10 +153,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     }
 
-    @OnClick({R.id.switch_login_bt,R.id.alipay_login
-            ,R.id.wechat_login,R.id.send_verification_code_bt,R.id.login_bt})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.switch_login_bt, R.id.alipay_login
+            , R.id.wechat_login, R.id.send_verification_code_bt, R.id.login_bt})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.switch_login_bt:
                 isUserId = !isUserId;
                 getP().switchUrl(isUserId);
@@ -193,14 +194,14 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         if (type == CLIENT_LOGIN_SUCCEED || type == STORE_LOGIN_SUCCEED) {
             if (type == STORE_LOGIN_SUCCEED) {
                 sendEvent(new ReLoginBean());
-                SPUtils.getInstance().put(LOGIN_WAY, false);
+                SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
 
-//                goToPage(reference.get(), StoreActivity.class, null);
+                goToPage(reference.get(), StoreActivity.class, null);
 
             } else {
 
-                SPUtils.getInstance().put(LOGIN_WAY, true);
-                if (backHome){
+                SPUtils.getInstance().put(LOGIN_WAY, true);//保存用户登录
+                if (backHome) {
                     sendEvent(new ReLoginBean());
                     goToPage(reference.get(), ClientActivity.class, null);
                 }
@@ -243,7 +244,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     //身份切换
     @Override
     public void showIdButton() {
-        role_tv.setText(isUserId?"树享客户端":"树享商家端");
-        switch_login_bt.setText(isUserId?gets(R.string.store_id_login):gets(R.string.user_id_login));
+        role_tv.setText(isUserId ? "树享客户端" : "树享商家端");
+        switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
     }
 }

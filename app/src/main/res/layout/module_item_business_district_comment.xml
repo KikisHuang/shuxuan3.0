@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <!--回复者-->
+        <!--评论者的昵称/回复者昵称-->
         <TextView
-            android:id="@+id/tv_replier"
+            android:id="@+id/tv_reply_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Siwuliu"
@@ -26,9 +26,9 @@
             android:textColor="#2E2E2E"
             android:textSize="12sp" />
 
-        <!--评论者-->
+        <!--父类评论人昵称：replyNickname 回复 parentNickname-->
         <TextView
-            android:id="@+id/tv_reviewers"
+            android:id="@+id/tv_parent_nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Siwuliu"

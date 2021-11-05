@@ -14,15 +14,19 @@ import com.gxdingo.sg.R;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 
+import java.util.ArrayList;
+
 /**
  * 商圈图片适配器
  */
 public class BusinessDistrictPictureAdapter extends PullRecyclerView.PullAdapter<BusinessDistrictPictureAdapter.PictureViewHolder> {
 
-    private Context mContext;
+    Context mContext;
+    ArrayList<String> mImages;
 
-    public BusinessDistrictPictureAdapter(Context context) {
+    public BusinessDistrictPictureAdapter(Context context, ArrayList<String> images) {
         mContext = context;
+        mImages = images;
     }
 
     @NonNull
@@ -34,12 +38,15 @@ public class BusinessDistrictPictureAdapter extends PullRecyclerView.PullAdapter
 
     @Override
     public void onPullBindViewHolder(@NonNull PictureViewHolder holder, int position) {
-        Glide.with(mContext).load("https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fwww.deskcar.com%2Fdesktop%2Ffengjing%2F2015329224504%2F7.jpg&refer=http%3A%2F%2Fwww.deskcar.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1638103446&t=ebffd24db8a48d44aa9f31ca62e84763").apply(getRequestOptions()).into(holder.imageView);
+        Glide.with(mContext).load(mImages.get(position)).apply(getRequestOptions()).into(holder.imageView);
     }
 
     @Override
     public int getPullItemCount() {
-        return 9;
+        if (mImages == null) {
+            return 0;
+        }
+        return mImages.size();
     }
 
     public class PictureViewHolder extends RecyclerView.ViewHolder {

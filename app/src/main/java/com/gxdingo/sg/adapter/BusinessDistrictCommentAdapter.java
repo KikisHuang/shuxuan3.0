@@ -1,29 +1,48 @@
 package com.gxdingo.sg.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.utils.EmotionsUtils;
+import com.gxdingo.sg.utils.TextViewUtils;
+import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * 商圈评论适配器
+ *
+ * @author JM
  */
 public class BusinessDistrictCommentAdapter extends PullRecyclerView.PullAdapter<BusinessDistrictCommentAdapter.CommentViewHolder> {
 
-    private Context mContext;
-    private StoreBusinessDistrictFragment.TestValue testValue;
+    Context mContext;
+    ArrayList<BusinessDistrictListBean.Comment> mCommentDatas;
 
-    public BusinessDistrictCommentAdapter(Context context,StoreBusinessDistrictFragment.TestValue testValue) {
+    public BusinessDistrictCommentAdapter(Context context, ArrayList<BusinessDistrictListBean.Comment> commentDatas) {
         mContext = context;
-        this.testValue=testValue;
+        this.mCommentDatas = commentDatas;
     }
 
     @NonNull
@@ -35,21 +54,43 @@ public class BusinessDistrictCommentAdapter extends PullRecyclerView.PullAdapter
 
     @Override
     public void onPullBindViewHolder(@NonNull CommentViewHolder holder, int position) {
+        BusinessDistrictListBean.Comment comment = mCommentDatas.get(position);
+        //判断该条评论是否某某回复某某
+        if (TextUtils.isEmpty(comment.getParentNickname())) {
+            holder.tvReplyNickname.setText(comment.getReplyNickname());
+            holder.tvReplyFont.setVisibility(View.GONE);
+            holder.tvParentNickname.setVisibility(View.GONE);
+        } else {
+            holder.tvReplyNickname.setText(comment.getReplyNickname());
+            holder.tvReplyFont.setVisibility(View.VISIBLE);
+            holder.tvParentNickname.setVisibility(View.VISIBLE);
+            holder.tvParentNickname.setText(comment.getParentNickname());
+        }
 
+        holder.tvContent.setText(TextViewUtils.contentConversion(mContext,comment.getContent()));
     }
 
     @Override
     public int getPullItemCount() {
-        return testValue.c;
+        if (mCommentDatas == null) {
+            return 0;
+        }
+        return mCommentDatas.size();
     }
 
     public class CommentViewHolder extends RecyclerView.ViewHolder {
-        RoundAngleImageView imageView;
+        @BindView(R.id.tv_reply_nickname)
+        TextView tvReplyNickname;
+        @BindView(R.id.tv_reply_font)
+        TextView tvReplyFont;
+        @BindView(R.id.tv_parent_nickname)
+        TextView tvParentNickname;
+        @BindView(R.id.tv_content)
+        TextView tvContent;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.image);
+            ButterKnife.bind(this, itemView);
         }
     }
-
 }

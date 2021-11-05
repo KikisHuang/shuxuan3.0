@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,27 +43,12 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     TemplateTitle titleLayout;
     @BindView(R.id.tv_right_button)
     TextView tvRightButton;
+    @BindView(R.id.tv_right_image_button)
+    ImageView tvRightImageButton;
 
     private StoreBusinessScopeAdapter mAdapter;
 
     private List<StoreBusinessScopeBean.ListBean> selectedCategory = new ArrayList<>();
-
-//    @OnClick(R.id.btn_confirm)
-//    public void onConfirm(){
-//        getP().confirmBusinessScope(mAdapter.getData());、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
-//        List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
-//        for (int i = 0;i<data.size();i++){
-//            if (data.get(i).isSelect())
-//                selectedCategory.add(data.get(i));
-//        }
-//
-//        if (selectedCategory.size()<1){
-//            onMessage("请至少选择一个分类");
-//            return;
-//        }
-//        sendEvent(selectedCategory);
-//        finish();
-//    }
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
@@ -86,7 +72,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     protected int StatusBarColors() {
-        return 0;
+        return R.color.white;
     }
 
     @Override
@@ -133,6 +119,27 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("经营范围");
+
+        tvRightButton.setVisibility(View.VISIBLE);
+        tvRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getP().confirmBusinessScope(mAdapter.getData());
+                List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
+                for (int i = 0; i < data.size(); i++) {
+                    if (data.get(i).isSelect())
+                        selectedCategory.add(data.get(i));
+                }
+
+                if (selectedCategory.size() < 1) {
+                    onMessage("请至少选择一个分类");
+                    return;
+                }
+                sendEvent(selectedCategory);
+                finish();
+            }
+        });
+
         mAdapter = new StoreBusinessScopeAdapter();
         rv_business_scope.setLayoutManager(new LinearLayoutManager(reference.get()));
         rv_business_scope.setAdapter(mAdapter);
@@ -162,6 +169,21 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     }
 
     @Override
+    public void certificationPassed() {
+
+    }
+
+    @Override
+    public void onReview() {
+
+    }
+
+    @Override
+    public void rejected() {
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
         List<StoreBusinessScopeBean.ListBean> tempData = new ArrayList<>();
@@ -172,10 +194,10 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                 if (data.get(i).isSelect())
                     tempData.add(data.get(i));
             }
-//            if (tempData.size() >= 2) {
-//                onMessage("最多选2个品类");
-//                return;
-//            }
+            if (tempData.size() >= 2) {
+                onMessage("最多选2个品类");
+                return;
+            }
         }
         data.get(position).setSelect(!isSelect);
 

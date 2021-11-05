@@ -26,8 +26,8 @@
             app:sRightTextColor="#2E2E2E"
             app:sRightTextSize="@dimen/sp_14"
             app:sRightTextString="上传头像"
-            tools:layout_editor_absoluteX="10dp"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="10dp" />
 
         <LinearLayout
             android:id="@+id/t_store_name_layout"
@@ -231,5 +231,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--认证结果-->
+    <LinearLayout
+        android:id="@+id/ll_certification_result_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
+        <include layout="@layout/module_activity_store_certification_result" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

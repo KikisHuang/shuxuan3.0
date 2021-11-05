@@ -44,7 +44,8 @@
                 android:layout_marginLeft="16dp"
                 android:background="@drawable/module_unread_im_msg_red_bg"
                 android:gravity="center"
-                android:text="99"
+                android:text="0"
+                android:visibility="invisible"
                 android:textColor="@color/white"
                 android:textSize="10sp" />
         </RelativeLayout>
@@ -59,8 +60,25 @@
             android:src="@drawable/module_svg_store_add_button_icon_8607" />
     </RelativeLayout>
 
-    <com.kikis.commnlibrary.view.recycler_view.PullRecyclerView
-        android:id="@+id/recyclerView"
+    <com.scwang.smart.refresh.layout.SmartRefreshLayout
+        android:id="@+id/smartrefreshlayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srlEnableNestedScrolling="true"
+        app:srlEnablePreviewInEditMode="false">
+
+        <include layout="@layout/module_include_nodata_recycle"></include>
+
+        <com.scwang.smart.refresh.footer.ClassicsFooter
+            android:id="@+id/classics_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlAccentColor="@color/gray666"
+            app:srlClassicsSpinnerStyle="Translate"
+            app:srlTextFinish="@string/loading"
+            app:srlTextLoading="@string/loading" />
+
+    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
 </LinearLayout>

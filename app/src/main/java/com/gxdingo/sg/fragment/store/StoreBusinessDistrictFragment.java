@@ -2,27 +2,41 @@ package com.gxdingo.sg.fragment.store;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
+import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.view.SpaceItemDecoration;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
-import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
-import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lxj.xpopup.XPopup;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
 
@@ -37,11 +51,7 @@ import static com.blankj.utilcode.util.SizeUtils.dp2px;
  * @author JM
  */
 public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
-    Context mContext;
 
-    BusinessDistrictListAdapter mAdapter;
-
-    ArrayList<TestValue> mDatas = new ArrayList<>();
     @BindView(R.id.tv_status_bar)
     LinearLayout tvStatusBar;
     @BindView(R.id.tv_unread_msg_count)
@@ -51,40 +61,41 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @BindView(R.id.iv_send_business_district)
     ImageView ivSendBusinessDistrict;
     @BindView(R.id.recyclerView)
-    PullRecyclerView recyclerView;
+    RecyclerView recyclerView;
+    @BindView(R.id.hint_img)
+    ImageView hintImg;
+    @BindView(R.id.hint_tv)
+    TextView hintTv;
+    @BindView(R.id.function_bt)
+    TextView functionBt;
+    @BindView(R.id.classics_footer)
+    ClassicsFooter classicsFooter;
+    @BindView(R.id.smartrefreshlayout)
+    SmartRefreshLayout smartrefreshlayout;
+    @BindView(R.id.nodata_layout)
+    View nodataLayout;
 
+    Context mContext;
+    BusinessDistrictListAdapter mAdapter;
+    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
-
-
+    int mDelPosition = -1;//要删除商圈的索引位置
+    
     /**
-     * 商圈图片监听接口
+     * 商圈子视图点击监听接口
      */
-    public interface OnPictureClickListener {
+    public interface OnChildViewClickListener {
         /**
          * 图片item
          *
-         * @param view           图片View
+         * @param view           被点击的View
          * @param parentPosition 父位置
-         * @param position       评论位置
+         * @param position       子位置
          * @param object         内容实体
          */
         void item(View view, int parentPosition, int position, Object object);
     }
 
-    /**
-     * 商圈评论监听接口
-     */
-    public interface OnCommentClickListener {
-        /**
-         * 图片item
-         *
-         * @param view           评论View
-         * @param parentPosition 父位置
-         * @param position       评论位置
-         * @param object         内容实体
-         */
-        void item(View view, int parentPosition, int position, Object object);
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -99,7 +110,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -112,24 +123,45 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         return R.layout.module_fragment_store_business_district;
     }
 
+    /**
+     * 没有数据的时候布局
+     *
+     * @return
+     */
+
     @Override
     protected View noDataLayout() {
-        return null;
+        return nodataLayout;
     }
 
+    /**
+     * 下拉布局，一般SmartRefreshLayout
+     *
+     * @return
+     */
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
+    /**
+     * 开启下拉刷新
+     *
+     * @return
+     */
     @Override
     protected boolean refreshEnable() {
-        return false;
+        return true;
     }
 
+    /**
+     * 开启加载更多数据
+     *
+     * @return
+     */
     @Override
     protected boolean loadmoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -138,42 +170,65 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
         tvStatusBar.setLayoutParams(params);
 
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
-        mDatas.add(new TestValue());
+        mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
+        recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
+        recyclerView.setAdapter(mAdapter);
 
-        mAdapter = new BusinessDistrictListAdapter(mContext, mDatas, mOnPictureClickListener, mOnCommentClickListener);
-        recyclerView.setLayoutManager(new PullLinearLayoutManager(reference.get()));
-        recyclerView.addItemDecoration(new PullDividerItemDecoration(mContext, dp2px(10)));
-        recyclerView.setPullAdapter(mAdapter);
-        recyclerView.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
 
+        //获取商圈列表
+        getP().getBusinessDistrictList(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //获取商圈评论未读数量
+        getP().getNumberUnreadComments();
+    }
+
+    /**
+     * event事件
+     *
+     * @param type
+     */
+    protected void onTypeEvent(Integer type) {
+        //刷新商圈列表
+        if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST) {
+            //获取商圈列表
+            getP().getBusinessDistrictList(true);
+        }
+    }
+
+    /**
+     * 下拉刷新
+     */
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
+        //获取商圈列表
+        getP().getBusinessDistrictList(true);
+    }
+
+    /**
+     * 上拉加载更多数据
+     */
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        //获取商圈列表
+        getP().getBusinessDistrictList(false);
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        //商家删除商圈动态
+        if (type == 200) {
+            ArrayList<BusinessDistrictListBean.BusinessDistrict> businessDistrict = (ArrayList<BusinessDistrictListBean.BusinessDistrict>) mAdapter.getData();
+            if (mDelPosition >= 0) {
+                businessDistrict.remove(mDelPosition);
             }
-        });
-
+            mDelPosition = -1;
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @OnClick({R.id.rl_message_list, R.id.iv_send_business_district})
@@ -189,23 +244,52 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     }
 
     /**
-     * 商圈图片点击回调
+     * 商圈子视图点击回调
      */
-    OnPictureClickListener mOnPictureClickListener = new OnPictureClickListener() {
+    OnChildViewClickListener mOnChildViewClickListener = new OnChildViewClickListener() {
         @Override
         public void item(View view, int parentPosition, int position, Object object) {
-
-        }
-    };
-
-    /**
-     * 商圈评论点击回调
-     */
-    OnCommentClickListener mOnCommentClickListener = new OnCommentClickListener() {
-
-        @Override
-        public void item(View view, int parentPosition, int position, Object object) {
-            showCommentInputBoxDialog("评论一下");
+            //点击评论一下
+            if (view.getId() == R.id.tv_open_comment) {
+                BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
+                showCommentInputBoxDialog(businessDistrict, "评论一下", businessDistrict.getId(), 0);
+            }
+            //点击评论列表中的某一条数据，回复谁
+            else if (view.getId() == R.id.rv_comment_list) {
+                BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
+                if (businessDistrict != null) {
+                    ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
+                    if (commentList != null) {
+                        BusinessDistrictListBean.Comment comment = commentList.get(position);
+                        if (businessDistrict.getIdentifier().equals(comment.getIdentifier())) {
+                            onMessage("您不能回复自己的评论");
+                            return;
+                        }
+                        showCommentInputBoxDialog(businessDistrict, "回复" + comment.getReplyNickname(), businessDistrict.getId(), comment.getId());
+                    }
+                }
+            }
+            //点击评论数量（评论数量大于等于10）或者展开更多/收起布局（标题显示展开更多）
+            else if (view.getId() == R.id.tv_comment_count || view.getId() == R.id.ll_comment_unfold_put_away_layout) {
+                //tvCommentUnfoldText引用R.id.tv_comment_unfold_put_away_text，方便根据请求展开评论接口的时候根据是否还有数据做响应操作
+                tvCommentUnfoldText = null;
+                tvCommentUnfoldText = (TextView) object;
+                BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
+                getP().getUnfoldCommentList(businessDistrict, businessDistrict.getId(), businessDistrict.getCurrentPage(), businessDistrict.getPageSize());
+            }
+            //点击删除商圈
+            else if (view.getId() == R.id.iv_delete) {
+                new XPopup.Builder(reference.get())
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .isDarkTheme(false)
+                        .dismissOnTouchOutside(false)
+                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要删除该条商圈？", "", () -> {
+                            BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
+                            mDelPosition = parentPosition;
+                            getP().deleteBusinessDistrictDynamics(businessDistrict.getId());
+                        }))
+                        .show();
+            }
         }
     };
 
@@ -225,13 +309,24 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     /**
      * 显示商圈评论弹窗
+     *
+     * @param businessDistrict 评论/回复的那条商圈信息
+     * @param hint             提示语，比如回复谁
+     * @param circleId         商圈ID
+     * @param parentId         回复谁的消息id
      */
-    private void showCommentInputBoxDialog(String hint) {
+    private void showCommentInputBoxDialog(BusinessDistrictListBean.BusinessDistrict businessDistrict, String hint, long circleId, long parentId) {
         mCommentInputBoxPopupView = new BusinessDistrictCommentInputBoxPopupView(mContext, hint, getFragmentManager()
                 , new BusinessDistrictCommentInputBoxPopupView.OnCommentContentListener() {
             @Override
             public void commentContent(Object object) {
-
+                String content = (String) object;
+                if (TextUtils.isEmpty(content)) {
+                    onMessage("请输入评论内容！");
+                    return;
+                }
+                getP().submitCommentOrReply(businessDistrict, circleId, parentId, content);
+                mCommentInputBoxPopupView.directlyDismiss();
             }
         });
 
@@ -241,7 +336,89 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 .asCustom(mCommentInputBoxPopupView).show();
     }
 
-    public class TestValue {
-        public int c = 0;
+    /**
+     * 返回商圈数据
+     *
+     * @param bean
+     */
+    @Override
+    public void onBusinessDistrictData(boolean refresh, BusinessDistrictListBean bean) {
+        if (bean != null && bean.getList() != null) {
+            if (refresh) {
+                mAdapter.setList(bean.getList());
+            } else {
+                mAdapter.addData(bean.getList());
+            }
+        }
+    }
+
+    /**
+     * 提交评论/回复的结果
+     */
+    @Override
+    public void onSubmitCommentOrReplyResult() {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 返回评论列表结果（展开评论）
+     *
+     * @param businessDistrict 展开评论所属商圈
+     * @param commentListBean  新获取展开的评论
+     */
+    @Override
+    public void onReturnCommentListResult(BusinessDistrictListBean.BusinessDistrict businessDistrict, BusinessDistrictUnfoldCommentListBean commentListBean) {
+        //得到该商圈评论集合
+        ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
+        if (commentList != null) {
+            //得到展开的评论
+            ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList = commentListBean.getList();
+            if (unfoldCommentList != null) {
+                //去重合并评论数据
+                getP().onDuplicateRemovalMerge(commentList, unfoldCommentList);
+                onMessage(commentList.size() + " - " + commentListBean.getTotal() + "  " + (tvCommentUnfoldText != null));
+                //根据总数判断是否还有数据
+                if (commentList.size() >= commentListBean.getTotal()) {
+                    //没有下一页
+                    if (tvCommentUnfoldText != null) {
+                        tvCommentUnfoldText.setText("收起");
+                        //替换向上图标
+                        changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_put_away);
+                        tvCommentUnfoldText = null;
+                    }
+                } else {
+                    //有下一页页面累加1
+                    businessDistrict.setCurrentPage(businessDistrict.getCurrentPage() + 1);
+                    if (tvCommentUnfoldText != null) {
+                        tvCommentUnfoldText.setText("展开更多");
+                        //替换向下图标
+                        changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_unfold);
+                        tvCommentUnfoldText = null;
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    /**
+     * 返回商圈评论未读数量
+     */
+    @Override
+    public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
+        tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
+        tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
+    }
+
+    /**
+     * 更换TextView图标
+     *
+     * @param textView
+     * @param resId
+     */
+    private void changeDrawable(TextView textView, int resId) {
+        Drawable drawable = mContext.getResources().getDrawable(resId);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(null, null, drawable, null);
     }
 }

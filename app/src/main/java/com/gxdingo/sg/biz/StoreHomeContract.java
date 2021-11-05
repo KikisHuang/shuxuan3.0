@@ -10,7 +10,12 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
 public class StoreHomeContract {
 
     public interface StoreHomePresenter extends MvpPresenter<BasicsListener, StoreHomeListener> {
-
+        /**
+         * 截取营业时间
+         * @param time 时间
+         * @return
+         */
+        String onInterceptionBusinessHours(String time);
     }
 
     public interface StoreHomeListener {

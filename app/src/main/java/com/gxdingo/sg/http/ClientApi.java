@@ -19,6 +19,9 @@ public class ClientApi {
     public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "yonghuxieyi";
     //服务协议文章
     public static final String CLIENT_SERVICE_AGREEMENT_KEY = "fufeixieyi";
+    //店铺命名规则
+    public static final String STORE_NAMING_RULES = "mingmingguize";
+
 
     //测试路径
     public static final String TEST_URL = "192.168.110.248";

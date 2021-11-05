@@ -1,19 +1,21 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.gxdingo.sg.bean.UpLoadBean;
-import com.gxdingo.sg.biz.GridPhotoListener;
-import com.gxdingo.sg.biz.LoginContract;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.biz.UpLoadImageListener;
+import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
@@ -42,24 +44,29 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     private NetworkModel networkModel;
 
-//    private CommonModel mCommonModel;
+    private CommonModel mCommonModel;
 
     private StoreNetworkModel storeNetworkModel;
 
     public StoreCertificationPresenter() {
         networkModel = new NetworkModel(this);
-//        mCommonModel = new CommonModel();
+        mCommonModel = new CommonModel();
         storeNetworkModel = new StoreNetworkModel(this);
     }
 
     @Override
     public void onSucceed(int type) {
-
+        //提交审核成功刷新状态
+        if (type == 100)
+            getLoginInfoStatus();
+        if (isBViewAttached())
+            getBV().onSucceed(type);
     }
 
     @Override
     public void onMessage(String msg) {
-
+        if (isBViewAttached())
+            getBV().onMessage(msg);
     }
 
     @Override
@@ -223,5 +230,53 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
             });
 
+    }
+
+    @Override
+    public void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory, String regionPath, String address, String businessLicence, double longitude, double latitude) {
+        if (storeNetworkModel != null) {
+            storeNetworkModel.settle(context, avatar, name, storeCategory, regionPath, address, businessLicence, longitude, latitude);
+        }
+    }
+
+    @Override
+    public void getLoginInfoStatus() {
+        if (storeNetworkModel != null)
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
+                UserBean data = (UserBean) o;
+                int status = data.getStore().getStatus();
+                int storeId = data.getStore().getId();
+
+                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+
+                userBean.getStore().setId(storeId);
+
+                userBean.getStore().setStatus(status);
+
+                UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+
+                if (isViewAttached()) {
+
+                    if (data.getStore().getId() == 0) {
+                        //未提交认证流程
+                    } else if (data.getStore().getStatus() == 20) {
+                        //回调显示被驳回
+                        getV().rejected();
+                    } else if (data.getStore().getStatus() == 10) {
+                        //回调显示已认证通过
+                        getV().certificationPassed();
+                    } else if (data.getStore().getStatus() == 0) {
+                        //回调显示在审核
+                        getV().onReview();
+                    }
+                }
+
+            });
+    }
+
+    @Override
+    public void logout() {
+        if (networkModel != null)
+            networkModel.logOut(getContext());
     }
 }

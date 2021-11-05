@@ -1,7 +1,10 @@
 package com.gxdingo.sg.biz;
 
+import android.content.Context;
+
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
+import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -23,6 +26,16 @@ public class StoreCertificationContract {
 
         //确定经营范围
         void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans);
+
+        //提交认证信息
+        void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
+                , String regionPath, String address, String businessLicence, double longitude, double latitude);
+
+        //刷新登录信息
+        void getLoginInfoStatus();
+
+        //退出登录
+        void logout();
     }
 
     public interface StoreCertificationListener {
@@ -34,5 +47,14 @@ public class StoreCertificationContract {
 
         //关闭经营范围
         void closeBusinessScope(BusinessScopeEvent businessScopeEvent);
+
+        //已认证通过
+        void certificationPassed();
+
+        //正在审核
+        void onReview();
+
+        //被驳回
+        void rejected();
     }
 }

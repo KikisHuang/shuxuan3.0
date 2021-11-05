@@ -4,23 +4,32 @@ import android.content.Context;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
+import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.StoreApi.CATEGORY_LIST;
+import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
+import static com.gxdingo.sg.http.StoreApi.SETTLE;
 import static com.gxdingo.sg.http.StoreApi.USER_STATUS;
 
 /**
@@ -32,7 +41,7 @@ public class StoreNetworkModel {
 
     protected int mPage = 1;
 
-    protected int mPageSize = 10;
+    protected int mPageSize = 15;
 
     private NetWorkListener netWorkListener;
 
@@ -83,36 +92,44 @@ public class StoreNetworkModel {
         if (netWorkListener == null)
             return;
 
+        //刷新
         if (refresh) {
-
+            /**
+             * 控制列表下拉刷新和上拉加载更多视图
+             */
             if (size < mPageSize)
-                netWorkListener.finishRefreshWithNoMoreData();
+                netWorkListener.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
             else {
-                netWorkListener.resetNoMoreData();
-                resetPage();
+                netWorkListener.resetNoMoreData();//重置没有更多数据
+                resetPage();//重置页码
             }
 
+            /**
+             * 控制是否有数据显示的视图
+             */
             if (size <= 0)
-                netWorkListener.noData();
+                netWorkListener.noData();//没有数据（显示传入的没有数据布局）
             else {
-                nextPage();
-                netWorkListener.haveData();
+                nextPage();//有数据，页码累加1
+                netWorkListener.haveData();//有数据（隐藏没有数据布局）
             }
 
-            netWorkListener.finishRefresh(true);
-        } else {
+            netWorkListener.finishRefresh(true);//完成刷新
+        }
+        //加载更多
+        else {
             //请求的长度小于0，显示没有更多数据布局
             if (size < mPageSize)
-                netWorkListener.finishLoadmoreWithNoMoreData();
+                netWorkListener.finishLoadmoreWithNoMoreData();//完成加载并标记没有更多数据
             else {
-                nextPage();
-                netWorkListener.haveData();
+                nextPage();//有数据，页码累加1
+                netWorkListener.haveData();//有数据
             }
 
 
-            netWorkListener.finishLoadmore(true);
+            netWorkListener.finishLoadmore(true);//完成加载更多
         }
-        netWorkListener.onRequestComplete();
+        netWorkListener.onRequestComplete();//完成请求
     }
 
     /**
@@ -179,60 +196,43 @@ public class StoreNetworkModel {
      *
      * @param
      */
-//    public void settle(Context context, String avatar, List<StoreCategoryBean> storeCategory, String name, List<String> images, String regionPath,
-////                       String address, String cardName, String idCard, String cardFront, String cardBack, String cardHands,
-////                       String businessLicence, String licenceCode, String licenceName, String contactNumber, Double longitude,
-////                       Double latitude) {
-////
-////        Map<String, String> map = new HashMap<>();
-////        map.put(StoreLocalConstant.AVATAR, avatar);
-////
-////        if (images != null && images.size() > 0) {
-////            map.put(LocalConstant.IMAGES, GsonUtil.gsonToStr(images));
-////        }
-////
-////        map.put(StoreLocalConstant.STORE_CATEGORY, GsonUtil.gsonToStr(storeCategory));
-////
-////        map.put(NAME, name);
-////
-////        map.put(StoreLocalConstant.REGION_PATH, regionPath);
-////        map.put(StoreLocalConstant.ADDRESS, address);
-////        map.put(StoreLocalConstant.CARD_NAME, cardName);
-////        map.put(ID_CARD, idCard);
-//////        map.put(StoreLocalConstant.CARD_FRONT, cardFront);
-//////        map.put(StoreLocalConstant.CARD_BACK, cardBack);
-//////        map.put(StoreLocalConstant.CARD_HANDS, cardHands);
-////        map.put(StoreLocalConstant.BUSINESS_LICENSE, businessLicence);
-////        map.put(StoreLocalConstant.LICENSE_CODE, licenceCode);
-////        map.put(StoreLocalConstant.LICENSE_NAME, licenceName);
-////        map.put(StoreLocalConstant.CONTACT_NUMBER, contactNumber);
-////        map.put(StoreLocalConstant.LONGITUDE, String.valueOf(longitude));
-////        map.put(StoreLocalConstant.LATITUDE, String.valueOf(latitude));
-////
-////        Observable<NormalBean> observable = HttpClient.post(SETTLE, map)
-////                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-////                }.getType()) {
-////                });
-////        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-////            @Override
-////            public void onError(ApiException e) {
-////                super.onError(e);
-////                LogUtils.e(e);
-////                netWorkListener.onMessage(e.getMessage());
-////                netWorkListener.onAfters();
-////            }
-////
-////            @Override
-////            public void onNext(NormalBean normalBean) {
-////                netWorkListener.onAfters();
-////                netWorkListener.onSucceed(100);
-////            }
-////        };
-////
-////        observable.subscribe(subscriber);
-////        netWorkListener.onDisposable(subscriber);
-////    }
+    public void settle(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
+            , String regionPath, String address, String businessLicence, double longitude, double latitude) {
 
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.AVATAR, avatar);
+        map.put(StoreLocalConstant.NAME, name);
+        map.put(StoreLocalConstant.STORE_CATEGORY, GsonUtil.gsonToStr(storeCategory));
+        map.put(StoreLocalConstant.REGION_PATH, regionPath);
+        map.put(StoreLocalConstant.ADDRESS, address);
+        map.put(StoreLocalConstant.BUSINESS_LICENCE, businessLicence);
+        map.put(StoreLocalConstant.LONGITUDE, String.valueOf(longitude));
+        map.put(StoreLocalConstant.LATITUDE, String.valueOf(latitude));
+
+
+        Observable<NormalBean> observable = HttpClient.post(SETTLE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(100);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
 
     /**
@@ -409,14 +409,6 @@ public class StoreNetworkModel {
 //    }
 
 
-
-
-
-
-
-
-
-
     /**
      * 绑定第三方提现账号
      *
@@ -456,50 +448,6 @@ public class StoreNetworkModel {
 //        observable.subscribe(subscriber);
 //        netWorkListener.onDisposable(subscriber);
 //    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -545,6 +493,7 @@ public class StoreNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
 
 
 }
