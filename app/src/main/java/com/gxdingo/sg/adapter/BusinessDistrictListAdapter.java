@@ -1,0 +1,223 @@
+package com.gxdingo.sg.adapter;
+
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.kikis.commnlibrary.utils.DateUtils;
+import com.kikis.commnlibrary.view.RoundImageView;
+import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
+import com.kikis.commnlibrary.view.recycler_view.PullGridLayoutManager;
+import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
+import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+
+/**
+ * 用户端和商家端商圈列表适配器
+ */
+public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistrictListBean.BusinessDistrict, BaseViewHolder> {
+    Context mContext;
+    PullDividerItemDecoration mSpaceItemDecoration;
+    StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
+
+    public BusinessDistrictListAdapter(Context context
+            , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
+        super(R.layout.module_item_business_district_list);
+        this.mContext = context;
+        mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
+        mOnChildViewClickListener = onChildViewClickListener;
+    }
+
+    @Override
+    protected void convert(@NotNull BaseViewHolder baseViewHolder, BusinessDistrictListBean.BusinessDistrict data) {
+
+        TextView tvTime = baseViewHolder.findView(R.id.tv_time);
+        ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
+        RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
+        TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
+        TextView tvContent = baseViewHolder.findView(R.id.tv_content);
+        TextView tvCommentCount = baseViewHolder.findView(R.id.tv_comment_count);
+        LinearLayout llCommentLayout = baseViewHolder.findView(R.id.ll_comment_layout);
+        TextView tvOpenComment = baseViewHolder.findView(R.id.tv_open_comment);
+        PullRecyclerView rvPicture = baseViewHolder.findView(R.id.rv_picture);
+        PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
+        LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
+        TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
+
+        //登录方式，true 用户，false 商家
+        boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
+        if (isUse) {
+            /**
+             * 如果是用户端则将时间控件移动到删除按钮的位置，并将删除按钮隐藏
+             */
+            ConstraintLayout.LayoutParams params = new ConstraintLayout
+                    .LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+            params.bottomToBottom = 0;
+            params.topToTop = 0;
+            params.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.dp9), (int) mContext.getResources().getDimension(R.dimen.dp20), 0);
+            tvTime.setLayoutParams(params);
+            ivDelete.setVisibility(View.GONE);
+        } else {
+            /**
+             * 商家端则给删除按钮点击事件
+             */
+            tvTime.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mOnChildViewClickListener != null)
+                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
+                }
+            });
+        }
+
+
+        Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
+        tvStoreName.setText(data.getStoreName());
+        tvContent.setText(data.getContent());
+        String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
+        tvTime.setText(createTime);
+
+        //删除商圈
+        ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnChildViewClickListener != null)
+                    mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
+            }
+        });
+
+        /**
+         * 图片列表
+         */
+        BusinessDistrictPictureAdapter mBusinessDistrictPictureAdapter = new BusinessDistrictPictureAdapter(mContext, data.getImages());
+        rvPicture.removeItemDecoration(mSpaceItemDecoration);
+        rvPicture.setStartPulldownAnimation(false);
+        rvPicture.setRecyclerViewScrollEnabled(false);
+        rvPicture.addItemDecoration(mSpaceItemDecoration);
+        rvPicture.setNestedScrollingEnabled(false);
+        rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
+        rvPicture.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int p) {
+                if (mOnChildViewClickListener != null && data.getImages() != null)
+                    mOnChildViewClickListener.item(rvPicture, getItemPosition(data), p, data.getImages().get(p));
+            }
+        });
+        rvPicture.setPullAdapter(mBusinessDistrictPictureAdapter);
+
+        tvCommentCount.setText(data.getComments() + "评论");
+        //点击评论数量展开评论列表
+        tvCommentCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //评论展开状态是初始状态并且布局是隐藏的并且评论数大于等于10的，回调给界面那边请求“展开评论”接口获取评论数据
+                if (data.getCommentOpen() == 0 && llCommentLayout.getVisibility() == View.GONE && data.getComments() >= 10) {
+                    //只在初始化的时候执行一次，获取更多展开评论则通过点击展开评论文本控件
+                    if (mOnChildViewClickListener != null)
+                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, tvCommentUnfoldPutAwayText);//将tvCommentUnfoldPutAwayText传递到界面去
+                }
+
+                if (llCommentLayout.getVisibility() == View.VISIBLE) {
+                    llCommentLayout.setVisibility(View.GONE);
+                    data.setCommentOpen(2);//关闭状态
+                } else {
+                    llCommentLayout.setVisibility(View.VISIBLE);
+                    data.setCommentOpen(1);//打开状态
+                }
+            }
+        });
+        //点击展开更多/收起
+        llCommentUnfoldPutAwayLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //如果是“收起”标题则执行隐藏评论布局，反之就回调给界面请求展开评论接口
+                if (tvCommentUnfoldPutAwayText.getText().toString().equals("收起")) {
+                    data.setCommentOpen(2);//关闭状态
+                    llCommentLayout.setVisibility(View.GONE);
+
+                } else if (tvCommentUnfoldPutAwayText.getText().toString().equals("展开更多")) {
+                    if (mOnChildViewClickListener != null)
+                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, tvCommentUnfoldPutAwayText);//将tvCommentUnfoldPutAwayText传递到界面去
+                }
+            }
+        });
+
+        /**
+         * 评论列表展开状态
+         */
+        if (data.getCommentOpen() == 0) {//初始化状态
+            //0条评论或者评论大于10条的时候不展开显示评论
+            if (data.getComments() == 0 || data.getComments() >= 10) {
+                llCommentLayout.setVisibility(View.GONE);
+            } else {
+                llCommentLayout.setVisibility(View.VISIBLE);
+            }
+        } else if (data.getCommentOpen() == 1) {//开状态
+            llCommentLayout.setVisibility(View.VISIBLE);
+        } else if (data.getCommentOpen() == 2) {//关状态
+            llCommentLayout.setVisibility(View.GONE);
+        }
+
+        //评论一下
+        tvOpenComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnChildViewClickListener != null)
+                    mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
+            }
+        });
+
+        /**
+         * 评论列表
+         */
+        BusinessDistrictCommentAdapter mBusinessDistrictCommentAdapter = new BusinessDistrictCommentAdapter(mContext, data.getCommentList());
+        rvCommentList.setStartPulldownAnimation(false);
+        rvCommentList.setRecyclerViewScrollEnabled(false);
+        rvCommentList.setNestedScrollingEnabled(false);
+        rvCommentList.setLayoutManager(new PullLinearLayoutManager(mContext));
+        rvCommentList.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int p) {
+                if (mOnChildViewClickListener != null && data.getCommentList() != null)
+                    mOnChildViewClickListener.item(rvCommentList, getItemPosition(data), p, null);
+            }
+        });
+        rvCommentList.setPullAdapter(mBusinessDistrictCommentAdapter);
+
+
+    }
+
+
+    private RequestOptions getRequestOptions() {
+        RequestOptions options = new RequestOptions();
+        options.placeholder(R.mipmap.ic_user_default_avatar);    //加载成功之前占位图
+        options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
+        return options;
+    }
+}

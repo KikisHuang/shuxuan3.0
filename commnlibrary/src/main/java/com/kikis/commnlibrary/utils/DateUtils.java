@@ -766,4 +766,46 @@ public class DateUtils {
         return String.valueOf(seconds);
     }
 
+    /**
+     * 将T（yyyy-MM-dd'T'HH:mm:SS）的时间格式转换成yyyy-MM-dd HH:mm
+     *
+     * @param time
+     * @return
+     */
+    public static String convertTheTimeFormatOfT(String time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date date = sdf.parse(time);
+            String t = sdf.format(date);
+            return t.replace("T", " ");
+        } catch (ParseException e) {
+
+        }
+        return "";
+    }
+
+    /**
+     * 获取时间戳
+     *
+     * @param time
+     * @return
+     */
+    public static long getTimeStamp(SimpleDateFormat simpleDateFormat, String time) {
+        long mTimeStamp = 0;
+        if (time != null && time.length() > 0) {
+            Date date;
+            String times = null;
+            try {
+                date = simpleDateFormat.parse(time);
+                long l = date.getTime();
+                String stf = String.valueOf(l);
+                times = stf.substring(0, 10);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mTimeStamp = Long.parseLong(times);
+        }
+        return mTimeStamp;
+    }
 }

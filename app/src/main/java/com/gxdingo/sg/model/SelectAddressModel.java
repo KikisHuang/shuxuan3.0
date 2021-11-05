@@ -25,6 +25,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.AddressContract;
+import com.umeng.commonsdk.debug.E;
 
 import static android.text.TextUtils.isEmpty;
 import static com.amap.api.maps.model.MyLocationStyle.LOCATION_TYPE_SHOW;
@@ -36,7 +37,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.LOCATION_LONGITUDE_KEY;
  * @date: 2021/10/17
  * @page:
  */
-public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap.OnMapClickListener{
+public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap.OnMapClickListener {
 
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
@@ -100,6 +101,15 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
 
         poiSearch.setOnPoiSearchListener(listener);
         poiSearch.searchPOIAsyn();
+        try {
+            query = new PoiSearch.Query(keyWord, "", cityCode);
+            query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+            poiSearch = new PoiSearch(mContext, query);
+            poiSearch.setOnPoiSearchListener(listener);
+            poiSearch.searchPOIAsyn();
+        } catch (Exception e) {
+            LogUtils.e(e);
+        }
     }
 
     /**
@@ -113,6 +123,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      */
     public void retrievalBoundPOI(String keyWord, String cityCode,
                                   double latitude, double longitude, int page, PoiSearch.OnPoiSearchListener listener) {
+
         query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
         query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
@@ -126,6 +137,20 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
         poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
 
         poiSearch.searchPOIAsyn();
+
+        try {
+            query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
+            query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+            poiSearch = new PoiSearch(mContext, query);
+            query.setPageNum(page);
+            poiSearch.setOnPoiSearchListener(listener);
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
+
+            poiSearch.searchPOIAsyn();
+        } catch (Exception e) {
+            LogUtils.e(e);
+        }
+
     }
 
     /**
@@ -135,15 +160,21 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      * @param page
      * @param listener
      */
-    public void onDistrictQuery(String keyword, int page, DistrictSearch.OnDistrictSearchListener listener) throws AMapException {
-        search = new DistrictSearch(mContext);
-        districtQuery = new DistrictSearchQuery();
-        districtQuery.setKeywords(keyword);
-        districtQuery.setPageNum(page);
-        districtQuery.setShowBoundary(true);
-        search.setQuery(districtQuery);
-        search.setOnDistrictSearchListener(listener);
-        search.searchDistrictAsyn();
+
+    public void onDistrictQuery(String keyword, int page, DistrictSearch.OnDistrictSearchListener listener) {
+        try {
+            search = new DistrictSearch(mContext);
+            districtQuery = new DistrictSearchQuery();
+            districtQuery.setKeywords(keyword);
+            districtQuery.setPageNum(page);
+            districtQuery.setShowBoundary(true);
+            search.setQuery(districtQuery);
+            search.setOnDistrictSearchListener(listener);
+            search.searchDistrictAsyn();
+        } catch (Exception e) {
+            LogUtils.e(e);
+        }
+
     }
 
 
@@ -237,6 +268,6 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
     }
 
     public void checkStatus(String add, String adddt, String con, String mob, String doorplate, AddressContract.AddressCompileModelListener addressCompileModelListener) {
-        addressCompileModelListener.isEnable(!isEmpty(add) && !isEmpty(adddt) && !isEmpty(con) && !isEmpty(mob)&& !isEmpty(doorplate));
+        addressCompileModelListener.isEnable(!isEmpty(add) && !isEmpty(adddt) && !isEmpty(con) && !isEmpty(mob) && !isEmpty(doorplate));
     }
 }

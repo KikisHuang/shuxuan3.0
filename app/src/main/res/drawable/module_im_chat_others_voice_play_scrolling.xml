@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flaganim"
+    android:oneshot="false">
+    <!--android:duration="xxx"控制该图片显示时间长度-->
+    <item
+        android:drawable="@mipmap/im_chat_others_voice_play_scrolling_01"
+        android:duration="300" />
+    <item
+        android:drawable="@mipmap/im_chat_others_voice_play_scrolling_02"
+        android:duration="300" />
+    <item
+        android:drawable="@mipmap/im_chat_others_voice_play_scrolling_03"
+        android:duration="300" />
+</animation-list>

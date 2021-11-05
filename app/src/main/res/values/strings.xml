@@ -15,6 +15,7 @@
     <string name="settle_in">入驻</string>
     <string name="business_district">商圈</string>
     <string name="mine">我的</string>
+    <string name="im_chat_unknown_content_hint">系统提示：当前版本不支持该内容，请升级到最新版本!</string>
     <string name="store_id_login">商家身份登录</string>
     <string name="user_id_login">用户身份登录</string>
     <string name="binding_phone_number">绑定手机号</string>
@@ -56,4 +57,6 @@
     <string name="confirm_logoff">确定注销账号？</string>
     <string name="skip">跳过</string>
     <string name="experience_immediately">立即体验</string>
+    <string name="store_shuxuan">树选商家端</string>
+    <string name="client_shuxuan">树选客户端</string>
 </resources>

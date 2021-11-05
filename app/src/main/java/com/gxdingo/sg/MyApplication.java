@@ -25,8 +25,8 @@ import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.kikis.commnlibrary.utils.KikisUitls;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
-import com.lzy.ninegrid.NineGridView;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -112,6 +112,7 @@ public class MyApplication extends Application {
         KikisUitls.Init(this);
         okHttpInit();
         keyInt();
+        ScreenUtils.init(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_head_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--下拉刷新布局-->
+    <com.kikis.commnlibrary.view.recycler_view.PullRecylerViewPullDownLayout
+        android:id="@+id/pull_down_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/max_pull_down_top" />
+
+    <!--头部布局-->
+    <RelativeLayout
+        android:id="@+id/head_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <!--head_line用来点击PullRecyclerView的时候显示，要不然获取不到头部布局的位置索引,也就实现不了下拉刷新操作-->
+    <View
+        android:id="@+id/head_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5px"
+        android:visibility="gone" />
+</RelativeLayout>

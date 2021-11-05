@@ -159,8 +159,8 @@ public class WelcomeActivity extends BaseMvpActivity<LoginContract.LoginPresente
             case R.id.skip_tv:
             case R.id.go_bt:
                 boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-//                Class clas = isUser ? ClientActivity.class : StoreActivity.class;
-                goToPage(reference.get(), ClientActivity.class, null);
+                Class clas = isUser ? ClientActivity.class : StoreActivity.class;
+                goToPage(reference.get(), clas, null);
                 finish();
                 break;
 

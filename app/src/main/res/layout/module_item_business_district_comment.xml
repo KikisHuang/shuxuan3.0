@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!--评论者的昵称/回复者昵称-->
+        <TextView
+            android:id="@+id/tv_reply_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Siwuliu"
+            android:textColor="#FFA3BC69"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_reply_font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 回复 "
+            android:textColor="#2E2E2E"
+            android:textSize="12sp" />
+
+        <!--父类评论人昵称：replyNickname 回复 parentNickname-->
+        <TextView
+            android:id="@+id/tv_parent_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Siwuliu"
+            android:textColor="#FFA3BC69"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="10dp"
+        android:lineSpacingExtra="3dp"
+        android:text="感谢评价，今天购买满100减10元，名额有限，欲购从速哦"
+        android:textColor="#FF2E2E2E"
+        android:textSize="12sp" />
+</LinearLayout>

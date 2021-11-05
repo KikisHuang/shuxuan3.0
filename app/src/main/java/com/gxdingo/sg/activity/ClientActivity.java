@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -16,6 +17,7 @@ import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
+import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -31,6 +33,7 @@ import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -38,11 +41,11 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ClientMainContract.ClientMainListener{
+public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ClientMainContract.ClientMainListener {
 
     private List<Fragment> mFragmentList;
 
-    @BindViews({R.id.home_page_layout, R.id.message_layout,R.id.business_layout, R.id.mine_layout})
+    @BindViews({R.id.home_page_layout, R.id.message_layout, R.id.business_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
@@ -120,14 +123,23 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         getP().persenterInit();
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
+    @Override
+    protected void onStart() {
+        super.onStart();
 //        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
 //        }
-//    }
+
+        //商家已登录则跳转到商家主界面
+        if (UserInfoUtils.getInstance().isLogin()) {
+            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
+            if (!isUse) {
+                goToPage(this, StoreActivity.class, null);
+                finish();
+            }
+        }
+    }
 
     @Override
     protected void onBaseCreate() {
@@ -139,11 +151,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof OneKeyLoginEvent){
-            getP().oneKeyLogin(((OneKeyLoginEvent)object).code);
-        }else if (object instanceof WeChatLoginEvent){
+        if (object instanceof OneKeyLoginEvent) {
+            getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
+        } else if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!isEmpty(event.code)&&event.login)
+            if (!isEmpty(event.code) && event.login)
                 getP().wechatLogin(event.code);
         }
     }
@@ -151,9 +163,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.ALIPAY_LOGIN_EVENT){
+        if (type == LocalConstant.ALIPAY_LOGIN_EVENT) {
             getP().aliLogin();
-        }else if (type == LocalConstant.WECHAT_LOGIN_EVENT){
+        } else if (type == LocalConstant.WECHAT_LOGIN_EVENT) {
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
         }else if (type == LOGOUT){
@@ -167,16 +179,16 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     }
 
-    private void fragmentInit(){
+    private void fragmentInit() {
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(new ClientBusinessDistrictFragment());
+        mFragmentList.add(new StoreBusinessDistrictFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 
 
-    @OnClick({R.id.home_page_layout, R.id.message_layout, R.id.settle_in,R.id.business_layout, R.id.mine_layout})
+    @OnClick({R.id.home_page_layout, R.id.message_layout, R.id.settle_in, R.id.business_layout, R.id.mine_layout})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;

@@ -79,7 +79,7 @@ public class StoreApi {
     /**
      * 曲线图标数据
      */
-    public static final String STORE_DIAGRAM= HIERARCHY + "store/diagram";
+    public static final String STORE_DIAGRAM = HIERARCHY + "store/diagram";
 
     /**
      * 评论列表
@@ -212,5 +212,36 @@ public class StoreApi {
      * 刷新登录信息
      */
     public static final String USER_STATUS = HIERARCHY + "user/status";
-
+    /**
+     * 商圈列表
+     */
+    public static final String BUSINESS_DISTRICT_LIST = HIERARCHY + "circle/list";
+    /**
+     * 发布商圈信息
+     */
+    public static final String RELEASE_BUSINESS_DISTRICT_INFO = HIERARCHY + "circle/save";
+    /**
+     * 商圈消息评论列表
+     */
+    public static final String BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST = HIERARCHY + "circle/comment/unread/list";
+    /**
+     * 商圈评论/回复
+     */
+    public static final String BUSINESS_DISTRICT_COMMENT_OR_REPLY = HIERARCHY + "circle/comment/reply";
+    /**
+     * 获取商圈评论列表（展开评论）
+     */
+    public static final String BUSINESS_DISTRICT_GET_COMMENT = HIERARCHY + "circle/comment/list";
+    /**
+     * 获取商圈评论未读数量
+     */
+    public static final String GET_NUMBER_UNREAD_COMMENTS = HIERARCHY + "circle/unread";
+    /**
+     * 商家删除商圈动态
+     */
+    public static final String STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS = HIERARCHY + "circle/delete";
+    /**
+     * 删除我自己的评论
+     */
+    public static final String DELETE_MY_OWN_COMMENT = HIERARCHY + "circle/comment/delete";
 }

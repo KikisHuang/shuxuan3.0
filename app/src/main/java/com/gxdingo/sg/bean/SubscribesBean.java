@@ -1,7 +1,5 @@
 package com.gxdingo.sg.bean;
 
-import java.util.List;
-
 /**
  * @author: Kikis
  * @date: 2021/5/19
@@ -9,189 +7,118 @@ import java.util.List;
  */
 public class SubscribesBean {
 
+
     /**
-     * list : [{"fromAvatar":"http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg","fromName":"zhangsan","fromType":10,"id":8,"lastMsg":"没有了","lastMsgTime":"2020-08-26 17:32:29","order":{"id":3541,"storeAvatar":"http://xxxxxxx.com/image.jpg","storeId":35,"storeName":"店铺名称","tradeNo":210235413333},"unreadNum":1},{"fromAvatar":"http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg","fromName":"zhangsan","fromType":20,"id":9,"lastMsg":"没有了","lastMsgTime":"2020-08-26 17:32:29","unreadNum":1}]
-     * total : 12
-     * totalUnread : 22
-     * wsServerUrl : ws://xx.xx.xx.xx/socketio
+     * sendAvatar : http://o0.png
+     * sendNickname : 江南区狗子请进
+     * sendUserRole : 11
+     * shareUuid : f0872838-3f6f-4358-8930-23d71a0c543c
+     * sendIdentifier : S51J2V4T98
+     * category : 10
+     * categoryText : 消息
+     * unreadNum : 0
+     * lastMsg : hello
+     * lastMsgType : 0
+     * updateTime : 2021-09-30T06:22:02.000+00:00
      */
 
-    private int total;
-    private int totalUnread;
-    private String wsServerUrl;
-    private List<ListBean> list;
+    private String sendAvatar;
+    private String sendNickname;
+    private Integer sendUserRole;
+    private String shareUuid;
+    private String sendIdentifier;
+    private Integer category;
+    private String categoryText;
+    private Integer unreadNum;
+    private String lastMsg;
+    private Integer lastMsgType;
+    private String updateTime;
 
-    public int getTotal() {
-        return total;
+    public String getSendAvatar() {
+        return sendAvatar;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setSendAvatar(String sendAvatar) {
+        this.sendAvatar = sendAvatar;
     }
 
-    public int getTotalUnread() {
-        return totalUnread;
+    public String getSendNickname() {
+        return sendNickname;
     }
 
-    public void setTotalUnread(int totalUnread) {
-        this.totalUnread = totalUnread;
+    public void setSendNickname(String sendNickname) {
+        this.sendNickname = sendNickname;
     }
 
-    public String getWsServerUrl() {
-        return wsServerUrl;
+    public Integer getSendUserRole() {
+        return sendUserRole;
     }
 
-    public void setWsServerUrl(String wsServerUrl) {
-        this.wsServerUrl = wsServerUrl;
+    public void setSendUserRole(Integer sendUserRole) {
+        this.sendUserRole = sendUserRole;
     }
 
-    public List<ListBean> getList() {
-        return list;
+    public String getShareUuid() {
+        return shareUuid;
     }
 
-    public void setList(List<ListBean> list) {
-        this.list = list;
+    public void setShareUuid(String shareUuid) {
+        this.shareUuid = shareUuid;
     }
 
-    public static class ListBean {
-        /**
-         * fromAvatar : http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg
-         * fromName : zhangsan
-         * fromType : 10
-         * id : 8
-         * lastMsg : 没有了
-         * lastMsgTime : 2020-08-26 17:32:29
-         * order : {"id":3541,"storeAvatar":"http://xxxxxxx.com/image.jpg","storeId":35,"storeName":"店铺名称","tradeNo":210235413333}
-         * unreadNum : 1
-         */
+    public String getSendIdentifier() {
+        return sendIdentifier;
+    }
 
-        private String fromAvatar;
-        private String fromName;
-        private int fromType;
-        private int id;
-        private String lastMsg;
-        private String lastMsgTime;
-        private OrderBean order;
-        private int unreadNum;
+    public void setSendIdentifier(String sendIdentifier) {
+        this.sendIdentifier = sendIdentifier;
+    }
 
-        public String getFromAvatar() {
-            return fromAvatar;
-        }
+    public Integer getCategory() {
+        return category;
+    }
 
-        public void setFromAvatar(String fromAvatar) {
-            this.fromAvatar = fromAvatar;
-        }
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
 
-        public String getFromName() {
-            return fromName;
-        }
+    public String getCategoryText() {
+        return categoryText;
+    }
 
-        public void setFromName(String fromName) {
-            this.fromName = fromName;
-        }
+    public void setCategoryText(String categoryText) {
+        this.categoryText = categoryText;
+    }
 
-        public int getFromType() {
-            return fromType;
-        }
+    public Integer getUnreadNum() {
+        return unreadNum;
+    }
 
-        public void setFromType(int fromType) {
-            this.fromType = fromType;
-        }
+    public void setUnreadNum(Integer unreadNum) {
+        this.unreadNum = unreadNum;
+    }
 
-        public int getId() {
-            return id;
-        }
+    public String getLastMsg() {
+        return lastMsg;
+    }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+    public void setLastMsg(String lastMsg) {
+        this.lastMsg = lastMsg;
+    }
 
-        public String getLastMsg() {
-            return lastMsg;
-        }
+    public Integer getLastMsgType() {
+        return lastMsgType;
+    }
 
-        public void setLastMsg(String lastMsg) {
-            this.lastMsg = lastMsg;
-        }
+    public void setLastMsgType(Integer lastMsgType) {
+        this.lastMsgType = lastMsgType;
+    }
 
-        public String getLastMsgTime() {
-            return lastMsgTime;
-        }
+    public String getUpdateTime() {
+        return updateTime;
+    }
 
-        public void setLastMsgTime(String lastMsgTime) {
-            this.lastMsgTime = lastMsgTime;
-        }
-
-        public OrderBean getOrder() {
-            return order;
-        }
-
-        public void setOrder(OrderBean order) {
-            this.order = order;
-        }
-
-        public int getUnreadNum() {
-            return unreadNum;
-        }
-
-        public void setUnreadNum(int unreadNum) {
-            this.unreadNum = unreadNum;
-        }
-
-        public static class OrderBean {
-            /**
-             * id : 3541
-             * storeAvatar : http://xxxxxxx.com/image.jpg
-             * storeId : 35
-             * storeName : 店铺名称
-             * tradeNo : 210235413333
-             */
-
-            private int id;
-            private String storeAvatar;
-            private int storeId;
-            private String storeName;
-            private long tradeNo;
-
-            public int getId() {
-                return id;
-            }
-
-            public void setId(int id) {
-                this.id = id;
-            }
-
-            public String getStoreAvatar() {
-                return storeAvatar;
-            }
-
-            public void setStoreAvatar(String storeAvatar) {
-                this.storeAvatar = storeAvatar;
-            }
-
-            public int getStoreId() {
-                return storeId;
-            }
-
-            public void setStoreId(int storeId) {
-                this.storeId = storeId;
-            }
-
-            public String getStoreName() {
-                return storeName;
-            }
-
-            public void setStoreName(String storeName) {
-                this.storeName = storeName;
-            }
-
-            public long getTradeNo() {
-                return tradeNo;
-            }
-
-            public void setTradeNo(long tradeNo) {
-                this.tradeNo = tradeNo;
-            }
-        }
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
     }
 }

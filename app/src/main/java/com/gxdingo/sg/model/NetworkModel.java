@@ -984,32 +984,37 @@ public class NetworkModel {
      * @param latitude
      * @param list
      */
-    public void aMapdistanceSearch(Context context, double longitude, double latitude, List<CommonlyUsedStoreBean> list, DistanceSearch.OnDistanceSearchListener distanceSearchListener) throws AMapException {
 
-        DistanceSearch distanceSearch = new DistanceSearch(context);
+    public void aMapdistanceSearch(Context context, double longitude, double latitude, List<CommonlyUsedStoreBean> list, DistanceSearch.OnDistanceSearchListener distanceSearchListener) {
+        try{
+            DistanceSearch distanceSearch = new DistanceSearch(context);
 
-        distanceSearch.setDistanceSearchListener(distanceSearchListener);
+            distanceSearch.setDistanceSearchListener(distanceSearchListener);
 
-        DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
+            DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
 
-        LatLonPoint dest = new LatLonPoint(latitude, longitude);
+            LatLonPoint dest = new LatLonPoint(latitude, longitude);
 
-        List<LatLonPoint> latLonPoints = new ArrayList<LatLonPoint>();
+            List<LatLonPoint> latLonPoints = new ArrayList<LatLonPoint>();
 
-        for (CommonlyUsedStoreBean commonlyUsedStoreBean : list) {
-            LatLonPoint start = new LatLonPoint(commonlyUsedStoreBean.getLatitude(), commonlyUsedStoreBean.getLongitude());
-            latLonPoints.add(start);
+            for (CommonlyUsedStoreBean commonlyUsedStoreBean : list) {
+                LatLonPoint start = new LatLonPoint(commonlyUsedStoreBean.getLatitude(), commonlyUsedStoreBean.getLongitude());
+                latLonPoints.add(start);
+            }
+
+            //设置各个店铺为起点
+            distanceQuery.setOrigins(latLonPoints);
+            //设置当前位置为终点
+            distanceQuery.setDestination(dest);
+
+            //设置测量方式，支持直线和驾车
+            distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
+
+            distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
+        }catch (Exception e){
+            LogUtils.e(e);
         }
 
-        //设置各个店铺为起点
-        distanceQuery.setOrigins(latLonPoints);
-        //设置当前位置为终点
-        distanceQuery.setDestination(dest);
-
-        //设置测量方式，支持直线和驾车
-        distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
-
-        distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
     }
 
     /**
@@ -1122,7 +1127,7 @@ public class NetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    customResultListener.onResult(messageSubsBean.getSubscribes());
+                    customResultListener.onResult(messageSubsBean.getList());
                 }
             }
         };
@@ -1174,7 +1179,7 @@ public class NetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onData(true, messageSubsBean.getSubscribes());
+                    netWorkListener.onData(true, messageSubsBean.getList());
                 }
             }
         };
@@ -1228,8 +1233,8 @@ public class NetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onData(refresh, messageSubsBean.getSubscribes());
-                    pageNext(refresh, messageSubsBean.getSubscribes().getList().size());
+                    netWorkListener.onData(refresh, messageSubsBean);
+                    pageNext(refresh, messageSubsBean.getList().size());
                 }
             }
         };
