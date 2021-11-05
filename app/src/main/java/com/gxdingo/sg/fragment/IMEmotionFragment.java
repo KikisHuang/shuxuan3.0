@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 /**
  * IM表情Fragment
  *
- * @author JM
+ * @author  JM
  */
 public class IMEmotionFragment extends Fragment {
     Activity mActivity;
