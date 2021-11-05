@@ -35,7 +35,7 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="6dp"
         android:text="@string/skip"
-        android:textColor="@color/text_secondary2"/>
+        android:textColor="#CCCCCC"/>
 
     <Button
         android:id="@+id/go_bt"

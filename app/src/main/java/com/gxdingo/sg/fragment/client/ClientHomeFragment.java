@@ -291,7 +291,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onFailed() {
         super.onFailed();
         location = false;
-        if (noLocation_layout.getVisibility() == View.INVISIBLE)
+        if (noLocation_layout.getVisibility() == View.INVISIBLE ||noLocation_layout.getVisibility() == View.GONE )
             noLocation_layout.setVisibility(View.VISIBLE);
     }
 
@@ -303,7 +303,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void setDistrict(String district) {
         if (noLocation_layout.getVisibility() == View.VISIBLE)
-            noLocation_layout.setVisibility(View.INVISIBLE);
+            noLocation_layout.setVisibility(View.GONE);
         location_tv.setText(district);
         location_tt_tv.setText(district);
     }
