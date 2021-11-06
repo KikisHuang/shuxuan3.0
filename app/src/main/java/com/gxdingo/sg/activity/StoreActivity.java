@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
@@ -158,10 +159,9 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
+
     @Override
     protected void initData() {
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().getSocketUrl();
 
     }
 
@@ -263,15 +263,15 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     }
 
+
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == STORE_LOGIN_SUCCEED) {
-            checkUserStatus();
-            getP().getSocketUrl();
-        } else if (type == LOGOUT) {
-            getP().destroySocket();
-        }
+//        if (type == STORE_LOGIN_SUCCEED) {//登录成功
+//            checkUserStatus();//检查用户状态
+//        } else if (type == LOGOUT) {//退出登录
+//            getP().destroySocket();
+//        }
     }
 
     /**
@@ -295,21 +295,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // 判断退出
-            if (timeDValue == 0) {
+            if ((System.currentTimeMillis() - timeDValue) > 1500) {
                 onMessage(getResources().getString(R.string.appfinish));
                 timeDValue = System.currentTimeMillis();
                 return true;
             } else {
-                timeDValue = System.currentTimeMillis() - timeDValue;
-                if (timeDValue >= 1500) { // 大于1.5秒不处理。
-                    timeDValue = 0;
-                    return true;
-                } else {
-                    //finish();
-                    moveTaskToBack(false);
-                }
-
+                moveTaskToBack(true);
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);

@@ -2,7 +2,6 @@ package com.gxdingo.sg.view;
 
 import android.content.Context;
 
-import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.zhouyou.http.exception.ApiException;
@@ -22,6 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class MyBaseSubscriber<T> extends BaseSubscriber<T> {
 
+    Context mContext;
 
     /**
      * 默认不显示弹出框，不可以取消
@@ -30,6 +30,7 @@ public class MyBaseSubscriber<T> extends BaseSubscriber<T> {
      */
     public MyBaseSubscriber(Context context) {
         super(context);
+        mContext = context;
     }
 
 
@@ -44,10 +45,10 @@ public class MyBaseSubscriber<T> extends BaseSubscriber<T> {
         int errCode = e.getCode();
 
         switch (errCode) {
+            //缺少token或token失效，需要重新登录
             case 401:
             case 2:
                 UserInfoUtils.getInstance().clearLoginStatus();
-                WebSocketModel.getInstance(contextWeakReference.get()).setUnReadMessageNum(0);
                 EventBus.getDefault().post(new ReLoginBean(0, ""));
                 UserInfoUtils.getInstance().goToLoginPage(contextWeakReference.get(), "");
                 break;

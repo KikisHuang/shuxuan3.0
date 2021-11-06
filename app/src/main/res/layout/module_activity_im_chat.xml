@@ -8,16 +8,6 @@
     android:background="#F5F5F5"
     tools:ignore="MissingConstraints">
 
-    <RelativeLayout
-        android:id="@+id/rl_title_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <include layout="@layout/module_include_new_custom_title" />
-    </RelativeLayout>
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_other_side_address"
         android:layout_width="match_parent"
@@ -30,7 +20,7 @@
         app:cardElevation="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rl_title_layout">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!--对方地址布局-->
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,24 +17,29 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.TimeUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
+import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
@@ -43,23 +49,28 @@ import com.kikis.commnlibrary.view.RoundImageView;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.umeng.commonsdk.debug.I;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
+import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * 商家端主页
  *
  * @author: JM
  */
-public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHomePresenter> implements ClientHomeContract.ClientHomeListener, OnItemClickListener {
+public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHomePresenter> implements StoreHomeContract.StoreHomeListener {
     Context mContext;
     StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
     @BindView(R.id.tv_status_bar)
@@ -108,7 +119,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     ImageView ivSearch2;
     @BindView(R.id.ll_search_layout2)
     LinearLayout llSearchLayout2;
-
+    @BindView(R.id.nodata_layout)
+    View nodataLayout;
 
     @Override
     public void onAttach(Context context) {
@@ -139,27 +151,44 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     protected View noDataLayout() {
-        return null;
+        return nodataLayout;
     }
 
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
     @Override
     protected boolean refreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean loadmoreEnable() {
-        return false;
+        return true;
+    }
+
+    /**
+     * 下拉刷新
+     */
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
+        //获取IM订阅信息
+        getP().getIMSubscribesList(true);
+    }
+
+    /**
+     * 上拉加载更多数据
+     */
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        //获取IM订阅信息
+        getP().getIMSubscribesList(false);
     }
 
     @Override
     protected void init() {
-
         int statusBarHeight = ScreenUtils.getStatusHeight(getContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
         tvStatusBar.setLayoutParams(params);
@@ -170,30 +199,15 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         mStoreHomeIMMessageAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                SubscribesBean.MessageBean messageBean = mStoreHomeIMMessageAdapter.getItem(position);
                 //跳转到IM聊天界面
-                startActivity(new Intent(mContext, IMChatActivity.class));
+                Map<String, String> intentMap = new HashMap<>();
+                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, messageBean.getShareUuid());
+                intentMap.put(IMChatActivity.EXTRA_OTHER_NAME, messageBean.getSendNickname());
+                goToPage(reference.get(), IMChatActivity.class, intentMap);
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
-        List<Object> tempData = new ArrayList<>();
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        tempData.add(new Object());
-        mStoreHomeIMMessageAdapter.setList(tempData);
-
-
     }
 
     private void setAppBarLayoutListener() {
@@ -222,8 +236,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        //店铺审核成功重新初始化数据
-        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {//店铺审核成功重新初始化数据
             initData();
         }
     }
@@ -233,10 +246,24 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
         if (userBean != null) {
             UserBean.StoreBean storeBean = userBean.getStore();
-            Glide.with(mContext).load(storeBean.getAvatar()).into(nivStoreAvatar);
+            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
             tvStoreName.setText(storeBean.getName());
             setBusinessStatus(storeBean);
+
+            getP().getIMSubscribesList(true);//获取IM订阅信息
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private RequestOptions getRequestOptions() {
+        RequestOptions options = new RequestOptions();
+        options.placeholder(R.mipmap.ic_user_default_avatar);    //加载成功之前占位图
+        options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
+        return options;
     }
 
     /**
@@ -244,17 +271,12 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
      */
     private void setBusinessStatus(UserBean.StoreBean storeBean) {
         tvBusinessStatus.setText(storeBean.getBusinessStatus() == 0 ? "暂停营业" : "正常营业");
-        String openTime = getP().onInterceptionBusinessHours(storeBean.getOpenTime());
-        String closeTime = getP().onInterceptionBusinessHours(storeBean.getCloseTime());
-        tvBusinessTime.setText(openTime + "-" + closeTime);
-
+        if (!TextUtils.isEmpty(storeBean.getOpenTime()) && !TextUtils.isEmpty(storeBean.getCloseTime())) {
+            String openTime = getP().onInterceptionBusinessHours(storeBean.getOpenTime());
+            String closeTime = getP().onInterceptionBusinessHours(storeBean.getCloseTime());
+            tvBusinessTime.setText(openTime + "-" + closeTime);
+        }
     }
-
-    @Override
-    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-
-    }
-
 
     @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
     public void onViewClicked(View view) {
@@ -290,23 +312,23 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 }).show());
     }
 
+
+    /**
+     * 返回IM订阅信息列表(包含有请求web socket接入url)
+     */
     @Override
-    public void setDistrict(String district) {
+    public void onIMSubscribesInfo(boolean refresh, SubscribesBean subscribesBean) {
+        if (subscribesBean != null && subscribesBean.getList() != null) {
+            //保存web socket接入url
+            SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesBean.getWebsocketUrl());
+            //启动IM消息接收服务
+            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
-    }
-
-    @Override
-    public void onCategoryResult(List<CategoriesBean> categories) {
-
-    }
-
-    @Override
-    public void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans) {
-
-    }
-
-    @Override
-    public void onHistoryResult(List<String> searchHistories) {
-
+            if (refresh) {
+                mStoreHomeIMMessageAdapter.setList(subscribesBean.getList());
+            } else {
+                mStoreHomeIMMessageAdapter.addData(subscribesBean.getList());
+            }
+        }
     }
 }

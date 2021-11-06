@@ -30,7 +30,11 @@ import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,8 +103,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
-        String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
-        tvTime.setText(createTime);
+//        String createTime = DateUtils.convertTheTimeFormatOfT();
+        tvTime.setText(data.getCreateTime());
 
         //删除商圈
         ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +216,6 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
 
     }
-
 
     private RequestOptions getRequestOptions() {
         RequestOptions options = new RequestOptions();

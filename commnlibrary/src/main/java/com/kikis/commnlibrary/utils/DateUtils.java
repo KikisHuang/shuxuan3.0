@@ -767,25 +767,6 @@ public class DateUtils {
     }
 
     /**
-     * 将T（yyyy-MM-dd'T'HH:mm:SS）的时间格式转换成yyyy-MM-dd HH:mm
-     *
-     * @param time
-     * @return
-     */
-    public static String convertTheTimeFormatOfT(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-            Date date = sdf.parse(time);
-            String t = sdf.format(date);
-            return t.replace("T", " ");
-        } catch (ParseException e) {
-
-        }
-        return "";
-    }
-
-    /**
      * 获取时间戳
      *
      * @param time

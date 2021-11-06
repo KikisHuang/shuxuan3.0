@@ -1,14 +1,18 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.content.Context;
 
+import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.IMChatContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -25,8 +29,11 @@ import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatContract.IMChatListener> implements IMChatContract.IMChatPresenter, NetWorkListener {
     private NetworkModel networkModel;
 
+    private WebSocketModel mWebSocketModel;
+
     public IMChatPresenter() {
         networkModel = new NetworkModel(this);
+        mWebSocketModel = new WebSocketModel(this);
     }
 
     @Override
@@ -97,6 +104,19 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
 
+    }
+
+    /**
+     * 获取聊天记录列表
+     */
+    @Override
+    public void getChatHistoryList(String shareUuid) {
+        mWebSocketModel.getChatHistoryList(getContext(), shareUuid, new CustomResultListener<IMChatHistoryListBean>() {
+            @Override
+            public void onResult(IMChatHistoryListBean imChatHistoryListBean) {
+                getV().onChatHistoryList(imChatHistoryListBean);
+            }
+        });
     }
 
     /**

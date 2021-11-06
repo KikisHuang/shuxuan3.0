@@ -10,7 +10,7 @@ public class Api {
     public static String URL;
     //uat服务器开关
     public static final boolean isUat = true;
-    
+
     public static final String SM = ":";
 
     public static final String L = "/";
@@ -30,7 +30,15 @@ public class Api {
     public static final String UAT_OSS_UPLOAD_URL = "uat.gxdingo.com/public/";
 
     //im聊天url
-    public static  String IM_URL = HTTP + "192.168.110.248:8080/";
+    public static String IM_URL = HTTP + "192.168.110.248:8080/";
+
+    //im uat
+    public static String IM_UAT_URL = "uat.gxdingo.com/exmsg/";
+    //im 测试
+    public static final String IM_TEST_URL = "192.168.110.236:8083/";
+    //im 正式
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsg/";
+
 
     //oss路径
     public static String OSS_URL = "192.168.110.248:8080/";
@@ -104,9 +112,9 @@ public class Api {
      */
     public static final String MESSAGE_DETAILS = HIERARCHY + "mps/message/details";
     /**
-     * 消息历史
+     * 获取聊天记录列表
      */
-    public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
+    public static final String GET_CHAT_HISTORY_LIST = HIERARCHY + "mps/message/list";
 
     /**
      * 清除未读消息
@@ -117,6 +125,5 @@ public class Api {
      * 获取2点距离
      */
     public static final String OTHER_DISTANCE = HIERARCHY + "other/distance";
-
 
 }

@@ -1,133 +1,102 @@
 package com.gxdingo.sg.bean;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
- * @author: Kikis
- * @date: 2021/5/19
- * @page:
+ * 获取订阅列表
+ *
+ * @author: JM
  */
 public class SubscribesBean {
 
-    /**
-     * list : [{"fromAvatar":"http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg","fromName":"zhangsan","fromType":10,"id":8,"lastMsg":"没有了","lastMsgTime":"2020-08-26 17:32:29","order":{"id":3541,"storeAvatar":"http://xxxxxxx.com/image.jpg","storeId":35,"storeName":"店铺名称","tradeNo":210235413333},"unreadNum":1},{"fromAvatar":"http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg","fromName":"zhangsan","fromType":20,"id":9,"lastMsg":"没有了","lastMsgTime":"2020-08-26 17:32:29","unreadNum":1}]
-     * total : 12
-     * totalUnread : 22
-     * wsServerUrl : ws://xx.xx.xx.xx/socketio
-     */
+    private String websocketUrl;//web socket接入url
+    private ArrayList<MessageBean> list;
 
-    private int total;
-    private int totalUnread;
-    private String wsServerUrl;
-    private List<ListBean> list;
-
-    public int getTotal() {
-        return total;
+    public String getWebsocketUrl() {
+        return websocketUrl;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setWebsocketUrl(String websocketUrl) {
+        this.websocketUrl = websocketUrl;
     }
 
-    public int getTotalUnread() {
-        return totalUnread;
-    }
-
-    public void setTotalUnread(int totalUnread) {
-        this.totalUnread = totalUnread;
-    }
-
-    public String getWsServerUrl() {
-        return wsServerUrl;
-    }
-
-    public void setWsServerUrl(String wsServerUrl) {
-        this.wsServerUrl = wsServerUrl;
-    }
-
-    public List<ListBean> getList() {
+    public ArrayList<MessageBean> getList() {
         return list;
     }
 
-    public void setList(List<ListBean> list) {
+    public void setList(ArrayList<MessageBean> list) {
         this.list = list;
     }
 
-    public static class ListBean {
-        /**
-         * fromAvatar : http://oss.dgkjmm.com/upload/20200730/643fe7fed3d7438eb767c86f75471dce.jpg
-         * fromName : zhangsan
-         * fromType : 10
-         * id : 8
-         * lastMsg : 没有了
-         * lastMsgTime : 2020-08-26 17:32:29
-         * order : {"id":3541,"storeAvatar":"http://xxxxxxx.com/image.jpg","storeId":35,"storeName":"店铺名称","tradeNo":210235413333}
-         * unreadNum : 1
-         */
+    public static class MessageBean implements Serializable {
+        private String sendAvatar;//发送方头像
+        private String sendNickname;//发送方昵称
+        private int sendUserRole;//发s送方角色。10=用户；11=商家；12=客服；13=系统
+        private String shareUuid; //订阅UUID，使用该值查出聊天记录
+        private String sendIdentifier;//消息发布者id标识
+        private int category;//订阅类别 10=消息  20=转账通知  99=系统通知
+        private String categoryText;//category对应的文本
+        private int unreadNum;//未读消息数
+        private String lastMsg;//最后一条消息内容
+        private int lastMsgType;//最后一条消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
+        private String updateTime;//最后发送时间
 
-        private String fromAvatar;
-        private String fromName;
-        private int fromType;
-        private int id;
-        private String lastMsg;
-        private String lastMsgTime;
-        private OrderBean order;
-        private int unreadNum;
 
-        public String getFromAvatar() {
-            return fromAvatar;
+        public String getSendAvatar() {
+            return sendAvatar;
         }
 
-        public void setFromAvatar(String fromAvatar) {
-            this.fromAvatar = fromAvatar;
+        public void setSendAvatar(String sendAvatar) {
+            this.sendAvatar = sendAvatar;
         }
 
-        public String getFromName() {
-            return fromName;
+        public String getSendNickname() {
+            return sendNickname;
         }
 
-        public void setFromName(String fromName) {
-            this.fromName = fromName;
+        public void setSendNickname(String sendNickname) {
+            this.sendNickname = sendNickname;
         }
 
-        public int getFromType() {
-            return fromType;
+        public int getSendUserRole() {
+            return sendUserRole;
         }
 
-        public void setFromType(int fromType) {
-            this.fromType = fromType;
+        public void setSendUserRole(int sendUserRole) {
+            this.sendUserRole = sendUserRole;
         }
 
-        public int getId() {
-            return id;
+        public String getShareUuid() {
+            return shareUuid;
         }
 
-        public void setId(int id) {
-            this.id = id;
+        public void setShareUuid(String shareUuid) {
+            this.shareUuid = shareUuid;
         }
 
-        public String getLastMsg() {
-            return lastMsg;
+        public String getSendIdentifier() {
+            return sendIdentifier;
         }
 
-        public void setLastMsg(String lastMsg) {
-            this.lastMsg = lastMsg;
+        public void setSendIdentifier(String sendIdentifier) {
+            this.sendIdentifier = sendIdentifier;
         }
 
-        public String getLastMsgTime() {
-            return lastMsgTime;
+        public int getCategory() {
+            return category;
         }
 
-        public void setLastMsgTime(String lastMsgTime) {
-            this.lastMsgTime = lastMsgTime;
+        public void setCategory(int category) {
+            this.category = category;
         }
 
-        public OrderBean getOrder() {
-            return order;
+        public String getCategoryText() {
+            return categoryText;
         }
 
-        public void setOrder(OrderBean order) {
-            this.order = order;
+        public void setCategoryText(String categoryText) {
+            this.categoryText = categoryText;
         }
 
         public int getUnreadNum() {
@@ -138,60 +107,28 @@ public class SubscribesBean {
             this.unreadNum = unreadNum;
         }
 
-        public static class OrderBean {
-            /**
-             * id : 3541
-             * storeAvatar : http://xxxxxxx.com/image.jpg
-             * storeId : 35
-             * storeName : 店铺名称
-             * tradeNo : 210235413333
-             */
+        public String getLastMsg() {
+            return lastMsg;
+        }
 
-            private int id;
-            private String storeAvatar;
-            private int storeId;
-            private String storeName;
-            private long tradeNo;
+        public void setLastMsg(String lastMsg) {
+            this.lastMsg = lastMsg;
+        }
 
-            public int getId() {
-                return id;
-            }
+        public int getLastMsgType() {
+            return lastMsgType;
+        }
 
-            public void setId(int id) {
-                this.id = id;
-            }
+        public void setLastMsgType(int lastMsgType) {
+            this.lastMsgType = lastMsgType;
+        }
 
-            public String getStoreAvatar() {
-                return storeAvatar;
-            }
+        public String getUpdateTime() {
+            return updateTime;
+        }
 
-            public void setStoreAvatar(String storeAvatar) {
-                this.storeAvatar = storeAvatar;
-            }
-
-            public int getStoreId() {
-                return storeId;
-            }
-
-            public void setStoreId(int storeId) {
-                this.storeId = storeId;
-            }
-
-            public String getStoreName() {
-                return storeName;
-            }
-
-            public void setStoreName(String storeName) {
-                this.storeName = storeName;
-            }
-
-            public long getTradeNo() {
-                return tradeNo;
-            }
-
-            public void setTradeNo(long tradeNo) {
-                this.tradeNo = tradeNo;
-            }
+        public void setUpdateTime(String updateTime) {
+            this.updateTime = updateTime;
         }
     }
 }

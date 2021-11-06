@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +23,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.IMChatActivity;
+import com.gxdingo.sg.bean.IMChatHistoryListBean;
+import com.gxdingo.sg.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.utils.EmotionsUtils;
 import com.gxdingo.sg.utils.TextViewUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
@@ -38,128 +42,143 @@ import java.util.regex.Pattern;
  *
  * @author JM
  */
-public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerView.ViewHolder> {
-
-    public static final int IM_CHAT_CONTENT_PROVIDER_ONESELF = 1;//IM聊天内容提供者-自己
-    public static final int IM_CHAT_CONTENT_PROVIDER_OTHERS = 2;//IM聊天内容提供者-他人
-
+public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<IMChatContentAdapter.IMChatContentViewHolder> {
     private Context mContext;
-    private ArrayList<ChatTest> mTempDatas;
-
+    private ArrayList<ReceiveIMMessageBean> mMessageDatas;
     private IMChatActivity.OnIMChatUICallbackListener mOnIMChatUICallbackListener;
+    private int mCurrPlayVoiceIndex = -1;//当前播放语音的索引
+    private IMChatHistoryListBean.MyAvatarInfo mMyAvatarInfo;//自己头像信息
+    private IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;//对方头像信息
 
-    public IMChatContentAdapter(Context context, ArrayList<ChatTest> tempDatas, IMChatActivity.OnIMChatUICallbackListener onIMChatUICallbackListener) {
+    public IMChatContentAdapter(Context context, ArrayList<ReceiveIMMessageBean> messageDatas
+            , IMChatActivity.OnIMChatUICallbackListener onIMChatUICallbackListener) {
         mContext = context;
-        mTempDatas = tempDatas;
+        mMessageDatas = messageDatas;
         mOnIMChatUICallbackListener = onIMChatUICallbackListener;
+    }
+
+    /**
+     * 设置头像信息
+     *
+     * @param myAvatarInfo    自己
+     * @param otherAvatarInfo 对方
+     */
+    public void setAvatar(IMChatHistoryListBean.MyAvatarInfo myAvatarInfo, IMChatHistoryListBean.OtherAvatarInfo otherAvatarInfo) {
+        mMyAvatarInfo = myAvatarInfo;
+        mOtherAvatarInfo = otherAvatarInfo;
     }
 
     @Override
     public int getPullItemCount() {
-        return mTempDatas.size();
+        if (mMessageDatas == null) {
+            return 0;
+        }
+        return mMessageDatas.size();
     }
 
     @Override
     public int getPullItemViewType(int position) {
-        int viewType = 0;
-        int contentProvider = mTempDatas.get(position).fx;
-        int contentType = mTempDatas.get(position).lx;
-        /**
-         * 判断内容提供者是自己还是他人
-         */
-        if (contentProvider == IM_CHAT_CONTENT_PROVIDER_ONESELF) {
-            /**
-             * 自己（数字1开头）
-             */
-            if (contentType == 1) {//文字
-                viewType = 101;
-            } else if (contentType == 2) {//图片
-                viewType = 102;
-            } else if (contentType == 3) {//转账
-                viewType = 103;
-            } else if (contentType == 4) {//语音
-                viewType = 104;
-            } else {//未知
-                viewType = 100;
-            }
-        } else if (contentProvider == IM_CHAT_CONTENT_PROVIDER_OTHERS) {
-            /**
-             * 他人（数字2开头）
-             */
-            if (contentType == 1) {//文字
-                viewType = 201;
-            } else if (contentType == 2) {//图片
-                viewType = 202;
-            } else if (contentType == 3) {//转账
-                viewType = 203;
-            } else if (contentType == 4) {//语音
-                viewType = 204;
-            } else {//未知
-                viewType = 200;
-            }
-        }
+        int viewType = mMessageDatas.get(position).getType();
         return viewType;
     }
 
     @Override
-    public RecyclerView.ViewHolder onPullCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public IMChatContentViewHolder onPullCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = null;
-        RecyclerView.ViewHolder viewHolder = null;
+        IMChatContentViewHolder viewHolder = null;
 
-        if (viewType == 101 || viewType == 201) {
+        if (viewType == 0) {
             //文字
             view = LayoutInflater.from(mContext).inflate(R.layout.module_item_im_chat_text, viewGroup, false);
-            viewHolder = new TextViewHolder(view, viewType == 101 ? IM_CHAT_CONTENT_PROVIDER_ONESELF : IM_CHAT_CONTENT_PROVIDER_OTHERS);
-        } else if (viewType == 102 || viewType == 202) {
+            viewHolder = new TextViewHolder(view);
+        } else if (viewType == 10) {
             //图片
             view = LayoutInflater.from(mContext).inflate(R.layout.module_item_im_chat_picture, viewGroup, false);
-            viewHolder = new PictureViewHolder(view, viewType == 102 ? IM_CHAT_CONTENT_PROVIDER_ONESELF : IM_CHAT_CONTENT_PROVIDER_OTHERS);
-        } else if (viewType == 103 || viewType == 203) {
+            viewHolder = new PictureViewHolder(view);
+        } else if (viewType == 20 || viewType == 21) {
             //转账
             view = LayoutInflater.from(mContext).inflate(R.layout.module_item_im_chat_transfer_accounts, viewGroup, false);
-            viewHolder = new TransferAccountsViewHolder(view, viewType == 103 ? IM_CHAT_CONTENT_PROVIDER_ONESELF : IM_CHAT_CONTENT_PROVIDER_OTHERS);
-        } else if (viewType == 104 || viewType == 204) {
+            viewHolder = new TransferAccountsViewHolder(view);
+        } else if (viewType == 11) {
             //语音
             view = LayoutInflater.from(mContext).inflate(R.layout.module_item_im_chat_voice, viewGroup, false);
-            viewHolder = new VoiceViewHolder(view, viewType == 104 ? IM_CHAT_CONTENT_PROVIDER_ONESELF : IM_CHAT_CONTENT_PROVIDER_OTHERS);
-        } else if (viewType == 100 || viewType == 200) {
+            viewHolder = new VoiceViewHolder(view);
+        } else {
             //未知，一般用来处理低版本APP收到高版本APP的新视图类型时显示（即旧版本没有该视图时）
             view = LayoutInflater.from(mContext).inflate(R.layout.module_item_im_chat_unknown_content, viewGroup, false);
-            viewHolder = new UnknownContentViewHolder(view, viewType == 100 ? IM_CHAT_CONTENT_PROVIDER_ONESELF : IM_CHAT_CONTENT_PROVIDER_OTHERS);
+            viewHolder = new UnknownContentViewHolder(view);
         }
         return viewHolder;
     }
 
     @Override
-    public void onPullBindViewHolder(RecyclerView.ViewHolder contentViewHolder, int position) {
-        ChatTest chatTest = mTempDatas.get(position);
+    public void onPullBindViewHolder(IMChatContentViewHolder contentViewHolder, int position) {
+        ReceiveIMMessageBean messageBean = mMessageDatas.get(position);
+
+        String myIdentifier = UserInfoUtils.getInstance().getIdentifier();//自己的Identifier
+        String sendIdentifier = messageBean.getSendIdentifier();//消息发送方的Identifier
+        boolean isOneself = false;
+
+        if (!TextUtils.isEmpty(myIdentifier) && !TextUtils.isEmpty(sendIdentifier))
+            isOneself = sendIdentifier.equals(myIdentifier);//判断是自己还是对方
+
+        contentViewHolder.setOneselfOrOtherView(isOneself);//设置是自己还是对方视图
+        contentViewHolder.setTime(messageBean.getCreateTime());//设置时间
+        if (isOneself) {
+            if (mMyAvatarInfo != null)
+                contentViewHolder.setAvatar(mMyAvatarInfo.getSendAvatar());//设置头像
+        } else {
+            if (mOtherAvatarInfo != null)
+                contentViewHolder.setAvatar(mOtherAvatarInfo.getSendAvatar());//设置头像
+        }
+
         //文字视图
         if (contentViewHolder instanceof TextViewHolder) {
             TextViewHolder textViewHolder = (TextViewHolder) contentViewHolder;
-            Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(textViewHolder.ivAvatar);
-            textViewHolder.tvSendText.setText(TextViewUtils.contentConversion(mContext,chatTest.nr2));
+            textViewHolder.tvSendText.setText(TextViewUtils.contentConversion(mContext, messageBean.getContent()));
         }
         //图片视图
         else if (contentViewHolder instanceof PictureViewHolder) {
             PictureViewHolder pictureHolder = (PictureViewHolder) contentViewHolder;
-            Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(pictureHolder.ivAvatar);
-            Glide.with(mContext).load(chatTest.nr2).apply(getRequestOptions()).into(pictureHolder.ivPicture);
-
+            Glide.with(mContext).load(messageBean.getContent()).apply(getRequestOptions()).into(pictureHolder.ivPicture);
         }
         //转账视图
         else if (contentViewHolder instanceof TransferAccountsViewHolder) {
+            ReceiveIMMessageBean.MsgAccounts msgAccounts = messageBean.getMsgAccounts();
             TransferAccountsViewHolder transferAccountsHolder = (TransferAccountsViewHolder) contentViewHolder;
-            Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(transferAccountsHolder.ivAvatar);
-            transferAccountsHolder.tvAmount.setText(chatTest.nr2);
-            transferAccountsHolder.tvReceivePaymentStatus.setText("待接收");
-            transferAccountsHolder.tvTransferAccountsTypeName.setText("微信转账");
-            transferAccountsHolder.ivTransferAccountsTypeIcon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_alipay_icon);
+            if (msgAccounts != null) {
+                transferAccountsHolder.clTransferAccountsBg.setVisibility(View.VISIBLE);
+                transferAccountsHolder.tvAmount.setText(msgAccounts.getAmount().toString());
+                //0=未付款；1=待领取；2=已收款；3=拒绝收款；4=过期退回
+                if (msgAccounts.getPayType() == 1) {
+                    transferAccountsHolder.tvReceivePaymentStatus.setText("待领取");
+                    transferAccountsHolder.clTransferAccountsBg.getBackground().setAlpha(255);
+                } else if (msgAccounts.getPayType() == 2) {
+                    transferAccountsHolder.tvReceivePaymentStatus.setText("已收款");
+                    transferAccountsHolder.clTransferAccountsBg.getBackground().setAlpha(100);
+                } else if (msgAccounts.getPayType() == 3) {
+                    transferAccountsHolder.tvReceivePaymentStatus.setText("拒绝收款");
+                    transferAccountsHolder.clTransferAccountsBg.getBackground().setAlpha(100);
+                } else if (msgAccounts.getPayType() == 4) {
+                    transferAccountsHolder.tvReceivePaymentStatus.setText("过期退回");
+                    transferAccountsHolder.clTransferAccountsBg.getBackground().setAlpha(100);
+                }
+                //转账方支付类型。10=微信,20=支付宝
+                if (msgAccounts.getPayType() == 10) {
+                    transferAccountsHolder.tvTransferAccountsTypeName.setText("微信转账");
+                    transferAccountsHolder.ivTransferAccountsTypeIcon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_wechat_icon);
+                } else if (msgAccounts.getPayType() == 20) {
+                    transferAccountsHolder.tvTransferAccountsTypeName.setText("支付宝转账");
+                    transferAccountsHolder.ivTransferAccountsTypeIcon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_alipay_icon);
+                }
+            } else {
+                transferAccountsHolder.clTransferAccountsBg.setVisibility(View.INVISIBLE);
+            }
         }
         //语音视图
         else if (contentViewHolder instanceof VoiceViewHolder) {
             VoiceViewHolder voiceViewHolder = (VoiceViewHolder) contentViewHolder;
-            Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(voiceViewHolder.ivAvatar);
-            voiceViewHolder.tvVoiceSecond.setText(chatTest.nr2);
+            voiceViewHolder.tvVoiceSecond.setText(String.valueOf(messageBean.getVoiceDuration()));
             voiceViewHolder.llVoiceBg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -172,7 +191,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
                     }
                     notifyDataSetChanged();//刷新界面
                     if (mOnIMChatUICallbackListener != null) {
-                        mOnIMChatUICallbackListener.onCallback(voiceViewHolder.mContentProvider, chatTest);
+                        mOnIMChatUICallbackListener.onCallback(((VoiceViewHolder) contentViewHolder).itemView, position, messageBean.getType(), messageBean.getContent());
                     }
                 }
             });
@@ -190,32 +209,52 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
         //未知内容视图
         else if (contentViewHolder instanceof UnknownContentViewHolder) {
             UnknownContentViewHolder unknownContentViewHolder = (UnknownContentViewHolder) contentViewHolder;
-            Glide.with(mContext).load(chatTest.nr).apply(getRequestOptions()).into(unknownContentViewHolder.ivAvatar);
         }
+
     }
 
-    private int mCurrPlayVoiceIndex = -1;//当前播放语音的索引
 
     private RequestOptions getRequestOptions() {
         RequestOptions options = new RequestOptions();
-        options.placeholder(com.kikis.commnlibrary.R.mipmap.news_default_icon);    //加载成功之前占位图
-        options.error(com.kikis.commnlibrary.R.mipmap.news_default_icon);    //加载错误之后的错误图
+        options.placeholder(R.mipmap.ic_user_default_avatar);    //加载成功之前占位图
+        options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
         return options;
     }
 
     /**
      * 父ViewHolder
      */
-    private class IMChatContentViewHolder extends RecyclerView.ViewHolder {
-        int mContentProvider;//内容提供者,自己或者他人
+    public abstract class IMChatContentViewHolder extends RecyclerView.ViewHolder {
         RoundAngleImageView ivAvatar;
         TextView tvMessageTime;
 
-
-        public IMChatContentViewHolder(@NonNull View itemView, int contentProvider) {
+        public IMChatContentViewHolder(@NonNull View itemView) {
             super(itemView);
-            mContentProvider = contentProvider;
             tvMessageTime = itemView.findViewById(R.id.tv_message_time);
+        }
+
+        /**
+         * 设置是自己还是对方视图
+         */
+        public abstract void setOneselfOrOtherView(boolean isOneself);
+
+        /**
+         * 设置时间，空则占位隐藏（必须在抽象方法setOneselfOrOtherView后调用）
+         */
+        public void setTime(String time) {
+            if (tvMessageTime != null) {
+                tvMessageTime.setVisibility(TextUtils.isEmpty(time) ? View.INVISIBLE : View.VISIBLE);
+                tvMessageTime.setText(time);
+            }
+        }
+
+        /**
+         * 设置头像（必须在抽象方法setOneselfOrOtherView后调用）
+         */
+        public void setAvatar(String avatar) {
+            if (ivAvatar != null) {
+                Glide.with(mContext).load(avatar).apply(getRequestOptions()).into(ivAvatar);
+            }
         }
     }
 
@@ -223,10 +262,16 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
      * 文字视图
      */
     public class TextViewHolder extends IMChatContentViewHolder {
+        View itemView;
         TextView tvSendText;
 
-        public TextViewHolder(@NonNull View itemView, int contentProvider) {
-            super(itemView, contentProvider);
+        public TextViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+        }
+
+        @Override
+        public void setOneselfOrOtherView(boolean isOneself) {
             ConstraintLayout clOneselfSendTextLayout = itemView.findViewById(R.id.cl_oneself_send_text_layout);
             RoundAngleImageView nivOneselfAvatar = itemView.findViewById(R.id.niv_oneself_avatar);
             TextView tvOneselfSendText = itemView.findViewById(R.id.tv_oneself_send_text);
@@ -236,7 +281,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
             TextView tvOthersSendText = itemView.findViewById(R.id.tv_others_send_text);
 
             //内容提供者是自己就显示自己发送文字布局反之显示他人发送文字布局
-            if (mContentProvider == IM_CHAT_CONTENT_PROVIDER_ONESELF) {
+            if (isOneself) {
                 clOneselfSendTextLayout.setVisibility(View.VISIBLE);
                 clOthersSendTextLayout.setVisibility(View.GONE);
 
@@ -256,10 +301,16 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
      * 图片视图
      */
     public class PictureViewHolder extends IMChatContentViewHolder {
+        View itemView;
         RoundAngleImageView ivPicture;
 
-        public PictureViewHolder(@NonNull View itemView, int contentProvider) {
-            super(itemView, contentProvider);
+        public PictureViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+        }
+
+        @Override
+        public void setOneselfOrOtherView(boolean isOneself) {
             ConstraintLayout clOneselfSendPictureLayout = itemView.findViewById(R.id.cl_oneself_send_picture_layout);
             RoundAngleImageView ivOneselfAvatar = itemView.findViewById(R.id.iv_oneself_avatar);
             RoundAngleImageView ivOneselfPicture = itemView.findViewById(R.id.iv_oneself_picture);
@@ -269,7 +320,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
             RoundAngleImageView ivOthersPicture = itemView.findViewById(R.id.iv_others_picture);
 
             //内容提供者是自己就显示自己发送文字布局反之显示他人发送文字布局
-            if (mContentProvider == IM_CHAT_CONTENT_PROVIDER_ONESELF) {
+            if (isOneself) {
                 clOneselfSendPictureLayout.setVisibility(View.VISIBLE);
                 clOthersSendPictureLayout.setVisibility(View.GONE);
 
@@ -289,14 +340,20 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
      * 转账视图
      */
     public class TransferAccountsViewHolder extends IMChatContentViewHolder {
+        View itemView;
         ConstraintLayout clTransferAccountsBg;
         TextView tvAmount;
         TextView tvReceivePaymentStatus;
         ImageView ivTransferAccountsTypeIcon;
         TextView tvTransferAccountsTypeName;
 
-        public TransferAccountsViewHolder(@NonNull View itemView, int contentProvider) {
-            super(itemView, contentProvider);
+        public TransferAccountsViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+        }
+
+        @Override
+        public void setOneselfOrOtherView(boolean isOneself) {
             ConstraintLayout clOneselfSendTransferAccountsLayout = itemView.findViewById(R.id.cl_oneself_send_transfer_accounts_layout);
             ConstraintLayout clOneselfTransferAccountsBg = itemView.findViewById(R.id.cl_oneself_transfer_accounts_bg);
             RoundAngleImageView ivOneselfAvatar = itemView.findViewById(R.id.niv_oneself_avatar);
@@ -314,7 +371,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
             TextView tvOthersTransferAccountsTypeName = itemView.findViewById(R.id.tv_others_transfer_accounts_type_name);
 
             //内容提供者是自己就显示自己发送文字布局反之显示他人发送文字布局
-            if (mContentProvider == IM_CHAT_CONTENT_PROVIDER_ONESELF) {
+            if (isOneself) {
                 clOneselfSendTransferAccountsLayout.setVisibility(View.VISIBLE);
                 clOthersSendTransferAccountsLayout.setVisibility(View.GONE);
 
@@ -342,13 +399,19 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
      * 语音视图
      */
     public class VoiceViewHolder extends IMChatContentViewHolder {
+        View itemView;
         LinearLayout llVoiceBg;
         TextView tvVoiceSecond;
         ImageView ivVoiceScrolling;
         AnimationDrawable mVoiceScrollingAnimation;
 
-        public VoiceViewHolder(@NonNull View itemView, int contentProvider) {
-            super(itemView, contentProvider);
+        public VoiceViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+        }
+
+        @Override
+        public void setOneselfOrOtherView(boolean isOneself) {
             ConstraintLayout clOneselfSendVoiceLayout = itemView.findViewById(R.id.cl_oneself_send_voice_layout);
             RoundAngleImageView ivOneselfAvatar = itemView.findViewById(R.id.niv_oneself_avatar);
             LinearLayout llOneselfVoiceBg = itemView.findViewById(R.id.ll_oneself_voice_bg);
@@ -362,7 +425,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
             ImageView ivOthersVoiceScrolling = itemView.findViewById(R.id.iv_others_voice_scrolling);
 
             //内容提供者是自己就显示自己发送文字布局反之显示他人发送文字布局
-            if (mContentProvider == IM_CHAT_CONTENT_PROVIDER_ONESELF) {
+            if (isOneself) {
                 clOneselfSendVoiceLayout.setVisibility(View.VISIBLE);
                 clOthersSendVoiceLayout.setVisibility(View.GONE);
 
@@ -392,23 +455,14 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<RecyclerV
      */
     public class UnknownContentViewHolder extends IMChatContentViewHolder {
 
-        public UnknownContentViewHolder(@NonNull View itemView, int contentProvider) {
-            super(itemView, contentProvider);
+        public UnknownContentViewHolder(@NonNull View itemView) {
+            super(itemView);
             ivAvatar = itemView.findViewById(R.id.iv_others_avatar);
         }
-    }
 
-    public static class ChatTest {
-        public int fx;
-        public int lx;
-        public String nr;
-        public String nr2;
+        @Override
+        public void setOneselfOrOtherView(boolean isOneself) {
 
-        public ChatTest(int fx, int lx, String nr, String nr2) {
-            this.fx = fx;
-            this.lx = lx;
-            this.nr = nr;
-            this.nr2 = nr2;
         }
     }
 }

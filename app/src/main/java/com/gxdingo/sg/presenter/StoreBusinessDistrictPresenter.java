@@ -33,6 +33,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void onSucceed(int type) {
+        //商家删除商圈动态
         if (type == 200) {
             getBV().onSucceed(type);
         }
@@ -40,7 +41,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void onMessage(String msg) {
-
+        if (isBViewAttached())
+            getBV().onMessage(msg);
     }
 
     @Override

@@ -89,6 +89,7 @@ public class BusinessDistrictMessageAdapter extends BaseQuickAdapter<BusinessDis
 //            String timeFormat = DateUtils.getEventtimeDiffText(timecurrentTimeMillis, createTimeMillis);
 //            ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(timeFormat);
 //        }
+        ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(comment.getCreateTime());
         Glide.with(getContext()).load(comment.getCircleImage()).into(ivPicture);
 
         //回复评论的内容

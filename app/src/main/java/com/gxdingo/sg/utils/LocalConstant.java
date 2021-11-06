@@ -115,6 +115,7 @@ public class LocalConstant {
 
     //客户端测试 http 签名
     public static final String TEST_HTTP_KEY = "42368a38a5a1a0d8bc6160513b032e15";
+
     //客户端uat http 签名
     public static final String CLIENT_UAT_HTTP_KEY = "79f895661d9fe3c2bf048578493a37a1";
     //商家端uat http 签名
@@ -124,6 +125,11 @@ public class LocalConstant {
     public static final String CLIENT_OFFICIAL_HTTP_KEY = "298fb7d237c3cd377ed95dc0075e7f35";
     //商家端official http 签名
     public static final String STORE_OFFICIAL_HTTP_KEY = "4b2412de3657b3fcdc6b1f7d1518b3df";
+
+    //im uat http 签名
+    public static final String IM_UAT_HTTP_KEY = "4ee5515ac41d433cabfa7b741c07f55f";
+    //im official http
+    public static final String IM_OFFICIAL_HTTP_KEY = "1b4c26cf72b24e47afb4d9d033714fc1";
 
     //http param
     public static final String APPNAME = "appName";
