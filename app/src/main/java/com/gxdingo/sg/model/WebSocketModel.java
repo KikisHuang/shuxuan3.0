@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.Observable;
-
 import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
 import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
