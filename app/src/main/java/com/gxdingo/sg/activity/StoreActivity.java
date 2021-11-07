@@ -2,7 +2,6 @@ package com.gxdingo.sg.activity;
 
 import android.app.Activity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -11,12 +10,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
-import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
@@ -32,8 +29,6 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
-import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**

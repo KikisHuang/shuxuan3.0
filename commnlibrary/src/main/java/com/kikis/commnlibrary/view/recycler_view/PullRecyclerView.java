@@ -376,7 +376,7 @@ public class PullRecyclerView extends RecyclerView {
     }
 
     /**
-     * 停止下拉刷新 (注意：加载更多数据之后，必须调用stopRefresh()方法，否则下次不会再触发下拉刷新)
+     * 停止下拉刷新 (注意：下拉获取数据之后，必须调用stopRefresh()方法，否则下次不会再触发下拉刷新)
      */
     public final void stopRefresh() {
         mIsRefresh = false;
@@ -448,6 +448,15 @@ public class PullRecyclerView extends RecyclerView {
      */
     public void setOnTouchScrollListener(OnTouchScrollListener onTouchScrollListener) {
         mOnTouchScrollListener = onTouchScrollListener;
+    }
+
+    /**
+     * 当前是否在滚动列表
+     *
+     * @return
+     */
+    public boolean isTouchScroll() {
+        return mIsTouchScroll;
     }
 
     int mTriggerItem = -100;

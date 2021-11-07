@@ -8,10 +8,10 @@ import java.util.ArrayList;
  *
  * @author: JM
  */
-public class SubscribesBean {
+public class SubscribesListBean {
 
     private String websocketUrl;//web socket接入url
-    private ArrayList<MessageBean> list;
+    private ArrayList<SubscribesMessage> list;
 
     public String getWebsocketUrl() {
         return websocketUrl;
@@ -21,20 +21,20 @@ public class SubscribesBean {
         this.websocketUrl = websocketUrl;
     }
 
-    public ArrayList<MessageBean> getList() {
+    public ArrayList<SubscribesMessage> getList() {
         return list;
     }
 
-    public void setList(ArrayList<MessageBean> list) {
+    public void setList(ArrayList<SubscribesMessage> list) {
         this.list = list;
     }
 
-    public static class MessageBean implements Serializable {
+    public static class SubscribesMessage implements Serializable {
         private String sendAvatar;//发送方头像
         private String sendNickname;//发送方昵称
-        private int sendUserRole;//发s送方角色。10=用户；11=商家；12=客服；13=系统
+        private int sendUserRole;//*发s送方角色。10=用户；11=商家；12=客服；13=系统
         private String shareUuid; //订阅UUID，使用该值查出聊天记录
-        private String sendIdentifier;//消息发布者id标识
+        private String sendIdentifier;//*消息发布者id标识
         private int category;//订阅类别 10=消息  20=转账通知  99=系统通知
         private String categoryText;//category对应的文本
         private int unreadNum;//未读消息数

@@ -1,12 +1,10 @@
 package com.gxdingo.sg.fragment.store;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.TimeUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -26,17 +23,13 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
-import com.gxdingo.sg.bean.CategoriesBean;
-import com.gxdingo.sg.bean.StoreListBean;
-import com.gxdingo.sg.bean.SubscribesBean;
+import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.gxdingo.sg.bean.SubscribesListBean;
 import com.gxdingo.sg.bean.UserBean;
-import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.StoreHomeContract;
-import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
 import com.gxdingo.sg.service.IMMessageReceivingService;
@@ -44,24 +37,22 @@ import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.RoundImageView;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.umeng.commonsdk.debug.I;
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
-import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
@@ -199,15 +190,34 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         mStoreHomeIMMessageAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                SubscribesBean.MessageBean messageBean = mStoreHomeIMMessageAdapter.getItem(position);
+                SubscribesListBean.SubscribesMessage subscribesMessage = mStoreHomeIMMessageAdapter.getItem(position);
                 //跳转到IM聊天界面
                 Map<String, String> intentMap = new HashMap<>();
-                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, messageBean.getShareUuid());
-                intentMap.put(IMChatActivity.EXTRA_OTHER_NAME, messageBean.getSendNickname());
+                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, subscribesMessage.getShareUuid());
+                intentMap.put(IMChatActivity.EXTRA_SEND_IDENTIFIER, subscribesMessage.getSendIdentifier());
+                intentMap.put(IMChatActivity.EXTRA_SEND_NICKNAME, subscribesMessage.getSendNickname());
                 goToPage(reference.get(), IMChatActivity.class, intentMap);
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
+    }
+
+    @Override
+    protected void initData() {
+        UserInfoUtils userInfo = UserInfoUtils.getInstance();
+        if (userInfo != null && userInfo.isLogin()) {
+            UserBean userBean = userInfo.getUserInfo();
+            if (userBean != null) {
+                //显示头像、名称和营业状态信息
+                UserBean.StoreBean storeBean = userBean.getStore();
+                Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
+                tvStoreName.setText(storeBean.getName());
+                setBusinessStatus(storeBean);
+
+                //获取IM订阅信息
+                getP().getIMSubscribesList(true);
+            }
+        }
     }
 
     private void setAppBarLayoutListener() {
@@ -230,26 +240,23 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-
+        //从IMMessageReceivingService接收到的IM消息
+        if (object instanceof ReceiveIMMessageBean) {
+            ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
+            //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
+            getP().getIMSubscribesList(true);//获取IM订阅信息
+        }
     }
 
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {//店铺审核成功重新初始化数据
+        //店铺审核成功重新初始化数据
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
             initData();
         }
-    }
-
-    @Override
-    protected void initData() {
-        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-        if (userBean != null) {
-            UserBean.StoreBean storeBean = userBean.getStore();
-            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
-            tvStoreName.setText(storeBean.getName());
-            setBusinessStatus(storeBean);
-
+        //退出聊天界面（IMChatActivity）时获取IM订阅信息，刷新订阅列表显示最后聊天内容
+        if (type == 100998) {
             getP().getIMSubscribesList(true);//获取IM订阅信息
         }
     }
@@ -257,6 +264,24 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_search:
+                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                break;
+            case R.id.iv_search2:
+                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                break;
+            case R.id.iv_more:
+                showSelectBusinessStatusDialog();
+                break;
+            case R.id.iv_more2:
+                showSelectBusinessStatusDialog();
+                break;
+        }
     }
 
     private RequestOptions getRequestOptions() {
@@ -278,24 +303,6 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         }
     }
 
-    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.tv_search:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
-                break;
-            case R.id.iv_search2:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
-                break;
-            case R.id.iv_more:
-                showSelectBusinessStatusDialog();
-                break;
-            case R.id.iv_more2:
-                showSelectBusinessStatusDialog();
-                break;
-        }
-    }
-
     /**
      * 显示选择营业状态弹窗
      */
@@ -312,23 +319,33 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 }).show());
     }
 
-
     /**
      * 返回IM订阅信息列表(包含有请求web socket接入url)
      */
     @Override
-    public void onIMSubscribesInfo(boolean refresh, SubscribesBean subscribesBean) {
-        if (subscribesBean != null && subscribesBean.getList() != null) {
+    public void onIMSubscribesInfo(boolean refresh, SubscribesListBean subscribesListBean) {
+        if (subscribesListBean != null && subscribesListBean.getList() != null) {
+            //取出本地存储的websocket url
+            String webSocketUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
+            /*
+             * 本地保存的webSocketUrl是否服务器的一样，不一样可能url发生改变，
+             * 需要将BaseWebSocket设置null,重新连接（前提是IMMessageReceivingService在运行）
+             */
+            if (!webSocketUrl.equals(subscribesListBean.getWebsocketUrl())) {
+                EventBus.getDefault().post(100999);//发送重置码
+            }
             //保存web socket接入url
-            SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesBean.getWebsocketUrl());
+            SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
             //启动IM消息接收服务
             mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
             if (refresh) {
-                mStoreHomeIMMessageAdapter.setList(subscribesBean.getList());
+                mStoreHomeIMMessageAdapter.setList(subscribesListBean.getList());
             } else {
-                mStoreHomeIMMessageAdapter.addData(subscribesBean.getList());
+                mStoreHomeIMMessageAdapter.addData(subscribesListBean.getList());
             }
         }
     }
+
+
 }

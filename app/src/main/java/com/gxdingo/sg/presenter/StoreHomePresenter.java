@@ -1,20 +1,13 @@
 package com.gxdingo.sg.presenter;
 
-import android.media.MediaPlayer;
-
-import com.gxdingo.sg.bean.SubscribesBean;
+import com.gxdingo.sg.bean.SubscribesListBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.model.NetworkModel;
-import com.gxdingo.sg.model.StoreMainModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 商家主页控制器
@@ -51,10 +44,10 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (o instanceof SubscribesBean) {
+        if (o instanceof SubscribesListBean) {
             //消息订阅回调
-            SubscribesBean subscribesBean = (SubscribesBean) o;
-            getV().onIMSubscribesInfo(refresh, subscribesBean);
+            SubscribesListBean subscribesListBean = (SubscribesListBean) o;
+            getV().onIMSubscribesInfo(refresh, subscribesListBean);
         }
     }
 

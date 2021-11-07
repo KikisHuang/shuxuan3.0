@@ -1,6 +1,6 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.SubscribesBean;
+import com.gxdingo.sg.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -29,6 +29,6 @@ public class StoreHomeContract {
         /**
          * 返回IM订阅信息列表(包含有请求web socket接入url)
          */
-        void onIMSubscribesInfo(boolean refresh,SubscribesBean subscribesBean);
+        void onIMSubscribesInfo(boolean refresh, SubscribesListBean subscribesListBean);
     }
 }

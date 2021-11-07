@@ -106,42 +106,8 @@ public class ReceiveIMMessageBean implements Serializable {
     /**
      * 订阅详情
      */
-    public static class SubscribeListVO implements Serializable {
-        private String sendAvatar;//发送方头像
-        private String sendNickname;//发送者昵称
-        private String shareUuid;//发布者与订阅者的共享唯一id，使用该值查出聊天记录以及发送信息
+    public static class SubscribeListVO extends SubscribesListBean.SubscribesMessage implements Serializable {
         private long sendUserId;//消息发布者ID
-        private int category;//订阅类别 10=消息  20=转账通知  99=系统通知
-        private String categoryText;//category对应的文本
-        private int unreadNum;//未读消息数
-        private String lastMsg;//最后消息内容
-        private int lastMsgType;//最后消息类型
-        private String updateTime;//更新时间 (最后消息时间)
-
-
-        public String getSendAvatar() {
-            return sendAvatar;
-        }
-
-        public void setSendAvatar(String sendAvatar) {
-            this.sendAvatar = sendAvatar;
-        }
-
-        public String getSendNickname() {
-            return sendNickname;
-        }
-
-        public void setSendNickname(String sendNickname) {
-            this.sendNickname = sendNickname;
-        }
-
-        public String getShareUuid() {
-            return shareUuid;
-        }
-
-        public void setShareUuid(String shareUuid) {
-            this.shareUuid = shareUuid;
-        }
 
         public long getSendUserId() {
             return sendUserId;
@@ -149,54 +115,6 @@ public class ReceiveIMMessageBean implements Serializable {
 
         public void setSendUserId(long sendUserId) {
             this.sendUserId = sendUserId;
-        }
-
-        public int getCategory() {
-            return category;
-        }
-
-        public void setCategory(int category) {
-            this.category = category;
-        }
-
-        public String getCategoryText() {
-            return categoryText;
-        }
-
-        public void setCategoryText(String categoryText) {
-            this.categoryText = categoryText;
-        }
-
-        public int getUnreadNum() {
-            return unreadNum;
-        }
-
-        public void setUnreadNum(int unreadNum) {
-            this.unreadNum = unreadNum;
-        }
-
-        public String getLastMsg() {
-            return lastMsg;
-        }
-
-        public void setLastMsg(String lastMsg) {
-            this.lastMsg = lastMsg;
-        }
-
-        public int getLastMsgType() {
-            return lastMsgType;
-        }
-
-        public void setLastMsgType(int lastMsgType) {
-            this.lastMsgType = lastMsgType;
-        }
-
-        public String getUpdateTime() {
-            return updateTime;
-        }
-
-        public void setUpdateTime(String updateTime) {
-            this.updateTime = updateTime;
         }
     }
 

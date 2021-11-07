@@ -7,7 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
-import com.gxdingo.sg.bean.SubscribesBean;
+import com.gxdingo.sg.bean.SubscribesListBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -139,16 +139,16 @@ public class WebSocketModel {
         map.put(Constant.CURRENT, String.valueOf(mPage));
         map.put(Constant.SIZE, String.valueOf(mPageSize));
 
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
+//        if (netWorkListener != null)
+//            netWorkListener.onStarts();
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-        Observable<SubscribesBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<SubscribesBean>, SubscribesBean>(new TypeToken<SubscribesBean>() {
+        Observable<SubscribesListBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<SubscribesListBean>, SubscribesListBean>(new TypeToken<SubscribesListBean>() {
                 }.getType()) {
                 });
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<SubscribesBean>(context) {
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<SubscribesListBean>(context) {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
@@ -156,15 +156,14 @@ public class WebSocketModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
-                    netWorkListener.onAfters();
+                    //netWorkListener.onAfters();
                 }
             }
 
             @Override
-            public void onNext(SubscribesBean subscribesBean) {
-
+            public void onNext(SubscribesListBean subscribesBean) {
                 if (netWorkListener != null) {
-                    netWorkListener.onAfters();
+                    //netWorkListener.onAfters();
                     netWorkListener.onData(refresh, subscribesBean);
                 }
                 if (subscribesBean != null && subscribesBean.getList() != null) {
@@ -182,16 +181,17 @@ public class WebSocketModel {
     /**
      * 向服务器发送聊天消息
      */
-    public void sendMessage(Context context, SendIMMessageBean sendIMMessageBean) {
-        if (netWorkListener != null) {
-            netWorkListener.onStarts();
-        }
+    public void sendMessage(Context context, SendIMMessageBean sendIMMessageBean, CustomResultListener<ReceiveIMMessageBean> listener) {
         Map<String, String> map = new HashMap<>();
         map.put("shareUuid", sendIMMessageBean.getShareUuid());
         map.put("type", String.valueOf(sendIMMessageBean.getType()));
         map.put("content", sendIMMessageBean.getContent());
         map.put("voiceDuration", String.valueOf(sendIMMessageBean.getVoiceDuration()));
         map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SEND, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
@@ -217,6 +217,9 @@ public class WebSocketModel {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                 }
+                if (listener != null) {
+                    listener.onResult(receiveIMMessageBean);
+                }
             }
         };
 
@@ -228,14 +231,14 @@ public class WebSocketModel {
      * 获取聊天记录列表
      */
     public void getChatHistoryList(Context context, String shareUuid, CustomResultListener customResultListener) {
-        if (netWorkListener != null) {
-            netWorkListener.onStarts();
-        }
-
         Map<String, String> map = new HashMap<>();
         map.put("shareUuid", shareUuid);
         map.put("current", String.valueOf(mPage));
         map.put("size", String.valueOf(mPageSize));
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
 
         PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
@@ -253,6 +256,9 @@ public class WebSocketModel {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
+                if (customResultListener != null) {
+                    customResultListener.onResult(null);
+                }
             }
 
             @Override
@@ -262,6 +268,10 @@ public class WebSocketModel {
                 }
                 if (customResultListener != null) {
                     customResultListener.onResult(imChatHistoryListBean);
+                }
+                if (imChatHistoryListBean != null && imChatHistoryListBean.getList() != null) {
+                    //下一页
+                    pageNext(false, imChatHistoryListBean.getList().size());
                 }
             }
         };

@@ -1,7 +1,6 @@
 package com.gxdingo.sg.model;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationClientOption;
@@ -17,14 +16,12 @@ import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.NormalBean;
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.http.HttpClient;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -37,7 +34,6 @@ import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
-import com.zhouyou.http.request.PostRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -53,8 +49,6 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
-import static com.gxdingo.sg.http.Api.IM_URL;
-import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,7 +38,6 @@ import com.gxdingo.sg.adapter.IMChatContentAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.ReceiveIMMessageBean;
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.biz.IMChatContract;
 import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.IMSelectTransferAccountsWayPopupView;
@@ -50,7 +47,6 @@ import com.gxdingo.sg.fragment.IMOtherFunctionsFragment;
 import com.gxdingo.sg.presenter.IMChatPresenter;
 import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.kikis.commnlibrary.utils.StringUtils;
 import com.kikis.commnlibrary.utils.SystemUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.MyToastUtils;
@@ -72,7 +68,8 @@ import butterknife.OnClick;
 @SuppressLint("NewApi")
 public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter> implements IMChatContract.IMChatListener {
     public static final String EXTRA_SHARE_UUID = "EXTRA_SHARE_UUID";//发布者与订阅者的共享唯一id常量
-    public static final String EXTRA_OTHER_NAME = "EXTRA_OTHER_NAME";//对方名称
+    public static final String EXTRA_SEND_IDENTIFIER = "EXTRA_SEND_IDENTIFIER";//发送者id标识常量
+    public static final String EXTRA_SEND_NICKNAME = "EXTRA_SEND_NICKNAME";//发送者昵称常量
 
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
@@ -149,15 +146,15 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     boolean isSetStackFromEnd;
     int mCurrClickFunctionMenuId;//当前点击的主功能菜单ID
     int mSoftInputHeight = 0;//软键盘高度
-    long mStartSendTime;//发送消息间隔
-    long mEndSendTime;
 
     IMChatHistoryListBean.MyAvatarInfo mMyAvatarInfo;//自己头像信息
     IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;//对方头像信息
     IMChatHistoryListBean.Address mAddress;//收货地址
     boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
+
     String mShareUuid;//发布者与订阅者的共享唯一id
-    String mOtherName;//对方名称
+    String mSendIdentifier;//发送者id标识（Identifier）
+    String mSendNickname;//发送者昵称
 
     /**
      * IM聊天UI回调监听接口
@@ -249,10 +246,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     @Override
     protected void init() {
-        mStartSendTime = System.currentTimeMillis();
         //显示标题栏右边图片按钮
         tvRightImageButton.setVisibility(View.VISIBLE);
-
         //监听全局布局（用来监听软键盘显示和关闭）
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
@@ -262,6 +257,20 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         chatContentList.setLayoutManager(mPullLinearLayoutManager);
         chatContentList.addItemDecoration(new PullDividerItemDecoration(this, (int) getResources().getDimension(R.dimen.dp10)));
         chatContentList.setPullAdapter(mIMChatContentAdapter);
+        chatContentList.setPullRefreshEnable(true);
+        chatContentList.setOnRecyclerViewListener(new PullRecyclerView.OnRecyclerViewListener() {
+            @Override
+            public void onRefresh() {
+                if (!TextUtils.isEmpty(mShareUuid)) {
+                    getP().getChatHistoryList(mShareUuid);//获取聊天记录
+                }
+            }
+
+            @Override
+            public void onLoadMore() {
+
+            }
+        });
         chatContentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -330,10 +339,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     @Override
     protected void initData() {
         mShareUuid = getIntent().getStringExtra(EXTRA_SHARE_UUID);
-        mOtherName = getIntent().getStringExtra(EXTRA_OTHER_NAME);
+        mSendIdentifier = getIntent().getStringExtra(EXTRA_SEND_IDENTIFIER);
+        mSendNickname = getIntent().getStringExtra(EXTRA_SEND_NICKNAME);
 
         titleLayout.setTitleTextSize(16);
-        titleLayout.setTitleText(mOtherName);
+        titleLayout.setTitleText(mSendNickname);
 
         if (!TextUtils.isEmpty(mShareUuid)) {
             getP().getChatHistoryList(mShareUuid);//获取聊天记录
@@ -366,6 +376,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         super.onDestroy();
         //删除全局布局侦听器
         getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
+        //刷新订阅列表显示最后聊天内容
+        sendEvent(100998);
     }
 
     /**
@@ -431,8 +443,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             else if (functionsItem.type == IMOtherFunctionsAdapter.TYPE_STORE) {
 
             }
-
-
         }
 
         /**
@@ -454,10 +464,17 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         if (object instanceof IMSelectTransferAccountsWayPopupView) {
 
         }
-//
-//        //发送消息事件
-//        if (object instanceof SendMessageBean)
-//            sendMessage((SendMessageBean) object);
+        /**
+         * 从IMMessageReceivingService接收到的IM消息
+         */
+        if (object instanceof ReceiveIMMessageBean) {
+            ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
+            //判断消息发送者是否跟当前发送者一样
+            if (mSendIdentifier.equals(receiveIMMessageBean.getSendIdentifier())) {
+                //一样则通过该方法显示消息
+                onSendMessageSuccess(receiveIMMessageBean);
+            }
+        }
     }
 
 
@@ -476,27 +493,60 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             }
 
             if (imChatHistoryListBean.getList() != null) {
-                mMessageDatas.addAll(imChatHistoryListBean.getList());
+                mMessageDatas.addAll(0, imChatHistoryListBean.getList());
                 mIMChatContentAdapter.notifyDataSetChanged();
             }
 
-            if (isInitFirstLoad) {
+            if (!isInitFirstLoad) {
                 isInitFirstLoad = true;
                 messageListScrollsToBottom(true);//聊天消息列表滚到底部
             }
         }
+        //停止下拉刷新
+        chatContentList.stopRefresh();
+
+    }
+
+    /**
+     * 没有更多历史聊天记录
+     */
+    @Override
+    public void finishLoadmoreWithNoMoreData() {
+        chatContentList.setPullRefreshEnable(false);//没有记录则禁用下拉刷新
+    }
+
+    /**
+     * 发送消息成功
+     *
+     * @param receiveIMMessageBean 接收的IM消息
+     */
+    @Override
+    public void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean) {
+        mMessageDatas.add(receiveIMMessageBean);
+        mIMChatContentAdapter.notifyDataSetChanged();
+
+        //判断当前是否在滚动列表，滚动则不滚动底部
+        if (!chatContentList.isTouchScroll()) {
+            messageListScrollsToBottom(false);//聊天消息列表滚到底部
+        }
+        etContentInputBox.setText("");
     }
 
 
     /**
-     * 上传图片后回调
+     * 回调上传图片URL
      *
      * @param url 服务器返回上传后的URL
      */
     @Override
-    public void uploadImage(String url) {
-        ToastUtils.showLong(url);
+    public void onUploadImageUrl(String url) {
+        //发送图片消息
+        getP().sendPictureMessage(mShareUuid, url);
     }
+
+    /**
+     * 转账
+     */
 
     /**
      * 设置长按录音
@@ -590,23 +640,12 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     }
 
     /**
-     * 发送聊天内容
-     * 注意：调用该方法的地方有两处，
-     * 一处是dispatchTouchEvent()方法里面，当输入框获取焦点光标时触发，用dispatchTouchEvent()拦截解决了点击软键盘外面时（点击发送按钮），软键盘隐藏的问题。
-     * 另一处则是onViewClicked()方法里面，当输入框没有获取焦点光标时触发。
-     * 以上两处调用都是一样的。
+     * 发送文字消息
+     * 两处调用sendTextMessage(),一处是onViewClicked发送按钮点击事件（软键盘隐藏时），一处是dispatchTouchEvent方法（软键盘弹出时）
      */
-    private void sendContent() {
-//        mEndSendTime = System.currentTimeMillis();
-//        if (mEndSendTime - mStartSendTime > 1000) {
-//            mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", etContentInputBox.getText().toString()));
-//            mIMChatContentAdapter.notifyDataSetChanged();
-//            //聊天消息滚动到底部
-//            messageListScrollsToBottom(false);
-//        } else {
-//            ToastUtils.showShort("发送过于频繁");
-//        }
-//        mStartSendTime = mEndSendTime;
+    private void sendTextMessage() {
+        //发送文字消息
+        getP().sendTextMessage(mShareUuid, etContentInputBox.getText().toString());
     }
 
     @OnClick({R.id.tv_right_image_button, R.id.tv_no_address, R.id.view_input_content_layout_touch_shrink, R.id.et_content_input_box, R.id.iv_voice, R.id.btn_long_press_to_speak, R.id.iv_expression, R.id.iv_add, R.id.btn_send_info})
@@ -639,10 +678,10 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             case R.id.iv_add:
                 onAddClick(view);
                 break;
-            /**发送按钮,弹出输入法时*/
+            /**发送按钮,软键盘隐藏时触发*/
             case R.id.btn_send_info:
-                ToastUtils.showLong("发送1");
-                sendContent();
+                //发送文字消息
+                sendTextMessage();
                 break;
         }
     }
@@ -1013,7 +1052,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             View v = getTouchTarget(layout, (int) ev.getX(), (int) ev.getY());
             if (v != null && v.getId() == R.id.btn_send_info) {//发送内容按钮
                 ToastUtils.showLong("发送2");
-                sendContent();
+                //发送消息
+                sendTextMessage();
                 return false;
 //            } else if (v != null && v.getId() == R.id.rl_cancel_recording_area) {
 //                MyToastUtils.customToast("取消录音吗？");

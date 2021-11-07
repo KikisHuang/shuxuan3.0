@@ -18,8 +18,11 @@ import com.gxdingo.sg.websocket.BaseWebSocket;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.java_websocket.enums.ReadyState;
 
 import java.net.URI;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 
@@ -31,8 +34,9 @@ import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 public class IMMessageReceivingService extends Service {
     private final String TAG = "IMMessageReceivingService";
     public static final String EXTRA_WEB_SOCKET_URL = "ExtraWebSocketUrl";
-    BaseWebSocket mBaseWebSocket;
-    String mUrl = "";//web socket接入url
+    private BaseWebSocket mBaseWebSocket;
+    private String mUrl = "";//web socket接入url
+    private Timer mTimer;
 
     @Override
     public void onCreate() {
@@ -46,25 +50,7 @@ public class IMMessageReceivingService extends Service {
         synchronized (this) {
             //避免多次实例化BaseWebSocket
             if (mBaseWebSocket == null) {
-                mUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
-                if (!TextUtils.isEmpty(mUrl)) {
-                    URI uri = URI.create(mUrl);
-                    mBaseWebSocket = new BaseWebSocket(uri) {
-                        @Override
-                        public void onMessage(String message) {
-                            //接收到服务器传来的消息
-                            Log.e(TAG, message);
-                            onMessageConversion(message);
-                        }
-                    };
-                    try {
-                        mBaseWebSocket.connectBlocking();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    mBaseWebSocket = null;
-                }
+                connectWs();//连接websocket
             }
         }
         return START_STICKY;
@@ -78,17 +64,26 @@ public class IMMessageReceivingService extends Service {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessage(Object object) {
-        //接收到聊天界面发送的消息
-        if (object instanceof SendIMMessageBean) {
-            SendIMMessageBean sendIMMessage = (SendIMMessageBean) object;
-            //sendMessage(sendIMMessage);//发送消息
+
+        if (object instanceof Integer) {
+            int code = (int) object;
+            //重置BaseWebSocket
+            if (code == 100999) {
+                mBaseWebSocket = null;
+            }
         }
     }
+
 
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         Log.e(TAG, "WebSocketService服务被销毁");
+
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
 
         try {
             if (mBaseWebSocket != null) {
@@ -101,7 +96,75 @@ public class IMMessageReceivingService extends Service {
         }
         super.onDestroy();
         ToastUtils.showLong("测试：IM接收服务已停止");
+    }
 
+    /**
+     * 启动定时器任务
+     */
+    private void startTimerTask() {
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (mBaseWebSocket != null) {
+                    if (mBaseWebSocket.getReadyState() != ReadyState.OPEN) {
+                        //连接服务器失败
+                        if (mTimer != null) {
+                            mTimer.cancel();
+                        }
+                        reconnectWs();
+                    }
+                }
+            }
+        };
+        mTimer = new Timer();
+        mTimer.schedule(task, 5000, 5000);
+    }
+
+    /**
+     * 连接
+     */
+    private void connectWs() {
+        mUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
+        if (!TextUtils.isEmpty(mUrl)) {
+            URI uri = URI.create(mUrl);
+            mBaseWebSocket = new BaseWebSocket(uri) {
+                @Override
+                public void onMessage(String message) {
+                    System.out.println("消息：" + message);
+                    //接收到服务器传来的消息
+                    Log.e(TAG, message);
+                    onMessageConversion(message);
+                }
+            };
+            try {
+                mBaseWebSocket.connectBlocking();
+                startTimerTask();//启动定时器
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            mBaseWebSocket = null;
+        }
+    }
+
+    /**
+     * 重新连接
+     */
+    private void reconnectWs() {
+        if (mBaseWebSocket != null) {
+            try {
+                //重连
+                mBaseWebSocket.reconnectBlocking();
+                startTimerTask();//启动定时器
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**

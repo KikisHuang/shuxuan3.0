@@ -124,7 +124,13 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         rvPicture.setRecyclerViewScrollEnabled(false);
         rvPicture.addItemDecoration(mSpaceItemDecoration);
         rvPicture.setNestedScrollingEnabled(false);
-        rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
+        if (data.getImages().size() == 1) {
+            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 1));
+        } else if (data.getImages().size() == 2) {
+            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 2));
+        } else {
+            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
+        }
         rvPicture.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int p) {

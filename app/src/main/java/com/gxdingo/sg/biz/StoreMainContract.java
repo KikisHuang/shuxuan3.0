@@ -4,7 +4,6 @@ package com.gxdingo.sg.biz;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
