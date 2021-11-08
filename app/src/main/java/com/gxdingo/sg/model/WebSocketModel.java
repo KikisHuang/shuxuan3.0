@@ -34,7 +34,7 @@ import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 /**
  * WebSocketModel
  *
- * @author: JM
+ * @author:  JM
  */
 public class WebSocketModel {
 
