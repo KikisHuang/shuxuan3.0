@@ -153,8 +153,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
 
     String mShareUuid;//发布者与订阅者的共享唯一id
-//    String mSendIdentifier;//发送者id标识（Identifier）
-//    String mSendNickname;//发送者昵称
 
     /**
      * IM聊天UI回调监听接口
