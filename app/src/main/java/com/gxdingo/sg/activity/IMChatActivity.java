@@ -30,6 +30,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
@@ -68,8 +69,6 @@ import butterknife.OnClick;
 @SuppressLint("NewApi")
 public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter> implements IMChatContract.IMChatListener {
     public static final String EXTRA_SHARE_UUID = "EXTRA_SHARE_UUID";//发布者与订阅者的共享唯一id常量
-    public static final String EXTRA_SEND_IDENTIFIER = "EXTRA_SEND_IDENTIFIER";//发送者id标识常量
-    public static final String EXTRA_SEND_NICKNAME = "EXTRA_SEND_NICKNAME";//发送者昵称常量
 
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
@@ -132,6 +131,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     @BindView(R.id.view_input_content_layout_touch_shrink)
     View viewInputContentLayoutTouchShrink;
 
+    RecyclerView.SmoothScroller mSmallClassSmoothScroller;
     FragmentManager fragmentManager;
 
     ArrayList<Fragment> mFragments = new ArrayList<>();
@@ -153,8 +153,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
 
     String mShareUuid;//发布者与订阅者的共享唯一id
-    String mSendIdentifier;//发送者id标识（Identifier）
-    String mSendNickname;//发送者昵称
+//    String mSendIdentifier;//发送者id标识（Identifier）
+//    String mSendNickname;//发送者昵称
 
     /**
      * IM聊天UI回调监听接口
@@ -252,6 +252,12 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
         //聊天消息列表
+        mSmallClassSmoothScroller = new LinearSmoothScroller(this) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
         mIMChatContentAdapter = new IMChatContentAdapter(this, mMessageDatas, mOnIMChatUICallbackListener);
         mPullLinearLayoutManager = new PullLinearLayoutManager(this);
         chatContentList.setLayoutManager(mPullLinearLayoutManager);
@@ -268,7 +274,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
             @Override
             public void onLoadMore() {
-
+                //用不到，默认上拉加载更多是禁用的
             }
         });
         chatContentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -306,6 +312,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         mFragments.add(mIMOtherFunctionsFragment);
         mFragments.add(mIMEmotionFragment);
 
+        //设置语音录制时动画播放图片素材
         recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
         mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
 
@@ -339,11 +346,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     @Override
     protected void initData() {
         mShareUuid = getIntent().getStringExtra(EXTRA_SHARE_UUID);
-        mSendIdentifier = getIntent().getStringExtra(EXTRA_SEND_IDENTIFIER);
-        mSendNickname = getIntent().getStringExtra(EXTRA_SEND_NICKNAME);
-
-        titleLayout.setTitleTextSize(16);
-        titleLayout.setTitleText(mSendNickname);
 
         if (!TextUtils.isEmpty(mShareUuid)) {
             getP().getChatHistoryList(mShareUuid);//获取聊天记录
@@ -469,14 +471,17 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
          */
         if (object instanceof ReceiveIMMessageBean) {
             ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
-            //判断消息发送者是否跟当前发送者一样
-            if (mSendIdentifier.equals(receiveIMMessageBean.getSendIdentifier())) {
-                //一样则通过该方法显示消息
-                onSendMessageSuccess(receiveIMMessageBean);
+            if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
+                if (mOtherAvatarInfo != null) {
+                    //判断消息发送者是否跟当前发送者一样
+                    if (mOtherAvatarInfo.getSendIdentifier().equals(receiveIMMessageBean.getSendIdentifier())) {
+                        //一样则通过该方法显示消息
+                        onSendMessageSuccess(receiveIMMessageBean);
+                    }
+                }
             }
         }
     }
-
 
     /**
      * 返回聊天记录列表
@@ -490,6 +495,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
                 mOtherAvatarInfo = imChatHistoryListBean.getOtherAvatarInfo();
                 mAddress = imChatHistoryListBean.getAddress();
                 mIMChatContentAdapter.setAvatar(mMyAvatarInfo, mOtherAvatarInfo);
+
+                if (mOtherAvatarInfo != null) {
+                    titleLayout.setTitleTextSize(16);
+                    titleLayout.setTitleText(mOtherAvatarInfo.getSendNickname());//标题设置为对方昵称
+                }
             }
 
             if (imChatHistoryListBean.getList() != null) {
@@ -497,9 +507,23 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
                 mIMChatContentAdapter.notifyDataSetChanged();
             }
 
+            //是初始第一次加载聊天记录的，直接滚动到最底部。上拉加载第二页即之后的页数则滚动到上一页顶部的位置
             if (!isInitFirstLoad) {
                 isInitFirstLoad = true;
                 messageListScrollsToBottom(true);//聊天消息列表滚到底部
+            } else {
+                if (imChatHistoryListBean.getList() != null) {
+                    if (mMessageDatas.size() >= imChatHistoryListBean.getList().size()) {
+                        int scrollsPosition = mMessageDatas.size() - imChatHistoryListBean.getList().size();
+                        chatContentList.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSmallClassSmoothScroller.setTargetPosition(scrollsPosition);
+                                mPullLinearLayoutManager.startSmoothScroll(mSmallClassSmoothScroller);
+                            }
+                        },5000);
+                    }
+                }
             }
         }
         //停止下拉刷新

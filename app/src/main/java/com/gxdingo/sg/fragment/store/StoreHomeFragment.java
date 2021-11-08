@@ -194,8 +194,6 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 //跳转到IM聊天界面
                 Map<String, String> intentMap = new HashMap<>();
                 intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, subscribesMessage.getShareUuid());
-                intentMap.put(IMChatActivity.EXTRA_SEND_IDENTIFIER, subscribesMessage.getSendIdentifier());
-                intentMap.put(IMChatActivity.EXTRA_SEND_NICKNAME, subscribesMessage.getSendNickname());
                 goToPage(reference.get(), IMChatActivity.class, intentMap);
             }
         });
@@ -243,8 +241,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         //从IMMessageReceivingService接收到的IM消息
         if (object instanceof ReceiveIMMessageBean) {
             ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
-            //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
-            getP().getIMSubscribesList(true);//获取IM订阅信息
+            if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
+                //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
+                getP().getIMSubscribesList(true);//获取IM订阅信息
+            }
         }
     }
 

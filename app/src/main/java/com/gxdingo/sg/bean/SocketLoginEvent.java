@@ -1,5 +1,10 @@
 package com.gxdingo.sg.bean;
 
+/**
+ * WebSocket登录
+ *
+ * @author JM
+ */
 public class SocketLoginEvent {
 
 
@@ -18,6 +23,7 @@ public class SocketLoginEvent {
         this.sign = sign;
         this.crossToken = crossToken;
     }
+
     public SocketLoginEvent(String exec, String timestamp, String sign) {
         this.exec = exec;
         this.timestamp = timestamp;

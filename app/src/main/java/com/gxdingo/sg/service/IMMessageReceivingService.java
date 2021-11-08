@@ -12,19 +12,32 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.Gson;
 import com.gxdingo.sg.bean.ReceiveIMMessageBean;
-import com.gxdingo.sg.bean.SendIMMessageBean;
+import com.gxdingo.sg.bean.SocketLoginEvent;
+import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.SignatureUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.websocket.BaseWebSocket;
+import com.kikis.commnlibrary.utils.GsonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.java_websocket.enums.ReadyState;
+import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.gxdingo.sg.http.Api.isUat;
+import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 /**
  * WebSocket消息接收服务
@@ -33,10 +46,10 @@ import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
  */
 public class IMMessageReceivingService extends Service {
     private final String TAG = "IMMessageReceivingService";
-    public static final String EXTRA_WEB_SOCKET_URL = "ExtraWebSocketUrl";
     private BaseWebSocket mBaseWebSocket;
     private String mUrl = "";//web socket接入url
-    private Timer mTimer;
+    private Timer mWebsocketStatusTimer;//websocket连接状态定时器
+    private Timer mHeartbeatTimer;//心跳检测定时器
 
     @Override
     public void onCreate() {
@@ -69,7 +82,7 @@ public class IMMessageReceivingService extends Service {
             int code = (int) object;
             //重置BaseWebSocket
             if (code == 100999) {
-                mBaseWebSocket = null;
+                mBaseWebSocket = null;//设置null，重新启动IMMessageReceivingService服务即可在onStartCommand方法重新实例化BaseWebSocket
             }
         }
     }
@@ -80,9 +93,14 @@ public class IMMessageReceivingService extends Service {
         EventBus.getDefault().unregister(this);
         Log.e(TAG, "WebSocketService服务被销毁");
 
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
+        if (mWebsocketStatusTimer != null) {
+            mWebsocketStatusTimer.cancel();
+            mWebsocketStatusTimer = null;
+        }
+
+        if (mHeartbeatTimer != null) {
+            mHeartbeatTimer.cancel();
+            mHeartbeatTimer = null;
         }
 
         try {
@@ -102,26 +120,49 @@ public class IMMessageReceivingService extends Service {
      * 启动定时器任务
      */
     private void startTimerTask() {
-        if (mTimer != null) {
-            mTimer.cancel();
-            mTimer = null;
+        if (mWebsocketStatusTimer != null) {
+            mWebsocketStatusTimer.cancel();
+            mWebsocketStatusTimer = null;
         }
+        if (mHeartbeatTimer != null) {
+            mHeartbeatTimer.cancel();
+            mHeartbeatTimer = null;
+        }
+
+        //websocket连接状态定时任务
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 if (mBaseWebSocket != null) {
+                    //连接服务器是否失败
                     if (mBaseWebSocket.getReadyState() != ReadyState.OPEN) {
-                        //连接服务器失败
-                        if (mTimer != null) {
-                            mTimer.cancel();
+                        if (mWebsocketStatusTimer != null) {
+                            mWebsocketStatusTimer.cancel();
                         }
-                        reconnectWs();
+                        if (mHeartbeatTimer != null) {
+                            mHeartbeatTimer.cancel();
+                        }
+                        reconnectWs();//重新连接
                     }
                 }
             }
         };
-        mTimer = new Timer();
-        mTimer.schedule(task, 5000, 5000);
+        mWebsocketStatusTimer = new Timer();
+        mWebsocketStatusTimer.schedule(task, 5000, 5000);//5秒检测一次
+
+        //心跳检测定时任务
+        TimerTask task2 = new TimerTask() {
+            @Override
+            public void run() {
+                if (mBaseWebSocket != null) {
+                    if (mBaseWebSocket.getReadyState() == ReadyState.OPEN) {
+                        mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
+                    }
+                }
+            }
+        };
+        mHeartbeatTimer = new Timer();
+        mHeartbeatTimer.schedule(task2, 45 * 1000, 45 * 1000);//45秒进行一次心跳检测
     }
 
     /**
@@ -133,10 +174,18 @@ public class IMMessageReceivingService extends Service {
             URI uri = URI.create(mUrl);
             mBaseWebSocket = new BaseWebSocket(uri) {
                 @Override
+                public void onOpen(ServerHandshake handshakedata) {
+                    Log.e(TAG, "onOpen：连接成功");
+                    if (mBaseWebSocket.isOpen()) {
+                        //连接成功后，发送登录信息
+                        mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.LOGIN));
+                    }
+                }
+
+                @Override
                 public void onMessage(String message) {
-                    System.out.println("消息：" + message);
                     //接收到服务器传来的消息
-                    Log.e(TAG, message);
+                    Log.e(TAG, "onMessage：" + message);
                     onMessageConversion(message);
                 }
             };
@@ -165,6 +214,38 @@ public class IMMessageReceivingService extends Service {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 获取WebSocket传递参数
+     *
+     * @param exec
+     * @return
+     */
+    private String getWebSocketPassParameters(String exec) {
+        String timesTemp = HttpClient.getCurrentTimeUTCM();
+        String crossToken = "";
+        if (UserInfoUtils.getInstance().isLogin()) {
+            crossToken = UserInfoUtils.getInstance().getUserInfo().getCrossToken();
+        }
+
+        Map<String, String> signMap = new HashMap<>();
+        signMap.put(LocalConstant.EXEC, exec);
+        signMap.put(LocalConstant.TIMESTAMP, timesTemp);
+        if (exec == LocalConstant.LOGIN) {
+            signMap.put(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        }
+        String sign = SignatureUtils.generate(signMap, isUat ? IM_UAT_HTTP_KEY : isDebug ? IM_OFFICIAL_HTTP_KEY : WEB_SOCKET_KEY, SignatureUtils.SignType.MD5);
+
+        String loginParameter = "";
+        if (exec == LocalConstant.LOGIN) {
+            SocketLoginEvent event = new SocketLoginEvent(exec, timesTemp, sign, crossToken);
+            loginParameter = GsonUtil.gsonToStr(event);
+        } else if (exec == LocalConstant.PING) {
+            SocketLoginEvent event = new SocketLoginEvent(exec, timesTemp, sign, "");
+            loginParameter = GsonUtil.gsonToStr(event);
+        }
+        return loginParameter;
     }
 
     /**
