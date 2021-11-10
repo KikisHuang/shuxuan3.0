@@ -773,6 +773,7 @@ public class DateUtils {
      * @return
      */
     public static String convertTheTimeFormatOfT(String time) {
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         try {
