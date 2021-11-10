@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.model.NetworkModel;
@@ -18,14 +17,9 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.io.IOException;
 
-import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.biz.StoreMainContract.StoreMainListener;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 
-
-/**
- * Created by Kikis on 2021/3/16
- */
 
 public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMainListener> implements StoreMainContract.StoreMainPresenter, NetWorkListener {
 
@@ -34,8 +28,6 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     private StoreMainModel model;
 
     private NetworkModel networkModel;
-
-    private WebSocketModel webSocketModel;
 
     private MediaPlayer mediaPlayer;
 
@@ -86,43 +78,13 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     }
 
     @Override
-    public void getSocketUrl() {
-        if (networkModel != null) {
-            networkModel.getMessageSubscribesList(getContext(), o -> {
-
-                //消息订阅回调
-                SubscribesBean subscribesBean = (SubscribesBean) o;
-
-//                if (!isEmpty(subscribesBean.getWsServerUrl())) {
-//                    if (webSocketModel == null) {
-//                        webSocketModel = WebSocketModel.getInstance(getContext());
-//                        webSocketModel.webSocketInit(subscribesBean.getWsServerUrl());
-//                    } else {
-//                        webSocketModel.setWsServerUrl(subscribesBean.getWsServerUrl());
-//                        webSocketModel.reconnectWs();
-//                    }
-////                    webSocketModel.setUnReadMessageNum(subscribesBean.getTotalUnread());
-//                }
-
-            });
-        }
-
-    }
-
-    @Override
-    public void destroySocket() {
-        if (webSocketModel != null)
-            webSocketModel.destroySocket();
-    }
-
-    @Override
     public void play() {
         mediaPlayer = MediaPlayer.create(getContext(), R.raw.new_order);
         try {
             mediaPlayer.prepare();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.fillInStackTrace();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -132,7 +94,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
 
     @Override
     public void release() {
-        if (mediaPlayer!=null)
+        if (mediaPlayer != null)
             mediaPlayer.release();
     }
 
