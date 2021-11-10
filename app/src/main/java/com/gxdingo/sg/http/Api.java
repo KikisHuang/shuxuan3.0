@@ -104,6 +104,7 @@ public class Api {
      * 消息订阅详情
      */
     public static final String MESSAGE_DETAILS = HIERARCHY + "mps/message/details";
+
     /**
      * 消息历史
      */
