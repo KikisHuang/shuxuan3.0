@@ -384,7 +384,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             if (unfoldCommentList != null) {
                 //去重合并评论数据
                 getP().onDuplicateRemovalMerge(commentList, unfoldCommentList);
-                onMessage(commentList.size() + " - " + commentListBean.getTotal() + "  " + (tvCommentUnfoldText != null));
                 //根据总数判断是否还有数据
                 if (commentList.size() >= commentListBean.getTotal()) {
                     //没有下一页

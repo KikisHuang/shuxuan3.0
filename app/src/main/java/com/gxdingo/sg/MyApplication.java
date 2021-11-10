@@ -56,6 +56,9 @@ import static com.blankj.utilcode.util.AppUtils.getAppName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.HTTPS;
+import static com.gxdingo.sg.http.Api.IM_OFFICIAL_URL;
+import static com.gxdingo.sg.http.Api.IM_TEST_URL;
+import static com.gxdingo.sg.http.Api.IM_UAT_URL;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.OFFICIAL_OSS_UPLOAD_URL;
 import static com.gxdingo.sg.http.Api.SM;
@@ -74,6 +77,8 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.OSS_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
@@ -116,8 +121,8 @@ public class MyApplication extends Application {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onApplicationEvent(Integer type){
-        if (type == LocalConstant.CONSENT_AGREEMENT){
+    public void onApplicationEvent(Integer type) {
+        if (type == LocalConstant.CONSENT_AGREEMENT) {
             initGreenDao();
             xPopupInit();
             nineGridInit();
@@ -174,7 +179,7 @@ public class MyApplication extends Application {
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
 
-        Log.i("key", "keyInt: "+ LocalConstant.GLOBAL_SIGN);
+        Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
 //
 //        if (isUser) {
 //            //客户端
@@ -183,7 +188,7 @@ public class MyApplication extends Application {
 //            //商家端
 //            LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_UAT_HTTP_KEY : TEST_HTTP_KEY;
 //        }
-        LocalConstant.IM_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
+        LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
 
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
 
@@ -351,7 +356,6 @@ public class MyApplication extends Application {
     private void okHttpInit() {
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-
         //全局url初始化
         if (isUser) {
             //客户端
@@ -367,7 +371,7 @@ public class MyApplication extends Application {
 
 //        if (isUat)
 //            Api.IM_URL = HTTP + UAT_URL;
-        Api.IM_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+        Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTPS + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
 
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
@@ -424,11 +428,11 @@ public class MyApplication extends Application {
                 //可以设置https的证书,以下几种方案根据需要自己设置
                 .setCertificates()//方法一：信任所有证书,不安全有风险
                 .addCommonHeaders(headers)
-                //.setCertificates(new SafeTrustManager())            //方法二：自定义信任规则，校验服务端证书
-                //配置https的域名匹配规则，不需要就不要加入，使用不当会导致https握手失败
-                //.setHostnameVerifier(new SafeHostnameVerifier())
-                //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
-                ;//设置全局公共头
+        //.setCertificates(new SafeTrustManager())            //方法二：自定义信任规则，校验服务端证书
+        //配置https的域名匹配规则，不需要就不要加入，使用不当会导致https握手失败
+        //.setHostnameVerifier(new SafeHostnameVerifier())
+        //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
+        ;//设置全局公共头
 //                .addCommonParams(params)//设置全局公共参数
         //.addNetworkInterceptor(new NoCacheInterceptor())//设置网络拦截器
         //.setCallFactory()//局设置Retrofit对象Factory

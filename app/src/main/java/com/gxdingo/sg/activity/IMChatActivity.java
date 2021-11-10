@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,12 +30,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMChatContentAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
+import com.gxdingo.sg.bean.IMChatHistoryListBean;
+import com.gxdingo.sg.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.biz.IMChatContract;
 import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.IMSelectTransferAccountsWayPopupView;
@@ -47,7 +48,6 @@ import com.gxdingo.sg.fragment.IMOtherFunctionsFragment;
 import com.gxdingo.sg.presenter.IMChatPresenter;
 import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.kikis.commnlibrary.utils.StringUtils;
 import com.kikis.commnlibrary.utils.SystemUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.MyToastUtils;
@@ -68,6 +68,7 @@ import butterknife.OnClick;
  */
 @SuppressLint("NewApi")
 public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter> implements IMChatContract.IMChatListener {
+    public static final String EXTRA_SHARE_UUID = "EXTRA_SHARE_UUID";//发布者与订阅者的共享唯一id常量
 
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
@@ -113,9 +114,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     ConstraintLayout clInputContent;
     @BindView(R.id.layout)
     ConstraintLayout layout;
-
-    @BindView(R.id.rl_title_layout)
-    RelativeLayout rlTitleLayout;
     @BindView(R.id.rl_cancel_recording_area)
     RelativeLayout rlCancelRecordingArea;
     @BindView(R.id.rl_recording_area)
@@ -133,6 +131,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     @BindView(R.id.view_input_content_layout_touch_shrink)
     View viewInputContentLayoutTouchShrink;
 
+    RecyclerView.SmoothScroller mSmallClassSmoothScroller;
     FragmentManager fragmentManager;
 
     ArrayList<Fragment> mFragments = new ArrayList<>();
@@ -141,14 +140,21 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
     IMChatContentAdapter mIMChatContentAdapter;
-    ArrayList<IMChatContentAdapter.ChatTest> mTempDatas = new ArrayList<>();//聊天数据
+    ArrayList<ReceiveIMMessageBean> mMessageDatas = new ArrayList<>();//聊天数据
     PullLinearLayoutManager mPullLinearLayoutManager;
     boolean isRestoreStackFromEnd;
     boolean isSetStackFromEnd;
     int mCurrClickFunctionMenuId;//当前点击的主功能菜单ID
     int mSoftInputHeight = 0;//软键盘高度
-    long mStartSendTime;//发送消息间隔
-    long mEndSendTime;
+
+    IMChatHistoryListBean.MyAvatarInfo mMyAvatarInfo;//自己头像信息
+    IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;//对方头像信息
+    IMChatHistoryListBean.Address mAddress;//收货地址
+    boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
+
+    String mShareUuid;//发布者与订阅者的共享唯一id
+//    String mSendIdentifier;//发送者id标识（Identifier）
+//    String mSendNickname;//发送者昵称
 
     /**
      * IM聊天UI回调监听接口
@@ -157,10 +163,12 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         /**
          * 回调函数
          *
-         * @param type    类型
-         * @param objData 数据
+         * @param view
+         * @param position item位置
+         * @param type     类型（如0 文字、10 图片）
+         * @param objData  数据（如文字、图片URL、语音URL）
          */
-        void onCallback(int type, Object objData);
+        void onCallback(View view, int position, int type, Object objData);
     }
 
     @Override
@@ -182,12 +190,12 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     @Override
     protected int activityTitleLayout() {
-        return 0;
+        return R.layout.module_include_new_custom_title;
     }
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
@@ -238,73 +246,37 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     @Override
     protected void init() {
-        mStartSendTime = System.currentTimeMillis();
-
-        rlTitleLayout.setPadding(0, ScreenUtils.getStatusBarHeight(this), 0, 0);
         //显示标题栏右边图片按钮
         tvRightImageButton.setVisibility(View.VISIBLE);
-
-
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什[顶]么好[亲亲]0[]呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-
-        //语音
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 4, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "5“"));
-
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "吃什么好呢"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        //图片
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 2, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fhbimg.b0.upaiyun.com%2F9718a5c7496b039ea2364b27bafd5aaa224a6a6a86a4e-hjbNmj_fw658&refer=http%3A%2F%2Fhbimg.b0.upaiyun.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1637825475&t=6842562070478e37117ff7384224d1e1"));
-
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语自言自语"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "自言自语"));
-        //图片
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 2, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic41.nipic.com%2F20140513%2F11143039_173200026303_2.jpg&refer=http%3A%2F%2Fpic41.nipic.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1637825475&t=4fefd7f70f142a5d9d992b8586a58241"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 2, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2021-3-4/hao123%20logo.png"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 2, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "https://dss2.bdstatic.com/5bVYsj_p_tVS5dKfpU_Y_D3/res/r/image/2021-3-4/hao123%20logo.png"));
-        //转账
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 3, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "99999"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 3, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "100"));
-
-        //语音
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 4, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "60“"));
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 4, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", "20“"));
-
-        //未知内容
-        mTempDatas.add(new IMChatContentAdapter.ChatTest(2, 100, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", ""));
-
-
         //监听全局布局（用来监听软键盘显示和关闭）
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
-        mIMChatContentAdapter = new IMChatContentAdapter(this, mTempDatas, mOnIMChatUICallbackListener);
+        //聊天消息列表
+        mSmallClassSmoothScroller = new LinearSmoothScroller(this) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
+        mIMChatContentAdapter = new IMChatContentAdapter(this, mMessageDatas, mOnIMChatUICallbackListener);
         mPullLinearLayoutManager = new PullLinearLayoutManager(this);
         chatContentList.setLayoutManager(mPullLinearLayoutManager);
         chatContentList.addItemDecoration(new PullDividerItemDecoration(this, (int) getResources().getDimension(R.dimen.dp10)));
         chatContentList.setPullAdapter(mIMChatContentAdapter);
+        chatContentList.setPullRefreshEnable(true);
+        chatContentList.setOnRecyclerViewListener(new PullRecyclerView.OnRecyclerViewListener() {
+            @Override
+            public void onRefresh() {
+                if (!TextUtils.isEmpty(mShareUuid)) {
+                    getP().getChatHistoryList(mShareUuid);//获取聊天记录
+                }
+            }
+
+            @Override
+            public void onLoadMore() {
+                //用不到，默认上拉加载更多是禁用的
+            }
+        });
         chatContentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -324,25 +296,14 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
                 }
             }
         });
-        //消息列表滚动到底部
-        chatContentList.post(new Runnable() {
-            @Override
-            public void run() {
-                //获取加载的最后一个可见视图在适配器的位置(包含了PullRecyclerView的头(下拉)和尾（上拉）item)
-                int lastVisibleItem = mPullLinearLayoutManager.findLastVisibleItemPosition();
-                int itemCount = chatContentList.getLayoutManager().getItemCount();
-                if (lastVisibleItem != -1) {
-                    if ((lastVisibleItem + 1) < itemCount) {
-                        //PullRecyclerView的item填满控件高度时跳转到最底部
-                        mPullLinearLayoutManager.setStackFromEnd(true);
-                        isSetStackFromEnd = true;//标记已经设置过
-                    }
-                }
-            }
-        });
+
+        //将光标设置在内容最后
         String content = etContentInputBox.getText().toString();
         etContentInputBox.setSelection(content.length());
 
+        /**
+         * 子菜单Fragment
+         */
         fragmentManager = getSupportFragmentManager();
         //其他功能
         mIMOtherFunctionsFragment = new IMOtherFunctionsFragment();
@@ -351,14 +312,13 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         mFragments.add(mIMOtherFunctionsFragment);
         mFragments.add(mIMEmotionFragment);
 
+        //设置语音录制时动画播放图片素材
         recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
         mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
-
 
         etContentInputBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -374,7 +334,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -383,9 +342,14 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     }
 
+
     @Override
     protected void initData() {
+        mShareUuid = getIntent().getStringExtra(EXTRA_SHARE_UUID);
 
+        if (!TextUtils.isEmpty(mShareUuid)) {
+            getP().getChatHistoryList(mShareUuid);//获取聊天记录
+        }
     }
 
 
@@ -414,15 +378,24 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         super.onDestroy();
         //删除全局布局侦听器
         getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
+        //刷新订阅列表显示最后聊天内容
+        sendEvent(100998);
     }
 
     /**
      * IM聊天UI回调匿名监听接口
      */
     private OnIMChatUICallbackListener mOnIMChatUICallbackListener = new OnIMChatUICallbackListener() {
-
+        /**
+         * 回调函数
+         *
+         * @param view
+         * @param position item位置
+         * @param type     类型（如0 文字、10 图片）
+         * @param objData  数据（如文字、图片URL、语音URL）
+         */
         @Override
-        public void onCallback(int type, Object objData) {
+        public void onCallback(View view, int position, int type, Object objData) {
 
         }
     };
@@ -472,8 +445,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             else if (functionsItem.type == IMOtherFunctionsAdapter.TYPE_STORE) {
 
             }
-
-
         }
 
         /**
@@ -495,21 +466,111 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         if (object instanceof IMSelectTransferAccountsWayPopupView) {
 
         }
-//
-//        //发送消息事件
-//        if (object instanceof SendMessageBean)
-//            sendMessage((SendMessageBean) object);
+        /**
+         * 从IMMessageReceivingService接收到的IM消息
+         */
+        if (object instanceof ReceiveIMMessageBean) {
+            ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
+            if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
+                if (mOtherAvatarInfo != null) {
+                    //判断消息发送者是否跟当前发送者一样
+                    if (mOtherAvatarInfo.getSendIdentifier().equals(receiveIMMessageBean.getSendIdentifier())) {
+                        //一样则通过该方法显示消息
+                        onSendMessageSuccess(receiveIMMessageBean);
+                    }
+                }
+            }
+        }
     }
 
     /**
-     * 上传图片后回调
+     * 返回聊天记录列表
+     */
+    @Override
+    public void onChatHistoryList(IMChatHistoryListBean imChatHistoryListBean) {
+        if (imChatHistoryListBean != null) {
+            //只在第一页的时候返回，为空就赋值
+            if (mMyAvatarInfo == null && mOtherAvatarInfo == null) {
+                mMyAvatarInfo = imChatHistoryListBean.getMyAvatarInfo();
+                mOtherAvatarInfo = imChatHistoryListBean.getOtherAvatarInfo();
+                mAddress = imChatHistoryListBean.getAddress();
+                mIMChatContentAdapter.setAvatar(mMyAvatarInfo, mOtherAvatarInfo);
+
+                if (mOtherAvatarInfo != null) {
+                    titleLayout.setTitleTextSize(16);
+                    titleLayout.setTitleText(mOtherAvatarInfo.getSendNickname());//标题设置为对方昵称
+                }
+            }
+
+            if (imChatHistoryListBean.getList() != null) {
+                mMessageDatas.addAll(0, imChatHistoryListBean.getList());
+                mIMChatContentAdapter.notifyDataSetChanged();
+            }
+
+            //是初始第一次加载聊天记录的，直接滚动到最底部。上拉加载第二页即之后的页数则滚动到上一页顶部的位置
+            if (!isInitFirstLoad) {
+                isInitFirstLoad = true;
+                messageListScrollsToBottom(true);//聊天消息列表滚到底部
+            } else {
+                if (imChatHistoryListBean.getList() != null) {
+                    if (mMessageDatas.size() >= imChatHistoryListBean.getList().size()) {
+                        int scrollsPosition = mMessageDatas.size() - imChatHistoryListBean.getList().size();
+                        chatContentList.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mSmallClassSmoothScroller.setTargetPosition(scrollsPosition);
+                                mPullLinearLayoutManager.startSmoothScroll(mSmallClassSmoothScroller);
+                            }
+                        },5000);
+                    }
+                }
+            }
+        }
+        //停止下拉刷新
+        chatContentList.stopRefresh();
+
+    }
+
+    /**
+     * 没有更多历史聊天记录
+     */
+    @Override
+    public void finishLoadmoreWithNoMoreData() {
+        chatContentList.setPullRefreshEnable(false);//没有记录则禁用下拉刷新
+    }
+
+    /**
+     * 发送消息成功
+     *
+     * @param receiveIMMessageBean 接收的IM消息
+     */
+    @Override
+    public void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean) {
+        mMessageDatas.add(receiveIMMessageBean);
+        mIMChatContentAdapter.notifyDataSetChanged();
+
+        //判断当前是否在滚动列表，滚动则不滚动底部
+        if (!chatContentList.isTouchScroll()) {
+            messageListScrollsToBottom(false);//聊天消息列表滚到底部
+        }
+        etContentInputBox.setText("");
+    }
+
+
+    /**
+     * 回调上传图片URL
      *
      * @param url 服务器返回上传后的URL
      */
     @Override
-    public void uploadImage(String url) {
-        ToastUtils.showLong(url);
+    public void onUploadImageUrl(String url) {
+        //发送图片消息
+        getP().sendPictureMessage(mShareUuid, url);
     }
+
+    /**
+     * 转账
+     */
 
     /**
      * 设置长按录音
@@ -603,23 +664,12 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     }
 
     /**
-     * 发送聊天内容
-     * 注意：调用该方法的地方有两处，
-     * 一处是dispatchTouchEvent()方法里面，当输入框获取焦点光标时触发，用dispatchTouchEvent()拦截解决了点击软键盘外面时（点击发送按钮），软键盘隐藏的问题。
-     * 另一处则是onViewClicked()方法里面，当输入框没有获取焦点光标时触发。
-     * 以上两处调用都是一样的。
+     * 发送文字消息
+     * 两处调用sendTextMessage(),一处是onViewClicked发送按钮点击事件（软键盘隐藏时），一处是dispatchTouchEvent方法（软键盘弹出时）
      */
-    private void sendContent() {
-        mEndSendTime = System.currentTimeMillis();
-        if (mEndSendTime - mStartSendTime > 1000) {
-            mTempDatas.add(new IMChatContentAdapter.ChatTest(1, 1, "https://pics1.baidu.com/feed/8601a18b87d6277fc358b3c64abbbc37e824fc15.jpeg?token=435f3ad2f18f6536f8862be0b5720304", etContentInputBox.getText().toString()));
-            mIMChatContentAdapter.notifyDataSetChanged();
-            //聊天消息滚动到底部
-            messageListScrollsToBottom();
-        } else {
-            ToastUtils.showShort("发送过于频繁");
-        }
-        mStartSendTime = mEndSendTime;
+    private void sendTextMessage() {
+        //发送文字消息
+        getP().sendTextMessage(mShareUuid, etContentInputBox.getText().toString());
     }
 
     @OnClick({R.id.tv_right_image_button, R.id.tv_no_address, R.id.view_input_content_layout_touch_shrink, R.id.et_content_input_box, R.id.iv_voice, R.id.btn_long_press_to_speak, R.id.iv_expression, R.id.iv_add, R.id.btn_send_info})
@@ -652,10 +702,10 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             case R.id.iv_add:
                 onAddClick(view);
                 break;
-            /**发送按钮,弹出输入法时*/
+            /**发送按钮,软键盘隐藏时触发*/
             case R.id.btn_send_info:
-                ToastUtils.showLong("发送1");
-                sendContent();
+                //发送文字消息
+                sendTextMessage();
                 break;
         }
     }
@@ -850,21 +900,43 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
             if (mSoftInputHeight > 0) {
                 //聊天消息滚动到底部
-                messageListScrollsToBottom();
+                messageListScrollsToBottom(false);
             }
         }
     };
 
+
     /**
      * 聊天消息列表滚到底部
      */
-    private void messageListScrollsToBottom() {
-        chatContentList.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                chatContentList.scrollToPosition(mTempDatas.size());
-            }
-        }, 50);
+    private void messageListScrollsToBottom(boolean isInfo) {
+        if (isInfo) {
+            //初始化获取聊天记录列表时
+            chatContentList.post(new Runnable() {
+                @Override
+                public void run() {
+                    //获取加载的最后一个可见视图在适配器的位置(包含了PullRecyclerView的头(下拉)和尾（上拉）item)
+                    int lastVisibleItem = mPullLinearLayoutManager.findLastVisibleItemPosition();
+                    int itemCount = chatContentList.getLayoutManager().getItemCount();
+                    if (lastVisibleItem != -1) {
+                        if ((lastVisibleItem + 1) < itemCount) {
+                            //PullRecyclerView的item填满控件高度时跳转到最底部
+                            mPullLinearLayoutManager.setStackFromEnd(true);
+                            isSetStackFromEnd = true;//标记已经设置过
+                        }
+                    }
+                }
+            });
+        } else {
+            //软键盘弹出和发送消息时
+            chatContentList.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    chatContentList.scrollToPosition(mMessageDatas.size());
+                }
+            }, 50);
+        }
+
     }
 
     /**
@@ -889,8 +961,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         Editable editable = etContentInputBox.getText();
         // 给EditText追加spannableString
         editable.insert(index, spannableString);
-
-        System.out.println("内容：" + etContentInputBox.getText().toString());
     }
 
     /**
@@ -1006,7 +1076,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             View v = getTouchTarget(layout, (int) ev.getX(), (int) ev.getY());
             if (v != null && v.getId() == R.id.btn_send_info) {//发送内容按钮
                 ToastUtils.showLong("发送2");
-                sendContent();
+                //发送消息
+                sendTextMessage();
                 return false;
 //            } else if (v != null && v.getId() == R.id.rl_cancel_recording_area) {
 //                MyToastUtils.customToast("取消录音吗？");

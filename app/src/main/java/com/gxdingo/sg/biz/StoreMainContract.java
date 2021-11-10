@@ -21,10 +21,6 @@ public class StoreMainContract {
 
         void checkTab(int tab);
 
-        void getSocketUrl();
-
-        void destroySocket();
-
         void play();
 
         void release();
@@ -41,6 +37,7 @@ public class StoreMainContract {
         void hideFragment(int index);
 
         void onSeleted(int checkTab, int oldTab);
+
 
     }
 

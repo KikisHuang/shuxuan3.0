@@ -1,16 +1,19 @@
 package com.gxdingo.sg.utils;
 
 import android.content.Context;
+import android.content.Intent;
 
 //import com.alibaba.sdk.android.push.CloudPushService;
 //import com.alibaba.sdk.android.push.CommonCallback;
 //import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
@@ -80,6 +83,10 @@ public class UserInfoUtils {
 
             SPUtils.getInstance().put(ADDRESS_CACHE, "");
             EventBus.getDefault().post(LOGOUT);
+
+            //停止IM消息接收服务
+            MyApplication.getInstance().stopService(new Intent(MyApplication.getInstance(), IMMessageReceivingService.class));
+
         }
     }
 

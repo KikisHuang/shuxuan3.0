@@ -162,6 +162,8 @@ public class StoreNetworkModel {
      * @param
      */
     public void businessScope(Context context) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
 
         Map<String, String> map = new HashMap<>();
         map.put("isStoreSelect", String.valueOf(1));
@@ -175,15 +177,20 @@ public class StoreNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(StoreBusinessScopeBean businessScopeBean) {
                 netWorkListener.onAfters();
-                if (businessScopeBean != null)
-                    netWorkListener.onData(true, businessScopeBean);
+                if (businessScopeBean != null) {
+                    if (netWorkListener != null) {
+                        netWorkListener.onData(true, businessScopeBean);
+                    }
+                }
             }
         };
 
@@ -198,6 +205,8 @@ public class StoreNetworkModel {
      */
     public void settle(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
             , String regionPath, String address, String businessLicence, double longitude, double latitude) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
 
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.AVATAR, avatar);
@@ -219,14 +228,18 @@ public class StoreNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                netWorkListener.onAfters();
-                netWorkListener.onSucceed(100);
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onSucceed(100);
+                }
             }
         };
 
@@ -493,7 +506,6 @@ public class StoreNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
-
 
 
 }

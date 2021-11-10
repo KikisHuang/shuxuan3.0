@@ -32,6 +32,10 @@ public class BusinessDistrictPictureAdapter extends PullRecyclerView.PullAdapter
     @NonNull
     @Override
     public PictureViewHolder onPullCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (mImages.size() == 1) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.module_item_business_district_picture_single_image, parent, false);
+            return new PictureViewHolder(view);
+        }
         View view = LayoutInflater.from(mContext).inflate(R.layout.module_item_business_district_picture, parent, false);
         return new PictureViewHolder(view);
     }

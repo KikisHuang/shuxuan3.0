@@ -137,6 +137,11 @@ public class Constant {
     public static final String WSID = "wsid";
     public static final String SOURCE = "source";
 
+    public static final String SEARCH_CONTENT = "searchContent";
+    public static final String CURRENT = "current";
+    public static final String SIZE = "size";
+
+
     public static final String ONCONNECTION = "onConnection";
 
     public static final String MIME_TYPE = "video/avc"; // H.264 Advanced Video
@@ -332,4 +337,5 @@ public class Constant {
     public static final int MYORDER = (8 >> 1);
     public static final int COURSEDETAILTAB = (3 >> 1);
 
+    public static final String WEB_SOCKET_URL = "websocketUrl";
 }

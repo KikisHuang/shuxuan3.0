@@ -59,6 +59,7 @@ public class StoreBusinessDistrictContract {
 
         /**
          * 商家删除商圈动态
+         *
          * @param id 商圈ID
          */
         void deleteBusinessDistrictDynamics(long id);

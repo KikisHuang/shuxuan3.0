@@ -7,21 +7,22 @@
     android:background="@color/white"
     tools:ignore="MissingConstraints">
 
-    <com.kikis.commnlibrary.view.NiceImageView
+    <com.kikis.commnlibrary.view.RoundAngleImageView
         android:id="@+id/niv_avatar"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
-        app:corner_top_left_radius="5dp"
-        app:corner_top_right_radius="5dp"
-        app:corner_bottom_left_radius="5dp"
-        app:corner_bottom_right_radius="5dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/module_svg_user_default_avatar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftBottom="5dp"
+        app:leftTop="5dp"
+        app:rightBottom="5dp"
+        app:rightTop="5dp" />
 
     <TextView
         android:id="@+id/tv_unread_msg_count"

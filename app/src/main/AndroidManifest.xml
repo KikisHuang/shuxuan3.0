@@ -52,6 +52,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="allowBackup">
+
+        <!--每日反省服务-->
+        <service android:name=".service.IMMessageReceivingService" />
+
         <!-- 为了使用 "通用跳转 SDK" 的能力，需要在您的 App 的 AndroidManifest.xml 中添加这一项 -->
         <!-- 并合理设置 android:scheme 的值 -->
         <activity

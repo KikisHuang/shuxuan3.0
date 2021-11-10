@@ -36,7 +36,7 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
 
     private String mNewPhoneNum = "";
 
-    private String phone  =  UserInfoUtils.getInstance().getUserInfo().getMobile();
+    private String phone = UserInfoUtils.getInstance().getUserInfo().getMobile();
 //    private String phone = "18878759765";
 
     public ChangeBindPhonePresenter() {
@@ -47,7 +47,7 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
 
     @Override
     public void getUserPhone() {
-        if (isViewAttached()&&!isEmpty(phone))
+        if (isViewAttached() && !isEmpty(phone))
             getV().setUserPhone(phone);
     }
 
@@ -188,9 +188,7 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
     public void onSucceed(int type) {
         if (type == BIND_NEW_PHONE) {
             if (isBViewAttached()) {
-                WebSocketModel.getInstance(getContext()).setUnReadMessageNum(0);
                 UserInfoUtils.getInstance().clearLoginStatus();
-
                 UserInfoUtils.getInstance().goToLoginPage(getContext(), gets(R.string.please_relogin));
                 getBV().onFailed();
             }

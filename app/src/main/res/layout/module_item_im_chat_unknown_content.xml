@@ -24,6 +24,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/module_svg_user_default_avatar"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -46,9 +47,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@mipmap/bg_im_chat_others_content"
+                android:lineSpacingMultiplier="1.5"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:lineSpacingMultiplier="1.5"
                 android:text="@string/im_chat_unknown_content_hint"
                 android:textColor="#262626"
                 android:textSize="15sp" />
