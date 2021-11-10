@@ -64,6 +64,7 @@ public class WebSocketModel {
             }
         }
         return instance;
+
     }
 
     public WebSocketModel(Context context) {
