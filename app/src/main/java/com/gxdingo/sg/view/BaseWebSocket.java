@@ -29,6 +29,7 @@ public class BaseWebSocket extends WebSocketClient {
 
     private int mChatTingId = 0;
 
+
     public static BaseWebSocket getInstance(URI uri) {
         if (instance != null) {
             instance.close();
