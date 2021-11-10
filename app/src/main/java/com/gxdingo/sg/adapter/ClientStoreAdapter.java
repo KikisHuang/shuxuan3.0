@@ -28,7 +28,7 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
         super(type==0?R.layout.module_recycle_item_store:R.layout.module_recycle_item_search_store);
         mType = type;
         if (type == 0)
-            addChildClickViewIds(R.id.call_phone_iv);
+            addChildClickViewIds(R.id.store_avatar_iv,R.id.call_phone_iv);
     }
 
 

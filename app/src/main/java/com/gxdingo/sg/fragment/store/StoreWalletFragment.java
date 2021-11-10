@@ -6,6 +6,11 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.view.TemplateTitle;
+
+import butterknife.BindView;
+
+import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 
 /**
  * 商家端钱包
@@ -13,6 +18,9 @@ import com.kikis.commnlibrary.fragment.BaseMvpFragment;
  * @author JM
  */
 public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.StoreWalletPresenter> implements StoreWalletContract.StoreWalletListener {
+
+    @BindView(R.id.title_layout)
+    public TemplateTitle title_layout;
 
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
@@ -26,7 +34,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected int activityTitleLayout() {
-        return 0;
+        return R.layout.module_include_custom_title;
     }
 
     @Override
@@ -56,7 +64,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected void init() {
-
+        title_layout.setTitleText("钱包");
+        title_layout.setMoreImg(R.drawable.module_svg_scan);
     }
 
     @Override

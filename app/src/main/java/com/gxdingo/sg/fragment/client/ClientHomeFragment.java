@@ -350,15 +350,24 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-        new XPopup.Builder(reference.get())
-                .isDarkTheme(false)
-                .asCustom(new ClientCallPhoneDialog(reference.get(),""))
-                .show();
+        switch (view.getId()){
+            case R.id.store_avatar_iv:
+                StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                break;
+            case R.id.call_phone_iv:
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new ClientCallPhoneDialog(reference.get(),""))
+                        .show();
+                break;
+        }
+
     }
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
-        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+//        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

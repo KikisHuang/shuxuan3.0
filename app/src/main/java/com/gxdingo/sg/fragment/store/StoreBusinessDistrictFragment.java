@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
@@ -44,6 +45,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.SizeUtils.dp2px;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 
 /**
  * 商家端商圈
@@ -52,12 +54,13 @@ import static com.blankj.utilcode.util.SizeUtils.dp2px;
  */
 public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
 
-    @BindView(R.id.tv_status_bar)
-    LinearLayout tvStatusBar;
+    @BindView(R.id.title_tv)
+    public TextView title_tv;
     @BindView(R.id.tv_unread_msg_count)
     TextView tvUnreadMsgCount;
-    @BindView(R.id.rl_message_list)
-    RelativeLayout rlMessageList;
+
+//    @BindView(R.id.rl_message_list)
+//    RelativeLayout rlMessageList;
     @BindView(R.id.iv_send_business_district)
     ImageView ivSendBusinessDistrict;
     @BindView(R.id.recyclerView)
@@ -166,13 +169,16 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void init() {
-        int statusBarHeight = ScreenUtils.getStatusHeight(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
-        tvStatusBar.setLayoutParams(params);
+        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY,true);
+        if (isUser){
+            title_tv.setText("商圈");
+            ivSendBusinessDistrict.setVisibility(View.GONE);
+        }else
+            title_tv.setText("我的商圈");
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
-        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
+//        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
 
 
@@ -231,10 +237,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }
     }
 
-    @OnClick({R.id.rl_message_list, R.id.iv_send_business_district})
+    @OnClick({R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.rl_message_list:
+            case R.id.unread_iv:
                 startActivity(new Intent(mContext, BusinessDistrictMessageActivity.class));
                 break;
             case R.id.iv_send_business_district:
