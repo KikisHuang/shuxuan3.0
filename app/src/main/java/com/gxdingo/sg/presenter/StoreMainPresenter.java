@@ -44,6 +44,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
         networkModel = new NetworkModel(this);
     }
 
+    
     @Override
     public void persenterInit() {
 
