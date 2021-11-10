@@ -15,6 +15,7 @@ public class Api {
 
     public static final String L = "/";
 
+
     public static final String HTTPS = "https://";
 
     public static final String HTTP = "http://";
@@ -115,6 +116,7 @@ public class Api {
      * 获取聊天记录列表
      */
     public static final String GET_CHAT_HISTORY_LIST = HIERARCHY + "mps/message/list";
+
 
     /**
      * 清除未读消息
