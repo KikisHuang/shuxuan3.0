@@ -27,6 +27,7 @@ public class BaseWebSocket extends WebSocketClient {
 
     public static BaseWebSocket instance;
 
+
     private int mChatTingId = 0;
 
 
