@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
@@ -189,6 +190,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
+
 //        if (object.equals(StoreLocalConstant.NAVIGATION_ORDER))
 //            getP().checkTab(1);
 //        else if (object instanceof NewMessage){

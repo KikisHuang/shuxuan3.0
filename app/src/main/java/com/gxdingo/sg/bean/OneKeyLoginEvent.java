@@ -9,7 +9,10 @@ public class OneKeyLoginEvent {
 
     public String code;
 
-    public OneKeyLoginEvent(String code) {
+    public boolean isUser;
+
+    public OneKeyLoginEvent(String code,boolean isUser) {
         this.code = code;
+        this.isUser=isUser;
     }
 }
