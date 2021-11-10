@@ -99,6 +99,7 @@ import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 public class MyApplication extends Application {
 
 
+
     private static MyApplication instance;
 
     public static MyApplication getInstance() {
