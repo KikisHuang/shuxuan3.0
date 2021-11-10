@@ -62,6 +62,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     }
 
 
+
     @Override
     public void checkTab(int tab) {
 
