@@ -117,6 +117,13 @@ public class Api {
     public static final String GET_CHAT_HISTORY_LIST = HIERARCHY + "mps/message/list";
 
     /**
+     * 消息历史
+     *
+     */
+    public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
+
+
+    /**
      * 清除未读消息
      */
     public static final String MESSAGE_CLEAR_ALL = HIERARCHY + "mps/message/clearall";
