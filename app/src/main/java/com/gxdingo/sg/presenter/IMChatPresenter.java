@@ -14,6 +14,7 @@ import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;

@@ -39,8 +39,11 @@ import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 public class WebSocketModel {
 
     private NetWorkListener netWorkListener;
+
     private int mPage = 1;
+
     private int mPageSize = 15;
+
 
     public WebSocketModel(NetWorkListener netWorkListener) {
         this.netWorkListener = netWorkListener;
