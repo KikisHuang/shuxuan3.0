@@ -15,6 +15,7 @@ public class Api {
 
     public static final String L = "/";
 
+
     public static final String HTTPS = "https://";
 
     public static final String HTTP = "http://";
@@ -107,6 +108,7 @@ public class Api {
      * 消息历史
      */
     public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
+
 
     /**
      * 清除未读消息
