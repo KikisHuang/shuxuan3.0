@@ -61,7 +61,7 @@ public class OneKeyModel {
 
                     if (ResultCode.CODE_SUCCESS.equals(tokenRet.getCode())) {
                         Log.i("oneKey-login", "获取token成功：" + s);
-                        EventBus.getDefault().post(new OneKeyLoginEvent(tokenRet.getToken()));
+                        EventBus.getDefault().post(new OneKeyLoginEvent(tokenRet.getToken(), isUser));
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -73,7 +73,7 @@ public class OneKeyModel {
                 Log.e("oneKey-login", "获取token失败：" + s);
 
 //                goToPage(context, LoginActivity.class,null);
-                UserInfoUtils.getInstance().goToLoginPage(context,"");
+                UserInfoUtils.getInstance().goToLoginPage(context, "");
                 TokenRet tokenRet = null;
                 try {
                     tokenRet = TokenRet.fromJson(s);
@@ -109,15 +109,15 @@ public class OneKeyModel {
                             @Override
                             public void onClick(View v) {
                                 isUser = !isUser;
-                                ((TextView)findViewById(R.id.switch_tv)).setText(isUser?"商家身份登录":"用户身份登陆");
-                                ((TextView)findViewById(R.id.role_tv)).setText(isUser?"树选客户端":"树选商家端");
+                                ((TextView) findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登录" : "用户身份登陆");
+                                ((TextView) findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
                                 switchGlobalUrl(isUser);
                             }
                         });
                         findViewById(R.id.tv_other).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                goToPage(context,LoginActivity.class,null);
+                                goToPage(context, LoginActivity.class, null);
                             }
                         });
                         findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
@@ -137,8 +137,8 @@ public class OneKeyModel {
                 })
                 .build());
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
-                .setAppPrivacyOne("《服务协议》","")
-                .setAppPrivacyTwo("《隐私协议》","")
+                .setAppPrivacyOne("《服务协议》", "")
+                .setAppPrivacyTwo("《隐私协议》", "")
                 .setNavColor(getc(R.color.white))
                 .setNavTextColor(getc(R.color.white))
                 .setLogoHidden(true)
@@ -166,18 +166,18 @@ public class OneKeyModel {
                 .setLogoImgPath("mytel_app_launcher")
                 .setLogBtnBackgroundPath("login_btn_bg")
                 .setScreenOrientation(authPageOrientation)
-        .create());
-        mAuthHelper.getLoginToken(context,2000);
+                .create());
+        mAuthHelper.getLoginToken(context, 2000);
     }
 
 
-    public static void quitLoginPage(){
-        if (mAuthHelper!=null)
+    public static void quitLoginPage() {
+        if (mAuthHelper != null)
             mAuthHelper.quitLoginPage();
     }
 
-    public static void hideLoginLoading(){
-        if (mAuthHelper!=null)
+    public static void hideLoginLoading() {
+        if (mAuthHelper != null)
             mAuthHelper.hideLoginLoading();
     }
 }
