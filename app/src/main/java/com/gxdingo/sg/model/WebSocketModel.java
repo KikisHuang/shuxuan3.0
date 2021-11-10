@@ -44,7 +44,6 @@ public class WebSocketModel {
 
     private int mPageSize = 15;
 
-
     public WebSocketModel(NetWorkListener netWorkListener) {
         this.netWorkListener = netWorkListener;
     }
