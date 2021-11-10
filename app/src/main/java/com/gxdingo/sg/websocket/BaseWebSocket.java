@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class BaseWebSocket extends WebSocketClient {
-    private static final String TAG = "BaseWebSocket";
 
+    private static final String TAG = "BaseWebSocket";
 
     public BaseWebSocket(URI serverUri) {
         super(serverUri, new Draft_6455());//使用的协议版本
@@ -62,4 +62,5 @@ public class BaseWebSocket extends WebSocketClient {
     public void onError(Exception ex) {
         Log.e(TAG, "onError()");
     }
+
 }
