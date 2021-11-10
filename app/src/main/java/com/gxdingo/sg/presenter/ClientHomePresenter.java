@@ -83,7 +83,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     if (isViewAttached() && isBViewAttached()) {
                         if (!value)
                             getBV().onFailed();
-                        else
+                        else{
                             model.location(getContext(), aMapLocation -> {
 
                                 if (aMapLocation.getErrorCode() == 0) {
@@ -98,6 +98,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                     getBV().onFailed();
                                 }
                             });
+                        }
+
                     }
                 }
 
@@ -108,6 +110,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
                 @Override
                 public void onComplete() {
+
 
                 }
             });

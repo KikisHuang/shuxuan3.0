@@ -11,6 +11,7 @@ import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -86,12 +87,14 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
+        if (UserInfoUtils.getInstance().isLogin())
         getP().getSubscribesMessage(true);
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
+        if (UserInfoUtils.getInstance().isLogin())
         getP().getSubscribesMessage(false);
     }
 
@@ -103,7 +106,8 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void initData() {
-        getP().getSubscribesMessage(true);
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().getSubscribesMessage(true);
     }
 
     @Override
