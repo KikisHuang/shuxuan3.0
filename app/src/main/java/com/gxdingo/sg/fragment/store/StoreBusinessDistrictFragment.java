@@ -29,6 +29,7 @@ import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.view.SpaceItemDecoration;
 import com.kikis.commnlibrary.bean.ReLoginBean;
@@ -182,8 +183,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         recyclerView.setAdapter(mAdapter);
 
 
-        //获取商圈列表
-        getP().getBusinessDistrictList(true);
+
     }
 
     @Override
@@ -200,7 +200,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      */
     protected void onTypeEvent(Integer type) {
         //刷新商圈列表
-        if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST) {
+        if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
+        ||type == LocalConstant.CLIENT_LOGIN_SUCCEED || type ==LocalConstant.STORE_LOGIN_SUCCEED) {
             //获取商圈列表
             getP().getBusinessDistrictList(true);
         }
@@ -301,7 +302,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void initData() {
-
+        //获取商圈列表
+        getP().getBusinessDistrictList(true);
     }
 
     /**

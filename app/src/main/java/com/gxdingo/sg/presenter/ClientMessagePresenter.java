@@ -25,7 +25,7 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
 
     @Override
     public void getSubscribesMessage(boolean refresh) {
-        networkModel.getMessageSubscribesList(getContext(),refresh);
+//        networkModel.getMessageSubscribesList(getContext(),refresh);
     }
 
     @Override
