@@ -44,6 +44,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @BindView(R.id.nodata_layout)
     public View nodata_layout;
 
+
     @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
         return new ClientMessagePresenter();
