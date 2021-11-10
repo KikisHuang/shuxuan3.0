@@ -15,7 +15,6 @@ public class Api {
 
     public static final String L = "/";
 
-
     public static final String HTTPS = "https://";
 
     public static final String HTTP = "http://";
@@ -112,11 +111,16 @@ public class Api {
      * 消息订阅详情
      */
     public static final String MESSAGE_DETAILS = HIERARCHY + "mps/message/details";
-
     /**
      * 获取聊天记录列表
      */
     public static final String GET_CHAT_HISTORY_LIST = HIERARCHY + "mps/message/list";
+
+    /**
+     * 消息历史
+     *
+     */
+    public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
 
 
     /**
