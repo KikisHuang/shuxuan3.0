@@ -163,12 +163,6 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void checkTab(int tab) {
-        if (!UserInfoUtils.getInstance().isLogin())
-            if (tab==1 || tab==3){
-                oneKeyModel.sdkInit(getContext());
-                return;
-            }
-
         if (model != null) {
             if (isViewAttached() && tab != model.getOldTab())
                 getV().onSeleted(tab, model.getOldTab());
@@ -210,6 +204,12 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
             networkModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, SPUtils.getInstance().getBoolean(LOGIN_WAY));
         }
     }
+
+    @Override
+    public void goLogin() {
+        oneKeyModel.sdkInit(getContext());
+    }
+
 
     /**
      * 支付宝sdk结果回调，主线程中执行

@@ -27,6 +27,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -118,6 +119,13 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
             }
             binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
         }
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == LOGOUT)
+            finish();
     }
 
     @Override

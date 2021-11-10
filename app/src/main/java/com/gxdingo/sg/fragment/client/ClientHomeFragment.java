@@ -31,6 +31,7 @@ import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.StatusBarUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -198,7 +199,10 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         switch (v.getId()){
             case R.id.location_tt_tv:
             case R.id.location_tv:
-                goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                if (UserInfoUtils.getInstance().isLogin())
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                else
+                    new OneKeyModel().sdkInit(getContext());
                 break;
             case R.id.btn_search:
             case R.id.ll_search:
@@ -287,7 +291,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onFailed() {
         super.onFailed();
         location = false;
-        if (noLocation_layout.getVisibility() == View.INVISIBLE)
+        if (noLocation_layout.getVisibility() == View.INVISIBLE ||noLocation_layout.getVisibility() == View.GONE )
             noLocation_layout.setVisibility(View.VISIBLE);
     }
 
@@ -299,7 +303,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void setDistrict(String district) {
         if (noLocation_layout.getVisibility() == View.VISIBLE)
-            noLocation_layout.setVisibility(View.INVISIBLE);
+            noLocation_layout.setVisibility(View.GONE);
         location_tv.setText(district);
         location_tt_tv.setText(district);
     }
@@ -346,15 +350,24 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-        new XPopup.Builder(reference.get())
-                .isDarkTheme(false)
-                .asCustom(new ClientCallPhoneDialog(reference.get(),""))
-                .show();
+        switch (view.getId()){
+            case R.id.store_avatar_iv:
+                StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                break;
+            case R.id.call_phone_iv:
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new ClientCallPhoneDialog(reference.get(),""))
+                        .show();
+                break;
+        }
+
     }
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
-        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+//        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

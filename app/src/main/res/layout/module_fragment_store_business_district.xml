@@ -6,79 +6,88 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/tv_status_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
-
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <TextView
+            android:id="@+id/title_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:text="我的商圈"
             android:textColor="#FF2E2E2E"
-            android:textSize="18sp" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:id="@+id/rl_message_list"
+        <ImageView
+            android:id="@+id/unread_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/iv_send_business_district">
+            android:layout_marginEnd="@dimen/dp_10"
+            android:src="@drawable/module_svg_store_message_bell"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_send_business_district"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/module_svg_store_message_bell" />
+        <TextView
+            android:id="@+id/tv_unread_msg_count"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/module_unread_im_msg_red_bg"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/unread_iv"
+            app:layout_constraintTop_toTopOf="@+id/unread_iv" />
 
-            <TextView
-                android:id="@+id/tv_unread_msg_count"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginLeft="16dp"
-                android:background="@drawable/module_unread_im_msg_red_bg"
-                android:gravity="center"
-                android:text="0"
-                android:visibility="invisible"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
-        </RelativeLayout>
+        <!--        <RelativeLayout-->
+        <!--            android:id="@+id/rl_message_list"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_centerVertical="true"-->
+        <!--            android:layout_marginRight="45dp"-->
+        <!--            android:layout_alignParentEnd="true">-->
+
+        <!--            <ImageView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:src="@drawable/module_svg_store_message_bell" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/tv_unread_msg_count"-->
+        <!--                android:layout_width="16dp"-->
+        <!--                android:layout_height="16dp"-->
+        <!--                android:layout_marginLeft="16dp"-->
+        <!--                android:background="@drawable/module_unread_im_msg_red_bg"-->
+        <!--                android:gravity="center"-->
+        <!--                android:text="0"-->
+        <!--                android:visibility="visible"-->
+        <!--                android:textColor="@color/white"-->
+        <!--                android:textSize="10sp" />-->
+        <!--        </RelativeLayout>-->
 
         <ImageView
             android:id="@+id/iv_send_business_district"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/module_svg_store_add_button_icon_8607" />
-    </RelativeLayout>
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/module_svg_store_add_button_icon_8607"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/smartrefreshlayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:srlEnableNestedScrolling="true"
-        app:srlEnablePreviewInEditMode="false">
-
-        <include layout="@layout/module_include_nodata_recycle"></include>
-
-        <com.scwang.smart.refresh.footer.ClassicsFooter
-            android:id="@+id/classics_footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srlAccentColor="@color/gray666"
-            app:srlClassicsSpinnerStyle="Translate"
-            app:srlTextFinish="@string/loading"
-            app:srlTextLoading="@string/loading" />
-
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+    <include layout="@layout/module_include_refresh" />
 
 </LinearLayout>

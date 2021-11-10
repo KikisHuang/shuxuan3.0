@@ -30,11 +30,7 @@ import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,39 +68,57 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
+        TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
 
         //登录方式，true 用户，false 商家
         boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-        if (isUse) {
-            /**
-             * 如果是用户端则将时间控件移动到删除按钮的位置，并将删除按钮隐藏
-             */
-            ConstraintLayout.LayoutParams params = new ConstraintLayout
-                    .LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-            params.bottomToBottom = 0;
-            params.topToTop = 0;
-            params.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.dp9), (int) mContext.getResources().getDimension(R.dimen.dp20), 0);
-            tvTime.setLayoutParams(params);
-            ivDelete.setVisibility(View.GONE);
-        } else {
-            /**
-             * 商家端则给删除按钮点击事件
-             */
-            tvTime.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnChildViewClickListener != null)
-                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
-                }
-            });
-        }
+//        if (isUse) {
+//            /**
+//             * 如果是用户端则将时间控件移动到删除按钮的位置，并将删除按钮隐藏
+//             */
+//            ConstraintLayout.LayoutParams params = new ConstraintLayout
+//                    .LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+//            params.bottomToBottom = 0;
+//            params.topToTop = 0;
+//            params.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.dp9), (int) mContext.getResources().getDimension(R.dimen.dp20), 0);
+//            tvTime.setLayoutParams(params);
+//            ivDelete.setVisibility(View.GONE);
+//            client_date_tv.setText();
+//        } else {
+//            /**
+//             * 商家端则给删除按钮点击事件
+//             */
+//            tvTime.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (mOnChildViewClickListener != null)
+//                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
+//                }
+//            });
+//        }
 
 
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
-//        String createTime = DateUtils.convertTheTimeFormatOfT();
-        tvTime.setText(data.getCreateTime());
+        String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
+        if (isUse ){
+            client_date_tv.setText(createTime);
+            tvTime.setVisibility(View.GONE);
+            ivDelete.setVisibility(View.GONE);
+        }else {
+            tvTime.setText(createTime);
+            client_date_tv.setVisibility(View.GONE);
+        }
+
+        ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnChildViewClickListener != null)
+                    mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
+            }
+        });
+
 
         //删除商圈
         ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -124,13 +138,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         rvPicture.setRecyclerViewScrollEnabled(false);
         rvPicture.addItemDecoration(mSpaceItemDecoration);
         rvPicture.setNestedScrollingEnabled(false);
-        if (data.getImages().size() == 1) {
-            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 1));
-        } else if (data.getImages().size() == 2) {
-            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 2));
-        } else {
-            rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
-        }
+        rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
         rvPicture.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int p) {
@@ -222,6 +230,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
 
     }
+
 
     private RequestOptions getRequestOptions() {
         RequestOptions options = new RequestOptions();

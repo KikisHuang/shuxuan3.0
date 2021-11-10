@@ -193,7 +193,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                         .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定退出登录？", new MyConfirmListener() {
                             @Override
                             public void onConfirm() {
-
+                                getP().logout();
                             }
                         })).show();
                 break;

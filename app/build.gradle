@@ -134,10 +134,10 @@ dependencies {
     implementation rootProject.ext.dependencies.websocket
 
     //高德3D地图so及jar
-    implementation 'com.amap.api:3dmap:latest.integration'
+    implementation 'com.amap.api:3dmap:8.0.1'
     //高德定位功能
-    implementation 'com.amap.api:location:latest.integration'
-    implementation 'com.amap.api:search:latest.integration'
+    implementation 'com.amap.api:location:5.5.1'
+    implementation 'com.amap.api:search:8.1.0'
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 

@@ -17,6 +17,7 @@ import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
+import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -31,6 +32,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
@@ -166,8 +168,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LocalConstant.WECHAT_LOGIN_EVENT) {
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
+        }else if (type == LOGOUT){
+            ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
+            getP().checkTab(0);
         }
-
     }
 
     @Override
@@ -179,7 +183,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(new ClientBusinessDistrictFragment());
+        mFragmentList.add(new StoreBusinessDistrictFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 
@@ -194,6 +198,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(0);
                 break;
             case R.id.message_layout:
+                if (!UserInfoUtils.getInstance().isLogin()){
+                    getP().goLogin();
+                    return;
+                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(1);
                 break;
@@ -206,6 +214,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(2);
                 break;
             case R.id.mine_layout:
+                if (!UserInfoUtils.getInstance().isLogin()){
+                    getP().goLogin();
+                    return;
+                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(3);
                 break;

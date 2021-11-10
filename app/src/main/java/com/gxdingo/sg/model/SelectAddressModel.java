@@ -15,6 +15,7 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.district.DistrictSearch;
 import com.amap.api.services.district.DistrictSearchQuery;
@@ -92,6 +93,14 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      * @param listener
      */
     public void retrievalPOI(String keyWord, String cityCode, PoiSearch.OnPoiSearchListener listener) {
+        query = new PoiSearch.Query(keyWord, "", cityCode);
+        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+        try {
+            poiSearch = new PoiSearch(mContext, query);
+        }catch (Exception e){}
+
+        poiSearch.setOnPoiSearchListener(listener);
+        poiSearch.searchPOIAsyn();
         try {
             query = new PoiSearch.Query(keyWord, "", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
@@ -101,7 +110,6 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
         } catch (Exception e) {
             LogUtils.e(e);
         }
-
     }
 
     /**
@@ -115,6 +123,21 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      */
     public void retrievalBoundPOI(String keyWord, String cityCode,
                                   double latitude, double longitude, int page, PoiSearch.OnPoiSearchListener listener) {
+
+        query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
+        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+        try {
+            poiSearch = new PoiSearch(mContext, query);
+        }catch (Exception e){
+
+        }
+
+        query.setPageNum(page);
+        poiSearch.setOnPoiSearchListener(listener);
+        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
+
+        poiSearch.searchPOIAsyn();
+
         try {
             query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
@@ -137,6 +160,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      * @param page
      * @param listener
      */
+
     public void onDistrictQuery(String keyword, int page, DistrictSearch.OnDistrictSearchListener listener) {
         try {
             search = new DistrictSearch(mContext);
