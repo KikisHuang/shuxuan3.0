@@ -41,7 +41,6 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 /**
  * WebSocket消息接收服务
- *
  * @author JM
  */
 public class IMMessageReceivingService extends Service {

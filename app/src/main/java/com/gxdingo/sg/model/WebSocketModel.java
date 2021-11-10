@@ -2,291 +2,282 @@ package com.gxdingo.sg.model;
 
 import android.content.Context;
 
-import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
-import com.gxdingo.sg.bean.SocketLoginEvent;
-import com.gxdingo.sg.bean.SocketPingEvent;
+import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.IMChatHistoryListBean;
+import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.gxdingo.sg.bean.SendIMMessageBean;
+import com.gxdingo.sg.bean.SubscribesListBean;
+import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.BaseWebSocket;
+import com.gxdingo.sg.view.MyBaseSubscriber;
+import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
+import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.exception.ApiException;
+import com.zhouyou.http.model.ApiResult;
+import com.zhouyou.http.request.PostRequest;
 
-import org.java_websocket.enums.ReadyState;
-import org.java_websocket.exceptions.WebsocketNotConnectedException;
-
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-
-import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_TEST_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_UAT_KEY;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static org.java_websocket.enums.ReadyState.OPEN;
+import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
+import static com.gxdingo.sg.http.Api.IM_URL;
+import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
+import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
 /**
- * @author: Kikis
- * @date: 2021/5/19
- * @page:websocket model类
+ * WebSocketModel
+ *
+ * @author:  JM
  */
 public class WebSocketModel {
 
-    public static WebSocketModel instance;
+    private NetWorkListener netWorkListener;
 
-    private Disposable mDisposable;
+    private int mPage = 1;
 
-    private BaseWebSocket mWebSocket;
+    private int mPageSize = 15;
 
-    private Context context;
-
-    private String wsServerUrl;
-
-    private int unReadMsgNum = 0;
-
-    private int mChatTingId = 0;
-
-
-    public static WebSocketModel getInstance(Context context) {
-        if (instance == null) {
-            synchronized (WebSocketModel.class) {
-                if (instance == null) {
-                    instance = new WebSocketModel(context);
-                }
-            }
-        }
-        return instance;
-
-    }
-
-    public WebSocketModel(Context context) {
-        this.context = context;
+    public WebSocketModel(NetWorkListener netWorkListener) {
+        this.netWorkListener = netWorkListener;
     }
 
     /**
-     * 聊天webSocket初始化
+     * 翻页
+     */
+    public void nextPage() {
+        mPage++;
+    }
+
+    /**
+     * 重置
+     */
+    public void resetPage() {
+        if (mPage > 1)
+            setPage(1);
+    }
+
+    protected void setPage(int mPage) {
+        this.mPage = mPage;
+    }
+
+    protected int getSize() {
+        return mPageSize;
+    }
+
+    protected void setSize(int mSize) {
+        this.mPageSize = mSize;
+    }
+
+    /**
+     * 页数自动计算
      *
-     * @param wsServerUrl
+     * @param refresh
+     * @param size
      */
-    public void webSocketInit(String wsServerUrl) {
-        this.wsServerUrl = wsServerUrl;
-        URI uri = URI.create(wsServerUrl);
-
-        mWebSocket = BaseWebSocket.getInstance(uri);
-
-        new Thread(() -> {
-            try {
-                mWebSocket.connectBlocking();
-
-                if (mWebSocket.isOpen())
-                    mWebSocket.send(getSendJson(LocalConstant.LOGIN));
-
-                startSocketHeartTimer();
-            } catch (Exception e) {
-                LogUtils.e("socket error == " + e);
-            }
-        }).start();
-
-
-    }
-
-    public void setWsServerUrl(String wsServerUrl) {
-        this.wsServerUrl = wsServerUrl;
-    }
-
-    /**
-     * ping
-     */
-    public void sendPing() {
-
-        if (mWebSocket == null)
+    public void pageNext(boolean refresh, int size) {
+        if (netWorkListener == null)
             return;
-        //如果已经断开连接，进行重连操作
-        if (mWebSocket.getReadyState() != OPEN)
-            reconnectWs();
-        else {
-            if (mWebSocket.isOpen()) {
 
-                if (!mWebSocket.getReadyState().equals(ReadyState.OPEN)) {
-                    reconnectWs();
-                    return;
-                } else {
-                    try {
-                        mWebSocket.sendPing();
-                        mWebSocket.send(getSendJson(LocalConstant.PING));
-                    } catch (WebsocketNotConnectedException e) {
-                        LogUtils.e("WebsocketNotConnectedException === " + e);
-                        reconnectWs();
-                    }
+        //刷新
+        if (refresh) {
+            /**
+             * 控制列表下拉刷新和上拉加载更多视图
+             */
+            if (size < mPageSize)
+                netWorkListener.finishRefreshWithNoMoreData();//完成刷新并标记没有更多数据
+            else {
+                netWorkListener.resetNoMoreData();//重置没有更多数据
+                resetPage();//重置页码
+            }
+
+            /**
+             * 控制是否有数据显示的视图
+             */
+            if (size <= 0)
+                netWorkListener.noData();//没有数据（显示传入的没有数据布局）
+            else {
+                nextPage();//有数据，页码累加1
+                netWorkListener.haveData();//有数据（隐藏没有数据布局）
+            }
+
+            netWorkListener.finishRefresh(true);//完成刷新
+        }
+        //加载更多
+        else {
+            //请求的长度小于0，显示没有更多数据布局
+            if (size < mPageSize)
+                netWorkListener.finishLoadmoreWithNoMoreData();//完成加载并标记没有更多数据
+            else {
+                nextPage();//有数据，页码累加1
+                netWorkListener.haveData();//有数据
+            }
+
+
+            netWorkListener.finishLoadmore(true);//完成加载更多
+        }
+        netWorkListener.onRequestComplete();//完成请求
+    }
+
+    /**
+     * 获取消息订阅列表
+     *
+     * @param context
+     */
+    public void getMessageSubscribesList(Context context, boolean refresh) {
+        if (refresh)
+            resetPage();//重置页码
+
+        Map<String, String> map = getJsonMap();
+
+        //map.put(Constant.SEARCH_CONTENT, "");
+        map.put(Constant.CURRENT, String.valueOf(mPage));
+        map.put(Constant.SIZE, String.valueOf(mPageSize));
+
+//        if (netWorkListener != null)
+//            netWorkListener.onStarts();
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<SubscribesListBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<SubscribesListBean>, SubscribesListBean>(new TypeToken<SubscribesListBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<SubscribesListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    //netWorkListener.onAfters();
                 }
             }
-        }
+
+            @Override
+            public void onNext(SubscribesListBean subscribesBean) {
+                if (netWorkListener != null) {
+                    //netWorkListener.onAfters();
+                    netWorkListener.onData(refresh, subscribesBean);
+                }
+                if (subscribesBean != null && subscribesBean.getList() != null) {
+                    //下一页
+                    pageNext(refresh, subscribesBean.getList().size());
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
     }
 
     /**
-     * 重连
+     * 向服务器发送聊天消息
      */
-    public void reconnectWs() {
-        if (mWebSocket != null) {
-            mWebSocket.close();
-            mWebSocket = null;
+    public void sendMessage(Context context, SendIMMessageBean sendIMMessageBean, CustomResultListener<ReceiveIMMessageBean> listener) {
+        Map<String, String> map = new HashMap<>();
+        map.put("shareUuid", sendIMMessageBean.getShareUuid());
+        map.put("type", String.valueOf(sendIMMessageBean.getType()));
+        map.put("content", sendIMMessageBean.getContent());
+        map.put("voiceDuration", String.valueOf(sendIMMessageBean.getVoiceDuration()));
+        map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
         }
-        //onMessage("与聊天服务器断开，正在尝试重新连接。。。");
-        webSocketInit(wsServerUrl);
-    }
 
-    /**
-     * 获取发送参数
-     *
-     * @param exec
-     * @return
-     */
-    private String getSendJson(String exec) {
-
-        String timesTemp = HttpClient.getCurrentTimeUTCM();
-
-        Map<String, String> signMap = new HashMap<>();
-        //signMap.putAll(new HashMap<>());
-
-        signMap.put(LocalConstant.EXEC, exec);
-
-        signMap.put(LocalConstant.TIMESTAMP, timesTemp);
-
-        if (exec == LocalConstant.LOGIN)
-            signMap.put(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        String sign = SignatureUtils.generate(signMap, isUat ? WEB_SOCKET_UAT_KEY : isDebug ? WEB_SOCKET_TEST_KEY : WEB_SOCKET_KEY, SignatureUtils.SignType.MD5);
-
-        Object jsonBean;
-
-        if (exec == LocalConstant.LOGIN)
-            jsonBean = new SocketLoginEvent(exec, timesTemp, sign, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-        else
-            jsonBean = new SocketPingEvent(exec, timesTemp, sign);
-
-        String json = GsonUtils.toJson(jsonBean);
-
-        return json;
-    }
-
-
-    public void destroySocket() {
-
-        if (mWebSocket != null) {
-            mWebSocket.close();
-            mWebSocket = null;
-        }
-        if (mDisposable != null) {
-            mDisposable.dispose();
-            mDisposable = null;
-        }
-    }
-
-    /**
-     * socket 心跳计时器
-     */
-    private void startSocketHeartTimer() {
-
-        Observable.interval(LocalConstant.SOCKET_HEART_TIME, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable disposable) {
-                        mDisposable = disposable;
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Long number) {
-                        if (UserInfoUtils.getInstance().isLogin())
-                            sendPing();
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        if (mDisposable != null) {
-                            mDisposable.dispose();
-                            mDisposable = null;
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                        if (mDisposable != null) {
-                            mDisposable.dispose();
-                            mDisposable = null;
-                        }
-
-                    }
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SEND, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<ReceiveIMMessageBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<ReceiveIMMessageBean>, ReceiveIMMessageBean>(new TypeToken<ReceiveIMMessageBean>() {
+                }.getType()) {
                 });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ReceiveIMMessageBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(ReceiveIMMessageBean receiveIMMessageBean) {
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+                if (listener != null) {
+                    listener.onResult(receiveIMMessageBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
     }
 
     /**
-     * 设置未读消息数
-     *
-     * @param num
+     * 获取聊天记录列表
      */
-    public void setUnReadMessageNum(int num) {
-        this.unReadMsgNum = num;
+    public void getChatHistoryList(Context context, String shareUuid, CustomResultListener customResultListener) {
+        Map<String, String> map = new HashMap<>();
+        map.put("shareUuid", shareUuid);
+        map.put("current", String.valueOf(mPage));
+        map.put("size", String.valueOf(mPageSize));
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<IMChatHistoryListBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<IMChatHistoryListBean>, IMChatHistoryListBean>(new TypeToken<IMChatHistoryListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<IMChatHistoryListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+                if (customResultListener != null) {
+                    customResultListener.onResult(null);
+                }
+            }
+
+            @Override
+            public void onNext(IMChatHistoryListBean imChatHistoryListBean) {
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+                if (customResultListener != null) {
+                    customResultListener.onResult(imChatHistoryListBean);
+                }
+                if (imChatHistoryListBean != null && imChatHistoryListBean.getList() != null) {
+                    //下一页
+                    pageNext(false, imChatHistoryListBean.getList().size());
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
     }
-
-    /**
-     * 减去num未读消息数
-     *
-     * @param num
-     */
-    public void reduceUnReadMessageNum(int num) {
-        this.unReadMsgNum -= num;
-    }
-
-    /**
-     * 增加未读消息数+1
-     */
-    public void addUnReadMessageNum() {
-        unReadMsgNum++;
-    }
-
-    /**
-     * 获取未读消息树
-     *
-     * @return
-     */
-    public int getUnReadMessageNum() {
-        return unReadMsgNum;
-    }
-
-
-    /**
-     * 设置当前聊天id
-     *
-     * @param id
-     */
-    public void setChatTingId(int id) {
-        mChatTingId = id;
-    }
-
-    /**
-     * 获取当前聊天id
-     */
-    public int getChatTingId() {
-        return mChatTingId;
-    }
-
-    /**
-     * 清除当前聊天id
-     */
-    public void clearChatTingId() {
-        if (mChatTingId > 0)
-            mChatTingId = 0;
-    }
-
-
 }
