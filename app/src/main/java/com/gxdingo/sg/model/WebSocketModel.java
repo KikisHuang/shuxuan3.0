@@ -10,7 +10,7 @@ import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.websocket.BaseWebSocket;
+import com.gxdingo.sg.view.BaseWebSocket;
 
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.exceptions.WebsocketNotConnectedException;
