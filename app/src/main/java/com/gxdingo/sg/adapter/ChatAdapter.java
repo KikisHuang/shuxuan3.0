@@ -1,5 +1,7 @@
 package com.gxdingo.sg.adapter;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,11 +26,17 @@ import com.kikis.commnlibrary.utils.GlideUtils;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.progressbar.BGAProgressBar;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
+import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
@@ -58,9 +66,14 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
     private IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;
 
+    private Disposable mDisposable;
+
+    private AnimationDrawable anim;
+
     public ChatAdapter(List list) {
         super(list);
     }
+
 
     public ChatAdapter(List list, IMChatHistoryListBean data, ChatClickListener chatClickListener) {
         super(list);
@@ -86,7 +99,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         String myIdentifier = UserInfoUtils.getInstance().getIdentifier();//自己的Identifier
 
         //是否自己
-        boolean self = isEmpty(data.getSendIdentifier())||myIdentifier.equals(data.getSendIdentifier());
+        boolean self = isEmpty(data.getSendIdentifier()) || myIdentifier.equals(data.getSendIdentifier());
 
         // genre 消息类型 0=文本 1=图片 2=语音 3=视频 4=商品 5=订单
         //消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
@@ -148,16 +161,16 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
         if (getItemViewType(position) == SelfText || getItemViewType(position) == OtherText) {
 
-                TextView content = holder.getTextView(R.id.content_tv);
-                if (!StringUtils.isEmpty(data.getContent())) {
-                    content.setText(SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE,
-                            mContext, data.getContent()));
-                }
-                content.setOnLongClickListener(v -> {
-                    copyText(content.getText().toString());
-                    customToast("已复制到剪贴板");
-                    return false;
-                });
+            TextView content = holder.getTextView(R.id.content_tv);
+            if (!StringUtils.isEmpty(data.getContent())) {
+                content.setText(SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE,
+                        mContext, data.getContent()));
+            }
+            content.setOnLongClickListener(v -> {
+                copyText(content.getText().toString());
+                customToast("已复制到剪贴板");
+                return false;
+            });
         }
 
         //图片内容加载
@@ -186,14 +199,44 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             LinearLayout voice_ll = holder.getLinearLayout(R.id.voice_ll);
             TextView tv_voice_second = holder.getTextView(R.id.tv_voice_second);
+            ImageView iv_oneself_voice_scrolling = holder.getImageView(R.id.iv_oneself_voice_scrolling);
 
-            tv_voice_second.setText(String.valueOf(data.getVoiceDuration()));
 
+            if (data.getVoiceDuration() > 0) {
+                //动态设置语音宽度
+                int value = (int) ((22 + data.getVoiceDuration()) * 2.5);
+
+                voice_ll.getLayoutParams().width = value > 160 ? dp2px(160) : dp2px(value);
+
+                tv_voice_second.setText(String.valueOf(data.getVoiceDuration()));
+            }
             voice_ll.setOnClickListener(v -> {
-                //todo 语音播放动画联动
-                if (chatClickListener != null)
-                    //语音播放
-                    chatClickListener.onAudioClick(data.getContent());
+                if (data.getVoiceDuration() > 0) {
+
+
+                    iv_oneself_voice_scrolling.setBackgroundResource(R.drawable.module_im_chat_oneself_voice_play_scrolling);
+
+                    if (anim != null && anim.isRunning() && anim != iv_oneself_voice_scrolling.getBackground())
+                        cancel();
+
+                    anim = ((AnimationDrawable) iv_oneself_voice_scrolling.getBackground());
+
+                    iv_oneself_voice_scrolling.post(() -> {
+                        if (anim.isRunning()) {
+                            stopVoiceAnima();
+                            chatClickListener.onAudioClick(data.getContent(), false);
+                        } else {
+                            anim.start();//启动动画
+                            startTimer(data.getVoiceDuration());
+                            if (chatClickListener != null)
+                                //语音播放
+                                chatClickListener.onAudioClick(data.getContent(), true);
+                        }
+
+                    });
+
+                }
+
             });
 
         }
@@ -241,6 +284,36 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         }
     }
 
+    private void startTimer(int duration) {
+
+        Observable observable = Observable.timer(duration * 1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
+
+        observable.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable disposable) {
+                mDisposable = disposable;
+            }
+
+            @Override
+            public void onNext(@io.reactivex.annotations.NonNull Long number) {
+
+            }
+
+            @Override
+            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                cancel();
+            }
+
+            @Override
+            public void onComplete() {
+                //取消订阅
+                cancel();
+            }
+        });
+
+    }
+
     /**
      * 通用view数据初始化
      *
@@ -266,7 +339,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         TextView time_tv = holder.getTextView(R.id.time_tv);
 
         if (!isEmpty(data.getCreateTime()))
-        time_tv.setText(dealDateFormat(data.getCreateTime()));
+            time_tv.setText(dealDateFormat(data.getCreateTime()));
 
         if (position == 0)
             time_tv.setVisibility(View.VISIBLE);
@@ -314,4 +387,24 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         circle_progress_bar.setProgress(data.upload_progress);
     }
 
+    /**
+     * 取消订阅
+     */
+    public void cancel() {
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
+        stopVoiceAnima();
+    }
+
+    /**
+     * 关闭语音播放动画
+     */
+    public void stopVoiceAnima() {
+        if (anim != null && anim.isRunning()) {
+            anim.selectDrawable(0);//选择当前动画的第一帧，然后停止
+            anim.stop();
+        }
+    }
 }

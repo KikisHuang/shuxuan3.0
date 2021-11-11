@@ -3,6 +3,7 @@ package com.gxdingo.sg.utils.emotion;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -124,6 +125,7 @@ public class EmotionMainFragment extends BaseFragment {
     //聊天id
     private String chatId = "";
 
+    private View.OnTouchListener onTouchListener;
 
     @Override
     protected boolean eventBusRegister() {
@@ -180,13 +182,20 @@ public class EmotionMainFragment extends BaseFragment {
                 .bindToContent(contentView)//绑定内容view
                 .bindToEditText(bar_edit_text, chatId)//判断绑定那种EditView
                 .bindToEmotionButton(emotion_button)//绑定表情按钮
-                .bindToVoiceButton(iv_voice,voice_tv)//绑定语音按钮
+                .bindToVoiceButton(iv_voice, voice_tv)//绑定语音按钮
                 .bindToFuncationButton(funcation_button)//绑定功能按钮
                 .bindToSendButton(send_tv, chatId)//绑定发送按钮
                 .build();
 
-        initFuncationLayout();
 
+        initFuncationLayout();
+        initVoiceView();
+    }
+
+    private void initVoiceView() {
+
+        if(onTouchListener != null)
+        voice_tv.setOnTouchListener(onTouchListener);
     }
 
     private void initFuncationLayout() {
@@ -197,7 +206,7 @@ public class EmotionMainFragment extends BaseFragment {
         prvOtherFunctions.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                EventBus.getDefault().post(new FunctionsItem( UserInfoUtils.getInstance().getUserInfo().getRole(), position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
+                EventBus.getDefault().post(new FunctionsItem(UserInfoUtils.getInstance().getUserInfo().getRole(), position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
             }
         });
     }
@@ -289,6 +298,7 @@ public class EmotionMainFragment extends BaseFragment {
     public void bindToContentView(View contentView) {
         this.contentView = contentView;
     }
+
 
 /*
     @OnClick({R.id.photo_album_img, R.id.camera_img})
@@ -450,5 +460,9 @@ public class EmotionMainFragment extends BaseFragment {
             return true;
         }
         return false;
+    }
+
+    public void setonTouchListener(View.OnTouchListener onTouchListener) {
+        this.onTouchListener = onTouchListener;
     }
 }

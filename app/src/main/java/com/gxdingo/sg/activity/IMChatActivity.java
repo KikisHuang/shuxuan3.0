@@ -574,6 +574,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         getP().sendPictureMessage(mShareUuid, url, 0);
     }
 
+    @Override
+    public String getShareUUID() {
+        return null;
+    }
+
     /**
      * 转账
      */

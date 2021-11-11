@@ -30,7 +30,7 @@ public class MediaRecorderUtil {
 
     private static int mCountDownTime;
 
-    private static int mMaxTime = 120;
+    private static int mMaxTime = 60;
 
     public static void startRecordering(String filePath, AudioModelListener audioModelListener, LifecycleProvider lifecycle) {
 

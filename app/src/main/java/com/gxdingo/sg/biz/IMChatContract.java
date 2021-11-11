@@ -4,6 +4,7 @@ import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class IMChatContract {
         /**
          * 发送消息
          */
-        void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String,Object> params);
+        void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params);
 
         /**
          * 发送文本消息
@@ -64,10 +65,45 @@ public class IMChatContract {
 
         /**
          * 跳转第三方地图
+         *
          * @param pos
          * @param mAddress
          */
         void goOutSideNavigation(int pos, ReceiveIMMessageBean.MsgAddress mAddress);
+
+        /**
+         * 开始录制语音
+         */
+        void startRecorder();
+
+        /**
+         * 停止录制语音
+         */
+        void stopRecorder();
+
+        /**
+         * 取消录制语音
+         */
+        void cancelRecorder();
+
+        /**
+         * 获取录音权限
+         *
+         * @param rxPermissions
+         */
+        void checkRecordPermissions(RxPermissions rxPermissions);
+
+        /**
+         * 语音播放
+         *
+         * @param content
+         */
+        void playVoice(String content);
+
+        /**
+         * 停止语音播放
+         */
+        void stopVoice();
     }
 
     public interface IMChatListener {
@@ -83,12 +119,13 @@ public class IMChatContract {
          * @param receiveIMMessageBean 接收的IM消息（刚才发送成功的消息）
          */
         void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean);
+
         /**
          * 发送(文字、图片、语音、转账)消息成功带下标
          *
          * @param receiveIMMessageBean 接收的IM消息（刚才发送成功的消息）
          */
-        void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean,int pos);
+        void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean, int pos);
 
         /**
          * 回调上传图片URL
@@ -96,5 +133,7 @@ public class IMChatContract {
          * @param url 服务器返回上传后的URL
          */
         void onUploadImageUrl(String url);
+
+        String getShareUUID();
     }
 }

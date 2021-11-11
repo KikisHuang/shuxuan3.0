@@ -2,6 +2,8 @@
 package com.gxdingo.sg.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +50,9 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.MyToastUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
@@ -71,9 +77,17 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.view.MotionEvent.ACTION_DOWN;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.KeyboardUtils.registerSoftInputChangedListener;
 import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedListener;
+import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
@@ -133,6 +147,24 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.cl_other_side_address_layout)
     public ConstraintLayout cl_other_side_address_layout;
 
+
+    @BindView(R.id.rl_cancel_recording_area)
+    public RelativeLayout rlCancelRecordingArea;
+
+    @BindView(R.id.cl_voice_recording_layout)
+    public ConstraintLayout clVoiceRecordingLayout;
+
+    @BindView(R.id.iv_voice_recording_status)
+    public ImageView ivVoiceRecordingStatus;
+
+    @BindView(R.id.recorded_voice_scrolling)
+    public ImageView recordedVoiceScrolling;
+
+    @BindView(R.id.btn_long_press_to_speak)
+    public TextView btn_long_press_to_speak;
+
+    private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
+
     //最早的一条消息时间
     private String lastMsgTime = "";
 
@@ -160,6 +192,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private ReceiveIMMessageBean.MsgAddress mAddress;//收货地址;
 
+    private long clicktimeDValue = 0; //按下录制的时间差
+    //取消发送
+    private boolean mCancel = false;
 
     @Override
     protected boolean eventBusRegister() {
@@ -290,6 +325,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
 
     private void initEmotionMainFragment() {
+
+        //设置语音录制时动画播放图片素材
+        recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
+        mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
+
         Bundle bundle = new Bundle();
         bundle.putString(KEY, ChatActivity.class.toString() + System.currentTimeMillis());
         bundle.putString(CHAT_ID, mShareUuid);
@@ -297,11 +337,44 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //创建修改实例
         emotionMainFragment = EmotiomComplateFragment.newInstance(EmotionMainFragment.class, bundle);
         emotionMainFragment.bindToContentView(refreshLayout);
+
+        emotionMainFragment.setonTouchListener((v, event) -> {
+
+            boolean locationPermiss = isGranted(RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE);
+            //没有权限拦截事件
+            if (!locationPermiss) {
+                getP().checkRecordPermissions(getRxPermissions());
+                return true;
+            }
+            clVoiceRecordingLayout.setVisibility(View.VISIBLE);
+
+            if (event.getAction() == ACTION_DOWN) {
+                clicktimeDValue = System.currentTimeMillis();
+
+                getP().startRecorder();
+
+                recordedVoiceScrolling.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecordedVoiceAnimation.start();//启动动画
+                    }
+                });
+
+                btn_long_press_to_speak.setText("松开发送");
+                btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
+                btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
+            }
+
+            return false;
+        });
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fl_emotionview_main, emotionMainFragment);
         transaction.addToBackStack(null);
         //提交修改
         transaction.commit();
+
+
     }
 
 
@@ -557,7 +630,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     }
 
                     if (oldSize != mChatDatas.size())
-                        pos = mChatDatas.size() > 0 ? mChatDatas.size() - 1 : mChatDatas.size();
+                        pos = chat_list.size() > 0 ? chat_list.size() - 1 : chat_list.size();
 
                 }
 
@@ -567,21 +640,18 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                 e.onNext(pos);
                 e.onComplete();
-            }), this).subscribe(new Consumer<Object>() {
-                @Override
-                public void accept(Object o) throws Exception {
-                    int p = (int) o;
+            }), this).subscribe(o -> {
+                int p = (int) o;
 
-                    if (p != -1) {
-                        recycleView.scrollToPosition(p);
-                        LinearLayoutManager mLayoutManager =
-                                (LinearLayoutManager) recycleView.getLayoutManager();
-                        mLayoutManager.scrollToPositionWithOffset(p, 0);
-                    }
-
-                    mAdapter.notifyDataSetChanged();
-
+                if (p != -1) {
+                    recycleView.scrollToPosition(p);
+                    LinearLayoutManager mLayoutManager =
+                            (LinearLayoutManager) recycleView.getLayoutManager();
+                    mLayoutManager.scrollToPositionWithOffset(p, 0);
                 }
+
+                mAdapter.notifyDataSetChanged();
+
             });
         }
     }
@@ -633,7 +703,109 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+/*        LogUtils.i("evnet y === " + event.getY());
+
+//        LogUtils.i("ivVoiceRecordingStatus top === " + ivVoiceRecordingStatus.getBottom());
+
+        LogUtils.i("btn_long_press_to_speak bottom === " + btn_long_press_to_speak.getBottom());
+
+        LogUtils.i("ivVoiceRecordingStatus bottom === " + ivVoiceRecordingStatus.getBottom());
+
+        int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
+
+        LogUtils.i("height y === " + y);*/
+
+        if (btn_long_press_to_speak.getBottom() > 0 && ivVoiceRecordingStatus.getBottom() > 0) {
+
+            switch (event.getAction()) {
+                case ACTION_DOWN:
+
+                /*    clicktimeDValue = System.currentTimeMillis();
+
+                    getP().startRecorder();
+
+                    recordedVoiceScrolling.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecordedVoiceAnimation.start();//启动动画
+                        }
+                    });
+
+                    btn_long_press_to_speak.setText("松开发送");
+                    btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
+                    btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));*/
+
+                    break;
+                case MotionEvent.ACTION_MOVE:
+
+                    int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
+                    int cancelY = ivVoiceRecordingStatus.getBottom();
+
+/*                    LogUtils.i("y ==== " + y);
+
+                    LogUtils.i("cancelY ==== " + cancelY);*/
+
+                    //当滑动超过close bt getbottom的后，设置为取消状态
+                    if (y > cancelY) {
+                        mCancel = false;
+                        btn_long_press_to_speak.setText("松开发送");
+                        btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
+                        btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
+                        ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_open);
+                    } else {
+                        mCancel = true;
+                        btn_long_press_to_speak.setText("取消发送");
+                        btn_long_press_to_speak.setTextColor(Color.parseColor("#2E2E2E"));
+                        btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#EDEDED"));
+                        ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_close);
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+
+                    if (mCancel) {
+                        resetVoiceBt();
+                        getP().cancelRecorder();
+                        break;
+                    }
+
+                    if (System.currentTimeMillis() - clicktimeDValue > 1500) {
+                        resetVoiceBt();
+                        getP().stopRecorder();
+                    } else {
+                        onMessage("录制时间太短");
+                        getP().cancelRecorder();
+                        resetVoiceBt();
+
+                    }
+                    break;
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void resetVoiceBt() {
+
+        clVoiceRecordingLayout.setVisibility(View.GONE);
+
+        btn_long_press_to_speak.setText("松开发送");
+        btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
+        btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
+        ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_open);
+
+        recordedVoiceScrolling.post(new Runnable() {
+            @Override
+            public void run() {
+                mRecordedVoiceAnimation.stop(); //关闭动画
+            }
+        });
+    }
+
+    @Override
     public boolean onTouch(View v, MotionEvent motionEvent) {
+
         if (v.getId() == R.id.recyclerView && emotionMainFragment != null) {
             emotionMainFragment.hideSoftKeyboard();
         }
@@ -710,6 +882,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         unregisterSoftInputChangedListener(getWindow());
         //清除锁定id
         LocalConstant.SHAREUUID = "";
+        //释放rxjava计时器
+        if (mAdapter != null)
+            mAdapter.cancel();
         super.onDestroy();
     }
 
@@ -797,9 +972,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     @Override
-    public void onAudioClick(String content) {
-        //todo 语音点击播放
-
+    public void onAudioClick(String content, boolean isPlay) {
+        if (isPlay)
+            getP().playVoice(content);
+        else
+            getP().stopVoice();
     }
 
     @Override
@@ -863,9 +1040,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean) {
-
         createNewMsg(receiveIMMessageBean);
-
     }
 
     @Override
@@ -881,6 +1056,40 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     public void onUploadImageUrl(String url) {
         upLoadFile(url);
         emotionMainFragment.hideSoftKeyboard();
+    }
+
+    @Override
+    public String getShareUUID() {
+        return mShareUuid;
+    }
+
+    /**
+     * 判断触摸点是否在目标view上
+     * 前提是touchView与tarView在同一viewGroup中
+     *
+     * @param touView 响应触摸事件的view
+     * @param tarView 触摸点需要落在的目标view
+     * @param x       event.getX()
+     * @param y       event.getY()
+     * @return 是否落在tarView上
+     */
+    private boolean pointInView(View touView, View tarView, float x, float y) {
+        boolean xDir, yDir;
+        //x方向
+        if (tarView.getLeft() >= touView.getRight())//tarView在右边
+            xDir = (x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft());
+        else if (tarView.getRight() <= touView.getLeft()) //tarView在左边
+            xDir = (x <= tarView.getRight() - touView.getLeft() && x >= tarView.getLeft() - touView.getLeft());
+        else //tarView在重叠范围
+            xDir = x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft();
+        //y方向
+        if (tarView.getTop() >= touView.getBottom())//tarView在下边
+            yDir = (y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop());
+        else if (tarView.getBottom() <= touView.getTop()) //tarView在上边
+            yDir = (y <= tarView.getBottom() - touView.getTop() && y >= tarView.getTop() - touView.getTop());
+        else //tarView在重叠范围
+            yDir = y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop();
+        return xDir && yDir;
     }
 }
 

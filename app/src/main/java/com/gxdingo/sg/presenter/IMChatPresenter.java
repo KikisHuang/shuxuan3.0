@@ -4,6 +4,12 @@ import android.app.Activity;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
+import com.gxdingo.sg.bean.UpLoadBean;
+import com.gxdingo.sg.biz.AudioModelListener;
+import com.gxdingo.sg.biz.PermissionsListener;
+import com.gxdingo.sg.biz.UpLoadImageListener;
+import com.gxdingo.sg.model.AudioModel;
+import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.gxdingo.sg.biz.IMChatContract;
@@ -19,14 +25,22 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
+import static com.gxdingo.sg.utils.MediaRecorderUtil.stopRecordering;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -34,6 +48,7 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
+import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
@@ -43,16 +58,35 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private long mStartSendTime;//发送消息间隔
     private long mEndSendTime;
 
+    private AudioModel mAudioModel;
+    private CommonModel commonModel;
+
     public IMChatPresenter() {
         networkModel = new NetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
+        mAudioModel = AudioModel.getInstance();
+
+        commonModel = new CommonModel();
     }
 
     @Override
     public void onSucceed(int type) {
         if (isBViewAttached()) {
 
+            //语音录制结束
+            if (type == RECORD_SUCCEED) {
+                stopRecorder();
+            }
+
         }
+    }
+
+    @Override
+    public void onMvpPause() {
+        super.onMvpPause();
+
+        if (mAudioModel != null && mAudioModel.isPlaying())
+            mAudioModel.audioPause();
     }
 
     @Override
@@ -350,4 +384,129 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
         }
     }
+
+    /**
+     * 开始录制
+     */
+    @Override
+    public void startRecorder() {
+        if (mAudioModel != null)
+            mAudioModel.startRecorder(this, (LifecycleProvider) getContext());
+    }
+
+    /**
+     * 停止录制语音
+     */
+    @Override
+    public void stopRecorder() {
+        if (mAudioModel != null && mAudioModel.isRecording()) {
+            mAudioModel.stopRecorder();
+
+            if (!isBViewAttached() || !isViewAttached())
+                return;
+
+            if (mAudioModel.getDuration() > 1) {
+                onStarts();
+                //停止录制后，上传语音
+                networkModel.upLoadImage(getContext(), mAudioModel.getRecordPath(), new UpLoadImageListener() {
+                    @Override
+                    public void loadSucceed(String path) {
+                        sendMessage(getV().getShareUUID(), 11, path, mAudioModel.getDuration(), null);
+                        onAfters();
+                    }
+
+                    @Override
+                    public void loadSucceed(UpLoadBean upLoadBean) {
+                        onAfters();
+                    }
+
+                });
+
+            } else {
+                getBV().onMessage("录制时间太短");
+                mAudioModel.removeRecord();
+            }
+        }
+    }
+
+    /**
+     * 取消语音录制
+     */
+    @Override
+    public void cancelRecorder() {
+        if (mAudioModel != null && mAudioModel.isRecording()) {
+            mAudioModel.stopRecorder();
+            mAudioModel.removeRecord();
+        }
+    }
+
+    /**
+     * 获取录音权限
+     *
+     * @param rxPermissions
+     */
+    @Override
+    public void checkRecordPermissions(RxPermissions rxPermissions) {
+        if (commonModel != null)
+            commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, new PermissionsListener() {
+                @Override
+                public void onNext(boolean value) {
+
+                    if (isBViewAttached()) {
+                        if (!value)
+                            getBV().onMessage(gets(R.string.please_get_recording_permissions));
+
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+    }
+
+    /**
+     * 语音播放
+     * @param content
+     */
+    @Override
+    public void playVoice(String content) {
+        if (mAudioModel != null) {
+            mAudioModel.audioPlayer(content, new AudioModelListener() {
+                @Override
+                public void onAudioMessage(String msg) {
+                    if (isBViewAttached())
+                        getBV().onMessage(msg);
+                }
+
+                @Override
+                public void onAudioError(String ermsg) {
+                    if (mAudioModel != null && mAudioModel.isPlaying())
+                        mAudioModel.audioPause();
+                }
+
+                @Override
+                public void onRecorderComplete() {
+
+                }
+            });
+
+        }
+    }
+
+    /**
+     * 停止语音播放
+     */
+    @Override
+    public void stopVoice() {
+        if (mAudioModel != null && mAudioModel.isPlaying())
+            mAudioModel.audioPause();
+    }
+
 }

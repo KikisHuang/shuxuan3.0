@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.SendMessageBean;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.taobao.monitor.adapter.network.TBRestSender;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,6 +27,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.BarUtils.getNavBarHeight;
 import static com.blankj.utilcode.util.BarUtils.isNavBarVisible;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenHeight;
+import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.kikis.commnlibrary.utils.Constant.SOFT_INPUT_HEIGHT;
 
 /**
@@ -45,6 +47,7 @@ public class EmotionKeyboard {
     private ImageView voiceimg;
     private TextView voicetv;
     private boolean showVoice = false;
+    private long onTouchtime = 0;
 
     private EmotionKeyboard() {
 
@@ -128,27 +131,34 @@ public class EmotionKeyboard {
         mEditText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    onTouchtime = System.currentTimeMillis();
 
-                if (event.getAction() == MotionEvent.ACTION_UP && mFuncationLayout.getVisibility() == View.VISIBLE) {
-                    lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
-                    funcationLayoutStatus(false);
+                //防止长按表情、功能布局的缩回
+                if (System.currentTimeMillis() - onTouchtime < 300) {
+                    if (event.getAction() == MotionEvent.ACTION_UP && mFuncationLayout.getVisibility() == View.VISIBLE) {
 
-                    unlockContentHeightDelayed();
+                        lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
+                        funcationLayoutStatus(false);
+
+                        unlockContentHeightDelayed();
+                    }
+
+                    if (event.getAction() == MotionEvent.ACTION_UP && mEmotionLayout.isShown()) {
+
+                        lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
+                        hideEmotionLayout(true);//隐藏表情布局，显示软件盘
+
+                        //软件盘显示后，释放内容高度
+                        mEditText.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                unlockContentHeightDelayed();
+                            }
+                        }, 200L);
+                    }
                 }
 
-                if (event.getAction() == MotionEvent.ACTION_UP && mEmotionLayout.isShown()) {
-
-                    lockContentHeight();//显示软件盘时，锁定内容高度，防止跳闪。
-                    hideEmotionLayout(true);//隐藏表情布局，显示软件盘
-
-                    //软件盘显示后，释放内容高度
-                    mEditText.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            unlockContentHeightDelayed();
-                        }
-                    }, 200L);
-                }
 
                 return false;
             }
