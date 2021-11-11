@@ -34,6 +34,7 @@ public class ClientCashInfoBean {
     private String explain;
     private String alipay;
     private String wechat;
+    private String balance;
     private List<BankcardBean> bankList;
 
     public String getMobile() {
@@ -106,6 +107,14 @@ public class ClientCashInfoBean {
 
     public void setWechat(String wechat) {
         this.wechat = wechat;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
     }
 
     public List<BankcardBean> getBankList() {

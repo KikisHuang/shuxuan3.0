@@ -7,6 +7,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
+import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -205,7 +206,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     }
 
     @Override
-    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
+    public void onTransactionResult(boolean refresh, List<TransactionBean> transactions) {
 
     }
 

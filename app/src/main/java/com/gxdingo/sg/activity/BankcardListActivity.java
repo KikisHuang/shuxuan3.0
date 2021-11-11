@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.BankcardAdapter;
 import com.gxdingo.sg.bean.BankcardBean;
@@ -15,6 +16,7 @@ import com.gxdingo.sg.biz.BankcardContract;
 import com.gxdingo.sg.presenter.BankcardPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -34,7 +36,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/10/25
  * @page:
  */
-public class BankcardListActivity extends BaseMvpActivity<BankcardContract.BankcardPresenter> implements BankcardContract.BankcardListener, OnItemChildClickListener {
+public class BankcardListActivity extends BaseMvpActivity<BankcardContract.BankcardPresenter> implements BankcardContract.BankcardListener, OnItemChildClickListener, OnItemClickListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle templateTitle;
@@ -49,6 +51,9 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     public View nodata_layout;
 
     private BankcardAdapter mAdapter;
+
+    //选择银行卡
+    private boolean isSelect;
 
     @OnClick(R.id.txt_more)
     public void OnClickViews(View v){
@@ -142,8 +147,10 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
         templateTitle.setTitleText("我的银行卡");
         templateTitle.setMoreText("添加");
         templateTitle.setMoreTextColor(getc(R.color.blue_text));
+        isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
         mAdapter = new BankcardAdapter(1);
         mAdapter.setOnItemChildClickListener(this);
+        mAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
     }
@@ -204,5 +211,13 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         BankcardBean item = (BankcardBean) adapter.getItem(position);
         goToPagePutSerializable(this,UnbindBankcardActivity.class,getIntentEntityMap(new Object[]{item}));
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        if (!isSelect) return;
+        BankcardBean item = (BankcardBean) adapter.getItem(position);
+        sendEvent(item);
+        finish();
     }
 }

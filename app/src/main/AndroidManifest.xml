@@ -391,6 +391,11 @@
             android:name=".activity.StoreHomeSearchActivity"
             android:screenOrientation="portrait"/>
 
+        <!--商家提现页面 -->
+        <activity
+            android:name=".activity.StoreCashActivity"
+            android:screenOrientation="portrait"/>
+
         <!--商家商圈（我的）消息页面 -->
         <activity
             android:name=".activity.BusinessDistrictMessageActivity"
@@ -399,6 +404,21 @@
         <!--商家商圈发布页面 -->
         <activity
             android:name=".activity.StoreBusinessDistrictReleaseActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--商家设置页面 -->
+        <activity
+            android:name=".activity.StoreSettingActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--商家设置页面 -->
+        <activity
+            android:name=".activity.StoreQRCodeActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--商家账单详情页面 -->
+        <activity
+            android:name=".activity.StoreBillDetailActivity"
             android:screenOrientation="portrait"/>
     </application>
 

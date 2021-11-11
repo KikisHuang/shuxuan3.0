@@ -1,35 +1,24 @@
 package com.gxdingo.sg.presenter;
 
-import com.gxdingo.sg.bean.StoreMineBean;
+import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.NetWorkListener;
-import com.gxdingo.sg.biz.StoreMyContract;
-import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
-public class StoreMyPresenter extends BaseMvpPresenter<BasicsListener, StoreMyContract.StoreMyListener> implements StoreMyContract.StoreMyPresenter, NetWorkListener {
-
-    private NetworkModel networkModel;
+/**
+ * @author: Weaving
+ * @date: 2021/11/10
+ * @page:
+ */
+public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,StoreSettingsContract.StoreSettingsListener> implements StoreSettingsContract.StoreSettingsPresenter, NetWorkListener {
 
     private StoreNetworkModel storeNetworkModel;
 
-    public StoreMyPresenter() {
-        networkModel = new NetworkModel(this);
+    public StoreSettingsPresenter() {
         storeNetworkModel = new StoreNetworkModel(this);
-    }
-
-    @Override
-    public void getInfo() {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.getMine(getContext());
-    }
-
-    @Override
-    public void logout() {
-        if (networkModel!=null)
-            networkModel.logOut(getContext());
     }
 
     @Override
@@ -52,8 +41,8 @@ public class StoreMyPresenter extends BaseMvpPresenter<BasicsListener, StoreMyCo
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (o instanceof StoreMineBean)
-            getV().onDataResult((StoreMineBean) o);
+        if (o instanceof StoreQRCodeBean)
+            getV().onQRResult((StoreQRCodeBean) o);
     }
 
     @Override
@@ -115,5 +104,8 @@ public class StoreMyPresenter extends BaseMvpPresenter<BasicsListener, StoreMyCo
         addDisposable(subscriber);
     }
 
-
+    @Override
+    public void getQrCode() {
+        storeNetworkModel.getExclusiveQRcode(getContext());
+    }
 }

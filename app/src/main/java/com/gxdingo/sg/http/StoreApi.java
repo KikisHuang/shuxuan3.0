@@ -177,6 +177,15 @@ public class StoreApi {
      */
     public static final String MINE_INFO = HIERARCHY + "user/info";
     /**
+     * 我的专属二维码
+     */
+    public static final String STORE_QR_CODE = HIERARCHY + "store/my/code";
+
+    /**
+     * 我的首页
+     */
+    public static final String STORE_ACCOUNT = HIERARCHY + "user/account";
+    /**
      * 检验支付密码
      */
     public static final String CHECK_PAY_PASSWORD = HIERARCHY + "update/withdrawal/password";

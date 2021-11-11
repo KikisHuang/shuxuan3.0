@@ -3,15 +3,20 @@ package com.gxdingo.sg.activity;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.ClientPickerDateListener;
@@ -32,14 +37,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
  * @date: 2021/10/14
  * @page:
  */
-public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener {
+public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSecurityContract.ClientAccountSecurityPresenter> implements ClientAccountSecurityContract.ClientAccountSecurityListener, OnItemClickListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -151,6 +159,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         mAdapter = new ClientTransactionRecordAdapter();
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+        mAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -192,7 +201,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     }
 
     @Override
-    public void onTransactionResult(boolean refresh,List<ClientAccountTransactionBean.ListBean> transactions) {
+    public void onTransactionResult(boolean refresh,List<TransactionBean> transactions) {
         if (refresh)
             mAdapter.setList(transactions);
         else
@@ -219,4 +228,12 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         return 0;
     }
 
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
+        if (!isUser){
+            TransactionBean item = (TransactionBean) adapter.getItem(position);
+            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+        }
+    }
 }

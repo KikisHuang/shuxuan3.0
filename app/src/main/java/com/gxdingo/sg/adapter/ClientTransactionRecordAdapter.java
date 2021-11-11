@@ -4,6 +4,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.TransactionBean;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @date: 2021/10/21
  * @page:
  */
-public class ClientTransactionRecordAdapter extends BaseQuickAdapter<ClientAccountTransactionBean.ListBean, BaseViewHolder> {
+public class ClientTransactionRecordAdapter extends BaseQuickAdapter<TransactionBean, BaseViewHolder> {
 
 
     public ClientTransactionRecordAdapter() {
@@ -20,7 +21,7 @@ public class ClientTransactionRecordAdapter extends BaseQuickAdapter<ClientAccou
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder baseViewHolder, ClientAccountTransactionBean.ListBean listBean) {
+    protected void convert(@NotNull BaseViewHolder baseViewHolder, TransactionBean listBean) {
         baseViewHolder.setText(R.id.description_tv,listBean.getDescription());
         baseViewHolder.setText(R.id.time_tv,listBean.getCreateTime());
         baseViewHolder.setText(R.id.amount_tv,String.valueOf(listBean.getAmount()));

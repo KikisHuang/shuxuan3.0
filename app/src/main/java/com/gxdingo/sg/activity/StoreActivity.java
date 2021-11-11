@@ -30,6 +30,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -60,12 +61,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
     protected int StatusBarColors() {
-        return 0;
+        return R.color.white;
     }
 
     @Override
@@ -200,6 +201,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 //        }
     }
 
+
     @Override
     public void onStarts() {
         super.onStarts();
@@ -264,6 +266,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
+        if (type == LOGOUT)
+            finish();
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
 //            checkUserStatus();//检查用户状态
 //        } else if (type == LOGOUT) {//退出登录
