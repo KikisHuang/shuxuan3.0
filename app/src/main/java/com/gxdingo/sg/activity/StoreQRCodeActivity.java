@@ -5,7 +5,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.StringUtils;
+import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.DistanceBean;
+import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
@@ -14,9 +18,12 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.tencent.smtt.sdk.WebView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
@@ -41,6 +48,7 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
 
     @BindView(R.id.webView)
     public WebView webView;
+
 
     @Override
     protected StoreSettingsContract.StoreSettingsPresenter createPresenter() {
@@ -120,6 +128,13 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
     @OnClick(R.id.btn_copy)
     public void OnClickView(){
 
+        copyText(invitation_code_tv.getText().toString());
+        onMessage("已复制到剪切板");
+    }
+
+    @Override
+    public void onInfoResult(StoreDetailBean storeDetailBean) {
+
     }
 
     @Override
@@ -132,5 +147,10 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
             webView.loadDataWithBaseURL(null, qrCodeBean.getExplain(), "text/html", "utf-8", null);
         else
             webView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDistanceResult(List<DistanceBean> distanceBeans) {
+
     }
 }

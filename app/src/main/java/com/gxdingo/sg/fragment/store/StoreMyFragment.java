@@ -9,8 +9,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
+import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
+import com.gxdingo.sg.activity.StoreUpdateNameActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.StoreMineBean;
@@ -110,8 +112,6 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     public void OnClickViews(View v){
         switch (v.getId()){
             case R.id.store_avatar_iv:
-                goToPage(getContext(), StoreSettingActivity.class,null);
-                break;
             case R.id.btn_setting:
                 goToPage(getContext(), StoreSettingActivity.class,null);
                 break;
@@ -122,6 +122,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
                 goToPage(getContext(), ClientAccountSecurityActivity.class,null);
                 break;
             case R.id.auth_info_stv:
+                goToPage(getContext(), StoreAuthInfoActivity.class,null);
                 break;
             case R.id.settle_protocol_stv:
                 break;

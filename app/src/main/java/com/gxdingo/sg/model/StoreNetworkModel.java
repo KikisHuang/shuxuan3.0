@@ -2,12 +2,15 @@ package com.gxdingo.sg.model;
 
 import android.content.Context;
 
+import com.amap.api.services.core.PoiItem;
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.bean.DistanceListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
+import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreMineBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.bean.StoreWalletBean;
@@ -35,14 +38,17 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
 import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.StoreApi.CATEGORY_LIST;
+import static com.gxdingo.sg.http.StoreApi.DELIVERY_SCOPE;
 import static com.gxdingo.sg.http.StoreApi.MINE_INFO;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
 import static com.gxdingo.sg.http.StoreApi.SETTLE;
 import static com.gxdingo.sg.http.StoreApi.STORE_QR_CODE;
+import static com.gxdingo.sg.http.StoreApi.STORE_UPDATE;
 import static com.gxdingo.sg.http.StoreApi.USER_STATUS;
 import static com.gxdingo.sg.http.StoreApi.WALLET_HOME;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -472,179 +478,352 @@ public class StoreNetworkModel {
         netWorkListener.onDisposable(subscriber);
     }
 
+    /**
+     * 店铺详情信息
+     *
+     * @param
+     */
+    public void getStoreDetails(Context context) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Observable<StoreDetailBean> observable = HttpClient.post(STORE_DETAIL)
+                .execute(new CallClazzProxy<ApiResult<StoreDetailBean>, StoreDetailBean>(new TypeToken<StoreDetailBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<StoreDetailBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(StoreDetailBean storeDetailBean) {
+                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onData(true, storeDetailBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+    /**
+     * 我的首页
+     *
+     * @param
+     */
+    public void getDeliveryScope(Context context) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Observable<DistanceListBean> observable = HttpClient.post(DELIVERY_SCOPE)
+                .execute(new CallClazzProxy<ApiResult<DistanceListBean>, DistanceListBean>(new TypeToken<DistanceListBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<DistanceListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(DistanceListBean distanceListBean) {
+                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onData(true, distanceListBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 店铺头像编辑
+     *
+     * @param
+     */
+    public void updateStoreAvatar(Context context, String avatar) {
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.AVATAR,avatar);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 店铺名称编辑
+     *
+     * @param
+     */
+    public void updateStoreName(Context context, String name) {
+        Map<String, String> map = new HashMap<>();
+        map.put(Constant.NAME,name);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
 
     /**
      * 店铺地址编辑
      *
      * @param
      */
-//    public void updateShopAddress(Context context, PoiItem poiItem) {
-//        Map<String, String> map = new HashMap<>();
-//        map.put(StoreLocalConstant.REGION_PATH, poiItem.getCityCode());
-//        map.put(StoreLocalConstant.ADDRESS, poiItem.getAdName());
-//        map.put(StoreLocalConstant.LONGITUDE, String.valueOf(poiItem.getLatLonPoint().getLongitude()));
-//        map.put(StoreLocalConstant.LATITUDE, String.valueOf(poiItem.getLatLonPoint().getLatitude()));
-//
-//        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onAfters();
-//                netWorkListener.onSucceed(1);
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
+    public void updateShopAddress(Context context, PoiItem poiItem) {
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.REGION_PATH, poiItem.getCityCode());
+        map.put(StoreLocalConstant.ADDRESS, poiItem.getAdName());
+        map.put(StoreLocalConstant.LONGITUDE, String.valueOf(poiItem.getLatLonPoint().getLongitude()));
+        map.put(StoreLocalConstant.LATITUDE, String.valueOf(poiItem.getLatLonPoint().getLatitude()));
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
     /**
      * 店铺经营范围设置
      *
      * @param
      */
-//    public void updateBusinessScope(Context context, String scope) {
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put(StoreLocalConstant.BUSINESS_SCOPE, scope);
-//
-//        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onAfters();
-//                netWorkListener.onSucceed(1);
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
+    public void updateBusinessScope(Context context, String scope) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.BUSINESS_SCOPE, scope);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
     /**
      * 店铺经营范围设置
      *
      * @param
      */
-//    public void updateMaxDistance(Context context, String scope) {
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put(StoreLocalConstant.MAX_DISTANCE, scope);
-//
-//        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onAfters();
-//                netWorkListener.onSucceed(1);
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
+    public void updateMaxDistance(Context context, String scope) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.MAX_DISTANCE, scope);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
     /**
      * 店铺营业时间修改
      *
      * @param
      */
-//    public void updateBusinessTime(Context context, String startTime, String endTime) {
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put(StoreLocalConstant.OPEN_TIME, startTime);
-//        map.put(StoreLocalConstant.CLOSE_TIME, endTime);
-//
-//        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onAfters();
-//                netWorkListener.onSucceed(1);
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
+    public void updateContractNumber(Context context, String mobile) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.CONTACT_NUMBER, mobile);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 店铺营业时间修改
+     *
+     * @param
+     */
+    public void updateBusinessTime(Context context, String startTime, String endTime) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.OPEN_TIME, startTime);
+        map.put(StoreLocalConstant.CLOSE_TIME, endTime);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
     /**
      * 店铺手机号码编辑
      *
      * @param
      */
-//    public void updateContactPhone(Context context, String contactNumber) {
-//
-//        Map<String, String> map = new HashMap<>();
-//        map.put(StoreLocalConstant.CONTACT_NUMBER, contactNumber);
-//
-//        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onAfters();
-//                netWorkListener.onSucceed(1);
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
+    public void updateContactPhone(Context context, String contactNumber) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.CONTACT_NUMBER, contactNumber);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
 
     /**

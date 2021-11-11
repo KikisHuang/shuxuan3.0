@@ -411,6 +411,16 @@
             android:name=".activity.StoreSettingActivity"
             android:screenOrientation="portrait"/>
 
+        <!--商家认证信息页面 -->
+        <activity
+            android:name=".activity.StoreAuthInfoActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--商家修改名称页面 -->
+        <activity
+            android:name=".activity.StoreUpdateNameActivity"
+            android:screenOrientation="portrait"/>
+
         <!--商家设置页面 -->
         <activity
             android:name=".activity.StoreQRCodeActivity"

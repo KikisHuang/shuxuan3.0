@@ -108,6 +108,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     protected void init() {
         title_layout.setTitleText("钱包");
         title_layout.setMoreImg(R.drawable.module_svg_scan);
+        title_layout.setBackVisible(false);
         mAdapter = new ClientTransactionRecordAdapter();
         transaction_rv.setAdapter(mAdapter);
         transaction_rv.setLayoutManager(new LinearLayoutManager(reference.get()));

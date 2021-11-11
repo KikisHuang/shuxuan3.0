@@ -59,4 +59,8 @@
     <string name="experience_immediately">立即体验</string>
     <string name="store_shuxuan">树选商家端</string>
     <string name="client_shuxuan">树选客户端</string>
+    <string name="business_time">营业时间</string>
+    <string name="common_hour">时</string>
+    <string name="common_minute">分</string>
+    <string name="change_phone_number">修改手机号</string>
 </resources>
