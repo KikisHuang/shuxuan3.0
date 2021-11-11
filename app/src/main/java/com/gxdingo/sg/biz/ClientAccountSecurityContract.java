@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.TransactionBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -41,7 +42,7 @@ public class ClientAccountSecurityContract {
 
     public interface ClientAccountSecurityListener{
 
-        void onTransactionResult(boolean refresh,List<ClientAccountTransactionBean.ListBean> transactions);
+        void onTransactionResult(boolean refresh,List<TransactionBean> transactions);
 
         void onCashInfoResult(ClientCashInfoBean cashInfoBean);
 

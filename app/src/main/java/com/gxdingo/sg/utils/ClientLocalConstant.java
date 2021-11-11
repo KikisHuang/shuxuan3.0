@@ -92,6 +92,7 @@ public class ClientLocalConstant {
     //login type
     public static final String WECHAT = "wechat";
     public static final String ALIPAY = "alipay";
+    public static final String BANK = "bank";
 
     public static final int COMMONLY_USED_STORE_HORIZONTAL = 1;
 

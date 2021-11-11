@@ -31,6 +31,7 @@ import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.SpaceItemDecoration;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
@@ -181,17 +182,20 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 //        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
-
-
-
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        //获取商圈评论未读数量
-        getP().getNumberUnreadComments();
+    protected void initData() {
+        boolean login = UserInfoUtils.getInstance().isLogin();
+        if (login){
+            //获取商圈评论未读数量
+            getP().getNumberUnreadComments();
+            //获取商圈列表
+            getP().getBusinessDistrictList(true);
+        }
+
     }
+
 
     /**
      * event事件
@@ -202,8 +206,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
         ||type == LocalConstant.CLIENT_LOGIN_SUCCEED || type ==LocalConstant.STORE_LOGIN_SUCCEED) {
+            //获取商圈评论未读数量
+            getP().getNumberUnreadComments();
             //获取商圈列表
             getP().getBusinessDistrictList(true);
+
         }
     }
 
@@ -300,11 +307,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }
     };
 
-    @Override
-    protected void initData() {
-        //获取商圈列表
-        getP().getBusinessDistrictList(true);
-    }
 
     /**
      * 获取商圈评论输入框弹出窗口View

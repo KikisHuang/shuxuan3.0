@@ -71,6 +71,7 @@ import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
 import static com.gxdingo.sg.http.ClientApi.WALLET_UNBINDING;
 import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
 import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
+import static com.gxdingo.sg.http.StoreApi.STORE_ACCOUNT;
 import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
 import static com.gxdingo.sg.http.StoreApi.UNBIND_BANK_CARD;
 import static com.gxdingo.sg.http.StoreApi.UPDATE_WITHDRAWAL_PASSWORD;
@@ -604,9 +605,12 @@ public class ClientNetworkModel {
      * @param context
      */
     public void getCashInfo(Context context) {
+        if (netWorkListener!=null)
+            netWorkListener.onStarts();
 
+        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
 
-        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
+        Observable<ClientCashInfoBean> observable = HttpClient.post(isUser?Cash_ACCOUNT_INFO:STORE_ACCOUNT)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });

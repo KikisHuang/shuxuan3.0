@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.OnAccountSelectListener;
@@ -211,7 +212,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
     @Override
-    public void onTransactionResult(boolean refresh, List<ClientAccountTransactionBean.ListBean> transactions) {
+    public void onTransactionResult(boolean refresh, List<TransactionBean> transactions) {
 
     }
 

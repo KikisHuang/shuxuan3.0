@@ -146,6 +146,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 //        getP().switchPanel(false,true);
         isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
+        switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
     }
 
     @Override

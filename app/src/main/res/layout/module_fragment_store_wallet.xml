@@ -65,6 +65,7 @@
         android:textStyle="bold"/>
 
     <LinearLayout
+        android:id="@+id/ll_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
@@ -72,28 +73,43 @@
         android:paddingHorizontal="@dimen/dp_10">
 
         <com.allen.library.SuperTextView
+            android:id="@+id/alipay_stv"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
             app:sLeftIconHeight="20dp"
             app:sLeftIconWidth="20dp"
-            app:sLeftIconRes="@drawable/module_svg_client_default_avatar"
+            app:sLeftIconRes="@drawable/module_svg_store_wallet_ali_icon"
             app:sLeftIconMarginLeft="26dp"
             app:sLeftTextString="支付宝"
             app:sLeftViewMarginLeft="2dp"
             app:sBackgroundDrawableRes="@drawable/module_shape_bg_gray_6r" />
 
         <com.allen.library.SuperTextView
+            android:id="@+id/wechat_stv"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
             android:layout_marginHorizontal="12dp"
+            app:sLeftIconHeight="20dp"
+            app:sLeftIconWidth="20dp"
+            app:sLeftIconRes="@drawable/module_svg_store_wallet_wechat_icon"
+            app:sLeftIconMarginLeft="26dp"
+            app:sLeftTextString="微信"
+            app:sLeftViewMarginLeft="9dp"
             app:sBackgroundDrawableRes="@drawable/module_shape_bg_gray_6r"/>
 
         <com.allen.library.SuperTextView
+            android:id="@+id/bankcard_stv"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
+            app:sLeftIconHeight="20dp"
+            app:sLeftIconWidth="20dp"
+            app:sLeftIconRes="@drawable/module_svg_store_bankcard_icon"
+            app:sLeftIconMarginLeft="26dp"
+            app:sLeftTextString="银行卡"
+            app:sLeftViewMarginLeft="2dp"
             app:sBackgroundDrawableRes="@drawable/module_shape_bg_gray_6r"/>
 
     </LinearLayout>
@@ -118,6 +134,7 @@
         app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/transaction_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

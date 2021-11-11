@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/business_scope_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="经营范围"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="金源CBD现代城·B座"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="@dimen/sp_14" />
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/details_address_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="详细地址"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="金源CBD现代城·B座一楼大厅 1-23号商铺"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="@dimen/sp_14" />
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/business_license_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="营业执照"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="查看"
+        app:sRightTextColor="#3D7BE8"
+        app:sRightTextSize="@dimen/sp_14" />
+</LinearLayout>

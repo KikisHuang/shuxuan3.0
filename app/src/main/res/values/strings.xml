@@ -59,7 +59,8 @@
     <string name="experience_immediately">立即体验</string>
     <string name="store_shuxuan">树选商家端</string>
     <string name="client_shuxuan">树选客户端</string>
-    <string name="not_get_voice_player_url">没有获取到音频播放路径</string>
-    <string name="audio_play_error">音频播放异常</string>
-    <string name="please_get_recording_permissions">请获取录音权限</string>
+    <string name="business_time">营业时间</string>
+    <string name="common_hour">时</string>
+    <string name="common_minute">分</string>
+    <string name="change_phone_number">修改手机号</string>
 </resources>

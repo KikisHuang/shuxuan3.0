@@ -26,7 +26,9 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -101,7 +103,7 @@ public class ClientCashSelectDialog extends BottomPopupView {
         bankcard_stv.setRightTextGroupClickListener(new SuperTextView.OnRightTextGroupClickListener() {
             @Override
             public void onClickListener(View view) {
-                goToPage(getContext(), BankcardListActivity.class,null);
+                goToPagePutSerializable(getContext(),BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
             }
         });
     }
