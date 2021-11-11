@@ -360,19 +360,19 @@ public class MyApplication extends Application {
         //全局url初始化
         if (isUser) {
             //客户端
-            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 //            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
-            Api.OSS_URL = isUat ? HTTPS + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+            Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
 //            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
         } else {
             //商家端
-            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-            Api.OSS_URL = isUat ? HTTPS + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTP + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
+            Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
         }
 
 //        if (isUat)
 //            Api.IM_URL = HTTP + UAT_URL;
-        Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTPS + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
+        Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTP + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
 
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;

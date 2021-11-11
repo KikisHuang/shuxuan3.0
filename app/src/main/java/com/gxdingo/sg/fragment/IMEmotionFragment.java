@@ -58,12 +58,12 @@ public class IMEmotionFragment extends Fragment {
         adapter = new MyFragmentPagerAdapter(getChildFragmentManager());
         //表情Item一
         LinkedHashMap<String, Integer> emotion1 = getEmotionGroupByIndex(0, 30);
-        emotion1.put("[Backspace]", R.mipmap.compose_emotion_delete);//在最后追加删除退格键
+        emotion1.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
         IMEmotionItemFragment mMessageFragment1 = new IMEmotionItemFragment(emotion1);
 
         //表情Item二
         LinkedHashMap<String, Integer> emotion2 = getEmotionGroupByIndex(31, EmotionsUtils.getCount() - 1);
-        emotion2.put("[Backspace]", R.mipmap.compose_emotion_delete);//在最后追加删除退格键
+        emotion2.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
         IMEmotionItemFragment mMessageFragment2 = new IMEmotionItemFragment(emotion2);
 
 

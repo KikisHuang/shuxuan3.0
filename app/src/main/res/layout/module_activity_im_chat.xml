@@ -270,6 +270,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:visibility="gone" />
+
         </LinearLayout>
 
         <!--子功能菜单布局（添加Fragment）-->

@@ -1,6 +1,6 @@
 package com.gxdingo.sg.presenter;
 
-import com.gxdingo.sg.bean.SubscribesListBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.model.NetworkModel;

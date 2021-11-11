@@ -5,9 +5,9 @@ import android.content.Context;
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
-import com.gxdingo.sg.bean.SubscribesListBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.reactivex.Observable;
+
+import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
 import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
@@ -34,7 +36,7 @@ import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 /**
  * WebSocketModel
  *
- * @author:  JM
+ * @author: JM
  */
 public class WebSocketModel {
 
@@ -42,7 +44,9 @@ public class WebSocketModel {
 
     private int mPage = 1;
 
-    private int mPageSize = 15;
+    private int moldPage = 1;
+
+    private int mPageSize = 10;
 
     public WebSocketModel(NetWorkListener netWorkListener) {
         this.netWorkListener = netWorkListener;
@@ -119,7 +123,6 @@ public class WebSocketModel {
                 netWorkListener.haveData();//有数据
             }
 
-
             netWorkListener.finishLoadmore(true);//完成加载更多
         }
         netWorkListener.onRequestComplete();//完成请求
@@ -186,9 +189,13 @@ public class WebSocketModel {
         Map<String, String> map = new HashMap<>();
         map.put("shareUuid", sendIMMessageBean.getShareUuid());
         map.put("type", String.valueOf(sendIMMessageBean.getType()));
-        map.put("content", sendIMMessageBean.getContent());
-        map.put("voiceDuration", String.valueOf(sendIMMessageBean.getVoiceDuration()));
-        map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
+        if (!isEmpty(sendIMMessageBean.getContent()))
+            map.put("content", sendIMMessageBean.getContent());
+        if (sendIMMessageBean.getVoiceDuration() > 0)
+            map.put("voiceDuration", String.valueOf(sendIMMessageBean.getVoiceDuration()));
+
+        if (sendIMMessageBean.getParams() != null)
+            map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
 
         if (netWorkListener != null) {
             netWorkListener.onStarts();
@@ -231,9 +238,16 @@ public class WebSocketModel {
     /**
      * 获取聊天记录列表
      */
-    public void getChatHistoryList(Context context, String shareUuid, CustomResultListener customResultListener) {
+    public void getChatHistoryList(Context context, String shareUuid, int otherId, int otherRole, CustomResultListener customResultListener) {
         Map<String, String> map = new HashMap<>();
-        map.put("shareUuid", shareUuid);
+
+        if (!isEmpty(shareUuid))
+            map.put("shareUuid", shareUuid);
+        else {
+            map.put("otherId", String.valueOf(otherId));
+            map.put("otherRole", String.valueOf(otherRole));
+        }
+
         map.put("current", String.valueOf(mPage));
         map.put("size", String.valueOf(mPageSize));
 

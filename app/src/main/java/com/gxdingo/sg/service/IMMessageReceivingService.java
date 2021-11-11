@@ -2,6 +2,8 @@ package com.gxdingo.sg.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,7 +13,8 @@ import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.Gson;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.gxdingo.sg.bean.NormalBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -26,6 +29,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,9 +42,11 @@ import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * WebSocket消息接收服务
+ *
  * @author JM
  */
 public class IMMessageReceivingService extends Service {
@@ -49,12 +55,21 @@ public class IMMessageReceivingService extends Service {
     private String mUrl = "";//web socket接入url
     private Timer mWebsocketStatusTimer;//websocket连接状态定时器
     private Timer mHeartbeatTimer;//心跳检测定时器
+    private SoundPool mSoundPool;
+    private int streamID;
+
 
     @Override
     public void onCreate() {
         //向EventBus注册监听
         EventBus.getDefault().register(this);
-
+        //设置最多可容纳5个音频流，音频的品质为5
+        mSoundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
+        try {
+            streamID = mSoundPool.load(getApplicationContext().getAssets().openFd("beep/beep.mp3"), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -90,6 +105,11 @@ public class IMMessageReceivingService extends Service {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+
+        if (mSoundPool != null) {
+            mSoundPool.release();
+            mSoundPool = null;
+        }
         Log.e(TAG, "WebSocketService服务被销毁");
 
         if (mWebsocketStatusTimer != null) {
@@ -177,7 +197,7 @@ public class IMMessageReceivingService extends Service {
                     Log.e(TAG, "onOpen：连接成功");
                     if (mBaseWebSocket.isOpen()) {
                         //连接成功后，发送登录信息
-                        mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.LOGIN));
+                        mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
                     }
                 }
 
@@ -185,7 +205,16 @@ public class IMMessageReceivingService extends Service {
                 public void onMessage(String message) {
                     //接收到服务器传来的消息
                     Log.e(TAG, "onMessage：" + message);
-                    onMessageConversion(message);
+
+                    if (!isEmpty(message)) {
+                        NormalBean normalBean = GsonUtil.GsonToBean(message, NormalBean.class);
+                        if (normalBean.code == 0 && normalBean.data != null && normalBean.data.getId() > 0) {
+                            playBeep();
+                            passMessage(normalBean.data);
+                        }
+
+                    }
+
                 }
             };
             try {
@@ -198,6 +227,14 @@ public class IMMessageReceivingService extends Service {
         } else {
             mBaseWebSocket = null;
         }
+    }
+
+    /**
+     * 播放提示音
+     */
+    private void playBeep() {
+        if (mSoundPool != null)
+            mSoundPool.play(streamID, 10, 10, 1, 0, 1.0f);
     }
 
     /**
@@ -231,8 +268,8 @@ public class IMMessageReceivingService extends Service {
         Map<String, String> signMap = new HashMap<>();
         signMap.put(LocalConstant.EXEC, exec);
         signMap.put(LocalConstant.TIMESTAMP, timesTemp);
-        if (exec == LocalConstant.LOGIN) {
-            signMap.put(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        if ((exec == LocalConstant.LOGIN || exec == LocalConstant.PING) && !isEmpty(crossToken)) {
+            signMap.put(LocalConstant.CROSSTOKEN, crossToken);
         }
         String sign = SignatureUtils.generate(signMap, isUat ? IM_UAT_HTTP_KEY : isDebug ? IM_OFFICIAL_HTTP_KEY : WEB_SOCKET_KEY, SignatureUtils.SignType.MD5);
 
@@ -241,22 +278,12 @@ public class IMMessageReceivingService extends Service {
             SocketLoginEvent event = new SocketLoginEvent(exec, timesTemp, sign, crossToken);
             loginParameter = GsonUtil.gsonToStr(event);
         } else if (exec == LocalConstant.PING) {
-            SocketLoginEvent event = new SocketLoginEvent(exec, timesTemp, sign, "");
+            SocketLoginEvent event = new SocketLoginEvent(exec, timesTemp, sign, crossToken);
             loginParameter = GsonUtil.gsonToStr(event);
         }
         return loginParameter;
     }
 
-    /**
-     * 接收的JSON消息转bean
-     *
-     * @param jsonMessage
-     */
-    private void onMessageConversion(String jsonMessage) {
-        Gson gson = new Gson();
-        ReceiveIMMessageBean chatMessageBean = gson.fromJson(jsonMessage, ReceiveIMMessageBean.class);
-        passMessage(chatMessageBean);//传递消息
-    }
 
     /**
      * 将服务器发送的聊天消息传递

@@ -22,6 +22,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -191,6 +193,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
 
+        if (object instanceof GoNoticePageEvent) {
+            GoNoticePageEvent event = (GoNoticePageEvent) object;
+            goToPage(reference.get(), ChatActivity.class, getIntentMap(new String[]{event.id}));
+        }
 //        if (object.equals(StoreLocalConstant.NAVIGATION_ORDER))
 //            getP().checkTab(1);
 //        else if (object instanceof NewMessage){

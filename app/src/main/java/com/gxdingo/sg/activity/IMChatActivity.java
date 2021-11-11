@@ -37,8 +37,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMChatContentAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
+import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.biz.IMChatContract;
 import com.gxdingo.sg.dialog.IMSelectSendAddressPopupView;
 import com.gxdingo.sg.dialog.IMSelectTransferAccountsWayPopupView;
@@ -62,6 +63,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 /**
  * IM聊天
@@ -149,7 +151,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     IMChatHistoryListBean.MyAvatarInfo mMyAvatarInfo;//自己头像信息
     IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;//对方头像信息
-    IMChatHistoryListBean.Address mAddress;//收货地址
+    ReceiveIMMessageBean.MsgAddress mAddress;//收货地址
     boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
 
     String mShareUuid;//发布者与订阅者的共享唯一id
@@ -266,7 +268,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
             @Override
             public void onRefresh() {
                 if (!TextUtils.isEmpty(mShareUuid)) {
-                    getP().getChatHistoryList(mShareUuid);//获取聊天记录
+                    getP().getChatHistoryList(mShareUuid,0,0);//获取聊天记录
                 }
             }
 
@@ -341,12 +343,13 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     }
 
 
+
     @Override
     protected void initData() {
         mShareUuid = getIntent().getStringExtra(EXTRA_SHARE_UUID);
 
         if (!TextUtils.isEmpty(mShareUuid)) {
-            getP().getChatHistoryList(mShareUuid);//获取聊天记录
+            getP().getChatHistoryList(mShareUuid,0,0);//获取聊天记录
         }
     }
 
@@ -403,8 +406,8 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         /**
          * 其他功能
          */
-        if (object instanceof IMOtherFunctionsFragment.FunctionsItem) {
-            IMOtherFunctionsFragment.FunctionsItem functionsItem = ((IMOtherFunctionsFragment.FunctionsItem) object);
+        if (object instanceof FunctionsItem) {
+            FunctionsItem functionsItem = (FunctionsItem) object;
             /**
              * 用户
              */
@@ -554,6 +557,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         etContentInputBox.setText("");
     }
 
+    @Override
+    public void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean, int pos) {
+
+    }
+
 
     /**
      * 回调上传图片URL
@@ -563,7 +571,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
     @Override
     public void onUploadImageUrl(String url) {
         //发送图片消息
-        getP().sendPictureMessage(mShareUuid, url);
+        getP().sendPictureMessage(mShareUuid, url, 0);
     }
 
     /**

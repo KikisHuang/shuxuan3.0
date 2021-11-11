@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
+import com.gxdingo.sg.bean.FunctionsItem;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullGridLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
@@ -58,21 +60,10 @@ public class IMOtherFunctionsFragment extends Fragment {
         prvOtherFunctions.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                EventBus.getDefault().post(new FunctionsItem(IMOtherFunctionsAdapter.TYPE_USER, position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
+                EventBus.getDefault().post(new FunctionsItem( UserInfoUtils.getInstance().getUserInfo().getRole(), position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
             }
         });
         return view;
     }
 
-    public class FunctionsItem {
-        public int type;
-        public int position;
-        public String name;
-
-        public FunctionsItem(int type, int position, String name) {
-            this.type = type;
-            this.position = position;
-            this.name = name;
-        }
-    }
 }

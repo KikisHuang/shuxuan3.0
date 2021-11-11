@@ -2,20 +2,24 @@ package com.gxdingo.sg.utils;
 
 public class LocalConstant {
 
+    //聊天id
+    public static  String SHAREUUID = "";
 
     //聊天常量
     //自己发送的文本类型
-    public static final int SelfText = 77776;
+    public static final int SelfText = 7776;
     //自己发送的图片类型
-    public static final int SelfImage = 77777;
+    public static final int SelfImage = 7777;
     //自己发送的商品信息
-    public static final int SelfGoodsInfo = 777756;
+    public static final int SelfGoodsInfo = 77756;
     //自己发送的音频类型
-    public static final int SelfAudio = 77778;
+    public static final int SelfAudio = 7778;
     //自己发送的视频类型
-    public static final int SelfVideo = 77779;
+    public static final int SelfVideo = 7779;
     //自己发送的文件类型
-    public static final int SelfFile = 77780;
+    public static final int SelfFile = 7780;
+    //自己发送的转账类型
+    public static final int SelfTransfer = 7781;
 
     //他人发送的文字类型
     public static final int OtherText = 77781;
@@ -29,8 +33,10 @@ public class LocalConstant {
     public static final int OtherVideo = 77784;
     //他人发送的文件类型
     public static final int OtherFile = 77785;
+    //他人发送的转账类型
+    public static final int OtherTransfer = 77786;
 
-    public static final String AUTH_SECRET ="WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
+    public static final String AUTH_SECRET = "WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
 
     public static final int CODE_SEND = 10;
     public static final int CLIENT_LOGIN_SUCCEED = 20;
@@ -98,8 +104,6 @@ public class LocalConstant {
     public static final String ID_CARD = "idCard";
     public static final String NUMBER = "number";
     public static final String SMS_CODE = "smsCode";
-
-
 
 
     public static String SIGN = "sign";

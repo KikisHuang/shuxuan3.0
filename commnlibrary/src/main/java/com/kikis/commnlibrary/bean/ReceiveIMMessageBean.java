@@ -1,4 +1,4 @@
-package com.gxdingo.sg.bean;
+package com.kikis.commnlibrary.bean;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -20,7 +20,8 @@ public class ReceiveIMMessageBean implements Serializable {
     private SubscribeListVO subscribeListVO;//订阅详情
     private MsgAddress msgAddress;//地址类型详情（type == 30 返回，否则返回 null）
     private MsgAccounts msgAccounts;//转账类型详情（type == 20 返回，否则返回 null）
-
+    //图片类型上传进度
+    public int upload_progress;
 
     public long getId() {
         return id;

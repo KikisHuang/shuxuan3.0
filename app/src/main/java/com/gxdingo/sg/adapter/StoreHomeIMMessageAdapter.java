@@ -8,7 +8,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.SubscribesListBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.utils.TextViewUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 

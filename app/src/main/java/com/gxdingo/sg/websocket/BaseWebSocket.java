@@ -31,6 +31,12 @@ public class BaseWebSocket extends WebSocketClient {
         Log.e(TAG, "onOpen：已经成功连接！");
     }
 
+    @Override
+    public void send(byte[] data) {
+        super.send(data);
+
+    }
+
     /**
      * 接收到消息时调用
      *

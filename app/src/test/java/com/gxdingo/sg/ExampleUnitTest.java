@@ -1,7 +1,11 @@
 package com.gxdingo.sg;
 
+import com.gxdingo.sg.bean.NormalBean;
+import com.kikis.commnlibrary.utils.GsonUtil;
+
 import org.junit.Test;
 
+import static com.gxdingo.sg.utils.DateUtils.GetUTCTime;
 import static org.junit.Assert.*;
 
 /**
@@ -12,6 +16,11 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+//        assertEquals(4, 2 + 2);
+
+//        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
+//        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
+
+            System.out.println(GetUTCTime());
     }
 }

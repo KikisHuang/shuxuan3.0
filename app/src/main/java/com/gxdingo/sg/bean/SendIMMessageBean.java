@@ -16,6 +16,17 @@ public class SendIMMessageBean implements Serializable {
     private Map<String, Object> params;// key=id,value=地址id、转账id（type >= 20 必传）
 
 
+    public SendIMMessageBean() {
+    }
+
+    public SendIMMessageBean(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params) {
+        this.shareUuid = shareUuid;
+        this.type = type;
+        this.content = content;
+        this.voiceDuration = voiceDuration;
+        this.params = params;
+    }
+
     public String getShareUuid() {
         return shareUuid;
     }

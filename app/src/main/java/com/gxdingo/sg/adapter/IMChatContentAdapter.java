@@ -1,13 +1,8 @@
 package com.gxdingo.sg.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +19,13 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
-import com.gxdingo.sg.utils.EmotionsUtils;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.utils.TextViewUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -366,7 +357,7 @@ public class IMChatContentAdapter extends PullRecyclerView.PullAdapter<IMChatCon
             ConstraintLayout clOthersTransferAccountsBg = itemView.findViewById(R.id.cl_others_transfer_accounts_bg);
             RoundAngleImageView ivOthersAvatar = itemView.findViewById(R.id.niv_others_avatar);
             TextView tvOthersAmount = itemView.findViewById(R.id.tv_others_amount);
-            TextView tvOthersReceivePaymentStatus = itemView.findViewById(R.id.tv_others_receive_payment_status);
+            TextView tvOthersReceivePaymentStatus = itemView.findViewById(R.id.status_tv);
             ImageView ivOthersTransferAccountsTypeIcon = itemView.findViewById(R.id.iv_others_transfer_accounts_type_icon);
             TextView tvOthersTransferAccountsTypeName = itemView.findViewById(R.id.tv_others_transfer_accounts_type_name);
 

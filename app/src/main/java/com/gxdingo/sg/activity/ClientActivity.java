@@ -24,6 +24,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -157,6 +159,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code) && event.login)
                 getP().wechatLogin(event.code);
+        } else if (object instanceof GoNoticePageEvent) {
+            GoNoticePageEvent event = (GoNoticePageEvent) object;
+            goToPage(reference.get(), ChatActivity.class, getIntentMap(new String[]{event.id}));
         }
     }
 
@@ -168,7 +173,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LocalConstant.WECHAT_LOGIN_EVENT) {
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
-        }else if (type == LOGOUT){
+        } else if (type == LOGOUT) {
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
             getP().checkTab(0);
         }
@@ -198,7 +203,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(0);
                 break;
             case R.id.message_layout:
-                if (!UserInfoUtils.getInstance().isLogin()){
+                if (!UserInfoUtils.getInstance().isLogin()) {
                     getP().goLogin();
                     return;
                 }
@@ -214,7 +219,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(2);
                 break;
             case R.id.mine_layout:
-                if (!UserInfoUtils.getInstance().isLogin()){
+                if (!UserInfoUtils.getInstance().isLogin()) {
                     getP().goLogin();
                     return;
                 }

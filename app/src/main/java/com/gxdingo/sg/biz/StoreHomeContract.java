@@ -1,6 +1,6 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.SubscribesListBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 

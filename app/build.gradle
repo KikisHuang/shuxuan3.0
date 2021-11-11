@@ -139,6 +139,9 @@ dependencies {
     implementation 'com.amap.api:location:5.5.1'
     implementation 'com.amap.api:search:8.1.0'
 
+    //自定义进度BGAProgressBar
+    implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
+
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
 }

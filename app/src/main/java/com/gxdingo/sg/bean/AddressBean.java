@@ -21,6 +21,8 @@ public class AddressBean implements Serializable {
     private String mobile;
     private String name;
     private int gender;
+
+    public int selectType;
     private String regionPath;
     private String regionPathStr;
     private String street;

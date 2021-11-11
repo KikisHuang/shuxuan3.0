@@ -52,8 +52,8 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     private ClientAddressAdapter mAdapter;
 
-    //是否是选择地址
-    private boolean isSelect;
+    //0不返回 1 首页 2聊天
+    private int selectType;
 
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
@@ -111,10 +111,10 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     }
 
     @OnClick(R.id.txt_more)
-    public void onClickViews(View v){
-        switch (v.getId()){
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.txt_more:
-                goToPage(this,ClientNewAddressActivity.class,null);
+                goToPage(this, ClientNewAddressActivity.class, null);
                 break;
         }
     }
@@ -131,7 +131,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     protected void init() {
-        isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
+        selectType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
         title_layout.setTitleText(gets(R.string.receiving_address));
         title_layout.setMoreText(gets(R.string.add_address));
         mAdapter = new ClientAddressAdapter();
@@ -154,8 +154,9 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        if (isSelect){
-            AddressBean item =(AddressBean) adapter.getItem(position);
+        if (selectType != 0) {
+            AddressBean item = (AddressBean) adapter.getItem(position);
+            item.selectType = selectType;
             sendEvent(item);
             finish();
         }

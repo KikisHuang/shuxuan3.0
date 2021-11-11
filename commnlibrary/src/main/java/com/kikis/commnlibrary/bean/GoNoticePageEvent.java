@@ -9,14 +9,12 @@ import android.util.Log;
  */
 public class GoNoticePageEvent {
 
-    public long orderId = 0;
-    public long id = 0;
+    public String id = "";
 
     public int type = 0;
 
-    public GoNoticePageEvent(long orderId, long id,int type) {
-        this.orderId = orderId;
+    public GoNoticePageEvent(String id, int type) {
         this.id = id;
-        this.type= type;
+        this.type = type;
     }
 }

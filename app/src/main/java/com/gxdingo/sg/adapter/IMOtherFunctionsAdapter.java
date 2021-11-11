@@ -16,13 +16,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOtherFunctionsAdapter.ViewHolder> {
-    public static final int TYPE_USER = 1;
-    public static final int TYPE_STORE = 2;
+    public static final int TYPE_USER = 10;
+    public static final int TYPE_STORE = 11;
 
     private Context mContext;
     private int[] mIconItems;
     private String[] mTitleItems;
-    private int mType;//用户类型，1用户，2商家
+    private int mType;//用户类型，10用户，11商家
 
     public IMOtherFunctionsAdapter(Context context, int type) {
         mContext = context;

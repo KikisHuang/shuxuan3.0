@@ -23,6 +23,7 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.NewMessage;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.BaseMessageLayout;
@@ -60,6 +61,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.Constant.CLOSE_ALL_ACTIVITY;
+import static com.kikis.commnlibrary.utils.Constant.UserInfo;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 import static com.kikis.commnlibrary.utils.SoftKeyboardUtils.isShouldHideInput;
 
@@ -540,7 +542,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
      *
      * @param unReadMessage 消息测试数据
      */
-    protected synchronized void showNewMessageDialog(final NewMessage unReadMessage) {
+    protected synchronized void showNewMessageDialog(final ReceiveIMMessageBean unReadMessage) {
 
 
         RxUtil.observe(Schedulers.newThread(), Flowable.create(new FlowableOnSubscribe<Object>() {
@@ -555,14 +557,14 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
             public void accept(Object o) {
                 LogUtils.i("fmlayout count === " + fmlayout.getChildCount());
 
-                final NewMessage messageInfoBean = (NewMessage) o;
+                final ReceiveIMMessageBean messageInfoBean = (ReceiveIMMessageBean) o;
                 final BaseMessageLayout baseMessageLayout = new BaseMessageLayout(reference.get());
                 fmlayout.addView(baseMessageLayout);
 
                 baseMessageLayout
-                        .setTitle(messageInfoBean.getFromName())
-                        .setContent(messageInfoBean.getContent())
-                        .setAvatar(messageInfoBean.getFromAvatar())
+                        .setTitle(messageInfoBean.getSubscribeListVO().getSendNickname())
+                        .setContent(messageInfoBean.getSubscribeListVO().getLastMsg())
+                        .setAvatar(messageInfoBean.getSubscribeListVO().getSendAvatar())
                         .setHandler(new Handler() {
                             @Override
                             public void handleMessage(@NonNull Message msg) {
@@ -578,7 +580,10 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
                         .setClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                sendEvent(new GoNoticePageEvent(messageInfoBean.getOrder() != null ? messageInfoBean.getOrder().getId() : 0, messageInfoBean.getSubscribeId(), messageInfoBean.getFromType()));
+
+                                if (messageInfoBean.getSubscribeListVO() != null)
+                                    sendEvent(new GoNoticePageEvent(messageInfoBean.getSubscribeListVO().getShareUuid(), 0));
+
                                 fmlayout.removeViewInLayout(baseMessageLayout);
                             }
                         }).show();
@@ -677,8 +682,8 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
             finish();
 
         //全局新消息布局
-        if (!isAcBackground && object instanceof NewMessage)
-            showNewMessageDialog((NewMessage) object);
+        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
+            showNewMessageDialog((ReceiveIMMessageBean) object);
     }
 
     /**

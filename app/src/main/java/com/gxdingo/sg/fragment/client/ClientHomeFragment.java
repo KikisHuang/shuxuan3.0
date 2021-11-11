@@ -200,7 +200,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             case R.id.location_tt_tv:
             case R.id.location_tv:
                 if (UserInfoUtils.getInstance().isLogin())
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{true}));
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
                 else
                     new OneKeyModel().sdkInit(getContext());
                 break;
@@ -222,8 +222,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
         if (object instanceof AddressBean){
-            this.location = true;
-            getP().getNearbyStore((AddressBean) object,categoryId);
+            AddressBean addressBean = (AddressBean) object;
+            if (addressBean.selectType==1){
+                this.location = true;
+                getP().getNearbyStore((AddressBean) object,categoryId);
+            }
+
         }
     }
 

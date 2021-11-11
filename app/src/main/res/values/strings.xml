@@ -59,4 +59,6 @@
     <string name="experience_immediately">立即体验</string>
     <string name="store_shuxuan">树选商家端</string>
     <string name="client_shuxuan">树选客户端</string>
+    <string name="not_get_voice_player_url">没有获取到音频播放路径</string>
+    <string name="audio_play_error">音频播放异常</string>
 </resources>

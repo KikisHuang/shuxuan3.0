@@ -218,7 +218,7 @@
                     app:layout_constraintLeft_toRightOf="@+id/tv_others_rmb_icon" />
 
                 <TextView
-                    android:id="@+id/tv_others_receive_payment_status"
+                    android:id="@+id/status_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
@@ -239,7 +239,7 @@
                     android:layerType="software"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_others_receive_payment_status" />
+                    app:layout_constraintTop_toBottomOf="@+id/status_tv" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

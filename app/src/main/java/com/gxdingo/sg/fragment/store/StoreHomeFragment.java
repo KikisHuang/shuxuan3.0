@@ -23,11 +23,12 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
-import com.gxdingo.sg.bean.SubscribesListBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
@@ -46,15 +47,16 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * 商家端主页
@@ -192,9 +194,11 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
                 SubscribesListBean.SubscribesMessage subscribesMessage = mStoreHomeIMMessageAdapter.getItem(position);
                 //跳转到IM聊天界面
-                Map<String, String> intentMap = new HashMap<>();
-                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, subscribesMessage.getShareUuid());
-                goToPage(reference.get(), IMChatActivity.class, intentMap);
+//                Map<String, String> intentMap = new HashMap<>();
+//                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, subscribesMessage.getShareUuid());
+//                goToPage(reference.get(), IMChatActivity.class, intentMap);
+
+                goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{subscribesMessage.getShareUuid()}));
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);

@@ -1,4 +1,4 @@
-package com.gxdingo.sg.bean;
+package com.kikis.commnlibrary.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;

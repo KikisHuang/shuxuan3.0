@@ -51,6 +51,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         tools:replace="allowBackup">
 
         <!--每日反省服务-->
@@ -362,7 +363,7 @@
             android:windowSoftInputMode="stateHidden|stateVisible|adjustPan">
         </activity>
 
-        <!--IM聊天页面 -->
+        <!--IM聊天页面(旧) -->
         <activity
             android:name=".activity.IMChatActivity"
             android:screenOrientation="portrait"
@@ -370,6 +371,11 @@
 
         </activity>
 
+        <!--聊天页面 -->
+        <activity
+            android:name=".activity.ChatActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
         <!--IM-转账支付页面 -->
         <activity
             android:name=".activity.IMTransferAccountsPayActivity"

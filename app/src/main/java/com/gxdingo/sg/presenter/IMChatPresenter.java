@@ -1,20 +1,16 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.blankj.utilcode.util.ToastUtils;
+import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
-import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.IMChatContract;
 import com.gxdingo.sg.biz.NetWorkListener;
-import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.GlideEngine;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
@@ -29,7 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
+import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatContract.IMChatListener> implements IMChatContract.IMChatPresenter, NetWorkListener {
@@ -132,14 +137,16 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * 获取聊天记录列表
      */
     @Override
-    public void getChatHistoryList(String shareUuid) {
-        mWebSocketModel.getChatHistoryList(getContext(), shareUuid, new CustomResultListener<IMChatHistoryListBean>() {
+    public void getChatHistoryList(String shareUuid, int otherId, int otherRole) {
+
+        mWebSocketModel.getChatHistoryList(getContext(), shareUuid, otherId, otherRole, new CustomResultListener<IMChatHistoryListBean>() {
             @Override
             public void onResult(IMChatHistoryListBean imChatHistoryListBean) {
                 getV().onChatHistoryList(imChatHistoryListBean);
             }
         });
     }
+
 
     /**
      * 发送文本消息
@@ -160,15 +167,16 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * 发送图片消息
      *
      * @param url 图片URL
+     * @param pos
      */
     @Override
-    public void sendPictureMessage(String shareUuid, String url) {
+    public void sendPictureMessage(String shareUuid, String url, int pos) {
         SendIMMessageBean sendIMMessageBean = new SendIMMessageBean();
         sendIMMessageBean.setShareUuid(shareUuid);
         sendIMMessageBean.setContent(url);
         sendIMMessageBean.setType(10);
 
-        sendMessage(sendIMMessageBean);
+        sendMessageResultPos(sendIMMessageBean, pos);
     }
 
     /**
@@ -206,7 +214,28 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     }
 
     /**
-     * 发送一条消息
+     * 发送消息
+     *
+     * @param shareUuid
+     * @param type
+     * @param content
+     * @param voiceDuration
+     * @param params
+     */
+    @Override
+    public void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params) {
+        mEndSendTime = System.currentTimeMillis();
+        if (mEndSendTime - mStartSendTime > 500) {
+            SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
+            mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, receiveIMMessageBean -> getV().onSendMessageSuccess(receiveIMMessageBean));
+        } else {
+            onMessage("发送过于频繁");
+        }
+        mStartSendTime = mEndSendTime;
+    }
+
+    /**
+     * 发送一条消息(旧)
      *
      * @param sendIMMessageBean 发送消息对象
      */
@@ -217,6 +246,26 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                 @Override
                 public void onResult(ReceiveIMMessageBean receiveIMMessageBean) {
                     getV().onSendMessageSuccess(receiveIMMessageBean);
+                }
+            });
+        } else {
+            onMessage("发送过于频繁");
+        }
+        mStartSendTime = mEndSendTime;
+    }
+
+    /**
+     * 发送一条消息(旧)
+     *
+     * @param sendIMMessageBean 发送消息对象
+     */
+    public void sendMessageResultPos(SendIMMessageBean sendIMMessageBean, int pos) {
+        mEndSendTime = System.currentTimeMillis();
+        if (mEndSendTime - mStartSendTime > 500) {
+            mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, new CustomResultListener<ReceiveIMMessageBean>() {
+                @Override
+                public void onResult(ReceiveIMMessageBean receiveIMMessageBean) {
+                    getV().onSendMessageSuccessResultPos(receiveIMMessageBean, pos);
                 }
             });
         } else {
@@ -248,8 +297,10 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                     @Override
                     public void onResult(List<LocalMedia> result) {
                         getBV().onStarts();
-                        String url = getPhotoUrl(result.get(0));
-                        networkModel.upLoadImage(getContext(), url, new UpLoadImageListener() {
+//                        String url = getPhotoUrl(result.get(0));
+                        String url = !isEmpty(result.get(0).getCompressPath()) ? result.get(0).getCompressPath() : result.get(0).getPath();
+                        getV().onUploadImageUrl(url);
+                        /*    networkModel.upLoadImage(getContext(), url, new UpLoadImageListener() {
                             @Override
                             public void loadSucceed(String path) {
                                 getV().onUploadImageUrl(path);
@@ -260,13 +311,43 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                             public void loadSucceed(UpLoadBean upLoadBean) {
                                 System.out.println();
                             }
-                        });
+                        });*/
                     }
 
                     @Override
                     public void onCancel() {
 
+
                     }
                 });
+    }
+
+    @Override
+    public void goOutSideNavigation(int pos, ReceiveIMMessageBean.MsgAddress mAddress) {
+        if (!isBViewAttached() || mAddress == null)
+            return;
+
+        switch (pos) {
+            case 0:
+                if (isAvilible(getContext(), PN_GAODE_MAP)) {
+                    goToGaoDeMap(getContext(), mAddress.getStreet(), mAddress.getLongitude(), mAddress.getLatitude());
+                } else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
+                break;
+            case 1:
+                if (isAvilible(getContext(), PN_BAIDU_MAP))
+                    goToBaiduActivity(getContext(), mAddress.getStreet(), mAddress.getLongitude(), mAddress.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
+
+                break;
+            case 2:
+                if (isAvilible(getContext(), PN_TENCENT_MAP)) {
+                    goToTencentMap(getContext(), mAddress.getStreet(), mAddress.getLongitude(), mAddress.getLatitude());
+                } else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
+                break;
+
+        }
     }
 }

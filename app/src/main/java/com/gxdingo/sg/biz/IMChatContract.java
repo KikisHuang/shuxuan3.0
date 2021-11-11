@@ -1,13 +1,11 @@
 package com.gxdingo.sg.biz;
 
-import android.content.Context;
-
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
-import com.gxdingo.sg.bean.ReceiveIMMessageBean;
-import com.gxdingo.sg.bean.SendIMMessageBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
-import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+
+import java.util.Map;
 
 /**
  * IM聊天契约类
@@ -20,7 +18,13 @@ public class IMChatContract {
         /**
          * 获取聊天记录列表
          */
-        void getChatHistoryList(String shareUuid);
+        void getChatHistoryList(String shareUuid, int otherId, int otherRole);
+
+
+        /**
+         * 发送消息
+         */
+        void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String,Object> params);
 
         /**
          * 发送文本消息
@@ -33,15 +37,16 @@ public class IMChatContract {
          * 发送图片消息
          *
          * @param url 图片URL
+         * @param pos
          */
-        void sendPictureMessage(String shareUuid, String url);
+        void sendPictureMessage(String shareUuid, String url, int pos);
 
         /**
          * 发送语音消息
          *
          * @param url 语音URL
          */
-        void sendVoiceMessage(String shareUuid, String url,int voiceDuration);
+        void sendVoiceMessage(String shareUuid, String url, int voiceDuration);
 
         /**
          * 发送转账消息
@@ -56,6 +61,13 @@ public class IMChatContract {
          * @param pos 0 相册，1 相机
          */
         void photoSourceClick(int pos);
+
+        /**
+         * 跳转第三方地图
+         * @param pos
+         * @param mAddress
+         */
+        void goOutSideNavigation(int pos, ReceiveIMMessageBean.MsgAddress mAddress);
     }
 
     public interface IMChatListener {
@@ -71,6 +83,12 @@ public class IMChatContract {
          * @param receiveIMMessageBean 接收的IM消息（刚才发送成功的消息）
          */
         void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean);
+        /**
+         * 发送(文字、图片、语音、转账)消息成功带下标
+         *
+         * @param receiveIMMessageBean 接收的IM消息（刚才发送成功的消息）
+         */
+        void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean,int pos);
 
         /**
          * 回调上传图片URL
