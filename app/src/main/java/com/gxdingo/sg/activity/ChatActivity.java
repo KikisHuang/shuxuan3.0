@@ -147,7 +147,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.cl_other_side_address_layout)
     public ConstraintLayout cl_other_side_address_layout;
 
-
     @BindView(R.id.rl_cancel_recording_area)
     public RelativeLayout rlCancelRecordingArea;
 
