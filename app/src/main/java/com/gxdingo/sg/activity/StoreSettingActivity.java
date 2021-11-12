@@ -31,6 +31,7 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -153,7 +154,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                     mPhotoPopupView.show();
                 break;
             case R.id.change_nickname_stv:
-                goToPage(this,StoreUpdateNameActivity.class,null);
+                goToPage(this,StoreUpdateNameActivity.class,getIntentMap(new String[]{change_nickname_stv.getLeftTextView().getText().toString()}));
                 break;
 
             case R.id.change_mobile_stv:

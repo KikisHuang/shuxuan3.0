@@ -21,6 +21,7 @@ import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
@@ -214,8 +215,14 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     }
 
     @Override
+    public void onTransactionDetail(TransactionDetails transactionDetails) {
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         TransactionBean item = (TransactionBean) adapter.getItem(position);
-        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+//        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

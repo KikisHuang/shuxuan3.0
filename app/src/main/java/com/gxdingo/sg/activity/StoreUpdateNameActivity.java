@@ -1,12 +1,14 @@
 package com.gxdingo.sg.activity;
 
 import android.view.View;
+import android.widget.TextView;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
@@ -29,6 +31,8 @@ public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContra
 
     @BindView(R.id.store_name_et)
     public RegexEditText store_name_et;
+
+    private String storeName;
 
     @Override
     protected StoreSettingsContract.StoreSettingsPresenter createPresenter() {
@@ -99,6 +103,9 @@ public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContra
     protected void init() {
         title_layout.setTitleText("修改店铺名称");
         title_layout.setBackgroundColor(getc(R.color.divide_color));
+        storeName  = getIntent().getStringExtra(Constant.PARAMAS+0);
+        if (!isEmpty(storeName))
+            store_name_et.setText(storeName);
     }
 
     @OnClick({R.id.btn_submit,R.id.store_name_rule_tv})

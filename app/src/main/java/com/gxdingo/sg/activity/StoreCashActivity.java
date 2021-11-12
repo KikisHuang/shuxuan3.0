@@ -8,6 +8,7 @@ import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.StoreWalletBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
@@ -245,6 +246,11 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     public String getCashType() {
         return mType;
+    }
+
+    @Override
+    public void onTransactionDetail(TransactionDetails transactionDetails) {
+
     }
 
     @Override

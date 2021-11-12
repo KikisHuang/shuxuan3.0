@@ -8,6 +8,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCashActivity;
 import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.model.LoginModel;
@@ -18,6 +19,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.Constant;
+import com.umeng.commonsdk.debug.E;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import static android.text.TextUtils.isEmpty;
@@ -61,16 +63,12 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     public void cash(String balance,String password) {
         if (storeNetworkModel!=null)
             storeNetworkModel.balanceCash(getContext(),getV().getCashType(),balance,password,getV().getBackCardId());
-
     }
 
     @Override
     public void bind(String code, int type) {
-
-
         if (storeNetworkModel!=null)
             storeNetworkModel.bindThirdParty(getContext(),code,type);
-
     }
 
     @Override
@@ -91,6 +89,12 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
             if (isBViewAttached())
                 getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
         }
+    }
+
+    @Override
+    public void getTransactionDetails() {
+        if (storeNetworkModel!=null)
+            storeNetworkModel.getTransactionDetail(getContext(),getV().getBackCardId());
     }
 
 
@@ -117,6 +121,9 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
         if (o instanceof StoreWalletBean){
             if (isViewAttached())
                 getV().onWalletHomeResult(refresh,(StoreWalletBean) o);
+        }else if (o instanceof TransactionDetails){
+            if (isViewAttached())
+                getV().onTransactionDetail((TransactionDetails) o);
         }
     }
 

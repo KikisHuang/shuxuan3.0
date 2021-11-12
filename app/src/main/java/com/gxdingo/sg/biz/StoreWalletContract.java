@@ -1,6 +1,7 @@
 package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.StoreWalletBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -22,6 +23,7 @@ public class StoreWalletContract {
 
         void bindWechat();
 
+        void getTransactionDetails();
     }
 
     public interface StoreWalletListener {
@@ -31,5 +33,7 @@ public class StoreWalletContract {
         void onWalletHomeResult(boolean refresh,StoreWalletBean walletBean);
 
         String getCashType();
+
+        void onTransactionDetail(TransactionDetails transactionDetails);
     }
 }
