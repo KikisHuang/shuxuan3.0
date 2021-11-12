@@ -393,7 +393,7 @@ public class StoreNetworkModel {
                     netWorkListener.onAfters();
 //                    netWorkListener.onData(true, thirdPartyBean);
                     thirdPartyBean.type = type;
-                    netWorkListener.onData(true,thirdPartyBean);
+                    EventBus.getDefault().post(thirdPartyBean);
                 }
             }
         };

@@ -8,6 +8,8 @@ import com.gxdingo.sg.bean.TransactionBean;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+
 /**
  * @author: Weaving
  * @date: 2021/10/21
@@ -23,7 +25,7 @@ public class ClientTransactionRecordAdapter extends BaseQuickAdapter<Transaction
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, TransactionBean listBean) {
         baseViewHolder.setText(R.id.description_tv,listBean.getDescription());
-        baseViewHolder.setText(R.id.time_tv,listBean.getCreateTime());
+        baseViewHolder.setText(R.id.time_tv,dealDateFormat(listBean.getCreateTime(),"MM-dd HH:mm"));
         baseViewHolder.setText(R.id.amount_tv,String.valueOf(listBean.getAmount()));
     }
 }

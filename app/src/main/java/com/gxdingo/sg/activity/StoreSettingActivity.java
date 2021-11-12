@@ -29,6 +29,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
@@ -192,6 +193,12 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
     }
 
     @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        getP().getStoreInfo();
+    }
+
+    @Override
     public void onInfoResult(StoreDetailBean storeDetailBean) {
         Glide.with(this).
                 load(StringUtils.isEmpty(storeDetailBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : storeDetailBean.getAvatar())
@@ -200,7 +207,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
         change_nickname_stv.setLeftString(storeDetailBean.getName());
         change_address_stv.setRightString(storeDetailBean.getAddress());
         change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
-        business_time_stv.setRightString(storeDetailBean.getOpenTime()+"-"+storeDetailBean.getCloseTime());
+        business_time_stv.setRightString(dealDateFormat(storeDetailBean.getOpenTime(),"HH:mm")+"-"+dealDateFormat(storeDetailBean.getCloseTime(),"HH:mm"));
         business_scope_stv.setRightString(storeDetailBean.getMaxDistance()+"m");
     }
 

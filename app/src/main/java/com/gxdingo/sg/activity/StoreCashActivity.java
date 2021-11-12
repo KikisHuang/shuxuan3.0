@@ -12,6 +12,7 @@ import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -51,8 +52,8 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @BindView(R.id.webView)
     public WebView webView;
 
-    //选择提现的账户 0支付宝、1微信、2银行卡
-    private int mType;
+    //	提现类型。bank=银行卡、alipay=支付宝、wechat=微信
+    private String mType;
 
     private StoreWalletBean mWalletBean;
 
@@ -128,19 +129,19 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.balance_cash));
-        mType = getIntent().getIntExtra(Constant.SERIALIZABLE+0,-1);
+        mType = getIntent().getStringExtra(Constant.SERIALIZABLE+0);
         mWalletBean = (StoreWalletBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE+1);
-
-        if (mWalletBean == null || mType == -1){
+        mBankCardId = getIntent().getIntExtra(Constant.SERIALIZABLE+2,-1);
+        if (mWalletBean == null || isEmpty(mType)){
             onMessage("请先选择提现账户！");
             finish();
 
         }
         et_cash_amount.setHint("可转出到卡"+mWalletBean.getBalance()+"元");
         et_cash_amount.addTextChangedListener(textWatcher);
-        if (mType == 0)
+        if (mType.equals(ClientLocalConstant.ALIPAY))
             cash_account_stv.setRightString(gets(R.string.alipay));
-        else if (mType == 1)
+        else if (mType.equals(ClientLocalConstant.WECHAT))
             cash_account_stv.setRightString(gets(R.string.wechat));
         else
             cash_account_stv.setRightString(gets(R.string.back_card));
@@ -152,20 +153,13 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
 
     }
 
-    @Override
-    protected void onBaseEvent(Object object) {
-        super.onBaseEvent(object);
-        if (object instanceof BankcardBean)
-            mBankCardId = ((BankcardBean)object).getId();
-    }
-
     @OnClick({R.id.cash_account_stv,R.id.btn_all,R.id.btn_confirm})
     public void OnClickViews(View v){
         switch (v.getId()){
-            case R.id.cash_account_stv:
-                if (mType == 2)
-                    goToPagePutSerializable(this,BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
-                break;
+//            case R.id.cash_account_stv:
+//                if (mType == 2)
+//                    goToPagePutSerializable(this,BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
+//                break;
             case R.id.btn_all:
                 et_cash_amount.setText(String.valueOf(mWalletBean.getBalance()));
                 break;
@@ -175,12 +169,12 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                     onMessage("请输入有效提现金额");
                     return;
                 }
-                showPayPswDialog();
+                showPayPswDialog(balance);
                 break;
         }
     }
 
-    private void showPayPswDialog(){
+    private void showPayPswDialog(String balance){
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
@@ -188,7 +182,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                     @Override
                     public void finished(CenterPopupView popupView, PasswordLayout passwordLayout, String password) {
                         mPasswordLayout = passwordLayout;
-                        getP().cash(password);
+                        getP().cash(balance,password);
                     }
                 }))
                 .show();
@@ -246,6 +240,11 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
 
+    }
+
+    @Override
+    public String getCashType() {
+        return mType;
     }
 
     @Override

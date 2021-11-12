@@ -42,9 +42,8 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     private LoginModel mModdel;
 
-    private StoreWalletBean walletBean;
+//    private StoreWalletBean walletBean;
 
-    private String mType;
 
     public StoreWalletPresenter() {
         mNetworkModel = new NetworkModel(this);
@@ -59,9 +58,9 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     }
 
     @Override
-    public void cash(String password) {
+    public void cash(String balance,String password) {
         if (storeNetworkModel!=null)
-            storeNetworkModel.balanceCash(getContext(),mType,"",password,getV().getBackCardId());
+            storeNetworkModel.balanceCash(getContext(),getV().getCashType(),balance,password,getV().getBackCardId());
 
     }
 
@@ -94,37 +93,6 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
         }
     }
 
-    @Override
-    public void goCashPage(int type) {
-        if (walletBean ==null)return;
-
-        switch (type){
-            case 0:
-                mType = ClientLocalConstant.ALIPAY;
-                break;
-            case 1:
-                mType = ClientLocalConstant.WECHAT;
-                break;
-            case 2:
-                mType = ClientLocalConstant.BANK;
-                break;
-        }
-
-        if (type == 0 && isEmpty(walletBean.getAlipay())){
-            mType = ClientLocalConstant.ALIPAY;
-            bindAli();
-            return;
-        }
-
-        if (type == 1 && isEmpty(walletBean.getWechat())){
-            mType = ClientLocalConstant.WECHAT;
-            bindWechat();
-            return;
-        }
-
-
-        goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{type,walletBean}));
-    }
 
     @Override
     public void onSucceed(int type) {
@@ -147,16 +115,8 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     @Override
     public void onData(boolean refresh, Object o) {
         if (o instanceof StoreWalletBean){
-            walletBean = (StoreWalletBean) o;
             if (isViewAttached())
                 getV().onWalletHomeResult(refresh,(StoreWalletBean) o);
-        }else if (o instanceof ThirdPartyBean){
-            ThirdPartyBean thirdPartyBean = (ThirdPartyBean) o;
-            if (thirdPartyBean.type == 0)
-                walletBean.setAlipay(thirdPartyBean.getNickname());
-            else if (thirdPartyBean.type == 1)
-                walletBean.setWechat(thirdPartyBean.getNickname());
-            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{thirdPartyBean.type,walletBean}));
         }
     }
 
