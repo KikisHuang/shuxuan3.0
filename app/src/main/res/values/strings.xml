@@ -66,4 +66,5 @@
     <string name="not_get_voice_player_url">没有获取到音频播放路径</string>
     <string name="audio_play_error">音频播放异常</string>
     <string name="please_get_recording_permissions">请获取录音权限</string>
+    <string name="payment_succeed" />
 </resources>

@@ -135,7 +135,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 
     @Override

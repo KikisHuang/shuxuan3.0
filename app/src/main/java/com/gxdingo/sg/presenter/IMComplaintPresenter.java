@@ -91,7 +91,7 @@ public class IMComplaintPresenter extends BaseMvpPresenter<BasicsListener, IMCom
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 
     /**

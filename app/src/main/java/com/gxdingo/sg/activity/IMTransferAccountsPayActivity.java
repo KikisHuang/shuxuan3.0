@@ -11,12 +11,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.PayBean;
 import com.gxdingo.sg.biz.IMTransferAccountsPayContract;
 import com.gxdingo.sg.dialog.EnterPaymentPasswordPopupView;
 import com.gxdingo.sg.presenter.IMTransferAccountsPayPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.NiceImageView;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
@@ -25,11 +27,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.Constant.PAYMENT_SUCCESS;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+
 /**
  * IM-转账支付
+ *
  * @author JM
  */
-public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAccountsPayContract.IMTransferAccountsPayPresenter> implements IMTransferAccountsPayContract.IMTransferAccountsPayPresenter, KeyboardHeightObserver {
+public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAccountsPayContract.IMTransferAccountsPayPresenter> implements IMTransferAccountsPayContract.IMTransferAccountsPayListener, KeyboardHeightObserver {
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
     @BindView(R.id.tv_go)
@@ -70,6 +77,12 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     TextView tvSubmit;
     @BindView(R.id.et_amount)
     EditText etAmount;
+
+    private String mShareUuid = "";
+
+    private int mPayType = 30;
+
+    private PayBean.TransferAccountsDTO transferAccounts;
 
     @Override
     protected IMTransferAccountsPayContract.IMTransferAccountsPayPresenter createPresenter() {
@@ -140,6 +153,13 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     protected void init() {
         titleLayout.setTitleText("转账支付");
         etAmount.setInputType(InputType.TYPE_NULL);
+        mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+        mPayType = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 30);
+        if (isEmpty(mShareUuid)) {
+            onMessage("没有获取到 shareUuid ");
+            finish();
+        }
+
     }
 
     @Override
@@ -152,45 +172,6 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
     }
 
-    @Override
-    public void onMvpAttachView(Context context, BasicsListener bview, IMTransferAccountsPayContract.IMTransferAccountsPayListener view) {
-
-    }
-
-    @Override
-    public void onMvpStart() {
-
-    }
-
-    @Override
-    public void onMvpResume() {
-
-    }
-
-    @Override
-    public void onMvpPause() {
-
-    }
-
-    @Override
-    public void onMvpStop() {
-
-    }
-
-    @Override
-    public void onMvpSaveInstanceState(Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onMvpDetachView(boolean retainInstance) {
-
-    }
-
-    @Override
-    public void onMvpDestroy() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,17 +271,39 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 }
                 break;
             case R.id.tv_submit:
-                new XPopup.Builder(reference.get())
-                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .isDarkTheme(false)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new EnterPaymentPasswordPopupView(reference.get(), new EnterPaymentPasswordPopupView.OnCallbackPasswordListener() {
-                            @Override
-                            public void getPassword(String pass) {
+                //余额支付密码弹窗
+                if (mPayType == 30) {
+                    new XPopup.Builder(reference.get())
+                            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                            .isDarkTheme(false)
+                            .dismissOnTouchOutside(false)
+                            .asCustom(new EnterPaymentPasswordPopupView(reference.get(), new EnterPaymentPasswordPopupView.OnCallbackPasswordListener() {
+                                @Override
+                                public void getPassword(String pass) {
+                                    getP().transfer(mShareUuid, mPayType, pass, etAmount.getText().toString());
+                                }
+                            })).show();
+                } else
+                    getP().transfer(mShareUuid, mPayType, "", etAmount.getText().toString());
 
-                            }
-                        })).show();
                 break;
         }
+    }
+
+    @Override
+    public void onSetTransferAccounts(PayBean.TransferAccountsDTO transferAccounts) {
+        this.transferAccounts = transferAccounts;
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        //todo 明天测试转账
+        if (type == PAYMENT_SUCCESS && transferAccounts != null) {
+            onMessage(gets(R.string.payment_succeed));
+            sendEvent(transferAccounts);
+            finish();
+        }
+
     }
 }

@@ -90,7 +90,13 @@ public class EnterPaymentPasswordPopupView extends CenterPopupView implements Vi
     protected void initPopupContent() {
         super.initPopupContent();
         ButterKnife.bind(this);
-        SystemUtils.showKeyboard(getContext());
+
+        etPassword.setFocusable(true);
+        etPassword.setFocusableInTouchMode(true);
+        etPassword.requestFocus();
+        etPassword.findFocus();
+
+//        SystemUtils.showKeyboard(getContext());
         tvPassArray = new TextView[]{tvPass1, tvPass2, tvPass3, tvPass4, tvPass5, tvPass6};
         closeImg.setOnClickListener(new OnClickListener() {
             @Override
@@ -106,14 +112,18 @@ public class EnterPaymentPasswordPopupView extends CenterPopupView implements Vi
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() <= 6) {
+                if (s.length() < 6) {
                     for (int i = 0; i < tvPassArray.length; i++) {
                         if (i < s.length())
                             tvPassArray[i].setText(String.valueOf(s.charAt(i)));
                         else
                             tvPassArray[i].setText("");
                     }
+                } else if (s.length() == 6){
+                    mOnCallbackPasswordListener.getPassword(etPassword.getText().toString());
+                    dismiss();
                 }
+
             }
 
             @Override

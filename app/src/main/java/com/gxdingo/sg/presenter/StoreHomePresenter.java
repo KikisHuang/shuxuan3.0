@@ -130,7 +130,7 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 
     /**

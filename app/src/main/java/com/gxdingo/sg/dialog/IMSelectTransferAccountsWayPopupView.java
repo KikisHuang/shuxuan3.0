@@ -41,7 +41,7 @@ public class IMSelectTransferAccountsWayPopupView extends BottomPopupView {
 
     OnTransferAccountsWayListener mOnTransferAccountsWayListener;
 
-    public interface OnTransferAccountsWayListener{
+    public interface OnTransferAccountsWayListener {
         void way(int p);
     }
 
@@ -70,7 +70,15 @@ public class IMSelectTransferAccountsWayPopupView extends BottomPopupView {
         mAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                mOnTransferAccountsWayListener.way(position);
+                if (mOnTransferAccountsWayListener != null) {
+                    if (position == 0)
+                        mOnTransferAccountsWayListener.way(20);
+                    else if (position == 1)
+                        mOnTransferAccountsWayListener.way(10);
+                    else
+                        mOnTransferAccountsWayListener.way(30);
+                }
+
                 dismiss();
             }
         });

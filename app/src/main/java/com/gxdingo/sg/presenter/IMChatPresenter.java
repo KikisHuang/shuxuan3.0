@@ -1,16 +1,13 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
-import android.graphics.drawable.AnimationDrawable;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.AudioModelListener;
-import com.gxdingo.sg.biz.AudioStatusListener;
 import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
-import com.gxdingo.sg.model.AudioAnimaModel;
 import com.gxdingo.sg.model.AudioModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -37,13 +34,11 @@ import java.util.List;
 import java.util.Map;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
-import static com.gxdingo.sg.utils.MediaRecorderUtil.stopRecordering;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -51,7 +46,6 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
-import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
@@ -62,14 +56,12 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private long mEndSendTime;
 
     private AudioModel mAudioModel;
-    private AudioAnimaModel mAudioAnimaModel;
     private CommonModel commonModel;
 
     public IMChatPresenter() {
         networkModel = new NetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
         mAudioModel = AudioModel.getInstance();
-        mAudioAnimaModel = AudioAnimaModel.getInstance();
 
         commonModel = new CommonModel();
     }
@@ -169,7 +161,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 
     /**

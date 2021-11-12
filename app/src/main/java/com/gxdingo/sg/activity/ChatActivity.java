@@ -33,6 +33,7 @@ import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.PayBean;
 import com.gxdingo.sg.biz.ProgressListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -61,6 +62,7 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +93,7 @@ import static com.kikis.commnlibrary.utils.Constant.KEY;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.MoveToPositionTop;
@@ -457,6 +460,15 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
             }
         }
+
+        if (object instanceof PayBean.TransferAccountsDTO) {
+            PayBean.TransferAccountsDTO data = (PayBean.TransferAccountsDTO) object;
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", data.getId());
+            //转账成功
+            getP().sendMessage(mShareUuid, 21, "", 0,map );
+        }
+
         /**
          * 其他功能
          */
@@ -576,8 +588,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 .isDarkTheme(false)
                 .asCustom(new IMSelectTransferAccountsWayPopupView(this, new IMSelectTransferAccountsWayPopupView.OnTransferAccountsWayListener() {
                     @Override
-                    public void way(int p) {
-                        goToPage(reference.get(), IMTransferAccountsPayActivity.class, null);
+                    public void way(int type) {
+                        goToPagePutSerializable(reference.get(), IMTransferAccountsPayActivity.class, getIntentEntityMap(new Object[]{mShareUuid, type}));
                     }
                 }).show());
     }

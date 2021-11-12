@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.PayBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -34,6 +35,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.TRANSFER;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
 /**
@@ -46,8 +48,6 @@ public class WebSocketModel {
     private NetWorkListener netWorkListener;
 
     private int mPage = 1;
-
-    private int moldPage = 1;
 
     private int mPageSize = 10;
 
@@ -361,6 +361,53 @@ public class WebSocketModel {
             public void onNext(NormalBean normalBean) {
                 if (customResultListener != null) {
                     customResultListener.onResult(0);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 发起转账
+     */
+    public void transfer(Context context, String shareuuid, int type, String pass, String amount) {
+        Map<String, String> map = new HashMap<>();
+
+        if (type == 30 && !isEmpty(pass))
+            map.put("withdrawalPassword", pass);
+
+        map.put("shareUuid", String.valueOf(shareuuid));
+
+        map.put("payType", String.valueOf(type));
+
+        map.put("amount", String.valueOf(amount));
+
+        PostRequest request = HttpClient.imPost(IM_URL + TRANSFER, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<PayBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<PayBean>, PayBean>(new TypeToken<PayBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<PayBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (e.getCode() == 601) {
+                    if (netWorkListener != null)
+                        netWorkListener.onSucceed(601);
+                }
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(PayBean payBean) {
+                if (netWorkListener != null) {
+                    netWorkListener.onData(true, payBean);
                 }
             }
         };

@@ -136,5 +136,9 @@ public class Api {
      * 获取2点距离
      */
     public static final String OTHER_DISTANCE = HIERARCHY + "other/distance";
+    /**
+     * 发起转账
+     */
+    public static final String TRANSFER = HIERARCHY + "transfer/accounts/send";
 
 }

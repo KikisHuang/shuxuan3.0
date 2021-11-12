@@ -108,7 +108,7 @@ public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<Basi
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 
     /**

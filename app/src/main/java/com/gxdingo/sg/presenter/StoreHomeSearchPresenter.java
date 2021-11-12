@@ -76,6 +76,6 @@ public class StoreHomeSearchPresenter extends BaseMvpPresenter<BasicsListener, S
 
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
-
+        addDisposable(subscriber);
     }
 }
