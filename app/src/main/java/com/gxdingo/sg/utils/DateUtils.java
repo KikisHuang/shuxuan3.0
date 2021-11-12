@@ -90,6 +90,27 @@ public class DateUtils {
         }
     }
 
+    /**
+     * 日期格式转换yyyy-MM-dd'T'HH:mm:ss.SSSXXX  (yyyy-MM-dd'T'HH:mm:ss.SSSZ) TO  yyyy-MM-dd HH:mm:ss
+     * 2020-04-09T23:00:00.000+08:00 TO 2020-04-09 23:00:00
+     *
+     * @throws ParseException
+     */
+    public static String dealDateFormat(String oldDateStr,String pattern ) {
+        try {
+            if (oldDateStr == null)
+                return getNowString();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            Date date = df.parse(oldDateStr);
+            SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+            Date date1 = df1.parse(date.toString());
+            DateFormat df2 = new SimpleDateFormat(pattern);
+            return df2.format(date1);
+        } catch (ParseException e) {
+            LogUtils.e("ParseException === " + e);
+            return "";
+        }
+    }
 
     /**
      * 日期格式转换yyyy-MM-dd'T'HH:mm:ss.SSSXXX  (yyyy-MM-dd'T'HH:mm:ss.SSSZ) TO  yyyy-MM-dd HH:mm:ss

@@ -62,13 +62,13 @@ public class StoreSelectBusinessStatusPopupView extends BottomPopupView {
         switch (view.getId()) {
             case R.id.tv_normal_business:
                 if (mOnBusinessStatusListener != null) {
-                    mOnBusinessStatusListener.onStatus(0, "正常营业");//正常营业
+                    mOnBusinessStatusListener.onStatus(1, "正常营业");//正常营业
                     dismiss();
                 }
                 break;
             case R.id.tv_suspend_business:
                 if (mOnBusinessStatusListener != null) {
-                    mOnBusinessStatusListener.onStatus(1, "暂停营业");//暂停营业
+                    mOnBusinessStatusListener.onStatus(0, "暂停营业");//暂停营业
                     dismiss();
                 }
                 break;

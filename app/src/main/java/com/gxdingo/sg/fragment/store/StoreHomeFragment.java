@@ -319,6 +319,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                     @Override
                     public void onStatus(int code, String name) {
                         tvBusinessStatus.setText(name);
+                        getP().updateBusinessStatus(code);
                     }
                 }).show());
     }

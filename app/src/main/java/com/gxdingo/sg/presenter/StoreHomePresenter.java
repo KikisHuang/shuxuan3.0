@@ -9,6 +9,8 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+
 /**
  * 商家主页控制器
  *
@@ -128,18 +130,11 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
      */
     @Override
     public String onInterceptionBusinessHours(String time) {
-        String hm = "";//时分
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
-//        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        try {
-//            Date date = sdf.parse(time);
-//            String t = sdf.format(date);
-//            t = t.replace("T", " ");
-//            t = sdf2.format(sdf2.parse(t));
-//            String[] tArray = t.split(" ");
-//            hm = tArray[1];
-//        } catch (ParseException e) {
-//        }
-        return hm;
+        return dealDateFormat(time,"HH:mm");
+    }
+
+    @Override
+    public void updateBusinessStatus(int code) {
+
     }
 }

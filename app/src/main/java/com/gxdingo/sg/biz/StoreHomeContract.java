@@ -23,6 +23,12 @@ public class StoreHomeContract {
          * @return
          */
         String onInterceptionBusinessHours(String time);
+
+        /**
+         * 营业状态
+         * @param code
+         */
+        void updateBusinessStatus(int code);
     }
 
     public interface StoreHomeListener {
