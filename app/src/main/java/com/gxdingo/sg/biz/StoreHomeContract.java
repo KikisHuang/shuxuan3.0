@@ -6,6 +6,7 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
 
 /**
  * 商家主页契约类
+ *
  * @author JM
  */
 public class StoreHomeContract {
@@ -19,6 +20,7 @@ public class StoreHomeContract {
 
         /**
          * 截取营业时间
+         *
          * @param time 时间
          * @return
          */
@@ -26,9 +28,16 @@ public class StoreHomeContract {
 
         /**
          * 营业状态
+         *
          * @param code
          */
         void updateBusinessStatus(int code);
+
+        /**
+         * 清除未读消息数
+         * @param id
+         */
+        void clearUnreadMsg(String id);
     }
 
     public interface StoreHomeListener {
@@ -36,5 +45,18 @@ public class StoreHomeContract {
          * 返回IM订阅信息列表(包含有请求web socket接入url)
          */
         void onIMSubscribesInfo(boolean refresh, SubscribesListBean subscribesListBean);
+
+        /**
+         * 修改营业状态
+         *
+         * @param status
+         */
+        void changeBusinessStatus(int status);
+
+        /**
+         * 清除list item 未读消息
+         * @param id
+         */
+        void clearMessageUnreadItem(String id);
     }
 }

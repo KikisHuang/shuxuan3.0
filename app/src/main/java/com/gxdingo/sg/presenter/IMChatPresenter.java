@@ -1,13 +1,16 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.graphics.drawable.AnimationDrawable;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.AudioModelListener;
+import com.gxdingo.sg.biz.AudioStatusListener;
 import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
+import com.gxdingo.sg.model.AudioAnimaModel;
 import com.gxdingo.sg.model.AudioModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -59,12 +62,14 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private long mEndSendTime;
 
     private AudioModel mAudioModel;
+    private AudioAnimaModel mAudioAnimaModel;
     private CommonModel commonModel;
 
     public IMChatPresenter() {
         networkModel = new NetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
         mAudioModel = AudioModel.getInstance();
+        mAudioAnimaModel = AudioAnimaModel.getInstance();
 
         commonModel = new CommonModel();
     }
@@ -473,6 +478,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     /**
      * 语音播放
+     *
      * @param content
      */
     @Override
@@ -507,6 +513,19 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     public void stopVoice() {
         if (mAudioModel != null && mAudioModel.isPlaying())
             mAudioModel.audioPause();
+    }
+
+    /**
+     * 清除语音未读
+     *
+     * @param id
+     */
+    @Override
+    public void clearMessageUnread(long id) {
+        if (mWebSocketModel != null) {
+            mWebSocketModel.messageRead(getContext(), id, null);
+        }
+
     }
 
 }

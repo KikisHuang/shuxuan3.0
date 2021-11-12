@@ -22,7 +22,7 @@ public class NormalBean {
     public int state;
     public int status;
     public int msg_id;
-    public int code;
+    public int code=-1;
     public int count;
     public String coin;
     public ReceiveIMMessageBean data;

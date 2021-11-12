@@ -32,7 +32,7 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/module_unread_im_msg_red_bg"
         android:gravity="center"
-        android:text="99"
+        tools:text="0"
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintLeft_toLeftOf="@+id/niv_avatar"

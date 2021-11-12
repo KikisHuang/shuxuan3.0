@@ -35,6 +35,8 @@ public class LocalConstant {
     public static final int OtherFile = 77785;
     //他人发送的转账类型
     public static final int OtherTransfer = 77786;
+    //未知类型
+    public static final int UNKNOWN = 666666;
 
     public static final String AUTH_SECRET = "WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
 

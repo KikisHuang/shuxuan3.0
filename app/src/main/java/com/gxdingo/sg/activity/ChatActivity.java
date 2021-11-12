@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
 import com.gxdingo.sg.bean.AddressBean;
+import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
@@ -42,7 +44,6 @@ import com.gxdingo.sg.dialog.IMSelectTransferAccountsWayPopupView;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.presenter.IMChatPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.PhotoUtils;
 import com.gxdingo.sg.utils.emotion.EmotiomComplateFragment;
 import com.gxdingo.sg.utils.emotion.EmotionMainFragment;
 import com.gxdingo.sg.view.MyBaseSubscriber;
@@ -50,12 +51,8 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.utils.MyToastUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
-import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
-import com.luck.picture.lib.entity.LocalMedia;
-import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -64,23 +61,16 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -93,9 +83,7 @@ import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
-import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
-import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -153,6 +141,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.cl_voice_recording_layout)
     public ConstraintLayout clVoiceRecordingLayout;
 
+    @BindView(R.id.ll_navigation)
+    public LinearLayout ll_navigation;
+
     @BindView(R.id.iv_voice_recording_status)
     public ImageView ivVoiceRecordingStatus;
 
@@ -161,6 +152,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @BindView(R.id.btn_long_press_to_speak)
     public TextView btn_long_press_to_speak;
+
+    @BindView(R.id.right_arrow)
+    public TextView right_arrow;
 
     private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
@@ -316,10 +310,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      * 加载聊天消息
      */
     private void loadMore() {
-
-        if (!TextUtils.isEmpty(mShareUuid)) {
-            getP().getChatHistoryList(mShareUuid, otherId, otherRole);//获取聊天记录
-        }
+        getP().getChatHistoryList(mShareUuid, otherId, otherRole);//获取聊天记录
     }
 
 
@@ -879,11 +870,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onDestroy() {
         unregisterSoftInputChangedListener(getWindow());
+
+        sendEvent(new ExitChatEvent(LocalConstant.SHAREUUID));
+
         //清除锁定id
         LocalConstant.SHAREUUID = "";
-        //释放rxjava计时器
-        if (mAdapter != null)
-            mAdapter.cancel();
+        mAdapter.cancel();
         super.onDestroy();
     }
 
@@ -971,11 +963,24 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     @Override
-    public void onAudioClick(String content, boolean isPlay) {
+    public void onAudioClick(String content, boolean isPlay, int pos) {
+
         if (isPlay)
             getP().playVoice(content);
         else
             getP().stopVoice();
+    }
+
+
+    /**
+     * 清除语音未读
+     *
+     * @param id
+     */
+    @Override
+    public void clearUnread(long id) {
+        getP().clearMessageUnread(id);
+
     }
 
     @Override
@@ -990,7 +995,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             if (mAdapter == null) {
                 mChatDatas.clear();
                 mMessageDetails = imChatHistoryListBean;
-                mAdapter = new ChatAdapter(mChatDatas, imChatHistoryListBean, ChatActivity.this);
+                mAdapter = new ChatAdapter(reference.get(), mChatDatas, imChatHistoryListBean, ChatActivity.this);
                 recycleView.setAdapter(mAdapter);
                 addData(imChatHistoryListBean.getList());
 
@@ -1005,6 +1010,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 cl_other_side_address_layout.setVisibility(imChatHistoryListBean.getAddress() != null ? View.VISIBLE : View.GONE);
                 clNoAddressLayout.setVisibility(imChatHistoryListBean.getAddress() == null ? View.VISIBLE : View.GONE);
 
+                ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.VISIBLE : View.GONE);
+                right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.GONE : View.VISIBLE);
+
                 if (imChatHistoryListBean.getAddress() != null) {
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getStreet()))
@@ -1017,7 +1025,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         tv_other_side_nick_name.setText(imChatHistoryListBean.getAddress().getName());
 
                 } else {
-
                     //商家
                     if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11)
                         tv_no_address.setText("对方还没有添加收货地址");

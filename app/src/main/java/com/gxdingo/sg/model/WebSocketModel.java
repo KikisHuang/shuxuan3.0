@@ -5,6 +5,7 @@ import android.content.Context;
 import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
+import com.gxdingo.sg.bean.NormalBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -29,6 +30,8 @@ import io.reactivex.Observable;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
 import static com.gxdingo.sg.http.Api.IM_URL;
+import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
+import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -250,10 +253,10 @@ public class WebSocketModel {
 
         map.put("current", String.valueOf(mPage));
         map.put("size", String.valueOf(mPageSize));
-
+/*
         if (netWorkListener != null) {
             netWorkListener.onStarts();
-        }
+        }*/
 
         PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
@@ -274,6 +277,7 @@ public class WebSocketModel {
                 if (customResultListener != null) {
                     customResultListener.onResult(null);
                 }
+                netWorkListener.finishRefresh(true);//完成刷新
             }
 
             @Override
@@ -287,6 +291,76 @@ public class WebSocketModel {
                 if (imChatHistoryListBean != null && imChatHistoryListBean.getList() != null) {
                     //下一页
                     pageNext(false, imChatHistoryListBean.getList().size());
+                }
+                netWorkListener.finishRefresh(true);//完成刷新
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+
+    /**
+     * 清除未读消息
+     */
+    public void clearUnreadMessage(Context context, String shareUuid, CustomResultListener customResultListener) {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("shareUuid", shareUuid);
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_CLEAR_ALL, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (customResultListener != null) {
+                    customResultListener.onResult(shareUuid);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 消息已读
+     */
+    public void messageRead(Context context, long id, CustomResultListener customResultListener) {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("contentId", String.valueOf(id));
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_READ, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (customResultListener != null) {
+                    customResultListener.onResult(0);
                 }
             }
         };

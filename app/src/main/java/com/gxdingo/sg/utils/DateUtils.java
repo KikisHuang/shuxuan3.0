@@ -96,7 +96,7 @@ public class DateUtils {
      *
      * @throws ParseException
      */
-    public static String dealDateFormat(String oldDateStr,String pattern ) {
+    public static String dealDateFormat(String oldDateStr, String pattern) {
         try {
             if (oldDateStr == null)
                 return getNowString();
@@ -169,5 +169,67 @@ public class DateUtils {
         return date;
 
     }
+
+    /**
+     * 判断是否为今天(效率比较高)
+     *
+     * @param day 传入的 时间  "2016-06-28 10:10:30" "2016-06-28" 都可以
+     * @return true今天 false不是
+     * @throws ParseException
+     */
+    public static boolean IsToday(String day) {
+
+        try {
+            Calendar pre = Calendar.getInstance();
+            Date predate = new Date(System.currentTimeMillis());
+            pre.setTime(predate);
+            Calendar cal = Calendar.getInstance();
+            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse(day);
+            cal.setTime(date);
+            if (cal.get(Calendar.YEAR) == (pre.get(Calendar.YEAR))) {
+                int diffDay = cal.get(Calendar.DAY_OF_YEAR)
+                        - pre.get(Calendar.DAY_OF_YEAR);
+
+                if (diffDay == 0) {
+                    return true;
+                }
+            }
+        } catch (ParseException e) {
+            LogUtils.e("ParseException === " + e);
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否为昨天(效率比较高)
+     *
+     * @param day 传入的 时间  "2016-06-28 10:10:30" "2016-06-28" 都可以
+     * @return true今天 false不是
+     * @throws ParseException
+     */
+    public static boolean IsYesterday(String day) {
+        try {
+            Calendar pre = Calendar.getInstance();
+            Date predate = new Date(System.currentTimeMillis());
+            pre.setTime(predate);
+
+            Calendar cal = Calendar.getInstance();
+            Date date = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).parse(day);
+            cal.setTime(date);
+
+            if (cal.get(Calendar.YEAR) == (pre.get(Calendar.YEAR))) {
+                int diffDay = cal.get(Calendar.DAY_OF_YEAR)
+                        - pre.get(Calendar.DAY_OF_YEAR);
+
+                if (diffDay == -1) {
+                    return true;
+                }
+            }
+        } catch (ParseException e) {
+            LogUtils.e("ParseException === " + e);
+        }
+        return false;
+    }
+
 
 }

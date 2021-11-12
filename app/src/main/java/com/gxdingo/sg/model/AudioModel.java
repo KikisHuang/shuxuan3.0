@@ -1,6 +1,7 @@
 package com.gxdingo.sg.model;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -77,8 +78,6 @@ public class AudioModel {
     public static AudioModel instance;
 
     private AudioModel() {
-        mediaPlayer = new MediaPlayer();
-
         mHanderThread = new HandlerThread("process_thread");
         mHanderThread.start();
         mHandler = new Handler(mHanderThread.getLooper());
@@ -86,7 +85,7 @@ public class AudioModel {
 
     public static AudioModel getInstance() {
         if (instance == null) {
-            synchronized (WebSocketModel.class) {
+            synchronized (AudioModel.class) {
                 if (instance == null) {
                     instance = new AudioModel();
                 }
@@ -103,6 +102,8 @@ public class AudioModel {
      */
     public void audioPlayer(String path, AudioModelListener audioModelListener) {
 
+
+
         //如果再播放中，就取消播放
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             destroy();
@@ -110,6 +111,7 @@ public class AudioModel {
             if (mPlayerPath.equals(path))
                 return;
         }
+
         mediaPlayer = new MediaPlayer();
 
         mPlayerPath = path;
@@ -123,9 +125,15 @@ public class AudioModel {
 
             mediaPlayer.setDataSource(path);//指定音频文件路径
             mediaPlayer.setLooping(false);//循环播放
+//            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.prepare();//初始化播放器MediaPlayer
-            mediaPlayer.start();
-
+//            mediaPlayer.start();
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mediaPlayer.start();
+                }
+            });
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 destroy();
                 return false;
@@ -138,6 +146,9 @@ public class AudioModel {
                 audioModelListener.onAudioMessage(gets(R.string.audio_play_error));
                 audioModelListener.onAudioError(e.getMessage());
             }
+            LogUtils.i("path === " + path);
+            LogUtils.e("audio play error === " + e);
+            destroy();
         }
     }
 

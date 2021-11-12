@@ -8,11 +8,16 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.utils.DateUtils;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.utils.TextViewUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 
 import org.jetbrains.annotations.NotNull;
+
+import static com.gxdingo.sg.utils.DateUtils.IsToday;
+import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 
 /**
  * 商家主页IM消息适配器
@@ -34,6 +39,15 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
 
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(getRequestOptions()).into(nivAvatar);
+
+        String date = DateUtils.dealDateFormat(subscribesMessage.getUpdateTime(), "yyyy-MM-dd HH:mm");
+
+        if (IsToday(date))
+            tvTime.setText(dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
+        else if (IsYesterday(date))
+            tvTime.setText("昨天" + dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
+        else
+            tvTime.setText(date);
 
         tvUnreadMsgCount.setVisibility(subscribesMessage.getUnreadNum() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(subscribesMessage.getUnreadNum()));

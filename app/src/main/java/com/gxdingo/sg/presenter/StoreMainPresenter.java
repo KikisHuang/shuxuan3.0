@@ -11,6 +11,7 @@ import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreMainModel;
 import com.gxdingo.sg.model.WebSocketModel;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
@@ -36,7 +37,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
         networkModel = new NetworkModel(this);
     }
 
-    
+
     @Override
     public void persenterInit() {
 
@@ -61,7 +62,6 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
         getV().showFragment(getV().getFragmentTransaction(), tab);
 
     }
-
 
 
     @Override
@@ -96,6 +96,12 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     public void release() {
         if (mediaPlayer != null)
             mediaPlayer.release();
+    }
+
+    @Override
+    public void logout() {
+        UserInfoUtils.getInstance().clearLoginStatus();
+        UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
     }
 
     @Override

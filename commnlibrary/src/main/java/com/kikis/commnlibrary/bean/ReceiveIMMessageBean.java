@@ -16,6 +16,7 @@ public class ReceiveIMMessageBean implements Serializable {
     private int status;//状态。0=正常；1=撤回
     private String content;//消息内容
     private int voiceDuration;//语音时长
+    public int recipientRead;//语音是否未读
     private String createTime;//创建时间 (发送时间)
     private SubscribeListVO subscribeListVO;//订阅详情
     private MsgAddress msgAddress;//地址类型详情（type == 30 返回，否则返回 null）

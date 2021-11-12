@@ -22,6 +22,8 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.ReLoginBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +192,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected void onBaseEvent(Object object) {
-        super.onBaseEvent(object);
+
+        //全局新消息布局
+        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
+            showNewMessageDialog((ReceiveIMMessageBean) object);
+
+        if (object instanceof ReLoginBean)
+            getP().logout();
 
 //        if (object.equals(StoreLocalConstant.NAVIGATION_ORDER))
 //            getP().checkTab(1);

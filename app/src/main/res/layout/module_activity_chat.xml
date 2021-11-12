@@ -26,6 +26,7 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="75dp"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
 
@@ -56,8 +57,7 @@
 
     </com.gxdingo.sg.view.CustomLinearLayout>
 
-    <include
-        layout="@layout/module_include_voice_laoyut" />
+    <include layout="@layout/module_include_voice_laoyut" />
 
 
 </FrameLayout>

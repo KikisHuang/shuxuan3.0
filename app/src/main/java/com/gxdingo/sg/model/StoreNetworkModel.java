@@ -273,7 +273,7 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void getWalletHome(Context context,boolean refresh) {
+    public void getWalletHome(Context context, boolean refresh) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -289,7 +289,7 @@ public class StoreNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-                    pageReset(refresh,e.getMessage());
+                    pageReset(refresh, e.getMessage());
                 }
             }
 
@@ -298,8 +298,8 @@ public class StoreNetworkModel {
                 netWorkListener.onAfters();
                 if (netWorkListener != null) {
                     netWorkListener.onData(true, storeWalletBean);
-                    if (storeWalletBean.getTransactionList()!=null)
-                        pageNext(refresh,storeWalletBean.getTransactionList().size());
+                    if (storeWalletBean.getTransactionList() != null)
+                        pageNext(refresh, storeWalletBean.getTransactionList().size());
                 }
             }
         };
@@ -313,14 +313,14 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void balanceCash(Context context,String type ,String amount, String withdrawalPassword, long bankCardId) {
+    public void balanceCash(Context context, String type, String amount, String withdrawalPassword, long bankCardId) {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(LocalConstant.TYPE,type);
+        map.put(LocalConstant.TYPE, type);
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
         map.put(ClientLocalConstant.AMOUNT, amount);
-        if (type.equals(ClientLocalConstant.BANK) && bankCardId>0)
+        if (type.equals(ClientLocalConstant.BANK) && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
 
         netWorkListener.onStarts();
@@ -393,7 +393,7 @@ public class StoreNetworkModel {
                     netWorkListener.onAfters();
 //                    netWorkListener.onData(true, thirdPartyBean);
                     thirdPartyBean.type = type;
-                    netWorkListener.onData(true,thirdPartyBean);
+                    netWorkListener.onData(true, thirdPartyBean);
                 }
             }
         };
@@ -514,6 +514,7 @@ public class StoreNetworkModel {
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
     }
+
     /**
      * 我的首页
      *
@@ -558,7 +559,7 @@ public class StoreNetworkModel {
      */
     public void updateStoreAvatar(Context context, String avatar) {
         Map<String, String> map = new HashMap<>();
-        map.put(StoreLocalConstant.AVATAR,avatar);
+        map.put(StoreLocalConstant.AVATAR, avatar);
 
         Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -591,7 +592,7 @@ public class StoreNetworkModel {
      */
     public void updateStoreName(Context context, String name) {
         Map<String, String> map = new HashMap<>();
-        map.put(Constant.NAME,name);
+        map.put(Constant.NAME, name);
 
         Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -715,6 +716,41 @@ public class StoreNetworkModel {
             public void onNext(NormalBean normalBean) {
                 netWorkListener.onAfters();
                 netWorkListener.onSucceed(1);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 营业状态修改
+     *
+     * @param status
+     */
+    public void updateBusinessStatus(Context context,int status,CustomResultListener customResultListener) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.BUSINESSSTATUS, String.valueOf(status));
+        netWorkListener.onStarts();
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                if (customResultListener!=null)
+                    customResultListener.onResult(status);
             }
         };
 

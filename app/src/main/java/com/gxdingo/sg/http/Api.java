@@ -127,6 +127,10 @@ public class Api {
      * 清除未读消息
      */
     public static final String MESSAGE_CLEAR_ALL = HIERARCHY + "mps/message/clearall";
+    /**
+     * 消息内容未读状态改成已读
+     */
+    public static final String MESSAGE_READ = HIERARCHY + "mps/message/read";
 
     /**
      * 获取2点距离

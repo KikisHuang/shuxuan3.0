@@ -40,6 +40,7 @@ import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.isBackground;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -63,7 +64,7 @@ public class IMMessageReceivingService extends Service {
     public void onCreate() {
         //向EventBus注册监听
         EventBus.getDefault().register(this);
-        //设置最多可容纳5个音频流，音频的品质为5
+        //设置最多可容纳1个音频流，音频的品质为5
         mSoundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 5);
         try {
             streamID = mSoundPool.load(getApplicationContext().getAssets().openFd("beep/beep.mp3"), 1);
@@ -174,7 +175,7 @@ public class IMMessageReceivingService extends Service {
             @Override
             public void run() {
                 if (mBaseWebSocket != null) {
-                    if (mBaseWebSocket.getReadyState() == ReadyState.OPEN) {
+                    if (mBaseWebSocket.getReadyState() == ReadyState.OPEN && !isBackground) {
                         mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
                     }
                 }
@@ -207,12 +208,14 @@ public class IMMessageReceivingService extends Service {
                     Log.e(TAG, "onMessage：" + message);
 
                     if (!isEmpty(message)) {
-                        NormalBean normalBean = GsonUtil.GsonToBean(message, NormalBean.class);
-                        if (normalBean.code == 0 && normalBean.data != null && normalBean.data.getId() > 0) {
-                            playBeep();
-                            passMessage(normalBean.data);
-                        }
+                        ReceiveIMMessageBean messageBean = GsonUtil.GsonToBean(message, ReceiveIMMessageBean.class);
 
+                        //消息接收
+                        if (messageBean != null && messageBean.getId() > 0) {
+                            playBeep();
+                            passMessage(messageBean);
+
+                        }
                     }
 
                 }
@@ -233,8 +236,8 @@ public class IMMessageReceivingService extends Service {
      * 播放提示音
      */
     private void playBeep() {
-        if (mSoundPool != null)
-            mSoundPool.play(streamID, 10, 10, 1, 0, 1.0f);
+        if (mSoundPool != null && !isBackground)
+            mSoundPool.play(streamID, 1, 1, 1, 0, 1.0f);
     }
 
     /**

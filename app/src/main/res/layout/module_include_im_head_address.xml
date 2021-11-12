@@ -76,6 +76,37 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
+        <LinearLayout
+            android:id="@+id/ll_navigation"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginRight="12dp"
+            android:visibility="gone"
+            android:background="@drawable/module_shape_bg_map_navigation_gray"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/module_svg_navigation" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:text="@string/navigation"
+                android:textColor="@color/main_tone"
+                android:textSize="9sp" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!--没有收货地址提示布局-->
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,5 +1,7 @@
 package com.gxdingo.sg.biz;
 
+import android.graphics.drawable.AnimationDrawable;
+
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -104,6 +106,13 @@ public class IMChatContract {
          * 停止语音播放
          */
         void stopVoice();
+
+        /**
+         * 清除语音未读
+         * @param id
+         */
+        void clearMessageUnread(long id);
+
     }
 
     public interface IMChatListener {

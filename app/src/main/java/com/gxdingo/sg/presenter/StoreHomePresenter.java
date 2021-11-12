@@ -1,14 +1,31 @@
 package com.gxdingo.sg.presenter;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.model.StoreNetworkModel;
+import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.exception.ApiException;
+import com.zhouyou.http.model.ApiResult;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import io.reactivex.Observable;
+
+import static com.gxdingo.sg.http.StoreApi.STORE_UPDATE;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 
 /**
@@ -20,10 +37,14 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
         implements StoreHomeContract.StoreHomePresenter, NetWorkListener {
 
     private NetworkModel networkModel;
+
     private WebSocketModel mWebSocketModel;
+
+    private StoreNetworkModel storeNetworkModel;
 
     public StoreHomePresenter() {
         networkModel = new NetworkModel(this);
+        storeNetworkModel = new StoreNetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
     }
 
@@ -117,7 +138,7 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
      */
     @Override
     public void getIMSubscribesList(boolean refresh) {
-        if (networkModel != null) {
+        if (mWebSocketModel != null) {
             mWebSocketModel.getMessageSubscribesList(getContext(), refresh);
         }
     }
@@ -130,11 +151,34 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
      */
     @Override
     public String onInterceptionBusinessHours(String time) {
-        return dealDateFormat(time,"HH:mm");
+        return dealDateFormat(time, "HH:mm");
     }
 
     @Override
-    public void updateBusinessStatus(int code) {
+    public void updateBusinessStatus(int status) {
 
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateBusinessStatus(getContext(), status, o -> {
+
+
+                if (isViewAttached())
+                    getV().changeBusinessStatus(status);
+            });
+
+    }
+
+    /**
+     * 清除未读消息数
+     *
+     * @param id
+     */
+    @Override
+    public void clearUnreadMsg(String id) {
+
+        if (mWebSocketModel != null)
+            mWebSocketModel.clearUnreadMessage(getContext(), id, o -> {
+                getV().clearMessageUnreadItem(id);
+
+            });
     }
 }

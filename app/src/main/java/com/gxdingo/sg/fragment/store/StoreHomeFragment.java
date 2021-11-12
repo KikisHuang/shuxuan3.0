@@ -27,6 +27,8 @@ import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.bean.ExitChatEvent;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.bean.UserBean;
@@ -37,12 +39,15 @@ import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.trello.rxlifecycle3.LifecycleProvider;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -51,7 +56,10 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -199,6 +207,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 //                goToPage(reference.get(), IMChatActivity.class, intentMap);
 
                 goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{subscribesMessage.getShareUuid()}));
+                getP().clearUnreadMsg(subscribesMessage.getShareUuid());
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
@@ -249,6 +258,12 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
                 getP().getIMSubscribesList(true);//获取IM订阅信息
             }
+        }
+        //聊天页面退出事件，因为如果在当前聊天页面，未读消息数需要客户端手动清除？
+        if (object instanceof ExitChatEvent) {
+            ExitChatEvent exitChatEvent = (ExitChatEvent) object;
+            getP().clearUnreadMsg(exitChatEvent.id);
+
         }
     }
 
@@ -318,7 +333,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
                     @Override
                     public void onStatus(int code, String name) {
-                        tvBusinessStatus.setText(name);
+
                         getP().updateBusinessStatus(code);
                     }
                 }).show());
@@ -339,8 +354,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             if (!webSocketUrl.equals(subscribesListBean.getWebsocketUrl())) {
                 EventBus.getDefault().post(100999);//发送重置码
             }
+
             //保存web socket接入url
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
+
             //启动IM消息接收服务
             mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
@@ -350,6 +367,32 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 mStoreHomeIMMessageAdapter.addData(subscribesListBean.getList());
             }
         }
+    }
+
+    @Override
+    public void changeBusinessStatus(int status) {
+        tvBusinessStatus.setText(status == 1 ? "营业中" : "未营业");
+    }
+
+    @Override
+    public void clearMessageUnreadItem(String id) {
+
+        //清除item未读消息
+        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+            for (int i = 0; i < mStoreHomeIMMessageAdapter.getData().size(); i++) {
+                SubscribesListBean.SubscribesMessage data = mStoreHomeIMMessageAdapter.getData().get(i);
+
+                if (data.getShareUuid().equals(id)) {
+                    data.setUnreadNum(0);
+                    e.onNext(i);
+                }
+            }
+            e.onComplete();
+        }), (BaseActivity) reference.get()).subscribe(o -> {
+            int pos = (int) o;
+            mStoreHomeIMMessageAdapter.notifyItemChanged(pos);
+        });
+
     }
 
 

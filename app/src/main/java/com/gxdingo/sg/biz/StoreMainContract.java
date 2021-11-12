@@ -24,6 +24,8 @@ public class StoreMainContract {
         void play();
 
         void release();
+
+        void logout();
     }
 
     public interface StoreMainListener {

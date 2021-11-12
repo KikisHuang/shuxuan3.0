@@ -9,7 +9,7 @@
     android:background="@color/grayf5"
     android:orientation="vertical"
     android:paddingLeft="10dp"
-    android:paddingRight="48dp">
+    android:paddingRight="10dp">
 
     <include layout="@layout/module_item_chat_time"></include>
 
