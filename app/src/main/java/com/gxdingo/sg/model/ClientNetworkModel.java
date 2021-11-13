@@ -294,7 +294,7 @@ public class ClientNetworkModel {
             public void onNext(CategoryListBean categoryListBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(true,categoryListBean);
+                    netWorkListener.onData(true, categoryListBean);
                     netWorkListener.onAfters();
                 }
 
@@ -364,7 +364,7 @@ public class ClientNetworkModel {
             public void onNext(StoreListBean storeListBean) {
 
                 if (netWorkListener != null) {
-                    if (storeListBean!=null&&storeListBean.getList()!=null){
+                    if (storeListBean != null && storeListBean.getList() != null) {
                         netWorkListener.onData(refresh, storeListBean);
                         netWorkListener.onAfters();
                         pageNext(refresh, storeListBean.getList().size());
@@ -445,7 +445,6 @@ public class ClientNetworkModel {
     }
 
 
-
     /**
      * 获取地址列表
      *
@@ -475,7 +474,7 @@ public class ClientNetworkModel {
             public void onNext(ClientMineBean mineBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(true,mineBean);
+                    netWorkListener.onData(true, mineBean);
                     netWorkListener.onAfters();
                 }
 
@@ -553,16 +552,16 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getAccountTransaction(Context context,boolean refresh,int status,String date) {
+    public void getAccountTransaction(Context context, boolean refresh, int status, String date) {
 
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
         Map<String, String> map = getJsonMap();
-        map.put(ClientLocalConstant.STATUS,String.valueOf(status));
+        map.put(ClientLocalConstant.STATUS, String.valueOf(status));
         if (!isEmpty(date))
-            map.put(ClientLocalConstant.DATE,String.valueOf(status));
+            map.put(ClientLocalConstant.DATE, String.valueOf(status));
 
-        Observable<ClientAccountTransactionBean> observable = HttpClient.post(TRANSACTION_RECORD,map)
+        Observable<ClientAccountTransactionBean> observable = HttpClient.post(TRANSACTION_RECORD, map)
                 .execute(new CallClazzProxy<ApiResult<ClientAccountTransactionBean>, ClientAccountTransactionBean>(new TypeToken<ClientAccountTransactionBean>() {
                 }.getType()) {
                 });
@@ -584,7 +583,7 @@ public class ClientNetworkModel {
             public void onNext(ClientAccountTransactionBean transactionBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(true,transactionBean);
+                    netWorkListener.onData(true, transactionBean);
                     netWorkListener.onAfters();
                     pageNext(refresh, transactionBean.getList().size());
                 }
@@ -605,12 +604,12 @@ public class ClientNetworkModel {
      * @param context
      */
     public void getCashInfo(Context context) {
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
 
-        Observable<ClientCashInfoBean> observable = HttpClient.post(isUser?Cash_ACCOUNT_INFO:STORE_ACCOUNT)
+        Observable<ClientCashInfoBean> observable = HttpClient.post(isUser ? Cash_ACCOUNT_INFO : STORE_ACCOUNT)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });
@@ -632,7 +631,7 @@ public class ClientNetworkModel {
             public void onNext(ClientCashInfoBean cashInfoBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(true,cashInfoBean);
+                    netWorkListener.onData(true, cashInfoBean);
                     netWorkListener.onAfters();
                 }
 
@@ -650,12 +649,12 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void receiveCoupon(Context context,String activeCode) {
+    public void receiveCoupon(Context context, String activeCode) {
         Map<String, String> map = getJsonMap();
 
-        map.put(ClientLocalConstant.ACTIVE_CODE,activeCode);
+        map.put(ClientLocalConstant.ACTIVE_CODE, activeCode);
 
-        Observable<NormalBean> observable = HttpClient.post(COUPON_RECEIVE,map)
+        Observable<NormalBean> observable = HttpClient.post(COUPON_RECEIVE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -695,7 +694,7 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getCoupons(Context context,boolean refresh) {
+    public void getCoupons(Context context, boolean refresh) {
 
         Observable<ClientCouponsBean> observable = HttpClient.post(COUPON_LIST)
                 .execute(new CallClazzProxy<ApiResult<ClientCouponsBean>, ClientCouponsBean>(new TypeToken<ClientCouponsBean>() {
@@ -719,9 +718,9 @@ public class ClientNetworkModel {
             public void onNext(ClientCouponsBean couponsBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(refresh,couponsBean);
+                    netWorkListener.onData(refresh, couponsBean);
                     netWorkListener.onAfters();
-                    pageNext(refresh,couponsBean.getList().size());
+                    pageNext(refresh, couponsBean.getList().size());
                 }
 
 
@@ -738,7 +737,7 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getBankList(Context context,boolean refresh) {
+    public void getBankList(Context context, boolean refresh) {
 
 
         Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
@@ -763,7 +762,7 @@ public class ClientNetworkModel {
             public void onNext(ClientCashInfoBean cashInfoBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(refresh,cashInfoBean);
+                    netWorkListener.onData(refresh, cashInfoBean);
                     netWorkListener.onAfters();
                     pageNext(refresh, cashInfoBean.getBankList().size());
                 }
@@ -782,14 +781,14 @@ public class ClientNetworkModel {
      *
      * @param
      */
-    public void balanceCash(Context context,int type ,String amount, String withdrawalPassword, long bankCardId) {
+    public void balanceCash(Context context, int type, String amount, String withdrawalPassword, long bankCardId) {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(LocalConstant.TYPE,String.valueOf(type));
+        map.put(LocalConstant.TYPE, String.valueOf(type));
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
         map.put(ClientLocalConstant.AMOUNT, amount);
-        if (type == 0 && bankCardId>0)
+        if (type == 0 && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
 
         netWorkListener.onStarts();
@@ -828,7 +827,6 @@ public class ClientNetworkModel {
      */
     public void getAddressList(Context context, boolean refresh, NetWorkListener netWorkListener) {
 
-
         Observable<AddressListBean> observable = HttpClient.post(ADDRESS_ADDRESSES)
                 .execute(new CallClazzProxy<ApiResult<AddressListBean>, AddressListBean>(new TypeToken<AddressListBean>() {
                 }.getType()) {
@@ -851,7 +849,7 @@ public class ClientNetworkModel {
             public void onNext(AddressListBean addressListBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onData(refresh, addressListBean.getList());
+                    netWorkListener.onData(refresh, addressListBean);
                     netWorkListener.onAfters();
                     pageNext(refresh, addressListBean.getList().size());
                 }
@@ -1013,7 +1011,7 @@ public class ClientNetworkModel {
      *
      * @param id
      */
-    public void deleteAddress(Context context,  int id) {
+    public void deleteAddress(Context context, int id) {
 
 
         if (netWorkListener != null)
@@ -1047,7 +1045,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onSucceed(ClientLocalConstant.DELADDRESS_SUCCEED );
+                    netWorkListener.onSucceed(ClientLocalConstant.DELADDRESS_SUCCEED);
                     EventBus.getDefault().post(ClientLocalConstant.REFRESH_ADDRESS_LIST);
                 }
 
@@ -1066,7 +1064,7 @@ public class ClientNetworkModel {
      *
      * @param
      */
-    public void checkPayPwd(Context context,  String payPassword) {
+    public void checkPayPwd(Context context, String payPassword) {
         Map<String, String> map = new HashMap<>();
 //        if (!isEmpty(oldPassword))
 //            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
@@ -1102,7 +1100,7 @@ public class ClientNetworkModel {
      *
      * @param
      */
-    public void updatePayPassword(Context context,  String payPassword) {
+    public void updatePayPassword(Context context, String payPassword) {
         Map<String, String> map = new HashMap<>();
 //        if (!isEmpty(oldPassword))
 //            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
@@ -1140,23 +1138,22 @@ public class ClientNetworkModel {
      */
     public void addBankCard(Context context, String bankType, String personOfCard, String idCard, String name, String number, String mobile, String smsCode) {
 
-        if (isEmpty(bankType)||isEmpty(name)){
+        if (isEmpty(bankType) || isEmpty(name)) {
             netWorkListener.onMessage("请选择开户行！");
             return;
-        }else if (isEmpty(personOfCard)){
+        } else if (isEmpty(personOfCard)) {
             netWorkListener.onMessage("请输入持卡人姓名！");
             return;
-        }else if (!isIDCard18(idCard)){
+        } else if (!isIDCard18(idCard)) {
             netWorkListener.onMessage("请输入正确的身份证号码！");
             return;
-        }else if (isEmpty(number)){
+        } else if (isEmpty(number)) {
             netWorkListener.onMessage("请输入银行卡号码！");
             return;
-        }
-        else if (mobile.length()<11){
+        } else if (mobile.length() < 11) {
             netWorkListener.onMessage("请输入正确手机号码！");
             return;
-        }else if(smsCode.length()!=6){
+        } else if (smsCode.length() != 6) {
             netWorkListener.onMessage("请输入6位数字验证码！");
             return;
         }

@@ -206,9 +206,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
         if (mapView != null)
             mapView.onCreate(savedInstanceState);
 
-        getContentView().postDelayed(() -> {
-            getP().checkPermissions(getRxPermissions());
-        }, 100);
+        getP().checkPermissions(getRxPermissions());
     }
 
     @Override
@@ -231,7 +229,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
                 break;
             case R.id.foot_layout:
 
-                getP().loadmoreData( et_keyword.getText().toString());
+                getP().loadmoreData(et_keyword.getText().toString());
 
                 break;
         }
@@ -365,9 +363,10 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
     @Override
     protected void onResume() {
         super.onResume();
-        if (mapView!=null)
+        if (mapView != null)
             mapView.onResume();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -12,6 +12,7 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.gxdingo.sg.R;
@@ -25,7 +26,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.LOCATION_LONGITUDE_KEY;
  * @date: 2021/10/20
  * @page:
  */
-public class ClientHomeModel implements AMap.OnMyLocationChangeListener{
+public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
     //声明AMapLocationClient类对象
     public AMapLocationClient mLocationClient = null;
 
@@ -39,7 +40,12 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener{
         this.mContext = context;
 
         //初始化定位
-        mLocationClient = new AMapLocationClient(context);
+        try {
+            mLocationClient = new AMapLocationClient(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.i("AMapLocationClient == " + e);
+        }
 
         mLocationClient.setLocationListener(mLocationListener);
         mLocationOption = new AMapLocationClientOption();

@@ -2,12 +2,14 @@ package com.gxdingo.sg.biz;
 
 import android.graphics.drawable.AnimationDrawable;
 
+import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -122,6 +124,10 @@ public class IMChatContract {
          */
         void getTransfer(int position, long id);
 
+        /**
+         * 获取地址列表
+         */
+        void getAddressList();
     }
 
     public interface IMChatListener {
@@ -165,5 +171,12 @@ public class IMChatContract {
          * @param position
          */
         void getTransFerSucceed(int position);
+
+        /**
+         * 显示选择地址弹窗
+         *
+         * @param list
+         */
+        void showSelectAddressDialog(List<AddressBean> list);
     }
 }

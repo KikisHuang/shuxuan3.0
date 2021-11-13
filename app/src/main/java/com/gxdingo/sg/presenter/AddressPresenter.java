@@ -11,6 +11,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AddressBean;
+import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
@@ -285,8 +286,11 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (isViewAttached())
-            getV().onDataResult(refresh, (List<AddressBean>) o);
+
+        if (o instanceof AddressListBean){
+            if (isViewAttached())
+                getV().onDataResult(refresh, (List<AddressBean>)((AddressListBean) o).getList());
+        }
     }
 
     @Override

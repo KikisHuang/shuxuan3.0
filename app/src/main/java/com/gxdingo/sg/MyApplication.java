@@ -15,6 +15,7 @@ import androidx.multidex.MultiDex;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.amap.api.location.AMapLocationClient;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
@@ -119,6 +120,10 @@ public class MyApplication extends Application {
         okHttpInit();
         keyInt();
         ScreenUtils.init(this);
+
+        //todo 需要增加隐私政策弹窗
+        AMapLocationClient.updatePrivacyShow(this, true, true);
+        AMapLocationClient.updatePrivacyAgree(this, true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

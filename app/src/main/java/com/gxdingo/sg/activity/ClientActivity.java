@@ -25,6 +25,7 @@ import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +155,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected void onBaseEvent(Object object) {
-        super.onBaseEvent(object);
+
+        //全局新消息布局
+        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
+            showNewMessageDialog((ReceiveIMMessageBean) object);
+
         if (object instanceof OneKeyLoginEvent) {
             getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
         } else if (object instanceof WeChatLoginEvent) {

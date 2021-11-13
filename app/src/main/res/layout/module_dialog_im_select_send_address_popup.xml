@@ -22,6 +22,7 @@
             android:scrollbars="none" />
 
         <View
+            android:id="@+id/line_view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
@@ -37,6 +38,17 @@
             android:text="使用其他地址"
             android:textColor="#FF599252"
             android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/no_address_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:text="没有收货地址 去添加"
+            android:textColor="@color/gray_2e"></TextView>
 
         <TextView
             android:id="@+id/tv_cancel"

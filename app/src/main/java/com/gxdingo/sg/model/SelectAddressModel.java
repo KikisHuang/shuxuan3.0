@@ -67,9 +67,12 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
     public void location(Context context, AMapLocationListener mLocationListener) {
         this.mContext = context;
 
-        //初始化定位
-        mLocationClient = new AMapLocationClient(context);
-
+        try {
+            //初始化定位
+            mLocationClient = new AMapLocationClient(context);
+        } catch (Exception e) {
+            LogUtils.e("AMapLocationClient error === " + e);
+        }
         mLocationClient.setLocationListener(mLocationListener);
         mLocationOption = new AMapLocationClientOption();
         mLocationOption.setOnceLocation(true);
@@ -97,7 +100,8 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
         query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
             poiSearch = new PoiSearch(mContext, query);
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         poiSearch.setOnPoiSearchListener(listener);
         poiSearch.searchPOIAsyn();
@@ -128,7 +132,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
         query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
             poiSearch = new PoiSearch(mContext, query);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 

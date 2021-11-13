@@ -37,6 +37,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMChatContentAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
+import com.gxdingo.sg.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -59,6 +60,7 @@ import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -581,6 +583,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     @Override
     public void getTransFerSucceed(int position) {
+
+    }
+
+    @Override
+    public void showSelectAddressDialog(List<AddressBean> list) {
 
     }
 
@@ -1178,7 +1185,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(new IMSelectSendAddressPopupView(this, new IMSelectSendAddressPopupView.OnSendAddressListener() {
+                .asCustom(new IMSelectSendAddressPopupView(this, null, new IMSelectSendAddressPopupView.OnSendAddressListener() {
                     @Override
                     public void address(Object object) {
 

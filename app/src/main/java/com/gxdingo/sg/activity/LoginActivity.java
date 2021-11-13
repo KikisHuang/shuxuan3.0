@@ -202,55 +202,52 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             } else {
 
                 SPUtils.getInstance().put(LOGIN_WAY, true);
-                if (backHome) {
 //                    sendEvent(new ReLoginBean());
-
-                    if (backHome) {
-                        sendEvent(new ReLoginBean());
-                        goToPage(reference.get(), ClientActivity.class, null);
-                    }
+                if (backHome) {
+                    sendEvent(new ReLoginBean());
+                    goToPage(reference.get(), ClientActivity.class, null);
                 }
             }
             finish();
         }
     }
 
-        @Override
-        protected void onBaseEvent (Object object){
-            //微信登录事件
-            if (object instanceof WeChatLoginEvent) {
-                WeChatLoginEvent event = (WeChatLoginEvent) object;
-                if (!isEmpty(event.code))
-                    getP().weChatLogin(event.code);
-            }
+    @Override
+    protected void onBaseEvent(Object object) {
+        //微信登录事件
+        if (object instanceof WeChatLoginEvent) {
+            WeChatLoginEvent event = (WeChatLoginEvent) object;
+            if (!isEmpty(event.code))
+                getP().weChatLogin(event.code);
         }
+    }
 
 
-        @Override
-        public String getCode () {
-            return verification_code_ed.getText().toString();
-        }
+    @Override
+    public String getCode() {
+        return verification_code_ed.getText().toString();
+    }
 
-        @Override
-        public String getMobile () {
-            return et_phone_number.getText().toString();
-        }
+    @Override
+    public String getMobile() {
+        return et_phone_number.getText().toString();
+    }
 
-        @Override
-        public boolean isClient () {
-            return isUserId;
-        }
+    @Override
+    public boolean isClient() {
+        return isUserId;
+    }
 
-        @Override
-        public void setVerificationCodeTime ( int time){
+    @Override
+    public void setVerificationCodeTime(int time) {
 
-        }
+    }
 
-        //身份切换
-        @Override
-        public void showIdButton () {
-            role_tv.setText(isUserId ? "树享客户端" : "树享商家端");
-            switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
-        }
+    //身份切换
+    @Override
+    public void showIdButton() {
+        role_tv.setText(isUserId ? "树享客户端" : "树享商家端");
+        switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
+    }
 
 }

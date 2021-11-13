@@ -198,7 +198,12 @@ public class NetworkModel {
     //获取一次定位方法
     public void location(Context context, AMapLocationListener mLocationListener) {
         //初始化定位
-        mLocationClient = new AMapLocationClient(context);
+        try {
+            mLocationClient = new AMapLocationClient(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.e("AMapLocationClient == " + e);
+        }
 
         mLocationClient.setLocationListener(mLocationListener);
         mLocationOption = new AMapLocationClientOption();

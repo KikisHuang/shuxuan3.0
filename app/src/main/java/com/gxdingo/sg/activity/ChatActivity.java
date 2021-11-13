@@ -378,11 +378,13 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         switch (v.getId()) {
 
             case R.id.cl_no_address_layout:
+                //客户端
                 if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
                 break;
             case R.id.cl_other_side_address_layout:
 
+                //客户端
                 if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
                 else {
@@ -495,7 +497,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
                 //地址
                 else if (functionsItem.position == 2) {
-                    showSelectSendAddressDialog();
+                    getP().getAddressList();
                 }
                 //转账
                 else if (functionsItem.position == 3) {
@@ -571,20 +573,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
 
-    /**
-     * 显示选择发送地址弹窗
-     */
-    private void showSelectSendAddressDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .asCustom(new IMSelectSendAddressPopupView(this, new IMSelectSendAddressPopupView.OnSendAddressListener() {
-                    @Override
-                    public void address(Object object) {
-
-                    }
-                }).show());
-    }
 
     /**
      * 显示选择转账弹窗
@@ -1122,6 +1110,20 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     public void getTransFerSucceed(int position) {
         mChatDatas.get(position).getMsgAccounts().setStatus(2);
         mAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void showSelectAddressDialog(List<AddressBean> list) {
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .asCustom(new IMSelectSendAddressPopupView(this, list,new IMSelectSendAddressPopupView.OnSendAddressListener() {
+                    @Override
+                    public void address(Object object) {
+
+                    }
+                }).show());
     }
 
     /**

@@ -3,13 +3,17 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AddressBean;
+import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.AudioModelListener;
 import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.AudioModel;
+import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.gxdingo.sg.biz.IMChatContract;
@@ -20,6 +24,7 @@ import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -29,9 +34,13 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -39,6 +48,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -55,10 +65,13 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private long mStartSendTime;//发送消息间隔
     private long mEndSendTime;
 
+    private ClientNetworkModel clientNetworkModel;
+
     private AudioModel mAudioModel;
     private CommonModel commonModel;
 
     public IMChatPresenter() {
+        clientNetworkModel = new ClientNetworkModel(this);
         networkModel = new NetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
         mAudioModel = AudioModel.getInstance();
@@ -100,9 +113,33 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (isBViewAttached()) {
+
+        if (o instanceof AddressListBean) {
+            AddressListBean addressListBean = (AddressListBean) o;
+            if (addressListBean.getList() != null && addressListBean.getList().size() > 2) {
+
+                RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                    List<AddressBean> addresses = new ArrayList<>(2);
+
+                    for (int i = 0; i < 2; i++) {
+                        addresses.add(addressListBean.getList().get(i));
+                    }
+
+                    e.onNext(addresses);
+                    e.onComplete();
+                }), ((BaseActivity) getContext())).subscribe(data -> {
+
+                    if(isViewAttached())
+                        getV().showSelectAddressDialog((List<AddressBean>) data);
+
+                });
+            }else {
+                if(isViewAttached())
+                    getV().showSelectAddressDialog(addressListBean.getList());
+            }
 
         }
+
     }
 
     @Override
@@ -541,6 +578,17 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                     getV().getTransFerSucceed(position);
 
             });
+
+    }
+
+    /**
+     * 获取地址列表
+     */
+    @Override
+    public void getAddressList() {
+
+        if (clientNetworkModel != null)
+            clientNetworkModel.getAddressList(getContext(), true, this);
 
     }
 
