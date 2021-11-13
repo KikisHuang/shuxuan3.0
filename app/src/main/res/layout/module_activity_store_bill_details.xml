@@ -71,12 +71,37 @@
             app:sRightTextString="2021.10.01 08:28"
             app:sRightTextColor="@color/gray_2e"
             app:sRightTextSize="14sp" />
+
+        <com.allen.library.SuperTextView
+            android:id="@+id/pay_time_stv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:visibility="visible"
+            app:sLeftTextString="支付时间"
+            app:sLeftViewMarginLeft="20dp"
+            app:sLeftTextColor="@color/gray_a9"
+            app:sRightTextString="2021.10.01 08:28"
+            app:sRightTextColor="@color/gray_2e"
+            app:sRightTextSize="14sp" />
         <com.allen.library.SuperTextView
             android:id="@+id/receive_time_stv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             app:sLeftTextString="接收时间"
+            app:sLeftViewMarginLeft="20dp"
+            app:sLeftTextColor="@color/gray_a9"
+            app:sRightTextString="2021.10.01 08:28"
+            app:sRightTextColor="@color/gray_2e"
+            app:sRightTextSize="14sp" />
+
+        <com.allen.library.SuperTextView
+            android:id="@+id/payment_time_stv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:sLeftTextString="到账时间"
             app:sLeftViewMarginLeft="20dp"
             app:sLeftTextColor="@color/gray_a9"
             app:sRightTextString="2021.10.01 08:28"

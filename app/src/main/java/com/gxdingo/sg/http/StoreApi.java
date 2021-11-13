@@ -148,6 +148,11 @@ public class StoreApi {
      * 钱包首页数据
      */
     public static final String CHECK_RECORD = HIERARCHY + "wallet/transaction/list";
+
+    /**
+     * 交易记录详情
+     */
+    public static final String TRANSACTION_DETAILS = HIERARCHY + "wallet/transaction/detail";
     /**
      * 选择已绑定银行卡
      */

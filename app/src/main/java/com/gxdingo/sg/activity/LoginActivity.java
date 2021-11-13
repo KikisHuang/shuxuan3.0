@@ -210,8 +210,8 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                         goToPage(reference.get(), ClientActivity.class, null);
                     }
                 }
-                finish();
             }
+            finish();
         }
     }
 

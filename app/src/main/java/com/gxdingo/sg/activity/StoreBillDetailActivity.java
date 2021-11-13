@@ -5,23 +5,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.TransactionBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.biz.StoreHomeContract;
+import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
+import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
 
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+
 /**
  * @author: Weaving
  * @date: 2021/11/10
  * @page:
  */
-public class StoreBillDetailActivity extends BaseMvpActivity<StoreHomeContract.StoreHomePresenter> {
+public class StoreBillDetailActivity extends BaseMvpActivity<StoreWalletContract.StoreWalletPresenter> implements StoreWalletContract.StoreWalletListener {
 
 
     @BindView(R.id.title_layout)
@@ -48,11 +57,17 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreHomeContract.S
     @BindView(R.id.receive_time_stv)
     public SuperTextView receive_time_stv;
 
-    private TransactionBean billBean;
+    @BindView(R.id.pay_time_stv)
+    public SuperTextView pay_time_stv;
+
+    @BindView(R.id.payment_time_stv)
+    public SuperTextView payment_time_stv;
+
+    private int moneyLogId;
 
     @Override
-    protected StoreHomeContract.StoreHomePresenter createPresenter() {
-        return new StoreHomePresenter();
+    protected StoreWalletContract.StoreWalletPresenter createPresenter() {
+        return new StoreWalletPresenter();
     }
 
     @Override
@@ -118,11 +133,55 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreHomeContract.S
     @Override
     protected void init() {
         title_layout.setTitleText("账单详情");
-        billBean= (TransactionBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE+0);
+        moneyLogId= getIntent().getIntExtra(Constant.SERIALIZABLE+0,-1);
     }
 
     @Override
     protected void initData() {
+        getP().getTransactionDetails();
+    }
 
+    @Override
+    public int getBackCardId() {
+        return moneyLogId;
+    }
+
+    @Override
+    public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
+
+    }
+
+    @Override
+    public String getCashType() {
+        return null;
+    }
+
+    @Override
+    public void onTransactionDetail(TransactionDetails transactionDetails) {
+        Glide.with(this).load(isEmpty(transactionDetails.getAvatar())?R.drawable.module_svg_client_default_avatar:transactionDetails.getAvatar())
+                .into(avatar_img);
+        transfer_object_tv.setText(transactionDetails.getTitle());
+        amount_tv.setText(String.valueOf(transactionDetails.getAmount()));
+        if (isEmpty(transactionDetails.getPayType()))
+            pay_method_stv.setVisibility(View.GONE);
+        else
+            pay_method_stv.setRightString(transactionDetails.getPayType());
+        current_status_stv.setRightString(transactionDetails.getStatusText());
+        create_time_stv.setRightString(dealDateFormat(transactionDetails.getCreateTime()));
+
+        if (isEmpty(transactionDetails.getReceiveTime()))
+            receive_time_stv.setVisibility(View.GONE);
+        else
+            receive_time_stv.setRightString(dealDateFormat(transactionDetails.getReceiveTime()));
+
+        if (isEmpty(transactionDetails.getPayTime()))
+            pay_time_stv.setVisibility(View.GONE);
+        else
+            pay_time_stv.setRightString(dealDateFormat(transactionDetails.getPayTime()));
+
+        if (isEmpty(transactionDetails.getPaymentTime()))
+            payment_time_stv.setVisibility(View.GONE);
+        else
+            payment_time_stv.setRightString(dealDateFormat(transactionDetails.getPaymentTime()));
     }
 }

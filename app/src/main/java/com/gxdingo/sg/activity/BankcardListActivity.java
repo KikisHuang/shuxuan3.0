@@ -55,6 +55,9 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     //选择银行卡
     private boolean isSelect;
 
+    //跳转商家提现页面
+    private boolean isCash;
+
     @OnClick(R.id.txt_more)
     public void OnClickViews(View v){
         switch (v.getId()){
@@ -148,6 +151,7 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
         templateTitle.setMoreText("添加");
         templateTitle.setMoreTextColor(getc(R.color.blue_text));
         isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
+        isCash= getIntent().getBooleanExtra(Constant.SERIALIZABLE+1,false);
         mAdapter = new BankcardAdapter(1);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
@@ -218,6 +222,6 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
         if (!isSelect) return;
         BankcardBean item = (BankcardBean) adapter.getItem(position);
         sendEvent(item);
-        finish();
+        if (!isCash)finish();
     }
 }

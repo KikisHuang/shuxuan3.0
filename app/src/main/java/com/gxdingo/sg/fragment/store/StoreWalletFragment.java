@@ -13,16 +13,20 @@ import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.BankcardListActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.StoreBillDetailActivity;
 import com.gxdingo.sg.activity.StoreCashActivity;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
+import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
@@ -65,6 +69,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     private ClientTransactionRecordAdapter mAdapter;
 
+    private StoreWalletBean mWalletBean;
+
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
         return new StoreWalletPresenter();
@@ -72,7 +78,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -140,18 +146,36 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             case R.id.img_more:
                 break;
             case R.id.alipay_stv:
-                getP().goCashPage(0);
+                goToCash(ClientLocalConstant.ALIPAY);
                 break;
             case R.id.wechat_stv:
-                getP().goCashPage(1);
+                goToCash(ClientLocalConstant.WECHAT);
                 break;
             case R.id.bankcard_stv:
-                getP().goCashPage(2);
+                goToPagePutSerializable(getContext(), BankcardListActivity.class,getIntentEntityMap(new Object[]{true,true}));
                 break;
             case R.id.record_stv:
                 goToPage(getContext(), ClientAccountRecordActivity.class,null);
                 break;
         }
+    }
+
+    private void goToCash(String type){
+
+        if (mWalletBean == null)return;
+
+        if (type.equals(ClientLocalConstant.ALIPAY) && isEmpty(mWalletBean.getAlipay())){
+            getP().bindAli();
+            return;
+        }
+
+        if (type.equals(ClientLocalConstant.WECHAT) && isEmpty(mWalletBean.getWechat())){
+            getP().bindWechat();
+            return;
+        }
+
+
+        goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{type,mWalletBean}));
     }
 
     @Override
@@ -161,15 +185,17 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code))
                 getP().bind(event.code,1);
+        } else if (object instanceof ThirdPartyBean){
+            ThirdPartyBean thirdPartyBean = (ThirdPartyBean) object;
+            if (thirdPartyBean.type == 0)
+                mWalletBean.setAlipay(thirdPartyBean.getNickname());
+            else if (thirdPartyBean.type == 1)
+                mWalletBean.setWechat(thirdPartyBean.getNickname());
+            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{thirdPartyBean.type==1?ClientLocalConstant.WECHAT:ClientLocalConstant.ALIPAY,mWalletBean}));
+        }else if (object instanceof BankcardBean){
+            BankcardBean bankcardBean = (BankcardBean) object;
+            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{ClientLocalConstant.BANK,mWalletBean,bankcardBean.getId()}));
         }
-//        else if (object instanceof ThirdPartyBean){
-//            ThirdPartyBean thirdPartyBean = (ThirdPartyBean) object;
-//            if (thirdPartyBean.type == 0)
-//                walletBean.setAlipay(thirdPartyBean.getNickname());
-//            else if (thirdPartyBean.type == 1)
-//                walletBean.setWechat(thirdPartyBean.getNickname());
-//            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{thirdPartyBean.type,walletBean}));
-//        }
 
     }
 
@@ -180,7 +206,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     public void onWalletHomeResult(boolean refresh,StoreWalletBean walletBean) {
-
+        mWalletBean = walletBean;
         if (refresh){
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(String.valueOf(walletBean.getBalance()));
@@ -198,8 +224,19 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     }
 
     @Override
+    public String getCashType() {
+        return null;
+    }
+
+    @Override
+    public void onTransactionDetail(TransactionDetails transactionDetails) {
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         TransactionBean item = (TransactionBean) adapter.getItem(position);
-        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+//        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

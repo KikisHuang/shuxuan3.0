@@ -23,6 +23,7 @@ import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.StoreMyPresenter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
@@ -34,6 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -150,7 +152,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     public void onDataResult(StoreMineBean mineBean) {
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(store_avatar_iv);
         store_name_tv.setText(mineBean.getName());
-        type_and_open_time_tv.setText(mineBean.getOpenTime()+"-"+mineBean.getCloseTime());
+        type_and_open_time_tv.setText(dealDateFormat(mineBean.getOpenTime(),"HH:mm") +" - "+dealDateFormat(mineBean.getCloseTime(),"HH:mm"));
         if (mineBean.getAdsList()!=null){
             store_mine_banner.setAdapter(new BannerImageAdapter<StoreMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
