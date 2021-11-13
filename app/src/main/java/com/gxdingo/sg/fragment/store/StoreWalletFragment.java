@@ -131,9 +131,23 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         mAdapter.setOnItemClickListener(this);
     }
 
+
     @Override
     protected void initData() {
+//        getP().getWalletHome(true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         getP().getWalletHome(true);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden)
+            getP().getWalletHome(true);
     }
 
     @OnClick({R.id.img_more,R.id.alipay_stv,R.id.wechat_stv,R.id.bankcard_stv,R.id.record_stv})

@@ -37,6 +37,7 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 import com.zhouyou.http.cache.model.CacheMode;
@@ -100,7 +101,6 @@ import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 public class MyApplication extends Application {
 
 
-
     private static MyApplication instance;
 
     public static MyApplication getInstance() {
@@ -120,6 +120,8 @@ public class MyApplication extends Application {
         okHttpInit();
         keyInt();
         ScreenUtils.init(this);
+
+        ZXingLibrary.initDisplayOpinion(this);
 
         //todo 需要增加隐私政策弹窗
         AMapLocationClient.updatePrivacyShow(this, true, true);
