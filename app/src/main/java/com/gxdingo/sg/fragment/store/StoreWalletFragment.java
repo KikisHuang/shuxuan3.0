@@ -1,19 +1,25 @@
 package com.gxdingo.sg.fragment.store;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.allen.library.SuperTextView;
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BankcardListActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
+import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.StoreBillDetailActivity;
 import com.gxdingo.sg.activity.StoreCashActivity;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
@@ -26,13 +32,17 @@ import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -130,6 +140,14 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     public void OnClickViews(View v){
         switch (v.getId()){
             case R.id.img_more:
+//                Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
+//                startActivityForResult(intent, REQUEST_CODE_SCAN);
+
+
+//                getRxPermissions();
+
+                getP().checkPermissions(getRxPermissions());
+
                 break;
             case R.id.alipay_stv:
                 goToCash(ClientLocalConstant.ALIPAY);
@@ -144,6 +162,13 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 goToPage(getContext(), ClientAccountRecordActivity.class,null);
                 break;
         }
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_SCAN);
     }
 
     private void goToCash(String type){
@@ -217,6 +242,24 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @Override
     public void onTransactionDetail(TransactionDetails transactionDetails) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+
+            if (data != null) {
+                //返回的文本内容
+                String content = data.getStringExtra("success_result");
+                //todo 扫描结果处理
+                ToastUtils.showLong(content);
+                //返回的BitMap图像
+//                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
+            }
+        }
     }
 
     @Override

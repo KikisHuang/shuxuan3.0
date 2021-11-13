@@ -36,6 +36,7 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 import com.zhouyou.http.cache.model.CacheMode;
@@ -119,6 +120,7 @@ public class MyApplication extends Application {
         okHttpInit();
         keyInt();
         ScreenUtils.init(this);
+        ZXingLibrary.initDisplayOpinion(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

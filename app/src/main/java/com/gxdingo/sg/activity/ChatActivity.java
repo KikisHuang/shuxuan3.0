@@ -317,9 +317,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     private void loadMore() {
 
-        if (!TextUtils.isEmpty(mShareUuid)) {
+//        if (!TextUtils.isEmpty(mShareUuid)) {
             getP().getChatHistoryList(mShareUuid, otherId, otherRole);//获取聊天记录
-        }
+//        }
     }
 
 
