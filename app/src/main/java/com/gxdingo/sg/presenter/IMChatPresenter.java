@@ -520,4 +520,28 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     }
 
+    /**
+     * 领取转账
+     *
+     * @param position
+     * @param id
+     */
+    @Override
+    public void getTransfer(int position, long id) {
+
+        if (mWebSocketModel != null)
+            mWebSocketModel.getTransfer(getContext(), id, data -> {
+
+                //领取成功后使用该ID发送一条消息到socket
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", data);
+
+                sendMessage(getV().getShareUUID(), 21, "", 0, map);
+                if (isViewAttached())
+                    getV().getTransFerSucceed(position);
+
+            });
+
+    }
+
 }

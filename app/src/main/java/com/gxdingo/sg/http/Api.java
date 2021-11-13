@@ -118,7 +118,6 @@ public class Api {
 
     /**
      * 消息历史
-     *
      */
     public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
 
@@ -140,5 +139,9 @@ public class Api {
      * 发起转账
      */
     public static final String TRANSFER = HIERARCHY + "transfer/accounts/send";
+    /**
+     * 领取转账
+     */
+    public static final String GET_TRANSFER = HIERARCHY + "transfer/accounts/receive";
 
 }

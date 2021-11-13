@@ -579,6 +579,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         return null;
     }
 
+    @Override
+    public void getTransFerSucceed(int position) {
+
+    }
+
     /**
      * 转账
      */

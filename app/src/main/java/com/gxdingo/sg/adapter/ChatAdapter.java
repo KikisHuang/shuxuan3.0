@@ -23,6 +23,7 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.adapter.RecyclerViewHolder;
 import com.kikis.commnlibrary.utils.GlideUtils;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -328,20 +329,41 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             TextView transfer_type_name_tv = holder.getTextView(R.id.transfer_type_name_tv);
             ImageView iv_transfer_accounts_type_icon = holder.getImageView(R.id.iv_transfer_accounts_type_icon);
 
+
+            cl_transfer_accounts_bg.setOnClickListener(v -> {
+                if (chatClickListener != null && getItemViewType(position) == OtherTransfer)
+                    chatClickListener.onTransferClick(position, data.getId());
+            });
+
             if (msgAccounts != null) {
                 cl_transfer_accounts_bg.setVisibility(View.VISIBLE);
-                amount_tv.setText(msgAccounts.getAmount().toString());
+
+                NumberFormat nf = NumberFormat.getInstance();
+                String account = nf.format(msgAccounts.getAmount());
+
+                amount_tv.setText(account);
+
                 //0=未付款；1=待领取；2=已收款；3=拒绝收款；4=过期退回
-                if (msgAccounts.getPayType() == 1) {
+                if (msgAccounts.getStatus() == 1) {
                     status_tv.setText("待领取");
                     cl_transfer_accounts_bg.getBackground().setAlpha(255);
-                } else if (msgAccounts.getPayType() == 2) {
-                    status_tv.setText("已收款");
+                } else if (msgAccounts.getStatus() == 2) {
+
+                    boolean isSelf = data.getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier());
+
+                    if (isSelf) {
+                        //转账
+                        status_tv.setText(data.getType() == 20 ? "已被接收" : "已收款");
+                    } else {
+                        status_tv.setText(data.getType() == 21 ? "已收款" : "已被接收");
+                    }
+
+
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
-                } else if (msgAccounts.getPayType() == 3) {
+                } else if (msgAccounts.getStatus() == 3) {
                     status_tv.setText("拒绝收款");
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
-                } else if (msgAccounts.getPayType() == 4) {
+                } else if (msgAccounts.getStatus() == 4) {
                     status_tv.setText("过期退回");
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
                 }
@@ -352,6 +374,9 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 } else if (msgAccounts.getPayType() == 20) {
                     transfer_type_name_tv.setText("支付宝转账");
                     iv_transfer_accounts_type_icon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_alipay_icon);
+                } else if (msgAccounts.getPayType() == 30) {
+                    transfer_type_name_tv.setText("钱包转账");
+                    iv_transfer_accounts_type_icon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_blance_icon);
                 }
             } else {
                 cl_transfer_accounts_bg.setVisibility(View.INVISIBLE);

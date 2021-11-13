@@ -30,6 +30,7 @@ import io.reactivex.Observable;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
+import static com.gxdingo.sg.http.Api.GET_TRANSFER;
 import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_READ;
@@ -414,5 +415,46 @@ public class WebSocketModel {
 
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 领取转账——收款
+     *
+     * @param context
+     * @param id
+     */
+    public void getTransfer(Context context, long id, CustomResultListener customResultListener) {
+        Map<String, String> map = new HashMap<>();
+
+        map.put("msgId", String.valueOf(id));
+
+        PostRequest request = HttpClient.imPost(IM_URL + GET_TRANSFER, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean payBean) {
+                if (netWorkListener != null)
+                    netWorkListener.onMessage("领取成功");
+                if (customResultListener != null)
+                    customResultListener.onResult(payBean.id);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
     }
 }

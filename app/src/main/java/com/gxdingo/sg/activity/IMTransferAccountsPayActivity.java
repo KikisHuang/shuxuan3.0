@@ -173,13 +173,6 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     }
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
     @OnClick({R.id.tv_1, R.id.tv_2, R.id.tv_3, R.id.rl_back, R.id.tv_4, R.id.tv_5, R.id.tv_6, R.id.tv_7, R.id.tv_8, R.id.tv_9, R.id.tv_0, R.id.tv_point, R.id.tv_submit})
     public void onViewClicked(View view) {
         String amountStr = etAmount.getText().toString();
@@ -296,13 +289,18 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     }
 
     @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        onMessage(gets(R.string.payment_succeed));
+        sendEvent(transferAccounts);
+        finish();
+    }
+
+    @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        //todo 明天测试转账
         if (type == PAYMENT_SUCCESS && transferAccounts != null) {
-            onMessage(gets(R.string.payment_succeed));
-            sendEvent(transferAccounts);
-            finish();
+            onSucceed(0);
         }
 
     }

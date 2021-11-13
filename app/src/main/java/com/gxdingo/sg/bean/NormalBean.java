@@ -24,6 +24,7 @@ public class NormalBean {
     public int msg_id;
     public int code=-1;
     public int count;
+    public long id;
     public String coin;
     public ReceiveIMMessageBean data;
     public String singleAmount;

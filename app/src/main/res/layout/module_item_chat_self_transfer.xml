@@ -23,8 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/avatar_img"
             android:orientation="vertical">
 
@@ -89,7 +88,7 @@
                             android:layout_marginTop="0dp"
                             android:text="待接收"
                             android:textColor="#ffffff"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             app:layout_constraintLeft_toLeftOf="@+id/tv_oneself_rmb_icon"
                             app:layout_constraintTop_toBottomOf="@+id/amount_tv" />
 

@@ -32,14 +32,15 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:padding="5dp"
             android:background="@mipmap/bg_im_chat_others_transfer_accounts_pay">
 
             <ImageView
                 android:id="@+id/iv_others_transfer_accounts_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="5dp"
                 android:src="@drawable/module_svg_im_chat_transfer_accounts_icon"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -61,7 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="5dp"
                 android:text="1000"
                 android:textColor="#ffffff"
                 android:textSize="20sp"
@@ -75,7 +75,7 @@
                 android:layout_marginTop="0dp"
                 android:text="待收款"
                 android:textColor="#ffffff"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_others_rmb_icon"
                 app:layout_constraintTop_toBottomOf="@+id/amount_tv" />
 
@@ -104,7 +104,7 @@
                     android:id="@+id/iv_transfer_accounts_type_icon"
                     android:layout_width="13dp"
                     android:layout_height="13dp"
-                    android:src="@drawable/module_im_chat_transfer_accounts_type_alipay_icon" />
+                    android:src="@drawable/module_im_chat_transfer_accounts_type_blance_icon" />
 
                 <TextView
                     android:id="@+id/transfer_type_name_tv"

@@ -62,25 +62,13 @@ public class AudioModel {
 
     private boolean mIsRecording = false;
 
-    //阿里云录音文件识别实例
-    private NativeNui nui_instance = new NativeNui();
-
     private HandlerThread mHanderThread;
-
-    private List<String> task_list = new ArrayList<String>();
-
-    private Handler mHandler;
-
-    private int MAX_TASKS = 1;
-
-    private boolean mInit = false;
 
     public static AudioModel instance;
 
     private AudioModel() {
         mHanderThread = new HandlerThread("process_thread");
         mHanderThread.start();
-        mHandler = new Handler(mHanderThread.getLooper());
     }
 
     public static AudioModel getInstance() {

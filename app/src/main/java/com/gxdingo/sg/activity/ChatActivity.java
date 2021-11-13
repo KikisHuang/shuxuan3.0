@@ -447,6 +447,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
             if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
                 if (mMessageDetails.getOtherAvatarInfo() != null) {
+
                     //判断消息发送者是否跟当前聊天
                     if (mMessageDetails.getOtherAvatarInfo().getSendIdentifier().equals(receiveIMMessageBean.getSendIdentifier())) {
 
@@ -457,16 +458,22 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                             setAddressInfo(receiveIMMessageBean);
                     }
 
+                    //自己发送的转账消息
+                    if (UserInfoUtils.getInstance().getIdentifier().equals(receiveIMMessageBean.getSendIdentifier()) && receiveIMMessageBean.getType() == 20) {
+                        receiveNewMsg(receiveIMMessageBean);
+                    }
+
                 }
             }
         }
 
         if (object instanceof PayBean.TransferAccountsDTO) {
-            PayBean.TransferAccountsDTO data = (PayBean.TransferAccountsDTO) object;
+/*            PayBean.TransferAccountsDTO data = (PayBean.TransferAccountsDTO) object;
             Map<String, Object> map = new HashMap<>();
             map.put("id", data.getId());
             //转账成功
-            getP().sendMessage(mShareUuid, 21, "", 0,map );
+            getP().sendMessage(mShareUuid, 21, "", 0,map );*/
+
         }
 
         /**
@@ -695,6 +702,25 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         } else
             moveTo(mChatDatas.size() - 1);
 
+        //如果是前一条转账的状态事件，刷新前一条发送转账消息的状态
+        if (receiveIMMessageBean.getType() == 21 && receiveIMMessageBean.getMsgAccounts() != null) {
+            RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+
+                for (int i = 0; i < mChatDatas.size(); i++) {
+                    if (mChatDatas.get(i).getMsgAccounts().getId().equals(receiveIMMessageBean.getMsgAccounts().getId())) {
+                        mChatDatas.get(i).setMsgAccounts(receiveIMMessageBean.getMsgAccounts());
+                        e.onNext(i);
+                        break;
+                    }
+                }
+                e.onComplete();
+            }), this).subscribe(o -> {
+                int p = (int) o;
+                mAdapter.notifyItemChanged(p);
+
+            });
+
+        }
     }
 
     @Override
@@ -995,6 +1021,17 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     }
 
+    /**
+     * 转账点击事件
+     *
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onTransferClick(int position, long id) {
+        getP().getTransfer(position, id);
+    }
+
     @Override
     public void onChatHistoryList(IMChatHistoryListBean imChatHistoryListBean) {
 
@@ -1079,6 +1116,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public String getShareUUID() {
         return mShareUuid;
+    }
+
+    @Override
+    public void getTransFerSucceed(int position) {
+        mChatDatas.get(position).getMsgAccounts().setStatus(2);
+        mAdapter.notifyItemChanged(position);
     }
 
     /**

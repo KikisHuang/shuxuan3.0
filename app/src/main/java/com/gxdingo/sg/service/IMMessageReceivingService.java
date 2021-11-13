@@ -133,7 +133,6 @@ public class IMMessageReceivingService extends Service {
             mBaseWebSocket = null;
         }
         super.onDestroy();
-        ToastUtils.showLong("测试：IM接收服务已停止");
     }
 
     /**

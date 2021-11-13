@@ -109,9 +109,18 @@ public class IMChatContract {
 
         /**
          * 清除语音未读
+         *
          * @param id
          */
         void clearMessageUnread(long id);
+
+        /**
+         * 领取转账
+         *
+         * @param position
+         * @param id
+         */
+        void getTransfer(int position, long id);
 
     }
 
@@ -143,6 +152,18 @@ public class IMChatContract {
          */
         void onUploadImageUrl(String url);
 
+        /**
+         * 获取uuid
+         *
+         * @return
+         */
         String getShareUUID();
+
+        /**
+         * 接收转账成功
+         *
+         * @param position
+         */
+        void getTransFerSucceed(int position);
     }
 }

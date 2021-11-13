@@ -9,4 +9,5 @@ public interface ChatClickListener {
 
     void clearUnread(long id);
 
+    void onTransferClick(int position, long id);
 }

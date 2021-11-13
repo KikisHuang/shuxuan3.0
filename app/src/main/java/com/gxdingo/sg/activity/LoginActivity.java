@@ -201,12 +201,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
             } else {
 
-
                 SPUtils.getInstance().put(LOGIN_WAY, true);
                 if (backHome) {
 //                    sendEvent(new ReLoginBean());
 
-                    SPUtils.getInstance().put(LOGIN_WAY, true);//保存用户登录
                     if (backHome) {
                         sendEvent(new ReLoginBean());
                         goToPage(reference.get(), ClientActivity.class, null);
