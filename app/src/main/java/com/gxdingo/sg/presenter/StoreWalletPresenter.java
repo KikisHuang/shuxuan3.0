@@ -1,6 +1,7 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.alipay.sdk.app.OpenAuthTask;
@@ -10,7 +11,9 @@ import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
+import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
@@ -19,9 +22,14 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.Constant;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.umeng.commonsdk.debug.E;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.VIBRATE;
+import static android.Manifest.permission_group.STORAGE;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
@@ -44,6 +52,8 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     private LoginModel mModdel;
 
+
+    private CommonModel commonModel;
 //    private StoreWalletBean walletBean;
 
 
@@ -51,6 +61,7 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
         mNetworkModel = new NetworkModel(this);
         storeNetworkModel = new StoreNetworkModel(this);
         mModdel = new LoginModel();
+        commonModel = new CommonModel();
     }
 
     @Override
@@ -58,6 +69,57 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
         if (storeNetworkModel!=null)
             storeNetworkModel.getWalletHome(getContext(),refresh);
     }
+
+    @Override
+    public void checkPermissions(RxPermissions rxPermissions) {
+        if (commonModel!=null)
+            commonModel.checkPermission(rxPermissions, new String[]{CAMERA, VIBRATE}, new PermissionsListener() {
+                @Override
+                public void onNext(boolean value) {
+                    if (!value){
+                        getBV().onFailed();
+                    }else {
+                        getBV().onSucceed(1);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+    }
+
+//    @Override
+//    public void checkStoragePermissions(RxPermissions rxPermissions) {
+//        if (commonModel!=null)
+//            commonModel.checkPermission(rxPermissions, new String[]{STORAGE}, new PermissionsListener() {
+//                @Override
+//                public void onNext(boolean value) {
+//                    if (!value){
+//                        getBV().onFailed();
+//                    }else {
+//                        getBV().onSucceed(2);
+//                    }
+//                }
+//
+//                @Override
+//                public void onError(Throwable e) {
+//
+//                }
+//
+//                @Override
+//                public void onComplete() {
+//
+//                }
+//            });
+//
+//    }
 
     @Override
     public void cash(String balance,String password) {

@@ -4,6 +4,7 @@ import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 /**
  * 商家钱包契约类
@@ -13,7 +14,10 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
 public class StoreWalletContract {
 
     public interface StoreWalletPresenter extends MvpPresenter<BasicsListener, StoreWalletListener> {
+
         void getWalletHome(boolean refresh);
+
+        void checkPermissions(RxPermissions rxPermissions);
 
         void cash(String balance,String password);
 

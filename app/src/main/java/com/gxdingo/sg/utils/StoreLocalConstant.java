@@ -41,4 +41,6 @@ public class StoreLocalConstant {
     public static final String OPEN_TIME ="openTime" ;
     public static final String CLOSE_TIME ="closeTime" ;
     public static final String CONTACT_NUMBER ="contactNumber" ;
+    public static final int REQUEST_CODE_SCAN =1223 ;
+    public static final int DEVICE_PHOTO_REQUEST =1332 ;
 }

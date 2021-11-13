@@ -19,8 +19,10 @@
 
     <!-- 录音权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-
+    <!-- 相机权限 -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 振动权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 通过GPS得到精确位置 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- 通过网络得到粗略位置 -->
@@ -297,6 +299,11 @@
             android:screenOrientation="portrait">
 
         </activity>
+
+        <activity
+            android:name=".activity.CustomCaptureActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <!--填写邀请码页面 -->
         <activity
