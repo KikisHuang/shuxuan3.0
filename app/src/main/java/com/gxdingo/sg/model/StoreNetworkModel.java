@@ -870,6 +870,40 @@ public class StoreNetworkModel {
 
 
     /**
+     * 营业状态修改
+     *
+     * @param status
+     */
+    public void updateBusinessStatus(Context context,int status,CustomResultListener customResultListener) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put(StoreLocalConstant.BUSINESSSTATUS, String.valueOf(status));
+        netWorkListener.onStarts();
+        Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                if (customResultListener!=null)
+                    customResultListener.onResult(status);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+    /**
      * 绑定第三方提现账号
      *
      * @param
