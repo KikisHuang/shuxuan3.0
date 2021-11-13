@@ -580,7 +580,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
                         .setClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
                                 if (messageInfoBean.getSubscribeListVO() != null)
                                     sendEvent(new GoNoticePageEvent(messageInfoBean.getSubscribeListVO().getShareUuid(), 0));
 

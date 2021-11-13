@@ -35,8 +35,10 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -161,7 +163,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().wechatLogin(event.code);
         } else if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
-            goToPage(reference.get(), ChatActivity.class, getIntentMap(new String[]{event.id}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id}));
         }
     }
 

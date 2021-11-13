@@ -23,6 +23,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 
@@ -34,7 +35,10 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * Created by Kikis on 2021/4/6
@@ -200,6 +204,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
         if (object instanceof ReLoginBean)
             getP().logout();
+
+        if (object instanceof GoNoticePageEvent){
+            GoNoticePageEvent event = (GoNoticePageEvent) object;
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id}));
+
+        }
+
 
 //        if (object.equals(StoreLocalConstant.NAVIGATION_ORDER))
 //            getP().checkTab(1);
