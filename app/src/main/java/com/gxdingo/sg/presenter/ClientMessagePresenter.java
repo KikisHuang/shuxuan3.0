@@ -6,6 +6,8 @@ import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.WebSocketModel;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
@@ -15,16 +17,23 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, ClientMessageContract.ClientMessageListener> implements ClientMessageContract.ClientMessagePresenter, NetWorkListener {
+public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, ClientMessageContract.ClientMessageListener>
+        implements ClientMessageContract.ClientMessagePresenter, NetWorkListener {
 
     private NetworkModel networkModel;
 
+    private WebSocketModel mWebSocketModel;
+
     public ClientMessagePresenter() {
         networkModel =new NetworkModel(this);
+
+        mWebSocketModel = new WebSocketModel(this);
     }
 
     @Override
     public void getSubscribesMessage(boolean refresh) {
+        if (networkModel!=null)
+            mWebSocketModel.getMessageSubscribesList(getContext(),refresh);
 //        networkModel.getMessageSubscribesList(getContext(),refresh);
     }
 
@@ -48,8 +57,8 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (o instanceof MessageSubsBean)
-            getV().onSubscribes(((MessageSubsBean)o).getList());
+        if (o instanceof SubscribesListBean)
+            getV().onSubscribes(refresh, (SubscribesListBean) o);
     }
 
     @Override

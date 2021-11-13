@@ -19,6 +19,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
@@ -371,7 +372,13 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-//        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+        if (UserInfoUtils.getInstance().isLogin()){
+            StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,item.getId()}));
+        }else {
+            UserInfoUtils.getInstance().goToLoginPage(getContext(),"");
+        }
+
     }
 }

@@ -152,7 +152,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected void onBaseEvent(Object object) {
-        super.onBaseEvent(object);
+//        super.onBaseEvent(object);
         if (object instanceof OneKeyLoginEvent) {
             getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
         } else if (object instanceof WeChatLoginEvent) {

@@ -124,7 +124,12 @@ dependencies {
     implementation rootProject.ext.dependencies.wechatopensdk
 
     //二维码生成
-    implementation rootProject.ext.dependencies.zxingcore
+//    implementation rootProject.ext.dependencies.zxingcore
+
+//    implementation rootProject.ext.dependencies.zxing
+
+    //二维码扫描
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
 
     //九宫格
     implementation rootProject.ext.dependencies.ninegridview
