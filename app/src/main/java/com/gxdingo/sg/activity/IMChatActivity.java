@@ -37,7 +37,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMChatContentAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -153,7 +153,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     IMChatHistoryListBean.MyAvatarInfo mMyAvatarInfo;//自己头像信息
     IMChatHistoryListBean.OtherAvatarInfo mOtherAvatarInfo;//对方头像信息
-    ReceiveIMMessageBean.MsgAddress mAddress;//收货地址
+    AddressBean mAddress;//收货地址
     boolean isInitFirstLoad;//是否是初始化获取聊天记录列表时
 
     String mShareUuid;//发布者与订阅者的共享唯一id
@@ -382,7 +382,7 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         //删除全局布局侦听器
         getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
         //刷新订阅列表显示最后聊天内容
-        sendEvent(100998);
+//        sendEvent(100998);
     }
 
     /**

@@ -28,7 +28,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
@@ -93,8 +93,6 @@ import static com.kikis.commnlibrary.utils.Constant.KEY;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.MoveToPositionTop;
 
@@ -186,7 +184,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     //未读消息数
     private int unreadCount = 0;
 
-    private ReceiveIMMessageBean.MsgAddress mAddress;//收货地址;
+    private AddressBean mAddress;//收货地址;
 
     private long clicktimeDValue = 0; //按下录制的时间差
     //取消发送
@@ -430,7 +428,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
             if (addressBean.selectType == 2) {
-                getP().sendMessage(mShareUuid, 30, "", 0, getIntentEntityMap(new Object[]{addressBean.getId()}));
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", addressBean.getId());
+                getP().sendMessage(mShareUuid, 30, "", 0, map);
+
+                setAddressInfo(addressBean);
             }
 
         }
@@ -457,7 +459,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                             //一样则通过该方法显示消息
                             receiveNewMsg(receiveIMMessageBean);
                         else
-                            setAddressInfo(receiveIMMessageBean);
+                            setAddressInfo(receiveIMMessageBean.getMsgAddress());
                     }
 
                     //自己发送的转账消息
@@ -550,28 +552,26 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     /**
      * 设置地址信息
-     *
-     * @param receiveIMMessageBean
      */
-    private void setAddressInfo(ReceiveIMMessageBean receiveIMMessageBean) {
+    private void setAddressInfo(AddressBean addressInfo) {
 
         cl_other_side_address_layout.setVisibility(View.VISIBLE);
         clNoAddressLayout.setVisibility(View.GONE);
 
-        if (receiveIMMessageBean.getMsgAddress() != null)
-            mAddress = receiveIMMessageBean.getMsgAddress();
+        if (addressInfo != null) {
+            mAddress = addressInfo;
 
-        if (!isEmpty(receiveIMMessageBean.getMsgAddress().getStreet()))
-            tvOtherSideAddress.setText(receiveIMMessageBean.getMsgAddress().getStreet());
+            if (!isEmpty(addressInfo.getStreet()))
+                tvOtherSideAddress.setText(addressInfo.getStreet()+" "+addressInfo.getDoorplate());
 
-        if (!isEmpty(receiveIMMessageBean.getMsgAddress().getMobile()))
-            tv_other_side_phone.setText(receiveIMMessageBean.getMsgAddress().getMobile());
+            if (!isEmpty(addressInfo.getMobile()))
+                tv_other_side_phone.setText(addressInfo.getMobile());
 
-        if (!isEmpty(receiveIMMessageBean.getMsgAddress().getName()))
-            tv_other_side_nick_name.setText(receiveIMMessageBean.getMsgAddress().getName());
+            if (!isEmpty(addressInfo.getName()))
+                tv_other_side_nick_name.setText(addressInfo.getName());
+        }
 
     }
-
 
 
     /**
@@ -1053,7 +1053,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 if (imChatHistoryListBean.getAddress() != null) {
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getStreet()))
-                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet());
+                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet()+" "+imChatHistoryListBean.getAddress().getDoorplate());
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getMobile()))
                         tv_other_side_phone.setText(imChatHistoryListBean.getAddress().getMobile());
@@ -1112,13 +1112,18 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         mAdapter.notifyItemChanged(position);
     }
 
+    /**
+     * 显示选择地址弹窗
+     *
+     * @param list
+     */
     @Override
     public void showSelectAddressDialog(List<AddressBean> list) {
 
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(new IMSelectSendAddressPopupView(this, list,new IMSelectSendAddressPopupView.OnSendAddressListener() {
+                .asCustom(new IMSelectSendAddressPopupView(this, list, new IMSelectSendAddressPopupView.OnSendAddressListener() {
                     @Override
                     public void address(Object object) {
 

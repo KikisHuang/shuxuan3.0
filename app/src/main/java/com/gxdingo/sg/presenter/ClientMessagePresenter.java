@@ -38,6 +38,22 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
     }
 
     @Override
+    public void clearUnreadMsg(String id) {
+        if (mWebSocketModel != null)
+            mWebSocketModel.clearUnreadMessage(getContext(), id, o -> {
+                getV().clearMessageUnreadItem(id);
+
+            });
+    }
+
+    @Override
+    public void refreshList() {
+        if (mWebSocketModel != null) {
+            mWebSocketModel.refreshMessageList(getContext());
+        }
+    }
+
+    @Override
     public void onSucceed(int type) {
         if (isBViewAttached())
             getBV().onSucceed(type);

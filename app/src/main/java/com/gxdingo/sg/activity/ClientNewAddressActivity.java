@@ -11,13 +11,12 @@ import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
-import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;

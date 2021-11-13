@@ -1,6 +1,7 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.ClientMineContract;
@@ -21,8 +23,11 @@ import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -33,6 +38,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
@@ -165,8 +172,53 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     }
 
     @Override
+    public void clearMessageUnreadItem(String id) {
+        //清除item未读消息
+        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+            for (int i = 0; i < imMessageAdapter.getData().size(); i++) {
+                SubscribesListBean.SubscribesMessage data = imMessageAdapter.getData().get(i);
+
+                if (data.getShareUuid().equals(id)) {
+                    data.setUnreadNum(0);
+                    e.onNext(i);
+                }
+            }
+            e.onComplete();
+        }), (BaseActivity) reference.get()).subscribe(o -> {
+            int pos = (int) o;
+            imMessageAdapter.notifyItemChanged(pos);
+        });
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getP().refreshList();
+    }
+
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         SubscribesListBean.SubscribesMessage item = (SubscribesListBean.SubscribesMessage) adapter.getItem(position);
         goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{item.getShareUuid()}));
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof ReceiveIMMessageBean) {
+            ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
+            if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
+                //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
+                getP().refreshList();
+            }
+        }
+        //聊天页面退出事件，因为如果在当前聊天页面，未读消息数需要客户端手动清除？
+        if (object instanceof ExitChatEvent) {
+            ExitChatEvent exitChatEvent = (ExitChatEvent) object;
+            getP().clearUnreadMsg(exitChatEvent.id);
+
+        }
     }
 }

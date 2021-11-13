@@ -19,7 +19,7 @@ public class ReceiveIMMessageBean implements Serializable {
     public int recipientRead;//语音是否未读
     private String createTime;//创建时间 (发送时间)
     private SubscribeListVO subscribeListVO;//订阅详情
-    private MsgAddress msgAddress;//地址类型详情（type == 30 返回，否则返回 null）
+    private AddressBean msgAddress;//地址类型详情（type == 30 返回，否则返回 null）
     private MsgAccounts msgAccounts;//转账类型详情（type == 20 返回，否则返回 null）
     //图片类型上传进度
     public int upload_progress;
@@ -88,11 +88,11 @@ public class ReceiveIMMessageBean implements Serializable {
         this.subscribeListVO = subscribeListVO;
     }
 
-    public MsgAddress getMsgAddress() {
+    public AddressBean getMsgAddress() {
         return msgAddress;
     }
 
-    public void setMsgAddress(MsgAddress msgAddress) {
+    public void setMsgAddress(AddressBean msgAddress) {
         this.msgAddress = msgAddress;
     }
 
@@ -120,93 +120,6 @@ public class ReceiveIMMessageBean implements Serializable {
         }
     }
 
-    /**
-     * 地址类型详情
-     */
-    public static class MsgAddress implements Serializable {
-        private long id;//用户收货地址id
-        private String mobile;//收件人手机号
-        private String name;//收件人名称
-        private int gender;//性别：1先生，2女士
-        private String regionPath;//地区路径
-        private String street;//收件人地址
-        private String doorplate;//门牌号
-        private double longitude;//坐标经度
-        private double latitude;//坐标纬度
-
-
-        public long getId() {
-            return id;
-        }
-
-        public void setId(long id) {
-            this.id = id;
-        }
-
-        public String getMobile() {
-            return mobile;
-        }
-
-        public void setMobile(String mobile) {
-            this.mobile = mobile;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getGender() {
-            return gender;
-        }
-
-        public void setGender(int gender) {
-            this.gender = gender;
-        }
-
-        public String getRegionPath() {
-            return regionPath;
-        }
-
-        public void setRegionPath(String regionPath) {
-            this.regionPath = regionPath;
-        }
-
-        public String getStreet() {
-            return street;
-        }
-
-        public void setStreet(String street) {
-            this.street = street;
-        }
-
-        public String getDoorplate() {
-            return doorplate;
-        }
-
-        public void setDoorplate(String doorplate) {
-            this.doorplate = doorplate;
-        }
-
-        public double getLongitude() {
-            return longitude;
-        }
-
-        public void setLongitude(double longitude) {
-            this.longitude = longitude;
-        }
-
-        public double getLatitude() {
-            return latitude;
-        }
-
-        public void setLatitude(double latitude) {
-            this.latitude = latitude;
-        }
-    }
 
     /**
      * 转账类型详情

@@ -10,8 +10,8 @@ import android.widget.EditText;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-//import com.gxdingo.sg.bean.AddressBean;
-import com.gxdingo.sg.bean.AddressBean;
+//import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
 import com.gxdingo.sg.biz.PermissionsListener;

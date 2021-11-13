@@ -17,9 +17,15 @@ public class ClientMessageContract {
     public interface ClientMessagePresenter extends MvpPresenter<BasicsListener,ClientMessageListener>{
 
         void getSubscribesMessage(boolean refresh);
+
+        void clearUnreadMsg(String id);
+
+        void refreshList();
     }
 
     public interface ClientMessageListener{
         void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean);
+
+        void clearMessageUnreadItem(String id);
     }
 }

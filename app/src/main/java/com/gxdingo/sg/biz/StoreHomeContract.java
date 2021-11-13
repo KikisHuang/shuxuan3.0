@@ -35,9 +35,15 @@ public class StoreHomeContract {
 
         /**
          * 清除未读消息数
+         *
          * @param id
          */
         void clearUnreadMsg(String id);
+
+        /**
+         * 刷新消息列表
+         */
+        void refreshList();
     }
 
     public interface StoreHomeListener {
@@ -55,6 +61,7 @@ public class StoreHomeContract {
 
         /**
          * 清除list item 未读消息
+         *
          * @param id
          */
         void clearMessageUnreadItem(String id);

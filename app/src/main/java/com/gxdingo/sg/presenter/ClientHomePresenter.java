@@ -2,33 +2,21 @@ package com.gxdingo.sg.presenter;
 
 import android.text.TextUtils;
 
-import com.amap.api.location.AMapLocation;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.AddressBean;
-import com.gxdingo.sg.bean.CategoriesBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoryListBean;
-import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.model.ClientHomeModel;
-import com.gxdingo.sg.model.ClientNearbyShopsModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
-import com.gxdingo.sg.model.NetworkModel;
-import com.gxdingo.sg.model.SelectAddressModel;
-import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
-import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
@@ -38,14 +26,6 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.model.CommonModel.isLocServiceEnable;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
-import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**

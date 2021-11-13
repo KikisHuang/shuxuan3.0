@@ -24,7 +24,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.SelectAddressAdapter;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.gxdingo.sg.view.RegexEditText;

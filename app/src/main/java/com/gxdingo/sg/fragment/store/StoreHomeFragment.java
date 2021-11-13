@@ -179,6 +179,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         getP().getIMSubscribesList(true);
     }
 
+
     /**
      * 上拉加载更多数据
      */
@@ -256,7 +257,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
             if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
                 //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
-                getP().getIMSubscribesList(true);//获取IM订阅信息
+                getP().refreshList();
+
             }
         }
         //聊天页面退出事件，因为如果在当前聊天页面，未读消息数需要客户端手动清除？
@@ -274,10 +276,12 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
             initData();
         }
-        //退出聊天界面（IMChatActivity）时获取IM订阅信息，刷新订阅列表显示最后聊天内容
-        if (type == 100998) {
-            getP().getIMSubscribesList(true);//获取IM订阅信息
-        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getP().refreshList();
     }
 
     @Override

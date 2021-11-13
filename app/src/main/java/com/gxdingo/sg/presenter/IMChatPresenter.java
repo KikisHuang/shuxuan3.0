@@ -3,7 +3,7 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
@@ -48,7 +48,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -391,7 +390,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     }
 
     @Override
-    public void goOutSideNavigation(int pos, ReceiveIMMessageBean.MsgAddress mAddress) {
+    public void goOutSideNavigation(int pos, AddressBean mAddress) {
         if (!isBViewAttached() || mAddress == null)
             return;
 

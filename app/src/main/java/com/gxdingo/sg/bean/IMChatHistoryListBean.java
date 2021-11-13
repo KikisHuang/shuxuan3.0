@@ -1,5 +1,6 @@
 package com.gxdingo.sg.bean;
 
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class IMChatHistoryListBean implements Serializable {
     private String websocketUrl;//socket接入url
     private MyAvatarInfo myAvatarInfo;//我的头像信息
-    private ReceiveIMMessageBean.MsgAddress address;//收货地址
+    private AddressBean address;//收货地址
     private OtherAvatarInfo otherAvatarInfo;//对方头像信息
     private boolean isShowAddressModule;//是否显示没有收货地址弹窗（用户端没有收货地址时才会显示true）
     private String shareUuid;//双向唯一id，发送消息以及查看聊天列表信息需要用到
@@ -36,11 +37,11 @@ public class IMChatHistoryListBean implements Serializable {
         this.myAvatarInfo = myAvatarInfo;
     }
 
-    public ReceiveIMMessageBean.MsgAddress getAddress() {
+    public AddressBean getAddress() {
         return address;
     }
 
-    public void setAddress(ReceiveIMMessageBean.MsgAddress address) {
+    public void setAddress(AddressBean address) {
         this.address = address;
     }
 

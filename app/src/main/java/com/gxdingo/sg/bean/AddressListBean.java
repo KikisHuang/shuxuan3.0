@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.kikis.commnlibrary.bean.AddressBean;
+
 import java.util.List;
 
 /**

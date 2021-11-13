@@ -181,4 +181,11 @@ public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHo
 
             });
     }
+
+    @Override
+    public void refreshList() {
+        if (mWebSocketModel != null) {
+            mWebSocketModel.refreshMessageList(getContext());
+        }
+    }
 }

@@ -14,12 +14,11 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.adapter.IMSelectSendAddressAdapter;
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.lxj.xpopup.core.BottomPopupView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

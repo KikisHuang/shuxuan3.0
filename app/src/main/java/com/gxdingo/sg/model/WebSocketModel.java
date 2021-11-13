@@ -186,6 +186,55 @@ public class WebSocketModel {
             netWorkListener.onDisposable(subscriber);
     }
 
+
+    /**
+     * 刷新消息列表不计算翻页
+     *
+     * @param context
+     */
+    public void refreshMessageList(Context context) {
+
+        Map<String, String> map = getJsonMap();
+
+        //map.put(Constant.SEARCH_CONTENT, "");
+        map.put(Constant.CURRENT, String.valueOf(1));
+        map.put(Constant.SIZE, String.valueOf(mPage * mPageSize));
+
+//        if (netWorkListener != null)
+//            netWorkListener.onStarts();
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<SubscribesListBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<SubscribesListBean>, SubscribesListBean>(new TypeToken<SubscribesListBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<SubscribesListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    //netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(SubscribesListBean subscribesBean) {
+                if (netWorkListener != null) {
+                    //netWorkListener.onAfters();
+                    netWorkListener.onData(true, subscribesBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
     /**
      * 向服务器发送聊天消息
      */

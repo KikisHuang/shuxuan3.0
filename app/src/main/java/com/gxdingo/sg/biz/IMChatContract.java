@@ -1,8 +1,6 @@
 package com.gxdingo.sg.biz;
 
-import android.graphics.drawable.AnimationDrawable;
-
-import com.gxdingo.sg.bean.AddressBean;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -73,7 +71,7 @@ public class IMChatContract {
          * @param pos
          * @param mAddress
          */
-        void goOutSideNavigation(int pos, ReceiveIMMessageBean.MsgAddress mAddress);
+        void goOutSideNavigation(int pos, AddressBean mAddress);
 
         /**
          * 开始录制语音

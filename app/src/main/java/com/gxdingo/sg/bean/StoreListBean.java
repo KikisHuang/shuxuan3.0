@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.kikis.commnlibrary.bean.AddressBean;
+
 import java.util.List;
 
 /**
@@ -9,7 +11,7 @@ import java.util.List;
  */
 public class StoreListBean {
 
-    private AddressBean  userAddress;
+    private AddressBean userAddress;
 
     private List<StoreBean> list;
 
