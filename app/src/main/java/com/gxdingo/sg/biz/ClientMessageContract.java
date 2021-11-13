@@ -1,6 +1,7 @@
 package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.SubscribesBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -19,6 +20,6 @@ public class ClientMessageContract {
     }
 
     public interface ClientMessageListener{
-        void onSubscribes(List<SubscribesBean> subscribesBeans);
+        void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean);
     }
 }

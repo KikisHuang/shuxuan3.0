@@ -55,7 +55,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
-    private String amount = "1.0";
+    private String amount = "0.0";
 
     private int mtype = -1;
 
@@ -188,6 +188,10 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 break;
             case R.id.btn_confirm:
                 String balance = et_cash_amount.getText().toString();
+                if (isEmpty(balance)){
+                    onMessage("请输入提现金额");
+                    return;
+                }
                 if (!BigDecimalUtils.compare(balance,"0")){
                     onMessage("请输入有效提现金额");
                     return;

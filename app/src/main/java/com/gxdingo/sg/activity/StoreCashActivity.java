@@ -166,6 +166,10 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                 break;
             case R.id.btn_confirm:
                 String balance = et_cash_amount.getText().toString();
+                if (isEmpty(balance)){
+                    onMessage("请输入提现金额");
+                    return;
+                }
                 if (!BigDecimalUtils.compare(balance,"0")){
                     onMessage("请输入有效提现金额");
                     return;

@@ -130,7 +130,7 @@ ext {
             umengshareqq                  : 'com.umeng.umsdk:share-qq:7.1.4', //友盟分享qq
             umengshareqqopensdk           : 'com.tencent.tauth:qqopensdk:3.51.2',//QQ官方SDK依赖库
             umengsharewechat              : 'com.umeng.umsdk:share-wx:7.1.4', //友盟分享微信
-            wechatopensdk       : 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+',//微信官方SDK依赖库
+            wechatopensdk                 : 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+',//微信官方SDK依赖库
             umengsina                     : 'com.umeng.umsdk:share-sina:7.1.4', //友盟分享新浪微博
             umengsinaopensdk              : 'com.sina.weibo.sdk:core:10.10.0:openDefaultRelease@aar',//新浪微博官方SDK依赖库
             sharealipay                   : 'com.umeng.umsdk:share-alipay:7.1.4',
