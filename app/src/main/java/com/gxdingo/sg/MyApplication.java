@@ -113,7 +113,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         instance = this;
         //自用lib的初始化
         KikisUitls.Init(this);
@@ -123,25 +123,27 @@ public class MyApplication extends Application {
 
         ZXingLibrary.initDisplayOpinion(this);
 
+        initGreenDao();
+        xPopupInit();
+        nineGridInit();
+        rxInit();
+        umengInit();
+        buglyInit();
+        tntX5Init();
+        initCloudChannel(this);
+        svgaCacheInit();
+
         //todo 需要增加隐私政策弹窗
         AMapLocationClient.updatePrivacyShow(this, true, true);
         AMapLocationClient.updatePrivacyAgree(this, true);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onApplicationEvent(Integer type) {
-        if (type == LocalConstant.CONSENT_AGREEMENT) {
-            initGreenDao();
-            xPopupInit();
-            nineGridInit();
-            rxInit();
-            umengInit();
-            buglyInit();
-            tntX5Init();
-
-            svgaCacheInit();
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onApplicationEvent(Integer type) {
+//        if (type == LocalConstant.CONSENT_AGREEMENT) {
+//
+//        }
+//    }
 
     /**
      * svga缓存
@@ -475,8 +477,9 @@ public class MyApplication extends Application {
             pushService.register(applicationContext, new CommonCallback() {
                 @Override
                 public void onSuccess(String response) {
-                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+//                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
+//                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+
                 }
 
                 @Override

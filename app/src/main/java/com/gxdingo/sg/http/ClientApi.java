@@ -192,6 +192,11 @@ public class ClientApi {
     public static final String ARTICLE_DETAIL = HIERARCHY + "article/detail";
 
     /**
+     * 获取图片文章形式
+     */
+    public static final String ARTICLE_IMAGE = HIERARCHY + "article/image";
+
+    /**
      * 语音获取匹配度最高的店铺信息
      */
     public static final String FIND_STORE = HIERARCHY + "voice/find/store";

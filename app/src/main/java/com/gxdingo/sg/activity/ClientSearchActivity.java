@@ -34,6 +34,9 @@ import butterknife.OnClick;
  */
 public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, TextView.OnEditorActionListener, LabelsView.OnLabelClickListener {
 
+    @BindView(R.id.location_tv)
+    public TextView location_tv;
+
     @BindView(R.id.keyword_et)
     public ClearEditText keyword_et;
 
@@ -143,6 +146,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void initData() {
         getP().getSearchHistory();
+//        getP().checkPermissions(getRxPermissions());
     }
 
     @OnClick(R.id.btn_cancel)
@@ -156,7 +160,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public void setDistrict(String district) {
-
+        location_tv.setText(district);
     }
 
     @Override

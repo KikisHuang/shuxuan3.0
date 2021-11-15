@@ -153,6 +153,22 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        categoryId = 0;
+//        getP().getNearbyStore(true,categoryId);
+//    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            categoryId = 0;
+            getP().getNearbyStore(true,categoryId);
+        }
+    }
+
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);

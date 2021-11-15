@@ -141,8 +141,11 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED)
+        if (type == CLIENT_LOGIN_SUCCEED){
+            getP().refreshList();
             getP().getSubscribesMessage(true);
+        }
+
     }
 
     @Override
@@ -194,9 +197,9 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     public void onStart() {
         super.onStart();
-        getP().refreshList();
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().refreshList();
     }
-
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
