@@ -219,7 +219,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 break;
             case R.id.settle_in:
 //                getP().checkTab(2);
-                ToastUtils.showLong("hi!索嗨，来入驻");
+//                ToastUtils.showLong("hi!索嗨，来入驻");
+                goToPage(this,ClientSettleActivity.class,null);
                 break;
             case R.id.business_layout:
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();

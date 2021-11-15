@@ -164,6 +164,13 @@
 
         </activity>
 
+        <!--客户端入驻页面 -->
+        <activity
+            android:name=".activity.ClientSettleActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <!--客户端店铺详情页面 -->
         <activity
             android:name=".activity.ClientStoreDetailsActivity"

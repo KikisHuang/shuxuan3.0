@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ArticleImage;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
@@ -53,6 +54,7 @@ import static com.gxdingo.sg.http.ClientApi.ADDRESS_DEFAULT;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_DELETE;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_UPDATE;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
+import static com.gxdingo.sg.http.ClientApi.ARTICLE_IMAGE;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
 import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
 import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
@@ -431,6 +433,55 @@ public class ClientNetworkModel {
                         if (customResultListener != null)
                             customResultListener.onResult(storeDetail);
                     }
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+
+    }
+
+    /**
+     * 商家详情
+     *
+     * @param context
+     * @param imageName
+     */
+    public void getArticleImage(Context context, String imageName) {
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.IMAGE_NAME, imageName);
+
+        Observable<ArticleImage> observable = HttpClient.post(ARTICLE_IMAGE, map)
+                .execute(new CallClazzProxy<ApiResult<ArticleImage>, ArticleImage>(new TypeToken<ArticleImage>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ArticleImage>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(ArticleImage articleImage) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    EventBus.getDefault().post(articleImage);
                 }
             }
         };

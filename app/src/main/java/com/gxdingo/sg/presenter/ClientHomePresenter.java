@@ -137,6 +137,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     }
 
+    @Override
+    public void getSettleImage() {
+        if (clientNetworkModel!=null){
+            clientNetworkModel.getArticleImage(getContext(),"sxyg_invite_in_seller");
+        }
+
+    }
+
     /**
      * 保存成历史搜索
      */

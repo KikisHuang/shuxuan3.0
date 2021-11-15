@@ -92,6 +92,7 @@ public class LocalConstant {
     public static final String SCORE = "score";
     public static final String ISGOOD = "isGood";
     public static final String IMAGES = "images";
+    public static final String IMAGE_NAME = "imageName";
     public static final String ARTICLEID = "articleId";
     public static final String IDENTIFIER = "identifier";
     public static final String STOREID = "storeId";

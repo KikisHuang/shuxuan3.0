@@ -31,6 +31,8 @@ public class ClientHomeContract {
         void getSearchHistory();
 
         void search(boolean refresh,String content);
+
+        void getSettleImage();
     }
 
     public interface ClientHomeListener{
