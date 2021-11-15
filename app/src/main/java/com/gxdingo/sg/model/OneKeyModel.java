@@ -59,6 +59,7 @@ public class OneKeyModel {
                         Log.i("oneKey-login", "唤起授权页成功：" + s);
                     }
 
+                    //todo 一键登录，商家端的逻辑
                     if (ResultCode.CODE_SUCCESS.equals(tokenRet.getCode())) {
                         Log.i("oneKey-login", "获取token成功：" + s);
                         EventBus.getDefault().post(new OneKeyLoginEvent(tokenRet.getToken(), isUser));

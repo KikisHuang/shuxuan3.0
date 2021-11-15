@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,29 +14,43 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
+import com.gxdingo.sg.biz.NineClickListener;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.kikis.commnlibrary.utils.DateUtils;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullGridLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
+import com.lzy.ninegrid.ImageInfo;
+import com.lzy.ninegrid.NineGridView;
+import com.lzy.ninegrid.NineGridViewAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 
 /**
  * 用户端和商家端商圈列表适配器
@@ -58,13 +73,15 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
+        ImageView single_img = baseViewHolder.findView(R.id.single_img);
+        FrameLayout picture_fml = baseViewHolder.findView(R.id.picture_fml);
         RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
         TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
         TextView tvCommentCount = baseViewHolder.findView(R.id.tv_comment_count);
         LinearLayout llCommentLayout = baseViewHolder.findView(R.id.ll_comment_layout);
         TextView tvOpenComment = baseViewHolder.findView(R.id.tv_open_comment);
-        PullRecyclerView rvPicture = baseViewHolder.findView(R.id.rv_picture);
+        NineGridView picture_gridview = baseViewHolder.findView(R.id.picture_gridview);
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
@@ -102,12 +119,15 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
         String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
-        if (isUse ){
+        if (isUse) {
             client_date_tv.setText(createTime);
+            client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);
             ivDelete.setVisibility(View.GONE);
-        }else {
+        } else {
             tvTime.setText(createTime);
+            tvTime.setVisibility(View.VISIBLE);
+            ivDelete.setVisibility(View.VISIBLE);
             client_date_tv.setVisibility(View.GONE);
         }
 
@@ -132,21 +152,70 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         /**
          * 图片列表
          */
-        BusinessDistrictPictureAdapter mBusinessDistrictPictureAdapter = new BusinessDistrictPictureAdapter(mContext, data.getImages());
-        rvPicture.removeItemDecoration(mSpaceItemDecoration);
-        rvPicture.setStartPulldownAnimation(false);
-        rvPicture.setRecyclerViewScrollEnabled(false);
-        rvPicture.addItemDecoration(mSpaceItemDecoration);
-        rvPicture.setNestedScrollingEnabled(false);
-        rvPicture.setLayoutManager(new PullGridLayoutManager(mContext, 3));
-        rvPicture.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int p) {
+
+        if (data.getImages() != null && data.getImages().size() == 1) {
+            single_img.setVisibility(View.VISIBLE);
+            picture_gridview.setVisibility(View.GONE);
+//            Glide.with(mContext).load(data.getImages().get(0)).apply(GlideUtils.getInstance().getGlideRoundOptions(6).centerCrop()).into(single_img);
+
+
+            single_img.setOnClickListener(v -> {
                 if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(rvPicture, getItemPosition(data), p, data.getImages().get(p));
+                    mOnChildViewClickListener.item(single_img,  baseViewHolder.getAdapterPosition(),  baseViewHolder.getAdapterPosition(), data.getImages().get(0));
+            });
+
+            Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
+                @Override
+                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                    try {
+                        String width = String.valueOf(resource.getIntrinsicWidth());
+
+                        String height = String.valueOf(resource.getIntrinsicHeight());
+
+//                    int newheight = getScreenWidth() * height / width;
+
+                        float ratio = Float.parseFloat(div(width, height, 5));
+
+                        int h = (int) (getScreenWidth() * 1 / 2);
+
+                        single_img.getLayoutParams().width = (int) (h * ratio);
+
+                        single_img.getLayoutParams().height = h;
+
+//                        single_img.setImageDrawable(resource);
+
+                        Glide.with(mContext).load(data.getImages().get(0)).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(single_img);
+
+                    } catch (Exception e) {
+                        LogUtils.e("图片宽高计算异常 === " + e);
+                    }
+                }
+            });
+        } else {
+            picture_gridview.setVisibility(View.VISIBLE);
+            single_img.setVisibility(View.GONE);
+            //单张图片宽度
+            //picture_gridview.setSingleImageSize((int) (getScreenWidth() * 1.5 / 2));
+            //picture_gridview.setSingleImageRatio(0.5625f);
+
+            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+
+            for (int i = 0; i < data.getImages().size(); i++) {
+                ImageInfo info = new ImageInfo();
+                info.setThumbnailUrl(data.getImages().get(i));
+                info.setBigImageUrl(data.getImages().get(i));
+                imageInfo.add(info);
             }
-        });
-        rvPicture.setPullAdapter(mBusinessDistrictPictureAdapter);
+
+            picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, imageInfo, baseViewHolder.getAdapterPosition(), new NineClickListener() {
+                @Override
+                public void onNineGridViewClick(int position, int index) {
+                    if (mOnChildViewClickListener != null && data.getImages() != null)
+                        mOnChildViewClickListener.item(picture_gridview, position, position, data.getImages().get(position));
+                }
+            }));
+        }
+
 
         tvCommentCount.setText(data.getComments() + "评论");
         //点击评论数量展开评论列表

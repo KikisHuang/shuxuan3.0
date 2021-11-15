@@ -63,6 +63,8 @@ public class StoreBusinessDistrictContract {
          * @param id 商圈ID
          */
         void deleteBusinessDistrictDynamics(long id);
+
+        void PhotoViewer(ArrayList<String> images, int position);
     }
 
     public interface StoreBusinessDistrictListener {

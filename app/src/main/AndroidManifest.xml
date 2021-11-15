@@ -20,7 +20,7 @@
     <!-- 录音权限 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- 相机权限 -->
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <!-- 振动权限 -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 通过GPS得到精确位置 -->
@@ -49,11 +49,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_circle_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         tools:replace="allowBackup">
 
         <!--每日反省服务-->
@@ -82,7 +82,7 @@
         <!--适配华为（huawei）刘海屏-->
         <meta-data
             android:name="android.notch_support"
-            android:value="true"/>
+            android:value="true" />
         <!--适配小米（xiaomi）刘海屏-->
         <meta-data
             android:name="notch.config"
@@ -103,18 +103,22 @@
 
 
         <!--联通电信授权⻚--> <!--如果不需要使⽤窗⼝模式，不要使⽤authsdk_activity_dialog主题，会出现异常动画--> <!--如果需要使⽤authsdk_activity_dialog主题，则screenOrientation⼀定不能指定明确的 ⽅向， ⽐如portrait、sensorPortrait，在8.0的系统上不允许窗⼝模式指定orientation，会 发⽣crash，需要指定为behind， 然后在授权⻚的前⼀个⻚⾯指定具体的orientation-->
-        <activity android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
+        <activity
+            android:name="com.mobile.auth.gatewayauth.LoginAuthActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false" android:theme="@style/authsdk_activity_dialog"
-            android:launchMode="singleTop" />
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/authsdk_activity_dialog" />
         <!--协议⻚⾯webview-->
-        <activity android:name="com.mobile.auth.gatewayauth.activity.AuthWebVeiwActivity"
+        <activity
+            android:name="com.mobile.auth.gatewayauth.activity.AuthWebVeiwActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <!--移动授权⻚-->
-        <activity android:name="com.cmic.sso.sdk.activity.LoginAuthActivity"
+        <activity
+            android:name="com.cmic.sso.sdk.activity.LoginAuthActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:launchMode="singleTop" />
@@ -132,8 +136,7 @@
         <activity
             android:name=".activity.LoginActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <!--绑定手机号 -->
         <activity
@@ -193,6 +196,12 @@
 
         </activity>
 
+        <!--客户端商圈页面 -->
+        <activity
+            android:name=".activity.ClientBusinessCircleActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
         <!--客户端提现页面 -->
         <activity
             android:name=".activity.ClientCashActivity"
@@ -274,14 +283,12 @@
         <!--银行列表页面 -->
         <activity
             android:name=".activity.BankcardListActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <!--银行列表页面 -->
         <activity
             android:name=".activity.AddBankcardActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <!--选择银行页面 -->
         <activity
@@ -292,8 +299,7 @@
         <!--解绑银行卡页面 -->
         <activity
             android:name=".activity.UnbindBankcardActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <!--文章列表页面 -->
         <activity
             android:name=".activity.ArticleListActivity"
@@ -323,16 +329,16 @@
         <!--客户端使用优惠劵页面 -->
         <activity
             android:name=".activity.ClientCouponDetailsActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
 
         </activity>
 
         <!--客户端优惠劵列表页面 -->
         <activity
             android:name=".activity.ClientCouponListActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
 
         </activity>
 
@@ -374,8 +380,7 @@
         <activity
             android:name=".activity.StoreActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|stateVisible|adjustPan">
-        </activity>
+            android:windowSoftInputMode="stateHidden|stateVisible|adjustPan"></activity>
 
         <!--IM聊天页面(旧) -->
         <activity
@@ -393,63 +398,63 @@
         <!--IM-转账支付页面 -->
         <activity
             android:name=".activity.IMTransferAccountsPayActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--IM-投诉页面 -->
         <activity
             android:name=".activity.IMComplaintActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--IM-投诉内容页面 -->
         <activity
             android:name=".activity.IMComplaintContentActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
         <!--商家首页搜索页面 -->
         <activity
             android:name=".activity.StoreHomeSearchActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家提现页面 -->
         <activity
             android:name=".activity.StoreCashActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家商圈（我的）消息页面 -->
         <activity
             android:name=".activity.BusinessDistrictMessageActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家商圈发布页面 -->
         <activity
             android:name=".activity.StoreBusinessDistrictReleaseActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家设置页面 -->
         <activity
             android:name=".activity.StoreSettingActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家认证信息页面 -->
         <activity
             android:name=".activity.StoreAuthInfoActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家修改名称页面 -->
         <activity
             android:name=".activity.StoreUpdateNameActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家设置页面 -->
         <activity
             android:name=".activity.StoreQRCodeActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <!--商家账单详情页面 -->
         <activity
             android:name=".activity.StoreBillDetailActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

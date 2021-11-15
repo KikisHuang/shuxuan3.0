@@ -198,6 +198,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onBaseEvent(Object object) {
 
+
+
         //全局新消息布局
         if (!isAcBackground && object instanceof ReceiveIMMessageBean)
             showNewMessageDialog((ReceiveIMMessageBean) object);

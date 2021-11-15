@@ -61,7 +61,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @BindView(R.id.tv_unread_msg_count)
     TextView tvUnreadMsgCount;
 
-//    @BindView(R.id.rl_message_list)
+    //    @BindView(R.id.rl_message_list)
 //    RelativeLayout rlMessageList;
     @BindView(R.id.iv_send_business_district)
     ImageView ivSendBusinessDistrict;
@@ -85,7 +85,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
-    
+
     /**
      * 商圈子视图点击监听接口
      */
@@ -171,11 +171,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void init() {
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY,true);
-        if (isUser){
+        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        if (isUser) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
-        }else
+        } else
             title_tv.setText("我的商圈");
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
@@ -187,7 +187,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void initData() {
         boolean login = UserInfoUtils.getInstance().isLogin();
-        if (login){
+        if (login) {
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
@@ -205,7 +205,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     protected void onTypeEvent(Integer type) {
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
-        ||type == LocalConstant.CLIENT_LOGIN_SUCCEED || type ==LocalConstant.STORE_LOGIN_SUCCEED) {
+                || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
@@ -303,6 +303,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                             getP().deleteBusinessDistrictDynamics(businessDistrict.getId());
                         }))
                         .show();
+            } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
+                getP().PhotoViewer(mAdapter.getData().get(position).getImages(), view.getId() == R.id.single_img ? 0 : position);
             }
         }
     };

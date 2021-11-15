@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStorePhotoAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
@@ -33,13 +36,17 @@ import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
  * @date: 2021/10/19
  * @page:
  */
-public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> implements ClientStoreContract.ClientStoreListener{
+public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> implements ClientStoreContract.ClientStoreListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -63,6 +70,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     private StoreDetail mStoreDetail;
 
     private ClientStorePhotoAdapter mPhotoAdapter;
+
 
     @Override
     protected ClientStoreContract.ClientStorePresenter createPresenter() {
@@ -131,7 +139,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void init() {
-        storeId =getIntent().getIntExtra(Constant.SERIALIZABLE+0,0);
+        storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
         title_layout.setTitleText("金源便利店");
         title_layout.setMoreText("资质");
         if (mapView != null)
@@ -139,14 +147,20 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
         mPhotoAdapter = new ClientStorePhotoAdapter();
         store_photo_rv.setAdapter(mPhotoAdapter);
+        mPhotoAdapter.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+                goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(reference.get());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         store_photo_rv.setLayoutManager(linearLayoutManager);
     }
 
-    @OnClick({R.id.txt_more,R.id.ll_navigation,R.id.business_district_cl,R.id.ll_send_message,R.id.ll_phone_contract})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.txt_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.txt_more:
                 break;
             case R.id.ll_navigation:
@@ -164,7 +178,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             case R.id.ll_send_message:
                 break;
             case R.id.ll_phone_contract:
-                if (mStoreDetail!=null)
+                if (mStoreDetail != null)
                     getP().callStore(mStoreDetail.getContactNumber());
                 break;
         }
@@ -199,7 +213,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mapView!=null)
+        if (mapView != null)
             mapView.onDestroy();
     }
 
@@ -211,7 +225,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     public void onStoreDetailResult(StoreDetail storeDetail) {
-        if (storeDetail==null){
+        if (storeDetail == null) {
             onMessage("未获取到商家信息！");
             finish();
         }
