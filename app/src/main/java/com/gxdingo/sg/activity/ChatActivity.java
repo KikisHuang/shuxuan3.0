@@ -11,12 +11,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -159,6 +161,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.right_arrow)
     public TextView right_arrow;
 
+    @BindView(R.id.cv_other_side_address)
+    public CardView cv_other_side_address;
+
     private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
     //最早的一条消息时间
@@ -272,6 +277,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
+        else {
+            cv_other_side_address.setVisibility(View.GONE);
+            FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) recycleView.getLayoutParams();
+            flp.topMargin = 0;
+        }
 
         initEmotionMainFragment();
 
@@ -568,7 +578,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     //转账
                     showSelectTransferAccountsWayDialog();
                 }
-            }else if (functionsItem.type == TYPE_ROLE){
+            } else if (functionsItem.type == TYPE_ROLE) {
                 if (functionsItem.position == 0) {
                     //相册
                     getP().photoSourceClick(0);

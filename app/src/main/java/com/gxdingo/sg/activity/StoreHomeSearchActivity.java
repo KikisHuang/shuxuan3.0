@@ -185,7 +185,7 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
         mAdapter = new StoreHomeSearchResultAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{((SubscribesListBean.SubscribesMessage) mAdapter.getData()).getShareUuid(), ((SubscribesListBean.SubscribesMessage) mAdapter.getData()).getSendUserRole()})));
+        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{((SubscribesListBean.SubscribesMessage) mAdapter.getData().get(position)).getShareUuid(), ((SubscribesListBean.SubscribesMessage)mAdapter.getData().get(position)).getSendUserRole()})));
     }
 
     @Override

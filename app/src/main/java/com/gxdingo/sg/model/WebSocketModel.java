@@ -254,10 +254,10 @@ public class WebSocketModel {
 
         if (sendIMMessageBean.getParams() != null)
             map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
-
+/*
         if (netWorkListener != null) {
             netWorkListener.onStarts();
-        }
+        }*/
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SEND, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
@@ -273,16 +273,16 @@ public class WebSocketModel {
                 LogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
-                    netWorkListener.onAfters();
+//                    netWorkListener.onAfters();
                 }
 
             }
 
             @Override
             public void onNext(ReceiveIMMessageBean receiveIMMessageBean) {
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                }
+//                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+//                }
                 if (listener != null) {
                     listener.onResult(receiveIMMessageBean);
                 }

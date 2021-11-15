@@ -93,7 +93,6 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     private int clickInterval = 300;
 
 
-
     /**
      * 创建fragment的静态方法，方便传递参数
      *
@@ -267,7 +266,6 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     }
 
 
-
     /**
      * 添加骨架屏
      *
@@ -308,7 +306,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
      */
     protected void hideSkeletonScreen() {
 
-        if (mSkeletonScreen != null){
+        if (mSkeletonScreen != null) {
             mSkeletonScreen.hide();
             mSkeletonScreen = null;
         }
@@ -506,6 +504,9 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     public void onRequestComplete() {
         onAfters();
         hideSkeletonScreen();
+
+        if (refreshLayout != null && refreshLayout.isRefreshing())
+            refreshLayout.finishRefresh();
     }
 
     @Override
@@ -515,6 +516,9 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
     @Override
     public void onMessage(String msg) {
+        if (refreshLayout != null && refreshLayout.isRefreshing())
+            refreshLayout.finishRefresh();
+
         try {
             customToast(msg);
         } catch (Exception e) {

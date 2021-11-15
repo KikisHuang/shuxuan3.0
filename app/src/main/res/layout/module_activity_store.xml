@@ -31,7 +31,7 @@
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_store_main_menu_home_unselected"
-            app:focus_color="@color/main_menu_color"
+            app:focus_color="@color/gray202"
             app:focus_icon="@drawable/module_svg_store_main_menu_home_selected"
             app:is_selected="true"
             app:text="@string/store_home_page" />
@@ -44,7 +44,7 @@
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_store_main_menu_wallet_unselected"
-            app:focus_color="@color/main_menu_color"
+            app:focus_color="@color/gray202"
             app:focus_icon="@drawable/module_svg_store_main_menu_wallet_selected"
             app:is_selected="false"
             app:text="@string/store_wallet" />
@@ -57,7 +57,7 @@
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_store_main_menu_business_district_unselected"
-            app:focus_color="@color/main_menu_color"
+            app:focus_color="@color/gray202"
             app:focus_icon="@drawable/module_svg_store_main_menu_business_district_selected"
             app:is_selected="false"
             app:text="@string/store_business_district" />
@@ -70,7 +70,7 @@
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_store_main_menu_mine_unselected"
-            app:focus_color="@color/main_menu_color"
+            app:focus_color="@color/gray202"
             app:focus_icon="@drawable/module_svg_store_main_menu_mine_selected"
             app:is_selected="false"
             app:text="@string/store_mine" />
