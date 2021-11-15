@@ -1,17 +1,29 @@
 package com.gxdingo.sg.activity;
 
+import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+
+import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN;
+import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN_CIRCLE;
 
 /**
  * @author: Weaving
@@ -100,6 +112,20 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
         }
     }
 
+    @OnClick({R.id.btn_become_store,R.id.btn_invitation})
+    public void onClickViews(View v){
+        switch (v.getId()){
+            case R.id.btn_become_store:
+                break;
+            case R.id.btn_invitation:
+                Intent textIntent = new Intent(Intent.ACTION_SEND);
+                textIntent.setType("text/plain");
+                textIntent.putExtra(Intent.EXTRA_TEXT, "这是一段分享的文字");
+                startActivity(Intent.createChooser(textIntent, "分享"));
+                break;
+        }
+    }
+
     @Override
     protected void init() {
 
@@ -108,5 +134,11 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void initData() {
         getP().getSettleImage();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
     }
 }

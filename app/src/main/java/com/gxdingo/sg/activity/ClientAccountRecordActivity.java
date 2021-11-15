@@ -160,6 +160,23 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemClickListener(this);
+        account_record_lv.setOnLabelSelectChangeListener(new LabelsView.OnLabelSelectChangeListener() {
+            @Override
+            public void onLabelSelectChange(TextView label, Object data, boolean isSelect, int position) {
+                switch (position){
+                    case 0:
+                        status = 0;
+                        break;
+                    case 1:
+                        status = 1;
+                        break;
+                    case 2:
+                        status = -1;
+                        break;
+                }
+                getP().getAccountRecord(true,status,date);
+            }
+        });
     }
 
     @Override
@@ -169,7 +186,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         labels.add("收入");
         labels.add("其他");
         account_record_lv.setLabels(labels);
-
+        account_record_lv.setSelects(2);
         date_tv.setText(Calendar.getInstance().get(Calendar.YEAR)+gets(R.string.common_year)+(Calendar.getInstance().get(Calendar.MONTH)+1)+gets(R.string.common_month));
         date = Calendar.getInstance().get(Calendar.YEAR)+"-"+(Calendar.getInstance().get(Calendar.MONTH)+1);
         getP().getAccountRecord(true,status,date);

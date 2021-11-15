@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
+import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.kikis.commnlibrary.view.GlideRoundTransform;
@@ -40,7 +41,11 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
         baseViewHolder.setText(R.id.store_name_tv,storeBean.getName());
         baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance());
+        LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
+        labelsView.setLabels(storeBean.getClassNameList());
+
         if (mType == 0)
             baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
+
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sg</string>
+    <string name="app_name">树选易购</string>
     <string name="confirm_login">确认登陆</string>
     <string name="send_verification_code">发送验证码</string>
     <string name="other_login_methods">其他方式登录</string>
