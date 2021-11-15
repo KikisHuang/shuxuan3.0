@@ -56,32 +56,26 @@
             android:visibility="invisible" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_search_result_layout"
+    <com.donkingliang.labels.LabelsView
+        android:id="@+id/search_labels"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="25dp"
+        app:labelBackground="@drawable/module_store_label_bg"
+        app:labelTextColor="@drawable/module_store_label_text_color"
+        app:labelTextPaddingBottom="6dp"
+        app:labelTextPaddingRight="10dp"
+        app:labelTextPaddingLeft="10dp"
+        app:labelTextPaddingTop="6dp"
+        app:labelTextSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:selectType="SINGLE_IRREVOCABLY"
+        app:wordMargin="10dp" />
 
-        <com.scwang.smart.refresh.layout.SmartRefreshLayout
-            android:id="@+id/smartrefreshlayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:srlEnableNestedScrolling="true"
-            app:srlEnablePreviewInEditMode="false">
 
-            <include layout="@layout/module_include_nodata_recycle"></include>
-
-            <com.scwang.smart.refresh.footer.ClassicsFooter
-                android:id="@+id/classics_footer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srlAccentColor="@color/gray666"
-                app:srlClassicsSpinnerStyle="Translate"
-                app:srlTextFinish="@string/loading"
-                app:srlTextLoading="@string/loading" />
-
-        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-    </LinearLayout>
+    <include layout="@layout/module_include_refresh"/>
 
 </LinearLayout>

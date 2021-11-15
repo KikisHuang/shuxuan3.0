@@ -136,8 +136,9 @@ public class WebSocketModel {
      * 获取消息订阅列表
      *
      * @param context
+     * @param content
      */
-    public void getMessageSubscribesList(Context context, boolean refresh) {
+    public void getMessageSubscribesList(Context context, boolean refresh, String content) {
         if (refresh)
             resetPage();//重置页码
 
@@ -146,6 +147,10 @@ public class WebSocketModel {
         //map.put(Constant.SEARCH_CONTENT, "");
         map.put(Constant.CURRENT, String.valueOf(mPage));
         map.put(Constant.SIZE, String.valueOf(mPageSize));
+
+        if (!isEmpty(content))
+            map.put("searchContent", content);
+
 
 //        if (netWorkListener != null)
 //            netWorkListener.onStarts();
