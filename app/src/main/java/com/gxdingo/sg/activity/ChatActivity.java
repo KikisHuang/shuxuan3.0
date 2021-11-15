@@ -252,6 +252,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void init() {
+        //todo 客服类型
+
         title_layout.setBackgroundColor(getc(R.color.white));
 
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
@@ -264,7 +266,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             //锁定聊天id
             LocalConstant.SHAREUUID = mShareUuid;
 
-        //todo 点击事件待添加
         title_layout.setMoreImg(R.drawable.module_svg_more_8935);
 
         initEmotionMainFragment();
@@ -404,6 +405,17 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 break;
             case R.id.img_more:
 
+                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+                    //用户
+                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
+                        goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{(int) mMessageDetails.getOtherAvatarInfo().getId()}));
+                } else {
+                    //商家
+                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
+                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+                }
+
+
                 break;
           /*  case R.id.photo_album_img:
                 PhotoUtils.Photo(reference.get(), this);
@@ -518,7 +530,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
                 //投诉
                 else if (functionsItem.position == 5) {
-                    startActivity(new Intent(this, IMComplaintActivity.class));
+                    if (mMessageDetails != null)
+                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+//                    goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghutousu"}));
+
                 }
             }
             /**
@@ -562,7 +577,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             mAddress = addressInfo;
 
             if (!isEmpty(addressInfo.getStreet()))
-                tvOtherSideAddress.setText(addressInfo.getStreet()+" "+addressInfo.getDoorplate());
+                tvOtherSideAddress.setText(addressInfo.getStreet() + " " + addressInfo.getDoorplate());
 
             if (!isEmpty(addressInfo.getMobile()))
                 tv_other_side_phone.setText(addressInfo.getMobile());
@@ -1053,7 +1068,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 if (imChatHistoryListBean.getAddress() != null) {
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getStreet()))
-                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet()+" "+imChatHistoryListBean.getAddress().getDoorplate());
+                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet() + " " + imChatHistoryListBean.getAddress().getDoorplate());
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getMobile()))
                         tv_other_side_phone.setText(imChatHistoryListBean.getAddress().getMobile());

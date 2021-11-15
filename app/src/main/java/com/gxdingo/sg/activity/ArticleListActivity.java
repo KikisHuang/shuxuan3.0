@@ -14,6 +14,7 @@ import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.presenter.WebPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import java.util.List;
@@ -113,11 +114,15 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemClickListener(this);
+
+        articleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+
+        identifier = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
     }
 
     @Override
     protected void initData() {
-        getP().loadData(articleId,identifier);
+        getP().loadData(articleId, identifier);
     }
 
     @Override
@@ -133,6 +138,6 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         WebBean item = (WebBean) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0,item.getIdentifier()}));
+        goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, item.getIdentifier()}));
     }
 }

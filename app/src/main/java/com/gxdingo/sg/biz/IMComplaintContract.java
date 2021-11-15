@@ -1,10 +1,12 @@
 package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.UpLoadBean;
+import com.gxdingo.sg.bean.WebBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
-import com.luck.picture.lib.entity.LocalMedia;
+import com.kikis.commnlibrary.view.GridPictureEditing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +24,15 @@ public class IMComplaintContract {
          */
         void addPhoto(int num);
 
+        /**
+         * 获取文章列表
+         *
+         * @param identifier
+         */
+        void getDataList(String identifier);
+
+        //投诉
+        void complaint(String reason, String toString, ArrayList<GridPictureEditing.PictureValue> values, String sendIdentifier, int roleId, String uuid);
     }
 
     public interface IMComplaintListener {
@@ -32,5 +43,11 @@ public class IMComplaintContract {
          */
         void getPhotoDataList(UpLoadBean upLoadBean);
 
+        /**
+         * 投诉列表回调
+         *
+         * @param list
+         */
+        void onArticleListResult(List<WebBean> list);
     }
 }

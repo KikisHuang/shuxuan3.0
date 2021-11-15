@@ -28,6 +28,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
@@ -49,6 +50,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
+import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
@@ -60,6 +62,7 @@ import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
+import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -1077,4 +1080,66 @@ public class NetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
+
+    /**
+     * 投诉
+     *
+     * @param context
+     * @param reason
+     * @param content
+     * @param list
+     * @param sendIdentifier
+     * @param role
+     * @param shareUuid
+     */
+    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier, int role, String shareUuid) {
+
+        Map<String, String> map = getJsonMap();
+
+
+        map.put(LocalConstant.REASON, reason);
+        map.put("content", content);
+
+        if (list.size() > 0)
+            map.put("images", GsonUtil.gsonToStr(list));
+        
+        if (!isEmpty(sendIdentifier))
+            map.put("sendIdentifier", sendIdentifier);
+
+        if (role > 0)
+            map.put("role", String.valueOf(role));
+
+        if (!isEmpty(shareUuid))
+            map.put("shareUuid", String.valueOf(shareUuid));
+
+        Observable<NormalBean> observable = HttpClient.post(COMPLAINT_MSG, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (netWorkListener != null)
+                    netWorkListener.onMessage("投诉成功");
+
+                EventBus.getDefault().post(COMPLAINT_SUCCEED);
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
 }

@@ -44,10 +44,6 @@ public class LocalConstant {
     public static final int CLIENT_LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
-    public static final int CLIENT_COMMENT_SUCCEED = 32;
-    public static final int CLIENT_REFRESH_COMMENT_LIST = 33;
-    public static final int CLIENT_REFRESH_COMMONLY_USED_STORE_LIST = 34;
-    public static final int CLIENT_REFRESH_ORDER = 35;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     //确认收货
@@ -56,6 +52,8 @@ public class LocalConstant {
     public static final int LOGOUT_SUCCEED = 22;
     public static final int BIND_PHONE = 30;
     public static final int BIND_NEW_PHONE = 31;
+    //投诉成功
+    public static final int COMPLAINT_SUCCEED = 32;
 
     public final static int EMOTION_LAYOUT_IS_SHOWING = 1848;
 
@@ -83,6 +81,8 @@ public class LocalConstant {
     public static final String LONGITUDE1 = "longitude1";
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
+
+    public static final String REASON = "reason";
 
     public static final String STATUS = "status";
     public static final String CURRENT = "current";
@@ -181,4 +181,5 @@ public class LocalConstant {
 
     public static final int IMG = 1123;
     public static final int ADD = 1124;
+
 }

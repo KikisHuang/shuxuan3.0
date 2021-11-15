@@ -143,5 +143,9 @@ public class Api {
      * 领取转账
      */
     public static final String GET_TRANSFER = HIERARCHY + "transfer/accounts/receive";
+    /**
+     * 投诉
+     */
+    public static final String COMPLAINT_MSG = HIERARCHY + "complaint/msg";
 
 }

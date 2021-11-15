@@ -223,7 +223,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
      * @return
      */
     @JavascriptInterface
-    public String getToken343G7G31A46G() {
+    public String getSXYGLoginInfo20211021() {
         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
 
         String userInfo = GsonUtil.gsonToStr(userBean);
