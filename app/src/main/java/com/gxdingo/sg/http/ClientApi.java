@@ -42,7 +42,7 @@ public class ClientApi {
     public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";
 
     //平台客服path
-    public static final String SERVER_URL = "/#/pages/message/contact-server";
+    public static final String SERVER_URL = "/#/pages/message/chat";
 
 
     /**
@@ -201,7 +201,7 @@ public class ClientApi {
     public static final String FIND_CATEGORY = HIERARCHY + "voice/find/category";
 
     /**
-     * 语音获取匹配度最高的分类信息
+     * 分类列表
      */
     public static final String CATEGORY_CATEGORIES = HIERARCHY + "category/categories";
 

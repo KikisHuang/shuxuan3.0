@@ -207,7 +207,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
         if (object instanceof GoNoticePageEvent){
             GoNoticePageEvent event = (GoNoticePageEvent) object;
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id,event.type}));
 
         }
 

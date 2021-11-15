@@ -168,7 +168,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().wechatLogin(event.code);
         } else if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id,event.type}));
         }
     }
 

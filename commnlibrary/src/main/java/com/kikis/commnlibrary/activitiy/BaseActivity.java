@@ -581,7 +581,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
                             @Override
                             public void onClick(View v) {
                                 if (messageInfoBean.getSubscribeListVO() != null)
-                                    sendEvent(new GoNoticePageEvent(messageInfoBean.getSubscribeListVO().getShareUuid(), 0));
+                                    sendEvent(new GoNoticePageEvent(messageInfoBean.getSubscribeListVO().getShareUuid(), messageInfoBean.getSubscribeListVO().getSendUserRole()));
 
                                 fmlayout.removeViewInLayout(baseMessageLayout);
                             }

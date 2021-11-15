@@ -435,11 +435,4 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         businessLayout.setVisibility(View.VISIBLE);
         llCertificationResultLayout.setVisibility(View.GONE);
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

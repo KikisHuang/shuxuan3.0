@@ -116,13 +116,6 @@ public class StoreCertificationResultActivity extends BaseMvpActivity<StoreCerti
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
     @OnClick(R.id.btn_submit)
     public void onViewClicked() {
     }

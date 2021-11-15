@@ -197,13 +197,6 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
-    @Override
     public void onSucceed(int type) {
         //删除我自己的评论
         if (type == 300) {

@@ -182,13 +182,6 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
     @OnClick({R.id.tv_cancel, R.id.iv_empty})
     public void onViewClicked(View view) {
         switch (view.getId()) {
