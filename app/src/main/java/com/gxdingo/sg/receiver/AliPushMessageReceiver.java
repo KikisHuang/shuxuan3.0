@@ -81,7 +81,6 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
         try {
 
-
         } catch (Exception e) {
             LogUtils.e("ali push paser error == " + e);
         }

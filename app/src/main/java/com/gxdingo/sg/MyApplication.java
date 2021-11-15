@@ -138,7 +138,7 @@ public class MyApplication extends Application {
             umengInit();
             buglyInit();
             tntX5Init();
-            initCloudChannel(this);
+
             svgaCacheInit();
         }
     }
@@ -475,9 +475,8 @@ public class MyApplication extends Application {
             pushService.register(applicationContext, new CommonCallback() {
                 @Override
                 public void onSuccess(String response) {
-//                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-//                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
-
+                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
+                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
                 }
 
                 @Override
