@@ -8,7 +8,10 @@ import com.alibaba.sdk.android.push.notification.CPushMessage;
 import com.blankj.utilcode.util.GsonUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.gxdingo.sg.activity.ChatActivity;
+import com.gxdingo.sg.bean.PushBean;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -78,8 +81,13 @@ public class AliPushMessageReceiver extends MessageReceiver {
     @Override
     public void onNotificationOpened(Context context, String title, String summary, String extraMap) {
         LogUtils.d(TAG, "onNotificationOpened, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap);
-
         try {
+
+            PushBean pushBean = GsonUtil.GsonToBean(extraMap, PushBean.class);
+
+            if (pushBean.getType() == 0)
+                goToPagePutSerializable(context, ChatActivity.class, getIntentEntityMap(new Object[]{pushBean.getShareUuid(), pushBean.getRole()}));
+
 
         } catch (Exception e) {
             LogUtils.e("ali push paser error == " + e);

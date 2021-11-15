@@ -15,10 +15,17 @@ public class ClientApi {
     //正式路径
     public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
 
-    //隐私协议文章
-    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "yonghuxieyi";
-    //服务协议文章
-    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "fufeixieyi";
+    //客户端隐私协议文章
+    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";
+    //客户端服务协议文章
+    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "yonghufuwuxieyi";
+
+    //商家端隐私协议文章
+    public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
+    //商家端服务协议文章
+    public static final String STORE_SERVICE_AGREEMENT_KEY = "shangjiafuwuxieyi";
+
+
     //店铺命名规则
     public static final String STORE_NAMING_RULES = "mingmingguize";
 

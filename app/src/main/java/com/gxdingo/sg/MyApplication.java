@@ -133,17 +133,7 @@ public class MyApplication extends Application {
         initCloudChannel(this);
         svgaCacheInit();
 
-        //todo 需要增加隐私政策弹窗
-        AMapLocationClient.updatePrivacyShow(this, true, true);
-        AMapLocationClient.updatePrivacyAgree(this, true);
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onApplicationEvent(Integer type) {
-//        if (type == LocalConstant.CONSENT_AGREEMENT) {
-//
-//        }
-//    }
 
     /**
      * svga缓存
@@ -477,8 +467,8 @@ public class MyApplication extends Application {
             pushService.register(applicationContext, new CommonCallback() {
                 @Override
                 public void onSuccess(String response) {
-//                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-//                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
+                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 
