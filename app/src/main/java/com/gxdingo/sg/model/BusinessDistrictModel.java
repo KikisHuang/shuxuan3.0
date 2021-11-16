@@ -303,8 +303,10 @@ public class BusinessDistrictModel {
             public void onNext(BusinessDistrictCommentOrReplyBean commentOrReplyBean) {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    listener.multipleDataResult(commentOrReplyBean, businessDistrict);
                 }
+
+                if (listener!=null)
+                    listener.multipleDataResult(commentOrReplyBean, businessDistrict);
             }
         };
 

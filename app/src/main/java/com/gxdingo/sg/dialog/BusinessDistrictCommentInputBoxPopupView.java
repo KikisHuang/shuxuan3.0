@@ -52,6 +52,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
+
 /**
  * 商圈评论输入框弹出窗口
  *
@@ -60,7 +62,7 @@ import butterknife.OnClick;
 public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
 
     Context mContext;
-    IMSelectSendAddressAdapter mAdapter;
+//    IMSelectSendAddressAdapter mAdapter;
     OnCommentContentListener mOnCommentContentListener;
     @BindView(R.id.et_content_input_box)
     EditText etContentInputBox;
@@ -96,8 +98,6 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
         mFragmentManager = fragmentManager;
         mOnCommentContentListener = listener;
 
-        //向EventBus注册监听
-        EventBus.getDefault().register(this);
         //监听全局布局（用来监听软键盘显示和关闭）
         ((Activity) mContext).getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
 
@@ -113,8 +113,13 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
     protected void initPopupContent() {
         super.initPopupContent();
         ButterKnife.bind(this);
-        SystemUtils.showKeyboard(mContext);
+//        SystemUtils.showKeyboard(mContext);
+        etContentInputBox.setFocusable(true);
+        etContentInputBox.setFocusableInTouchMode(true);
+        etContentInputBox.requestFocus();
+        etContentInputBox.findFocus();
 
+        EventBus.getDefault().register(this);
         etContentInputBox.setHint(mHint);
         //表情功能
         mIMEmotionFragment = new IMEmotionFragment();
@@ -144,12 +149,19 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
      */
     public void directlyDismiss() {
         mIsDirectlyClosed = true;
+        mFragmentManager =null;
+        mIMEmotionFragment =null;
         super.dismiss();
     }
 
     @Override
     public void dismiss() {
-        if (menuFunctionFragmentIsVisible(mIMEmotionFragment)) {
+        EventBus.getDefault().unregister(this);
+        //删除全局布局侦听器
+        ((Activity) mContext).getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
+//        SystemUtils.hideKeyboard(etContentInputBox);
+        super.dismiss();
+      /*  if (menuFunctionFragmentIsVisible(mIMEmotionFragment)) {
             hiddenMenuFunctionFragment();
             //传0表示只恢复原来的UI
             restoreUIAndChangeCurBtnIcon(0);
@@ -163,7 +175,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
             EventBus.getDefault().unregister(this);
             SystemUtils.hideKeyboard(etContentInputBox);
             super.dismiss();
-        }
+        }*/
     }
 
     /**
@@ -172,6 +184,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
+
             //当点击表情按钮的时候触发了软键盘弹出或关闭操作时不执行下面代码
             if (mCurrClickFunctionMenuId == R.id.iv_expression) {
                 return;
@@ -246,18 +259,18 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
     private void onExpressionClick(View view) {
         if (menuFunctionFragmentIsHidden(mIMEmotionFragment)) {
             mCurrClickFunctionMenuId = R.id.iv_expression;
+            SystemUtils.hideKeyboard(view);
             etContentInputBox.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     etContentInputBox.requestFocus();
-                    SystemUtils.hideKeyboard(view);
                     //恢复原来的UI，并改变表情按钮图标
                     restoreUIAndChangeCurBtnIcon(R.id.iv_expression);
                     showMenuFunctionFragment(mIMEmotionFragment);
                     //恢复输入发送内容布局在原来的位置（高度）
                     restoreInputContentLayoutPositionHeight();
                 }
-            }, 500);
+            }, 100);
 
         } else if (menuFunctionFragmentIsVisible(mIMEmotionFragment)) {
             hiddenMenuFunctionFragment();

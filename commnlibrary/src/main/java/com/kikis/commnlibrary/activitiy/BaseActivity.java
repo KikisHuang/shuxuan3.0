@@ -741,8 +741,12 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
     @Override
     public void onAfters() {
-        if (loadingPopup != null && loadingPopup.isShow())
+        if (loadingPopup != null && loadingPopup.isShow()){
             loadingPopup.dismiss();
+            loadingPopup.onDestroy();
+            loadingPopup = null;
+        }
+
     }
 
     @Override
@@ -858,6 +862,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
         loadingPopup = new XPopup.Builder(reference.get())
                 .hasShadowBg(false)
+                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                 .popupAnimation(PopupAnimation.NoAnimation)
                 .asLoading();
 //                .asLoading("", R.layout.module_dialog_custom);

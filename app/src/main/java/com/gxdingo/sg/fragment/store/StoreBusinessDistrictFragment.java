@@ -280,10 +280,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                     ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
                     if (commentList != null) {
                         BusinessDistrictListBean.Comment comment = commentList.get(position);
-                        if (businessDistrict.getIdentifier().equals(comment.getIdentifier())) {
+                        if (UserInfoUtils.getInstance().getIdentifier().equals(comment.getIdentifier())) {
                             onMessage("您不能回复自己的评论");
                             return;
                         }
+                        /*  if (businessDistrict.getIdentifier().equals(comment.getIdentifier())) {
+                            onMessage("您不能回复自己的评论");
+                            return;
+                        }*/
                         showCommentInputBoxDialog(businessDistrict, "回复" + comment.getReplyNickname(), businessDistrict.getId(), comment.getId());
                     }
                 }
@@ -350,6 +354,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
+                .dismissOnTouchOutside(true)
+                .autoDismiss(true)
+                .isDestroyOnDismiss(true)
                 .asCustom(mCommentInputBoxPopupView).show();
     }
 
