@@ -1,11 +1,15 @@
 package com.gxdingo.sg.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -174,6 +178,13 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
             clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,0,content);
         }
 
+    }
+
+    @Override
+    public void oauth(Context context) {
+        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+        });
     }
 
     @Override
