@@ -257,7 +257,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
                     //恢复输入发送内容布局在原来的位置（高度）
                     restoreInputContentLayoutPositionHeight();
                 }
-            }, 100);
+            }, 500);
 
         } else if (menuFunctionFragmentIsVisible(mIMEmotionFragment)) {
             hiddenMenuFunctionFragment();

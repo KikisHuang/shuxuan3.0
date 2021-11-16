@@ -24,6 +24,8 @@ public class ClientApi {
     public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
     //商家端服务协议文章
     public static final String STORE_SERVICE_AGREEMENT_KEY = "shangjiafuwuxieyi";
+    //树选用户及商家隐私协议
+    public static final String SERVICE_PRIVACY_AGREEMENT_KEY = "azyhsjyhxy";
 
 
     //店铺命名规则
@@ -42,6 +44,8 @@ public class ClientApi {
     public static final String TEST_WEB_URL = "http://192.168.110.248:8181";
 
     public static final String UAT_WEB_URL = "http://uat.gxdingo.com/html";
+
+    public static final String HTML = "article/html?";
 
     public static final String OFFICIAL_WEB_URL = "https://shuxuan.gxdingo.com/h5";
 
@@ -258,5 +262,8 @@ public class ClientApi {
      */
     public static final String APPEAL_SUBMIT = HIERARCHY + "appeal/submit";
 
-
+    /**
+     * 商圈评论/回复
+     */
+    public static final String BUSINESS_DISTRICT_COMMENT_OR_ADD = HIERARCHY + "circle/comment/add";
 }

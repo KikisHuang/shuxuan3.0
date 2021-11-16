@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ArticleImage;
+import com.gxdingo.sg.http.Api;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;

@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -67,7 +68,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_new_custom_title;
+        return 0;
     }
 
     @Override
@@ -121,13 +122,17 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     }
 
     @Override
-    protected void init() {
+    protected void onBaseCreate() {
+        super.onBaseCreate();
+    }
 
+    @Override
+    protected void init() {
         int storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
 
         Bundle bundle = new Bundle();
         bundle.putInt(Constant.SERIALIZABLE + 0, storeId);
-        //todo 写到了商圈fragment 类型定义
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.main_ll, StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, bundle))   // 此处的R.id.fragment_container是要盛放fragment的父容器
@@ -138,6 +143,8 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     protected void initData() {
 
     }
+
+
 
     @Override
     public void onBusinessDistrictData(boolean refresh, BusinessDistrictListBean bean) {

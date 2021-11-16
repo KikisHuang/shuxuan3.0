@@ -27,6 +27,9 @@ public class StoreMainContract {
 
         void logout();
 
+        void login();
+
+        void getAliKey();
     }
 
     public interface StoreMainListener {

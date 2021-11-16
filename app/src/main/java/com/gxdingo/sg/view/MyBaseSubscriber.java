@@ -2,8 +2,12 @@ package com.gxdingo.sg.view;
 
 import android.content.Context;
 
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.ReLoginBean;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -48,9 +52,12 @@ public class MyBaseSubscriber<T> extends BaseSubscriber<T> {
             //缺少token或token失效，需要重新登录
             case 401:
             case 2:
-                UserInfoUtils.getInstance().clearLoginStatus();
-                EventBus.getDefault().post(new ReLoginBean(0, ""));
-                UserInfoUtils.getInstance().goToLoginPage(contextWeakReference.get(), "");
+                new OneKeyModel().getKey(mContext, null, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                    new NetworkModel(null).oneClickLogin(mContext, event.code, event.isUser);
+                });
+//                UserInfoUtils.getInstance().clearLoginStatus();
+//                EventBus.getDefault().post(new ReLoginBean(0, ""));
+//                UserInfoUtils.getInstance().goToLoginPage(contextWeakReference.get(), "");
                 break;
 
         }

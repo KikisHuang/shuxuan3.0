@@ -29,6 +29,7 @@ public class NormalBean {
     public ReceiveIMMessageBean data;
     public String singleAmount;
     public String mobile;
+    public String key;
     public String auth;
 
     /**

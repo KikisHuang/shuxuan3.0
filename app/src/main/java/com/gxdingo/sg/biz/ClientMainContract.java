@@ -3,7 +3,6 @@ package com.gxdingo.sg.biz;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -22,7 +21,7 @@ public class ClientMainContract {
 
         void checkTab(int tab);
 
-        void oneKeyLogin(String code);
+        void oneKeyLogin(String code, boolean isUser);
 
         void aliLogin();
 
@@ -35,6 +34,8 @@ public class ClientMainContract {
         void getSocketUrl();
 
         void destroySocket();
+
+        void getAliKey();
     }
 
     public interface ClientMainListener{

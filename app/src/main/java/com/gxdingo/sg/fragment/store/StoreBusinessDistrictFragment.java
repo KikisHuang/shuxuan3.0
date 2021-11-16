@@ -6,18 +6,12 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
@@ -32,10 +26,8 @@ import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.SpaceItemDecoration;
-import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
-import com.kikis.commnlibrary.utils.ScreenUtils;
+import com.kikis.commnlibrary.utils.Constant;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -46,7 +38,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.blankj.utilcode.util.SizeUtils.dp2px;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 
 /**
@@ -65,10 +56,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 //    RelativeLayout rlMessageList;
     @BindView(R.id.iv_send_business_district)
     ImageView ivSendBusinessDistrict;
+    @BindView(R.id.unread_iv)
+    ImageView unread_iv;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.hint_img)
     ImageView hintImg;
+    @BindView(R.id.img_back)
+    ImageView img_back;
     @BindView(R.id.hint_tv)
     TextView hintTv;
     @BindView(R.id.function_bt)
@@ -85,6 +80,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
+    private int mStoreId = 0;
 
     /**
      * 商圈子视图点击监听接口
@@ -172,6 +168,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void init() {
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        if (args != null)
+            mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
+
+
+        unread_iv.setVisibility(mStoreId <= 0 ? View.VISIBLE : View.GONE);
+
+        img_back.setVisibility(mStoreId > 0 ? View.VISIBLE : View.GONE);
         if (isUser) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
@@ -189,9 +192,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
             //获取商圈评论未读数量
-            getP().getNumberUnreadComments();
+            if (mStoreId <= 0)
+                getP().getNumberUnreadComments();
+
             //获取商圈列表
-            getP().getBusinessDistrictList(true);
+            getP().getBusinessDistrictList(true, mStoreId);
         }
 
     }
@@ -209,7 +214,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
-            getP().getBusinessDistrictList(true);
+            getP().getBusinessDistrictList(true, mStoreId);
 
         }
     }
@@ -220,7 +225,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         //获取商圈列表
-        getP().getBusinessDistrictList(true);
+        getP().getBusinessDistrictList(true, mStoreId);
     }
 
     /**
@@ -229,7 +234,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         //获取商圈列表
-        getP().getBusinessDistrictList(false);
+        getP().getBusinessDistrictList(false, mStoreId);
     }
 
     @Override

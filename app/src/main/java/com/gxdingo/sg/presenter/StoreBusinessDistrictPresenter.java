@@ -129,8 +129,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      * 获取商圈列表
      */
     @Override
-    public void getBusinessDistrictList(boolean refresh) {
-        businessDistrictModel.getBusinessDistrict(getContext(), refresh);
+    public void getBusinessDistrictList(boolean refresh,int storeId) {
+        businessDistrictModel.getBusinessDistrict(getContext(), refresh,storeId);
     }
 
     /**

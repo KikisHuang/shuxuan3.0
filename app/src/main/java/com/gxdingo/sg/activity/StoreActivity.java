@@ -55,6 +55,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
+    private static StoreActivity instance;
+
+
+    public static StoreActivity getInstance() {
+        return instance;
+    }
+
 
     @Override
     protected boolean eventBusRegister() {
@@ -138,6 +145,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected void init() {
+        instance = this;
         checkUserStatus();
         fragmentInit();
         getP().persenterInit();
@@ -199,7 +207,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     protected void onBaseEvent(Object object) {
 
 
-
         //全局新消息布局
         if (!isAcBackground && object instanceof ReceiveIMMessageBean)
             showNewMessageDialog((ReceiveIMMessageBean) object);
@@ -207,9 +214,9 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         if (object instanceof ReLoginBean)
             getP().logout();
 
-        if (object instanceof GoNoticePageEvent){
+        if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id,event.type}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
 
         }
 
@@ -290,6 +297,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         super.onTypeEvent(type);
         if (type == LOGOUT)
             finish();
+        else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
+            finish();
+        }
+
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
 //            checkUserStatus();//检查用户状态
 //        } else if (type == LOGOUT) {//退出登录
@@ -302,10 +313,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
      */
     private void checkUserStatus() {
         if (!UserInfoUtils.getInstance().isLogin()) {
-            UserInfoUtils.getInstance().goToLoginPage(reference.get(), "");
+            getP().login();
+//            UserInfoUtils.getInstance().goToLoginPage(reference.get(), "");
             finish();
             return;
         }
+
+        getP().getAliKey();
 
         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
         //当store.id == 0（表示未填写过入驻信息）或store.status == 0（表示正在审核）或store.status == 20 （表示被驳回）的时候需要跳转到商家认证界面获取显示状态或者填写入驻信息
@@ -347,5 +361,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     protected void onDestroy() {
         super.onDestroy();
         getP().release();
+        if(instance!=null)
+            instance =null;
     }
 }

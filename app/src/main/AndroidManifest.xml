@@ -199,6 +199,7 @@
         <!--客户端商圈页面 -->
         <activity
             android:name=".activity.ClientBusinessCircleActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait">
 
         </activity>

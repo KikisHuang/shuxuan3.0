@@ -32,6 +32,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_OPENID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_PHONE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
@@ -70,7 +71,6 @@ public class UserInfoUtils {
             saveIdentifier(userBean.getIdentifier());
             saveOpenId(userBean.getOpenid());
             SPUtils.getInstance().put(USER_INFO_KEY, GsonUtil.gsonToStr(userBean));
-
             bindPushAccount();
         } else {
             //退出登录

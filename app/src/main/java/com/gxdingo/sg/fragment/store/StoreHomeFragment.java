@@ -175,6 +175,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
      */
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
+        if (UserInfoUtils.getInstance().isLogin())
         //获取IM订阅信息
         getP().getIMSubscribesList(true);
     }
@@ -185,6 +186,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
      */
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
+        if (UserInfoUtils.getInstance().isLogin())
         //获取IM订阅信息
         getP().getIMSubscribesList(false);
     }

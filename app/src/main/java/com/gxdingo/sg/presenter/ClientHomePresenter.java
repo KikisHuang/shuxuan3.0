@@ -1,9 +1,14 @@
 package com.gxdingo.sg.presenter;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.OneKeyModel;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -14,6 +19,7 @@ import com.gxdingo.sg.model.ClientHomeModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -56,14 +62,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void checkPermissions(RxPermissions rxPermissions) {
-        if (commonModel!=null){
+        if (commonModel != null) {
             commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
                     if (isViewAttached() && isBViewAttached()) {
                         if (!value)
                             getBV().onFailed();
-                        else{
+                        else {
                             model.location(getContext(), aMapLocation -> {
 
                                 if (aMapLocation.getErrorCode() == 0) {
@@ -71,8 +77,10 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                     getV().setDistrict(aMapLocation.getDistrict());
 
                                     lat = aMapLocation.getLatitude();
-                                    lon=aMapLocation.getLongitude();
-                                    getNearbyStore(true,0);
+                                    lon = aMapLocation.getLongitude();
+                                    LocalConstant.adCode = aMapLocation.getAdCode();
+
+                                    getNearbyStore(true, 0);
                                 } else {
                                     getBV().onMessage(aMapLocation.getLocationDetail());
                                     getBV().onFailed();
@@ -99,14 +107,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void getCategory() {
-        if (clientNetworkModel!=null)
+        if (clientNetworkModel != null)
             clientNetworkModel.getCategories(getContext());
     }
 
     @Override
-    public void getNearbyStore(boolean refresh,int categoryId) {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,categoryId,"");
+    public void getNearbyStore(boolean refresh, int categoryId) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getStoreList(getContext(), refresh, lon, lat, categoryId, "");
     }
 
     @Override
@@ -115,13 +123,13 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         lat = addressBean.getLatitude();
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
-        getNearbyStore(true,categoryId);
+        getNearbyStore(true, categoryId);
     }
 
 
     @Override
     public void callStore(String s) {
-        if (commonModel!=null)
+        if (commonModel != null)
             if (!isEmpty(s))
                 commonModel.goCallPage(getContext(), s);
             else
@@ -129,20 +137,27 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void search(boolean refresh,String content) {
-        if (clientNetworkModel!=null){
+    public void search(boolean refresh, String content) {
+        if (clientNetworkModel != null) {
             saveSearch(content);
-            clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,0,content);
+            clientNetworkModel.getStoreList(getContext(), refresh, lon, lat, 0, content);
         }
 
     }
 
     @Override
     public void getSettleImage() {
-        if (clientNetworkModel!=null){
-            clientNetworkModel.getArticleImage(getContext(),"sxyg_invite_in_seller");
+        if (clientNetworkModel != null) {
+            clientNetworkModel.getArticleImage(getContext(), "sxyg_invite_in_seller");
         }
 
+    }
+
+    @Override
+    public void oauth(Context context) {
+        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+        });
     }
 
     /**
@@ -163,7 +178,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 }
             }
 
-            SPUtils.getInstance().put("SEARCH_HISTORY",GsonUtil.gsonToStr(searchHistory));
+            SPUtils.getInstance().put("SEARCH_HISTORY", GsonUtil.gsonToStr(searchHistory));
 
         }
     }
@@ -171,20 +186,20 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void getSearchHistory() {
         if (isViewAttached())
-            try{
-                String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
+            try {
+                String details = SPUtils.getInstance().getString("SEARCH_HISTORY", "");
                 if (!isEmpty(details))
-                    getV().onHistoryResult(GsonUtil.GsonToList(details,String.class));
-            }catch (Exception e){
+                    getV().onHistoryResult(GsonUtil.GsonToList(details, String.class));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
     }
 
     public List<String> getSearch() {
         try {
-            String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
+            String details = SPUtils.getInstance().getString("SEARCH_HISTORY", "");
             if (!isEmpty(details)) {
-                return GsonUtil.GsonToList(details,String.class);
+                return GsonUtil.GsonToList(details, String.class);
             } else {
                 return new ArrayList<String>();
             }
@@ -213,11 +228,11 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (isViewAttached()){
+        if (isViewAttached()) {
             if (o instanceof CategoryListBean)
                 getV().onCategoryResult(((CategoryListBean) o).getCategories());
             else if (o instanceof StoreListBean)
-                getV().onStoresResult(refresh,((StoreListBean) o).getList());
+                getV().onStoresResult(refresh, ((StoreListBean) o).getList());
 
         }
     }
