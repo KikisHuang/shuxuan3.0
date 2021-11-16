@@ -192,7 +192,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
                 if (UserInfoUtils.getInstance().isLogin())
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
                 else
-                    new OneKeyModel().sdkInit(this);
+                   getP().oauth(reference.get());
                 break;
         }
     }

@@ -49,8 +49,13 @@ import butterknife.ButterKnife;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
  * 用户端和商家端商圈列表适配器
@@ -115,17 +120,18 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 //        }
 
 
+
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
-        String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
+        String createTime = dealDateFormat(data.getCreateTime());
         if (isUse) {
-            client_date_tv.setText(createTime);
+            client_date_tv.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);
             ivDelete.setVisibility(View.GONE);
         } else {
-            tvTime.setText(createTime);
+            tvTime.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);
             client_date_tv.setVisibility(View.GONE);
@@ -161,7 +167,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
             single_img.setOnClickListener(v -> {
                 if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(single_img,  baseViewHolder.getAdapterPosition(),  baseViewHolder.getAdapterPosition(), data.getImages().get(0));
+                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(), baseViewHolder.getAdapterPosition(), data.getImages().get(0));
             });
 
             Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
@@ -210,6 +216,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, imageInfo, baseViewHolder.getAdapterPosition(), new NineClickListener() {
                 @Override
                 public void onNineGridViewClick(int position, int index) {
+                    //todo 照片点击事件有问题
                     if (mOnChildViewClickListener != null && data.getImages() != null)
                         mOnChildViewClickListener.item(picture_gridview, position, position, data.getImages().get(position));
                 }

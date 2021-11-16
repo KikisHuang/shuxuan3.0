@@ -187,7 +187,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void init() {
         scrollViewInit();
-        mStoreAdapter = new ClientStoreAdapter(0);
+        mStoreAdapter = new ClientStoreAdapter();
         store_rv.setAdapter(mStoreAdapter);
         store_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mStoreAdapter.setOnItemChildClickListener(this);

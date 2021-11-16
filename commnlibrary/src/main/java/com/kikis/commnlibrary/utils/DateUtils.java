@@ -444,7 +444,6 @@ public class DateUtils {
         else if (days > month)
             return month + "月前";
 
-
         return DateUtils.getDateText(new Date(start), DateUtils.CMD);
     }
 
@@ -475,6 +474,40 @@ public class DateUtils {
             return "昨天";
         } else if (days > 1)
             return day + "\n/\n" + month + "月";
+
+        return DateUtils.getDateText(new Date(start), DateUtils.CMD);
+    }
+
+
+    /**
+     * 计算时间差值以某种约定形式显示
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public static String getCustomDate(Long start, Long end) {
+
+        long diff = (end - start);
+        if (diff < 0)
+            return "今天";
+
+        int days = (int) ((diff) / (CAL_DAYS));
+
+        long wee = getWeeOfToday();
+
+        int year = Integer.valueOf(getDateText(new Date(start), "y"));
+
+        //这个时间戳月份的天数
+        int month = getMonthLastDay(year, Integer.valueOf(getDateText(new Date(start), "M")));
+
+        if (start >= wee) {
+            //今天
+            return "今天";
+        } else if (start >= wee - TimeConstants.DAY) {
+            return "昨天";
+        } else if (days > 1)
+            return days + "天前";
 
         return DateUtils.getDateText(new Date(start), DateUtils.CMD);
     }
