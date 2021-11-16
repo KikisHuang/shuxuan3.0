@@ -62,6 +62,7 @@ public class EmotionMainFragment extends BaseFragment {
     private int CurrentPosition = 0;
 
     public static final String CHAT_ID = "chat_id";
+    public static final String ROLE = "role";
 
     protected Bundle args;
 
@@ -124,6 +125,8 @@ public class EmotionMainFragment extends BaseFragment {
 
     //聊天id
     private String chatId = "";
+    //对方角色。10=联系用户 11=联系商家 12=联系客服
+    private int role = 10;
 
     private View.OnTouchListener onTouchListener;
 
@@ -175,6 +178,7 @@ public class EmotionMainFragment extends BaseFragment {
 //        EventBusd
         PageFlag = args.getString(KEY);
         chatId = args.getString(CHAT_ID);
+        role = args.getInt(ROLE);
 
         mEmotionKeyboard = EmotionKeyboard.with(getActivity())
                 .setEmotionView(ll_emotion_layout)//绑定表情面板
@@ -194,12 +198,12 @@ public class EmotionMainFragment extends BaseFragment {
 
     private void initVoiceView() {
 
-        if(onTouchListener != null)
-        voice_tv.setOnTouchListener(onTouchListener);
+        if (onTouchListener != null)
+            voice_tv.setOnTouchListener(onTouchListener);
     }
 
     private void initFuncationLayout() {
-        mIMOtherFunctionsAdapter = new IMOtherFunctionsAdapter(reference.get(), UserInfoUtils.getInstance().getUserInfo().getRole());
+        mIMOtherFunctionsAdapter = new IMOtherFunctionsAdapter(reference.get(), role == 12 ? role : UserInfoUtils.getInstance().getUserInfo().getRole());
         prvOtherFunctions.addItemDecoration(new PullDividerItemDecoration(reference.get(), (int) getResources().getDimension(R.dimen.dp20), 0));
         prvOtherFunctions.setLayoutManager(new PullGridLayoutManager(reference.get(), 4));
         prvOtherFunctions.setPullAdapter(mIMOtherFunctionsAdapter);

@@ -1,10 +1,7 @@
 package com.gxdingo.sg.presenter;
 
-import com.gxdingo.sg.bean.MessageSubsBean;
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.NetWorkListener;
-import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -33,7 +30,7 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
     @Override
     public void getSubscribesMessage(boolean refresh) {
         if (networkModel!=null)
-            mWebSocketModel.getMessageSubscribesList(getContext(),refresh);
+            mWebSocketModel.getMessageSubscribesList(getContext(),refresh, "");
 //        networkModel.getMessageSubscribesList(getContext(),refresh);
     }
 

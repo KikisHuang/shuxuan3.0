@@ -18,11 +18,12 @@ import butterknife.ButterKnife;
 public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOtherFunctionsAdapter.ViewHolder> {
     public static final int TYPE_USER = 10;
     public static final int TYPE_STORE = 11;
+    public static final int TYPE_ROLE = 12;
 
     private Context mContext;
     private int[] mIconItems;
     private String[] mTitleItems;
-    private int mType;//用户类型，10用户，11商家
+    private int mType;//用户类型，10用户，11商家 12 客服
 
     public IMOtherFunctionsAdapter(Context context, int type) {
         mContext = context;
@@ -44,6 +45,11 @@ public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOthe
                     , R.drawable.module_svg_im_other_functions_transfer_money
             };
             mTitleItems = new String[]{"相册", "拍照", "电话", "转账"};
+        } else if (mType == TYPE_ROLE) {
+            mIconItems = new int[]{R.drawable.module_svg_im_other_functions_photo_album
+                    , R.drawable.module_svg_im_other_functions_camera
+            };
+            mTitleItems = new String[]{"相册", "拍照"};
         }
     }
 

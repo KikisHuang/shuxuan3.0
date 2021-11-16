@@ -6,13 +6,16 @@ import android.media.MediaPlayer;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.StoreMainModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -101,7 +104,23 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     @Override
     public void logout() {
         UserInfoUtils.getInstance().clearLoginStatus();
-        UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
+//        UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
+        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+        });
+    }
+
+    @Override
+    public void login() {
+        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+        });
+    }
+
+    @Override
+    public void getAliKey() {
+        if (UserInfoUtils.getInstance().isLogin())
+            new OneKeyModel().getKey(getContext());
     }
 
     @Override
@@ -118,6 +137,8 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
 
     @Override
     public void onMessage(String msg) {
+        if (isBViewAttached())
+            getBV().onMessage(msg);
 
     }
 

@@ -3,7 +3,7 @@ package com.gxdingo.sg.utils;
 public class LocalConstant {
 
     //聊天id
-    public static  String SHAREUUID = "";
+    public static String SHAREUUID = "";
 
     //聊天常量
     //自己发送的文本类型
@@ -38,16 +38,13 @@ public class LocalConstant {
     //未知类型
     public static final int UNKNOWN = 666666;
 
-    public static final String AUTH_SECRET = "WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
+    public static String AUTH_SECRET = "";
+//    public static String AUTH_SECRET = "WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
 
     public static final int CODE_SEND = 10;
     public static final int CLIENT_LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
-    public static final int CLIENT_COMMENT_SUCCEED = 32;
-    public static final int CLIENT_REFRESH_COMMENT_LIST = 33;
-    public static final int CLIENT_REFRESH_COMMONLY_USED_STORE_LIST = 34;
-    public static final int CLIENT_REFRESH_ORDER = 35;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     //确认收货
@@ -56,6 +53,8 @@ public class LocalConstant {
     public static final int LOGOUT_SUCCEED = 22;
     public static final int BIND_PHONE = 30;
     public static final int BIND_NEW_PHONE = 31;
+    //投诉成功
+    public static final int COMPLAINT_SUCCEED = 32;
 
     public final static int EMOTION_LAYOUT_IS_SHOWING = 1848;
 
@@ -66,6 +65,8 @@ public class LocalConstant {
 
     //前后台标识符
     public static boolean isBackground = false;
+
+    public static String adCode = "";
 
     //第一次登录标识符
     public static final String FIRST_LOGIN_KEY = "shugou_first_login_key";
@@ -83,6 +84,8 @@ public class LocalConstant {
     public static final String LONGITUDE1 = "longitude1";
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
+
+    public static final String REASON = "reason";
 
     public static final String STATUS = "status";
     public static final String CURRENT = "current";
@@ -182,4 +185,5 @@ public class LocalConstant {
 
     public static final int IMG = 1123;
     public static final int ADD = 1124;
+
 }

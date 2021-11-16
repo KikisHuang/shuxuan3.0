@@ -173,12 +173,6 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         void onCallback(View view, int position, int type, Object objData);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     @Override
     protected IMChatContract.IMChatPresenter createPresenter() {

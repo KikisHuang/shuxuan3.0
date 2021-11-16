@@ -241,6 +241,8 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     @Override
     public void getLoginInfoStatus() {
+        if (!UserInfoUtils.getInstance().isLogin())
+            return;
         if (storeNetworkModel != null)
             storeNetworkModel.refreshLoginStauts(getContext(), 0,o -> {
                 UserBean data = (UserBean) o;

@@ -21,7 +21,6 @@
             android:orientation="horizontal"
             tools:ignore="MissingConstraints">
 
-
             <EditText
                 android:id="@+id/et_content_input_box"
                 android:layout_width="0dp"

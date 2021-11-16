@@ -165,24 +165,20 @@ public class EmotionKeyboard {
         });
 
         //软键盘发送按钮事件监听
-        mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if (mEditText != null && mEditText.getText().toString().length() > 0) {
+        mEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                if (mEditText != null && mEditText.getText().toString().length() > 0) {
 
-                        SendMessageBean smb = new SendMessageBean(chatId, mEditText.getText().toString());
+                    SendMessageBean smb = new SendMessageBean(chatId, mEditText.getText().toString());
 
-                        if (isEmpty(chatId))
-                            smb.message_type = 1;
+                    if (isEmpty(chatId))
+                        smb.message_type = 1;
 
-                        EventBus.getDefault().post(smb);
-                        mEditText.setText("");
-                    } else
-                        hideSoftInput();
+                    EventBus.getDefault().post(smb);
+                    mEditText.setText("");
                 }
-                return false;
             }
+            return false;
         });
 
         return this;

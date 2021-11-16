@@ -25,9 +25,11 @@ import com.gxdingo.sg.http.StoreApi;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
+import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
+import com.lzy.ninegrid.NineGridView;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -133,17 +135,7 @@ public class MyApplication extends Application {
         initCloudChannel(this);
         svgaCacheInit();
 
-        //todo 需要增加隐私政策弹窗
-        AMapLocationClient.updatePrivacyShow(this, true, true);
-        AMapLocationClient.updatePrivacyAgree(this, true);
     }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onApplicationEvent(Integer type) {
-//        if (type == LocalConstant.CONSENT_AGREEMENT) {
-//
-//        }
-//    }
 
     /**
      * svga缓存
@@ -165,7 +157,7 @@ public class MyApplication extends Application {
      */
     private void nineGridInit() {
 
-//        NineGridView.setImageLoader(new NineGridGlideImageLoader());
+        NineGridView.setImageLoader(new NineGridGlideImageLoader());
     }
 
 
@@ -477,8 +469,8 @@ public class MyApplication extends Application {
             pushService.register(applicationContext, new CommonCallback() {
                 @Override
                 public void onSuccess(String response) {
-//                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-//                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
+                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 

@@ -1,5 +1,7 @@
 package com.gxdingo.sg.biz;
 
+import android.content.Context;
+
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -37,6 +39,8 @@ public class ClientHomeContract {
         void search(AddressBean addressBean,String content);
 
         void getSettleImage();
+
+        void oauth(Context context);
     }
 
     public interface ClientHomeListener{

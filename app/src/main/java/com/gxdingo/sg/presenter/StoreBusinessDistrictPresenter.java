@@ -1,5 +1,7 @@
 package com.gxdingo.sg.presenter;
 
+import android.app.Activity;
+
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
@@ -15,6 +17,9 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+
+import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 
 /**
  * 商家端商圈Presenter
@@ -124,8 +129,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      * 获取商圈列表
      */
     @Override
-    public void getBusinessDistrictList(boolean refresh) {
-        businessDistrictModel.getBusinessDistrict(getContext(), refresh);
+    public void getBusinessDistrictList(boolean refresh,int storeId) {
+        businessDistrictModel.getBusinessDistrict(getContext(), refresh,storeId);
     }
 
     /**
@@ -199,6 +204,11 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     @Override
     public void deleteBusinessDistrictDynamics(long id) {
         businessDistrictModel.storeDeleteBusinessDistrictDynamics(getContext(), id);
+    }
+
+    @Override
+    public void PhotoViewer(ArrayList<String> images, int position) {
+        getImagePreviewInstance((Activity) getContext(), NetworkAuto, position, true).setImageList(images).start();
     }
 
     /**

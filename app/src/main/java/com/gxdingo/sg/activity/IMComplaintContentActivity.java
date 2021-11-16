@@ -15,12 +15,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMComplaintContentItemAdapter;
 import com.gxdingo.sg.bean.UpLoadBean;
+import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.IMComplaintContract;
 import com.gxdingo.sg.dialog.EnterPaymentPasswordPopupView;
 import com.gxdingo.sg.dialog.OneSentenceHintPopupView;
 import com.gxdingo.sg.presenter.IMComplaintPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.GridPictureEditing;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
@@ -30,6 +33,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
 
 /**
  * IM-投诉举报内容
@@ -51,6 +56,7 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
 
     int mMaxCount = 4;//最大投诉图片数
     int mSpanCount = 4;//每行多少列
+    private String reason;
 
 
     @Override
@@ -60,7 +66,7 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -120,17 +126,23 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
 
     @Override
     protected void init() {
+
+        reason = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+
+        String sendIdentifier = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
+        int roleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
+        String UUID = getIntent().getStringExtra(Constant.SERIALIZABLE + 3);
+
         titleLayout.setTitleText("");
         initGpeImages();
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new XPopup.Builder(reference.get())
-                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .isDarkTheme(false)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new OneSentenceHintPopupView(reference.get(), "已收到您的反馈，我们会严肃处理")).show();
-            }
+        btnSubmit.setOnClickListener(v -> {
+
+            getP().complaint(reason, etContent.getText().toString(), gpePicture.getValues(),sendIdentifier,roleId,UUID);
+            /*    new XPopup.Builder(reference.get())
+                    .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .isDarkTheme(false)
+                    .dismissOnTouchOutside(false)
+                    .asCustom(new OneSentenceHintPopupView(reference.get(), "已收到您的反馈，我们会严肃处理")).show();*/
         });
     }
 
@@ -142,13 +154,6 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
     @Override
     public void onKeyboardHeightChanged(int height, int orientation) {
 
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 
     /**
@@ -222,5 +227,17 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
                 }
             }
         }
+    }
+
+    @Override
+    public void onArticleListResult(List<WebBean> list) {
+
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type==COMPLAINT_SUCCEED)
+            finish();
     }
 }

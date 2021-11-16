@@ -204,10 +204,4 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 }

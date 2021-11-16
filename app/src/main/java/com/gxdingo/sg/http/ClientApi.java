@@ -15,10 +15,19 @@ public class ClientApi {
     //正式路径
     public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
 
-    //隐私协议文章
-    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "yonghuxieyi";
-    //服务协议文章
-    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "fufeixieyi";
+    //客户端隐私协议文章
+    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";
+    //客户端服务协议文章
+    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "yonghufuwuxieyi";
+
+    //商家端隐私协议文章
+    public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
+    //商家端服务协议文章
+    public static final String STORE_SERVICE_AGREEMENT_KEY = "shangjiafuwuxieyi";
+    //树选用户及商家隐私协议
+    public static final String SERVICE_PRIVACY_AGREEMENT_KEY = "azyhsjyhxy";
+
+
     //店铺命名规则
     public static final String STORE_NAMING_RULES = "mingmingguize";
 
@@ -36,13 +45,15 @@ public class ClientApi {
 
     public static final String UAT_WEB_URL = "http://uat.gxdingo.com/html";
 
+    public static final String HTML = "article/html?";
+
     public static final String OFFICIAL_WEB_URL = "https://shuxuan.gxdingo.com/h5";
 
     //代付path
     public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";
 
     //平台客服path
-    public static final String SERVER_URL = "/#/pages/message/contact-server";
+    public static final String SERVER_URL = "/#/pages/message/chat";
 
 
     /**
@@ -206,7 +217,7 @@ public class ClientApi {
     public static final String FIND_CATEGORY = HIERARCHY + "voice/find/category";
 
     /**
-     * 语音获取匹配度最高的分类信息
+     * 分类列表
      */
     public static final String CATEGORY_CATEGORIES = HIERARCHY + "category/categories";
 
@@ -251,5 +262,8 @@ public class ClientApi {
      */
     public static final String APPEAL_SUBMIT = HIERARCHY + "appeal/submit";
 
-
+    /**
+     * 商圈评论/回复
+     */
+    public static final String BUSINESS_DISTRICT_COMMENT_OR_ADD = HIERARCHY + "circle/comment/add";
 }

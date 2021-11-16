@@ -34,6 +34,7 @@ import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
@@ -117,6 +118,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     private BusinessScopeEvent mBusinessScope;//经营范围事件
     private PoiItem mPoiItem;//地图POI信息
 
+    private boolean isUser = false;
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
@@ -187,6 +189,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("认证信息");
+        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
         initAgreementStyle();
     }
 
@@ -209,7 +212,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
-                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登录吗？", "", () -> {
+                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登陆吗？", "", () -> {
                     getP().logout();//请求退出接口
                     sendEvent(new ReLoginBean());//重新登录全局事件
                     finish();
@@ -279,7 +282,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                         , mPoiItem.getLatLonPoint().getLongitude(), mPoiItem.getLatLonPoint().getLatitude());
                 break;
             case R.id.btn_result_botton:
-                //刷新登录信息
+                //刷新登陆信息
                 getP().getLoginInfoStatus();
                 break;
         }
@@ -434,12 +437,5 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         titleLayout.setTitleText("认证信息");
         businessLayout.setVisibility(View.VISIBLE);
         llCertificationResultLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

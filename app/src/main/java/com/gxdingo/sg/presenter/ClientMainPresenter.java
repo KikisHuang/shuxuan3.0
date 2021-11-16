@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.ClientMainModel;
@@ -174,14 +175,14 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void oneKeyLogin(String code) {
-        if (networkModel!=null)
-            networkModel.oneClickLogin(getContext(),code, SPUtils.getInstance().getBoolean(LOGIN_WAY));
+    public void oneKeyLogin(String code, boolean isUser) {
+        if (networkModel != null)
+            networkModel.oneClickLogin(getContext(), code, isUser);
     }
 
     @Override
     public void aliLogin() {
-        if (networkModel!=null)
+        if (networkModel != null)
 
             networkModel.getAliyPayAuthinfo(getContext(), str -> simpleAuth((Activity) getContext(), (String) str, callback));
     }
@@ -207,7 +208,11 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void goLogin() {
-        oneKeyModel.sdkInit(getContext());
+        if (oneKeyModel != null)
+            oneKeyModel.getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                if (networkModel != null)
+                    networkModel.oneClickLogin(getContext(), event.code, event.isUser);
+            });
     }
 
 
@@ -242,5 +247,11 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void destroySocket() {
 
+    }
+
+    @Override
+    public void getAliKey() {
+        if (oneKeyModel != null && UserInfoUtils.getInstance().isLogin())
+        oneKeyModel.getKey(getContext());
     }
 }

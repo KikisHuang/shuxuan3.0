@@ -136,8 +136,9 @@ public class WebSocketModel {
      * 获取消息订阅列表
      *
      * @param context
+     * @param content
      */
-    public void getMessageSubscribesList(Context context, boolean refresh) {
+    public void getMessageSubscribesList(Context context, boolean refresh, String content) {
         if (refresh)
             resetPage();//重置页码
 
@@ -146,6 +147,10 @@ public class WebSocketModel {
         //map.put(Constant.SEARCH_CONTENT, "");
         map.put(Constant.CURRENT, String.valueOf(mPage));
         map.put(Constant.SIZE, String.valueOf(mPageSize));
+
+        if (!isEmpty(content))
+            map.put("searchContent", content);
+
 
 //        if (netWorkListener != null)
 //            netWorkListener.onStarts();
@@ -249,10 +254,10 @@ public class WebSocketModel {
 
         if (sendIMMessageBean.getParams() != null)
             map.put("params", GsonUtil.gsonToStr(sendIMMessageBean.getParams()));
-
+/*
         if (netWorkListener != null) {
             netWorkListener.onStarts();
-        }
+        }*/
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SEND, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
@@ -268,16 +273,16 @@ public class WebSocketModel {
                 LogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
-                    netWorkListener.onAfters();
+//                    netWorkListener.onAfters();
                 }
 
             }
 
             @Override
             public void onNext(ReceiveIMMessageBean receiveIMMessageBean) {
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                }
+//                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+//                }
                 if (listener != null) {
                     listener.onResult(receiveIMMessageBean);
                 }

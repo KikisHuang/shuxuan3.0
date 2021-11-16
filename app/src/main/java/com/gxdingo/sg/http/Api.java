@@ -73,6 +73,12 @@ public class Api {
      * 一键登录
      */
     public static final String ONE_CLICK_LOGIN = HIERARCHY + "user/login/click";
+
+    /**
+     * 获取调用阿里云手机号码一键登录认证key
+     */
+    public static final String GET_MOBILE_KEY = HIERARCHY + "public/ali/mobile/key";
+
     /**
      * 登录
      */
@@ -143,5 +149,9 @@ public class Api {
      * 领取转账
      */
     public static final String GET_TRANSFER = HIERARCHY + "transfer/accounts/receive";
+    /**
+     * 投诉
+     */
+    public static final String COMPLAINT_MSG = HIERARCHY + "complaint/msg";
 
 }

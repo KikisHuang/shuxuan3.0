@@ -1,6 +1,10 @@
 package com.gxdingo.sg.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,23 +17,34 @@ import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.view.CountdownView;
+import com.gxdingo.sg.view.PartTextClickSpan;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -55,6 +70,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @BindView(R.id.switch_login_bt)
     public TextView switch_login_bt;
+
+    @BindView(R.id.agreement_tv)
+    public TextView agreement_tv;
 
     @BindView(R.id.alipay_login)
     public ImageView alipay_login;
@@ -147,6 +165,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
         switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
+        setTextHighLightWithClick(agreement_tv.getText().toString(), new String[]{"《服务协议》", "《隐私政策》"});
     }
 
     @Override
@@ -250,4 +269,47 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
     }
 
+    /**
+     * 设置文字高亮及点击事件
+     *
+     * @param text
+     * @param keyWord
+     */
+    private void setTextHighLightWithClick(String text, String[] keyWord) {
+
+        agreement_tv.setClickable(true);
+
+        agreement_tv.setHighlightColor(Color.TRANSPARENT);
+
+        agreement_tv.setMovementMethod(LinkMovementMethod.getInstance());
+
+
+        SpannableString s = new SpannableString(text);
+
+        for (int i = 0; i < keyWord.length; i++) {
+            Pattern p = Pattern.compile(keyWord[i]);
+            Matcher m = p.matcher(s);
+
+            while (m.find()) {
+
+                int start = m.start();
+
+                int end = m.end();
+
+                int finalI = i;
+
+                s.setSpan(new PartTextClickSpan(getc(R.color.deepskyblue), false, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (finalI == 0)
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, isUserId ? CLIENT_SERVICE_AGREEMENT_KEY : STORE_SERVICE_AGREEMENT_KEY}));
+                        else
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, isUserId ? CLIENT_PRIVACY_AGREEMENT_KEY : STORE_PRIVACY_AGREEMENT_KEY}));
+                    }
+                }), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        agreement_tv.setText(s);
+
+    }
 }

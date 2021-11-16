@@ -12,25 +12,37 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.adapter.StoreHomeSearchResultAdapter;
 import com.gxdingo.sg.biz.StoreHomeSearchContract;
 import com.gxdingo.sg.presenter.StoreHomeSearchPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
 import com.kikis.commnlibrary.utils.SystemUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.view.View.VISIBLE;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * 商家主页搜索
@@ -38,7 +50,7 @@ import butterknife.OnClick;
  * @author JM
  */
 public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchContract.StoreHomeSearchPresenter>
-        implements StoreHomeSearchContract.StoreHomeSearchListener, KeyboardHeightObserver {
+        implements StoreHomeSearchContract.StoreHomeSearchListener, LabelsView.OnLabelClickListener, KeyboardHeightObserver {
 
     @BindView(R.id.tv_cancel)
     TextView tvCancel;
@@ -54,14 +66,15 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
     TextView hintTv;
     @BindView(R.id.function_bt)
     TextView functionBt;
-    @BindView(R.id.classics_footer)
-    ClassicsFooter classicsFooter;
     @BindView(R.id.smartrefreshlayout)
     SmartRefreshLayout smartrefreshlayout;
-    @BindView(R.id.ll_search_result_layout)
-    LinearLayout llSearchResultLayout;
+
+    @BindView(R.id.nodata_layout)
+    View nodataLayout;
 
     StoreHomeSearchResultAdapter mAdapter;
+    @BindView(R.id.search_labels)
+    public LabelsView search_labels;
 
     @Override
     protected StoreHomeSearchContract.StoreHomeSearchPresenter createPresenter() {
@@ -100,12 +113,12 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
 
     @Override
     protected View noDataLayout() {
-        return null;
+        return nodataLayout;
     }
 
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
     @Override
@@ -120,16 +133,17 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
 
     @Override
     protected boolean refreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean loadmoreEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected void init() {
+
         etSearchBox.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -140,8 +154,15 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s.toString())) {
                     ivEmpty.setVisibility(View.INVISIBLE);
+                    search_labels.setVisibility(VISIBLE);
+                    getP().getSearchHistory();
+
+                    if (mAdapter.getData().size() > 0)
+                        mAdapter.getData().clear();
+
                 } else {
-                    ivEmpty.setVisibility(View.VISIBLE);
+                    ivEmpty.setVisibility(VISIBLE);
+                    search_labels.setVisibility(View.GONE);
                 }
             }
 
@@ -150,43 +171,45 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
 
             }
         });
-        etSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH){
-                    //完成自己的事件
-                    SystemUtils.hideKeyboard(v);
-                    return true;
-                }
-                return false;
+        etSearchBox.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                //完成自己的事件
+                SystemUtils.hideKeyboard(v);
+                if (!isEmpty(etSearchBox.getText().toString()))
+                    getP().search(true, etSearchBox.getText().toString());
+                return true;
             }
+            return false;
         });
 
         mAdapter = new StoreHomeSearchResultAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-
-        ArrayList<Object> datas = new ArrayList<>();
-        datas.add(new Object());
-        datas.add(new Object());
-        mAdapter.setList(datas);
+        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{((SubscribesListBean.SubscribesMessage) mAdapter.getData().get(position)).getShareUuid(), ((SubscribesListBean.SubscribesMessage)mAdapter.getData().get(position)).getSendUserRole()})));
     }
 
     @Override
     protected void initData() {
+        getP().getSearchHistory();
+        search_labels.setOnLabelClickListener(this);
 
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
+        super.onRefresh(refreshLayout);
+        getP().search(true, "");
+    }
+
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        super.onLoadMore(refreshLayout);
+        getP().search(false, etSearchBox.getText().toString());
     }
 
     @Override
     public void onKeyboardHeightChanged(int height, int orientation) {
 
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 
     @OnClick({R.id.tv_cancel, R.id.iv_empty})
@@ -201,4 +224,50 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
         }
     }
 
+    /**
+     * 搜索历史回调
+     *
+     * @param gsonToList
+     */
+    @Override
+    public void onHistoryResult(List<String> gsonToList) {
+
+        search_labels.setVisibility(gsonToList != null && gsonToList.size() > 0 ? VISIBLE : View.GONE);
+
+        if (gsonToList != null && gsonToList.size() > 0)
+            search_labels.setLabels(gsonToList);
+
+    }
+
+    /**
+     * 搜索回调
+     *
+     * @param refresh
+     * @param list
+     */
+    @Override
+    public void onSearchResult(boolean refresh, ArrayList<SubscribesListBean.SubscribesMessage> list) {
+
+        if (list != null)
+            mAdapter.setList(list);
+    }
+
+    /**
+     * 标签点击回调
+     *
+     * @param label
+     * @param data
+     * @param position
+     */
+    @Override
+    public void onLabelClick(TextView label, Object data, int position) {
+
+        if (!etSearchBox.getText().toString().equals(search_labels.getLabels().get(position).toString())) {
+            etSearchBox.setText(search_labels.getLabels().get(position).toString());
+            etSearchBox.setSelection(etSearchBox.getText().length());
+            getP().search(true, search_labels.getLabels().get(position).toString());
+        }
+
+
+    }
 }

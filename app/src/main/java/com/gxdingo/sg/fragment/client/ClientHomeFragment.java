@@ -46,6 +46,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -210,7 +211,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 if (UserInfoUtils.getInstance().isLogin())
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
                 else
-                    new OneKeyModel().sdkInit(getContext());
+                    getP().oauth(getContext());
+
                 break;
             case R.id.btn_search:
             case R.id.ll_search:
@@ -240,6 +242,14 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 this.location = true;
                 getP().getNearbyStore((AddressBean) object,categoryId);
             }
+
+        }
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == CLIENT_LOGIN_SUCCEED){
 
         }
     }

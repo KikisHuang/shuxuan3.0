@@ -11,12 +11,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -82,11 +84,13 @@ import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedL
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
+import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
@@ -156,6 +160,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @BindView(R.id.right_arrow)
     public TextView right_arrow;
+
+    @BindView(R.id.cv_other_side_address)
+    public CardView cv_other_side_address;
 
     private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
@@ -252,20 +259,29 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void init() {
+        //todo 客服类型
+
         title_layout.setBackgroundColor(getc(R.color.white));
 
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         //用户首页进入时，没有ShareUuid，需要传入otherRole、otherId
-        if (isEmpty(mShareUuid)) {
-            otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
-            otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
-        } else
+
+        otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
+        otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
+
+        if (!isEmpty(mShareUuid)) {
             //锁定聊天id
             LocalConstant.SHAREUUID = mShareUuid;
+        }
 
-        //todo 点击事件待添加
-        title_layout.setMoreImg(R.drawable.module_svg_more_8935);
+        if (otherRole != 12)
+            title_layout.setMoreImg(R.drawable.module_svg_more_8935);
+        else {
+            cv_other_side_address.setVisibility(View.GONE);
+            FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) recycleView.getLayoutParams();
+            flp.topMargin = 0;
+        }
 
         initEmotionMainFragment();
 
@@ -324,6 +340,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         Bundle bundle = new Bundle();
         bundle.putString(KEY, ChatActivity.class.toString() + System.currentTimeMillis());
         bundle.putString(CHAT_ID, mShareUuid);
+        bundle.putInt(ROLE, otherRole);
         //替换fragment
         //创建修改实例
         emotionMainFragment = EmotiomComplateFragment.newInstance(EmotionMainFragment.class, bundle);
@@ -403,6 +420,19 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 finish();
                 break;
             case R.id.img_more:
+                //客服没有右上角的更多功能
+                if (otherRole == 12)
+                    return;
+
+                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+                    //用户
+                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
+                        goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{(int) mMessageDetails.getOtherAvatarInfo().getId()}));
+                } else {
+                    //商家
+                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
+                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+                }
 
                 break;
           /*  case R.id.photo_album_img:
@@ -518,7 +548,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
                 //投诉
                 else if (functionsItem.position == 5) {
-                    startActivity(new Intent(this, IMComplaintActivity.class));
+                    if (mMessageDetails != null)
+                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+//                    goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghutousu"}));
+
                 }
             }
             /**
@@ -545,6 +578,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     //转账
                     showSelectTransferAccountsWayDialog();
                 }
+            } else if (functionsItem.type == TYPE_ROLE) {
+                if (functionsItem.position == 0) {
+                    //相册
+                    getP().photoSourceClick(0);
+                } else if (functionsItem.position == 1) {
+                    //拍照
+                    getP().photoSourceClick(1);
+                }
             }
         }
 
@@ -562,7 +603,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             mAddress = addressInfo;
 
             if (!isEmpty(addressInfo.getStreet()))
-                tvOtherSideAddress.setText(addressInfo.getStreet()+" "+addressInfo.getDoorplate());
+                tvOtherSideAddress.setText(addressInfo.getStreet() + " " + addressInfo.getDoorplate());
 
             if (!isEmpty(addressInfo.getMobile()))
                 tv_other_side_phone.setText(addressInfo.getMobile());
@@ -1053,7 +1094,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 if (imChatHistoryListBean.getAddress() != null) {
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getStreet()))
-                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet()+" "+imChatHistoryListBean.getAddress().getDoorplate());
+                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet() + " " + imChatHistoryListBean.getAddress().getDoorplate());
 
                     if (!isEmpty(imChatHistoryListBean.getAddress().getMobile()))
                         tv_other_side_phone.setText(imChatHistoryListBean.getAddress().getMobile());

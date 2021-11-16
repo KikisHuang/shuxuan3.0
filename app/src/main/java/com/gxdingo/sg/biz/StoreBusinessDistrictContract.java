@@ -21,7 +21,7 @@ public class StoreBusinessDistrictContract {
          *
          * @param refresh true 表示刷新，false表示加载更多
          */
-        void getBusinessDistrictList(boolean refresh);
+        void getBusinessDistrictList(boolean refresh,int StoreId);
 
         /**
          * 提交评论/回复
@@ -63,6 +63,8 @@ public class StoreBusinessDistrictContract {
          * @param id 商圈ID
          */
         void deleteBusinessDistrictDynamics(long id);
+
+        void PhotoViewer(ArrayList<String> images, int position);
     }
 
     public interface StoreBusinessDistrictListener {

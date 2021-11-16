@@ -6,6 +6,9 @@ import android.content.Intent;
 //import com.alibaba.sdk.android.push.CloudPushService;
 //import com.alibaba.sdk.android.push.CommonCallback;
 //import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.alibaba.sdk.android.push.CloudPushService;
+import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.MyApplication;
@@ -29,6 +32,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_OPENID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_PHONE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
@@ -67,11 +71,10 @@ public class UserInfoUtils {
             saveIdentifier(userBean.getIdentifier());
             saveOpenId(userBean.getOpenid());
             SPUtils.getInstance().put(USER_INFO_KEY, GsonUtil.gsonToStr(userBean));
-
-//            UserInfoUtils.getInstance().bindPushAccount();
+            bindPushAccount();
         } else {
             //退出登录
-//            unbindPushAccount();
+            unbindPushAccount();
             SPUtils.getInstance().put(USER_INFO_KEY, "");
             saveUserId(0);
             saveUserAvatar("");
@@ -313,52 +316,52 @@ public class UserInfoUtils {
     /**
      * 绑定推送账号
      */
-//    public void bindPushAccount() {
-//
-//        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getIdentifier())) {
-//
-//            CloudPushService pushService = PushServiceFactory.getCloudPushService();
-//            if (pushService == null) {
-//                LogUtils.w("pushService is null ");
-//                return;
-//            }
-//            PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
-//                @Override
-//                public void onSuccess(String s) {
-//                    if (isDebug)
-//                        LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
-//                }
-//
-//                @Override
-//                public void onFailed(String s, String s1) {
-//
-//                    if (isDebug)
-//                        LogUtils.w("bind account onfailed ");
-//                }
-//            });
-//        }
-//
-//    }
+    public void bindPushAccount() {
+
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getIdentifier())) {
+
+            CloudPushService pushService = PushServiceFactory.getCloudPushService();
+            if (pushService == null) {
+                LogUtils.w("pushService is null ");
+                return;
+            }
+            PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
+                @Override
+                public void onSuccess(String s) {
+                    if (isDebug)
+                        LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                }
+
+                @Override
+                public void onFailed(String s, String s1) {
+
+                    if (isDebug)
+                        LogUtils.w("bind account onfailed ");
+                }
+            });
+        }
+
+    }
 
     /**
      * 解绑推送账号
      */
-//    public void unbindPushAccount() {
-//
-//        CloudPushService pushService = PushServiceFactory.getCloudPushService();
-//
-//        pushService.unbindAccount(new CommonCallback() {
-//            @Override
-//            public void onSuccess(String s) {
-//                if (isDebug)
-//                    LogUtils.d("unbind Account success ");
-//            }
-//
-//            @Override
-//            public void onFailed(String s, String s1) {
-//                if (isDebug)
-//                    LogUtils.d("unbind Account onfailed ");
-//            }
-//        });
-//    }
+    public void unbindPushAccount() {
+
+        CloudPushService pushService = PushServiceFactory.getCloudPushService();
+
+        pushService.unbindAccount(new CommonCallback() {
+            @Override
+            public void onSuccess(String s) {
+                if (isDebug)
+                    LogUtils.d("unbind Account success ");
+            }
+
+            @Override
+            public void onFailed(String s, String s1) {
+                if (isDebug)
+                    LogUtils.d("unbind Account onfailed ");
+            }
+        });
+    }
 }

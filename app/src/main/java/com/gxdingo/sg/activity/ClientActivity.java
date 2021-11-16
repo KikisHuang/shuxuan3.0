@@ -36,6 +36,7 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.Constant.readed;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -56,6 +57,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
     private boolean showLogin = true;
+
+    private static ClientActivity instance;
+    StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
+
+    public static ClientActivity getInstance() {
+        return instance;
+    }
 
     @Override
     protected ClientMainContract.ClientMainPresenter createPresenter() {
@@ -124,8 +132,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected void init() {
+        instance = this;
         fragmentInit();
         getP().persenterInit();
+        getP().getAliKey();
     }
 
     @Override
@@ -146,6 +156,21 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
     }
 
+    /**
+     * 重写findViewById(int)，让依附的Fragment中使用PopupView弹出窗口能添加使用Fragment
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public View findViewById(int id) {
+        if (id == R.id.rl_child_function_menu_layout && mStoreBusinessDistrictFragment != null) {
+            return mStoreBusinessDistrictFragment.getCommentInputBoxPopupView().findViewById(R.id.rl_child_function_menu_layout);
+        }
+        return super.findViewById(id);
+    }
+
+
     @Override
     protected void onBaseCreate() {
         super.onBaseCreate();
@@ -161,14 +186,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             showNewMessageDialog((ReceiveIMMessageBean) object);
 
         if (object instanceof OneKeyLoginEvent) {
-            getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
+            getP().oneKeyLogin(((OneKeyLoginEvent) object).code, ((OneKeyLoginEvent) object).isUser);
         } else if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code) && event.login)
                 getP().wechatLogin(event.code);
         } else if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
         }
     }
 
@@ -183,6 +208,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LOGOUT) {
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
             getP().checkTab(0);
+        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
+            finish();
         }
     }
 
@@ -192,10 +219,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     }
 
     private void fragmentInit() {
+        mStoreBusinessDistrictFragment = new StoreBusinessDistrictFragment();
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(new StoreBusinessDistrictFragment());
+        mFragmentList.add(mStoreBusinessDistrictFragment);
         mFragmentList.add(new ClientMineFragment());
     }
 
@@ -204,33 +232,31 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
+
+        if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
+            getP().goLogin();
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.home_page_layout:
                 ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
                 getP().checkTab(0);
                 break;
             case R.id.message_layout:
-                if (!UserInfoUtils.getInstance().isLogin()) {
-                    getP().goLogin();
-                    return;
-                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(1);
                 break;
             case R.id.settle_in:
 //                getP().checkTab(2);
 //                ToastUtils.showLong("hi!索嗨，来入驻");
-                goToPage(this,ClientSettleActivity.class,null);
+                goToPage(this, ClientSettleActivity.class, null);
                 break;
             case R.id.business_layout:
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(2);
                 break;
             case R.id.mine_layout:
-                if (!UserInfoUtils.getInstance().isLogin()) {
-                    getP().goLogin();
-                    return;
-                }
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(3);
                 break;
@@ -293,4 +319,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (instance != null)
+            instance = null;
+    }
 }

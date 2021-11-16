@@ -148,13 +148,6 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
-
     @OnClick(R.id.tv_right_button)
     public void onViewClicked() {
         if (TextUtils.isEmpty(etContent.getText().toString())) {

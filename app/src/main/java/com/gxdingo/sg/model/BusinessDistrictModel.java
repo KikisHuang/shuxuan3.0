@@ -3,6 +3,7 @@ package com.gxdingo.sg.model;
 import android.content.Context;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
@@ -11,8 +12,11 @@ import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.utils.GsonUtil;
@@ -26,6 +30,7 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
+import static com.gxdingo.sg.http.ClientApi.BUSINESS_DISTRICT_COMMENT_OR_ADD;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_GET_COMMENT;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
@@ -34,6 +39,7 @@ import static com.gxdingo.sg.http.StoreApi.DELETE_MY_OWN_COMMENT;
 import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
 import static com.gxdingo.sg.http.StoreApi.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 
 public class BusinessDistrictModel {
 
@@ -125,13 +131,19 @@ public class BusinessDistrictModel {
     /**
      * 获取商圈列表
      */
-    public void getBusinessDistrict(Context context, boolean refresh) {
+    public void getBusinessDistrict(Context context, boolean refresh, int storeId) {
         if (refresh)
             resetPage();//重置页码
 
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.CURRENT, String.valueOf(mPage));
         map.put(StoreLocalConstant.SIZE, String.valueOf(mPageSize));
+
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+            map.put("area", LocalConstant.adCode);
+
+        if (storeId > 0)
+            map.put("storeId", String.valueOf(storeId));
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -271,7 +283,7 @@ public class BusinessDistrictModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
+        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(UserInfoUtils.getInstance().getUserInfo().getRole()==10?BUSINESS_DISTRICT_COMMENT_OR_ADD:BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
                 .execute(new CallClazzProxy<ApiResult<BusinessDistrictCommentOrReplyBean>, BusinessDistrictCommentOrReplyBean>(new TypeToken<BusinessDistrictCommentOrReplyBean>() {
                 }.getType()) {
                 });
@@ -291,8 +303,10 @@ public class BusinessDistrictModel {
             public void onNext(BusinessDistrictCommentOrReplyBean commentOrReplyBean) {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    listener.multipleDataResult(commentOrReplyBean, businessDistrict);
                 }
+
+                if (listener!=null)
+                    listener.multipleDataResult(commentOrReplyBean, businessDistrict);
             }
         };
 

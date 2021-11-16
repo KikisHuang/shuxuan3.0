@@ -26,6 +26,10 @@ public class StoreMainContract {
         void release();
 
         void logout();
+
+        void login();
+
+        void getAliKey();
     }
 
     public interface StoreMainListener {

@@ -13,9 +13,12 @@ import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
+import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
@@ -28,6 +31,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
@@ -49,6 +53,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
+import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
@@ -60,6 +65,8 @@ import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
+import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -67,6 +74,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.oneDecimal;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
@@ -459,7 +467,6 @@ public class NetworkModel {
      */
     public void oneClickLogin(Context context, String accessToken, boolean isUse) {
 
-
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -495,7 +502,20 @@ public class NetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onMessage(gets(R.string.login_succeed));
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+
+                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登陆状态
+
+                    if (!isUse) {
+                      //商家
+                        if (StoreActivity.getInstance() == null)
+                            goToPage(context, StoreActivity.class, null);
+                    } else {
+                        //商家
+                        if (ClientActivity.getInstance() == null)
+                            goToPage(context, ClientActivity.class, null);
+                    }
                 }
 
             }
@@ -776,7 +796,11 @@ public class NetworkModel {
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
-                UserInfoUtils.getInstance().goToLoginPage(context, "");
+
+                new OneKeyModel().getKey(context, netWorkListener, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                    new NetworkModel(netWorkListener).oneClickLogin(context, event.code, event.isUser);
+                });
+//                UserInfoUtils.getInstance().goToLoginPage(context, "");
 
             }
         };
@@ -1077,4 +1101,66 @@ public class NetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
+
+    /**
+     * 投诉
+     *
+     * @param context
+     * @param reason
+     * @param content
+     * @param list
+     * @param sendIdentifier
+     * @param role
+     * @param shareUuid
+     */
+    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier, int role, String shareUuid) {
+
+        Map<String, String> map = getJsonMap();
+
+
+        map.put(LocalConstant.REASON, reason);
+        map.put("content", content);
+
+        if (list.size() > 0)
+            map.put("images", GsonUtil.gsonToStr(list));
+
+        if (!isEmpty(sendIdentifier))
+            map.put("sendIdentifier", sendIdentifier);
+
+        if (role > 0)
+            map.put("role", String.valueOf(role));
+
+        if (!isEmpty(shareUuid))
+            map.put("shareUuid", String.valueOf(shareUuid));
+
+        Observable<NormalBean> observable = HttpClient.post(COMPLAINT_MSG, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (netWorkListener != null)
+                    netWorkListener.onMessage("投诉成功");
+
+                EventBus.getDefault().post(COMPLAINT_SUCCEED);
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
 }

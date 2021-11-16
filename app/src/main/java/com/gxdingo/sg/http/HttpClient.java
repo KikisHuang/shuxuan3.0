@@ -271,7 +271,7 @@ public class HttpClient {
                 //可以全局统一设置全局URL
                 .setBaseUrl(Api.URL);//设置全局URL  url只能是域名 或者域名+端口号
 
-        SPUtils.getInstance().put(LOGIN_WAY, isUser);
+//        SPUtils.getInstance().put(LOGIN_WAY, isUser);
 
     }
 

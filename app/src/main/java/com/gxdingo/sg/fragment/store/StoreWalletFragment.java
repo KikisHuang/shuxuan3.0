@@ -33,6 +33,7 @@ import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
@@ -140,13 +141,14 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @Override
     public void onStart() {
         super.onStart();
+        if (UserInfoUtils.getInstance().isLogin())
         getP().getWalletHome(true);
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden)
+        if (!hidden&&UserInfoUtils.getInstance().isLogin())
             getP().getWalletHome(true);
     }
 
