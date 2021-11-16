@@ -5,6 +5,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,14 +19,22 @@ import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.ClearEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
@@ -46,7 +55,17 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
 
+    @BindView(R.id.ll_nearby_store)
+    public LinearLayout ll_nearby_store;
+
+    @BindView(R.id.recommend_store_rv)
+    public RecyclerView recommend_store_rv;
+
     private ClientStoreAdapter mStoreAdapter;
+
+    private String location;
+
+    private boolean searchModel;
 
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
@@ -55,7 +74,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -115,7 +134,10 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected void init() {
-        mStoreAdapter = new ClientStoreAdapter(1);
+        location = getIntent().getStringExtra(Constant.PARAMAS+0);
+        if (!isEmpty(location))
+            location_tv.setText(location);
+        mStoreAdapter = new ClientStoreAdapter();
         recyclerView.setAdapter(mStoreAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         keyword_et.setOnEditorActionListener(this);
@@ -144,16 +166,33 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     };
 
     @Override
-    protected void initData() {
-        getP().getSearchHistory();
-//        getP().checkPermissions(getRxPermissions());
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof AddressBean){
+            AddressBean addressBean = (AddressBean) object;
+            if (addressBean.selectType==1){
+                getP().search((AddressBean) object,keyword_et.getText().toString());
+            }
+
+        }
     }
 
-    @OnClick(R.id.btn_cancel)
+    @Override
+    protected void initData() {
+        getP().getSearchHistory();
+    }
+
+    @OnClick({R.id.btn_cancel,R.id.location_tv})
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.btn_cancel:
                 finish();
+                break;
+            case R.id.location_tv:
+                if (UserInfoUtils.getInstance().isLogin())
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
+                else
+                    new OneKeyModel().sdkInit(this);
                 break;
         }
     }

@@ -116,11 +116,12 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.btn_become_store:
+                getP().convertStore();
                 break;
             case R.id.btn_invitation:
                 Intent textIntent = new Intent(Intent.ACTION_SEND);
                 textIntent.setType("text/plain");
-                textIntent.putExtra(Intent.EXTRA_TEXT, "这是一段分享的文字");
+                textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");
                 startActivity(Intent.createChooser(textIntent, "分享"));
                 break;
         }
@@ -136,9 +137,4 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
         getP().getSettleImage();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
-    }
 }

@@ -4,6 +4,10 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.StoreCertificationActivity;
+import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.model.StoreNetworkModel;
+import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -14,6 +18,7 @@ import com.gxdingo.sg.model.ClientHomeModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -27,6 +32,9 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -39,6 +47,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private ClientNetworkModel clientNetworkModel;
 
+    private StoreNetworkModel storeNetworkModel;
+
     private CommonModel commonModel;
 
     private List<String> searchHistory;
@@ -47,6 +57,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     public ClientHomePresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
+
+        storeNetworkModel = new StoreNetworkModel(this);
 
         commonModel = new CommonModel();
 
@@ -129,12 +141,48 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
+    public void convertStore() {
+        if (storeNetworkModel!=null)
+            storeNetworkModel.refreshLoginStauts(getContext(), 1,new CustomResultListener() {
+                @Override
+                public void onResult(Object o) {
+                    UserBean userBean = (UserBean) o;
+                    if (userBean.getStore()!=null ){
+                        int status = userBean.getStore().getStatus();
+                        if (userBean.getStore().getId()<=0 && status == 20){
+                            goToPagePutSerializable(getContext(), StoreCertificationActivity.class,getIntentEntityMap(new Object[]{true}));
+                            return;
+                        }
+                        if (status==0){
+                            onMessage("店铺审核中！");
+                        }else {
+                            onMessage("该账户已有店铺！");
+                        }
+                    }
+                }
+            });
+    }
+
+    @Override
     public void search(boolean refresh,String content) {
         if (clientNetworkModel!=null){
+            if (isEmpty(content)){
+                onMessage("请输入搜索内容！");
+                return;
+            }
             saveSearch(content);
             clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,0,content);
         }
 
+    }
+
+    @Override
+    public void search(AddressBean addressBean, String content) {
+        lon = addressBean.getLongitude();
+        lat = addressBean.getLatitude();
+        if (isViewAttached())
+            getV().setDistrict(addressBean.getStreet());
+        search(true,content);
     }
 
     @Override

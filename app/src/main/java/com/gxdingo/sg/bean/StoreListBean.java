@@ -46,6 +46,8 @@ public class StoreListBean {
         private String name;
         private String number;
         private String distance;
+        //是否显示附近商家布局
+        private boolean showTop;
         private List<String> classNameList;
 
         public Integer getId() {
@@ -86,6 +88,14 @@ public class StoreListBean {
 
         public void setDistance(String distance) {
             this.distance = distance;
+        }
+
+        public boolean isShowTop() {
+            return showTop;
+        }
+
+        public void setShowTop(boolean showTop) {
+            this.showTop = showTop;
         }
 
         public List<String> getClassNameList() {

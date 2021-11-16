@@ -28,9 +28,13 @@ public class ClientHomeContract {
 
         void callStore(String s);
 
+        void convertStore();
+
         void getSearchHistory();
 
         void search(boolean refresh,String content);
+
+        void search(AddressBean addressBean,String content);
 
         void getSettleImage();
     }

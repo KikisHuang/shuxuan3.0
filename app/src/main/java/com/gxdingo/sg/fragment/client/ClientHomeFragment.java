@@ -1,5 +1,6 @@
 package com.gxdingo.sg.fragment.client;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,6 +47,7 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
@@ -107,7 +109,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -212,14 +214,19 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 break;
             case R.id.btn_search:
             case R.id.ll_search:
-                goToPage(getContext(), ClientSearchActivity.class,null);
+                goToPage(getContext(), ClientSearchActivity.class,getIntentMap(new String[]{location_tv.getText().toString()}));
                 break;
             case R.id.btn_empower:
                 getP().checkPermissions(getRxPermissions());
                 break;
             case R.id.btn_become_store:
+                getP().convertStore();
                 break;
             case R.id.btn_invitation:
+                Intent textIntent = new Intent(Intent.ACTION_SEND);
+                textIntent.setType("text/plain");
+                textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");
+                startActivity(Intent.createChooser(textIntent, "分享"));
                 break;
         }
     }

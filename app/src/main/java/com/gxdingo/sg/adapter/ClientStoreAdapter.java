@@ -1,5 +1,6 @@
 package com.gxdingo.sg.adapter;
 
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -25,11 +26,12 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
     //0首页店铺item 1搜索店铺item
     private int mType;
 
-    public ClientStoreAdapter(int type) {
-        super(type==0?R.layout.module_recycle_item_store:R.layout.module_recycle_item_search_store);
-        mType = type;
-        if (type == 0)
-            addChildClickViewIds(R.id.store_avatar_iv,R.id.call_phone_iv);
+    public ClientStoreAdapter() {
+//        super(type==0?R.layout.module_recycle_item_store:R.layout.module_recycle_item_search_store);
+        super(R.layout.module_recycle_item_store);
+//        mType = type;
+//        if (type == 0)
+        addChildClickViewIds(R.id.store_avatar_iv,R.id.call_phone_iv);
     }
 
 
@@ -43,9 +45,14 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
         baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance());
         LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
         labelsView.setLabels(storeBean.getClassNameList());
+//        if (storeBean.isShowTop()){
+//            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);
+//        }else {
+//            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.GONE);
+//        }
 
-        if (mType == 0)
-            baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
+//        if (mType == 0)
+        baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
 
     }
 }
