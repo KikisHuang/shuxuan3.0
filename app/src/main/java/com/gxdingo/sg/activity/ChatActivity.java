@@ -94,6 +94,7 @@ import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
+import static com.kikis.commnlibrary.utils.Constant.UserInfo;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -625,7 +626,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 .asCustom(new IMSelectTransferAccountsWayPopupView(this, new IMSelectTransferAccountsWayPopupView.OnTransferAccountsWayListener() {
                     @Override
                     public void way(int type) {
-                        goToPagePutSerializable(reference.get(), IMTransferAccountsPayActivity.class, getIntentEntityMap(new Object[]{mShareUuid, type}));
+                        goToPagePutSerializable(reference.get(), IMTransferAccountsPayActivity.class, getIntentEntityMap(new Object[]{mShareUuid, type, mMessageDetails.getOtherAvatarInfo()}));
                     }
                 }).show());
     }
@@ -736,7 +737,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
 
                 for (int i = 0; i < mChatDatas.size(); i++) {
-                    if (mChatDatas.get(i).getMsgAccounts().getId().equals(receiveIMMessageBean.getMsgAccounts().getId())) {
+                    if (mChatDatas.get(i).getMsgAccounts() != null && mChatDatas.get(i).getMsgAccounts().getId() != null && mChatDatas.get(i).getMsgAccounts().getId().equals(receiveIMMessageBean.getMsgAccounts().getId())) {
                         mChatDatas.get(i).setMsgAccounts(receiveIMMessageBean.getMsgAccounts());
                         e.onNext(i);
                         break;
@@ -949,6 +950,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private void upLoadFile(String url) {
 
+
+        onStarts();
         ReceiveIMMessageBean cb = new ReceiveIMMessageBean();
         cb.upload_progress = 1;
         cb.setType(10);
@@ -990,11 +993,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 onMessage("图片上传失败 " + e.getMessage());
                 mChatDatas.remove(pos);
                 mAdapter.notifyDataSetChanged();
+                onAfters();
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-
+                onAfters();
                 LogUtils.i("onNext onNext onNext onNext");
 
                 mChatDatas.get(pos).upload_progress = 100;
@@ -1059,6 +1063,24 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onTransferClick(int position, long id) {
         getP().getTransfer(position, id);
+    }
+
+    /**
+     * 头像点击事件
+     *
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onAvatarClickListener(int position, long id) {
+
+
+        if (mChatDatas.get(position).getSendIdentifier() != UserInfoUtils.getInstance().getIdentifier()) {
+            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
+
+
+        }
+
     }
 
     @Override

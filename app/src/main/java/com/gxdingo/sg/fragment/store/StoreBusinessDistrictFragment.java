@@ -8,12 +8,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
+import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
@@ -39,6 +43,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * 商家端商圈
@@ -183,6 +189,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+
 //        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
     }
@@ -250,9 +257,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }
     }
 
-    @OnClick({R.id.unread_iv, R.id.iv_send_business_district})
+    @OnClick({R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.img_back:
+                getActivity().finish();
+                break;
             case R.id.unread_iv:
                 startActivity(new Intent(mContext, BusinessDistrictMessageActivity.class));
                 break;
@@ -314,6 +324,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         .show();
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
                 getP().PhotoViewer(mAdapter.getData().get(position).getImages(), view.getId() == R.id.single_img ? 0 : position);
+            } else if (view.getId() == R.id.iv_avatar) {
+                int storeId= (int) object;
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
             }
         }
     };

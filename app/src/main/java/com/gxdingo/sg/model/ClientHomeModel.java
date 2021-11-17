@@ -38,6 +38,7 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
 
     public void location(Context context, AMapLocationListener mLocationListener) {
         this.mContext = context;
+        try {
 
         //初始化定位
         try {
@@ -52,6 +53,9 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
         mLocationOption.setOnceLocation(true);
         mLocationClient.setLocationOption(mLocationOption);
         mLocationClient.startLocation();
+        }catch (Exception e){
+            LogUtils.e("AMapLocationClient Error === "+e);
+        }
     }
 
     /**

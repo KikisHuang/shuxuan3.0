@@ -68,6 +68,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     public View nodata_layout;
 
     private StoreHomeIMMessageAdapter imMessageAdapter;
+
     @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
         return new ClientMessagePresenter();
@@ -85,7 +86,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_fragment_cilent_msg;
     }
 
     @Override
@@ -151,6 +152,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     public void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean) {
         if (subscribesListBean != null && subscribesListBean.getList() != null) {
+
             //取出本地存储的websocket url
             String webSocketUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
             /*

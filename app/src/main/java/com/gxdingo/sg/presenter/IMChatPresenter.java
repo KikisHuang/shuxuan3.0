@@ -363,7 +363,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
                     public void onResult(List<LocalMedia> result) {
-                        getBV().onStarts();
 //                        String url = getPhotoUrl(result.get(0));
                         String url = !isEmpty(result.get(0).getCompressPath()) ? result.get(0).getCompressPath() : result.get(0).getPath();
                         getV().onUploadImageUrl(url);

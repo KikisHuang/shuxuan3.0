@@ -96,16 +96,13 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      * @param listener
      */
     public void retrievalPOI(String keyWord, String cityCode, PoiSearch.OnPoiSearchListener listener) {
-        query = new PoiSearch.Query(keyWord, "", cityCode);
-        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+//        query = new PoiSearch.Query(keyWord, "", cityCode);
+//        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
             poiSearch = new PoiSearch(mContext, query);
-        } catch (Exception e) {
-        }
 
-        poiSearch.setOnPoiSearchListener(listener);
-        poiSearch.searchPOIAsyn();
-        try {
+//            poiSearch.setOnPoiSearchListener(listener);
+//            poiSearch.searchPOIAsyn();
             query = new PoiSearch.Query(keyWord, "", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
             poiSearch = new PoiSearch(mContext, query);
@@ -128,21 +125,16 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
     public void retrievalBoundPOI(String keyWord, String cityCode,
                                   double latitude, double longitude, int page, PoiSearch.OnPoiSearchListener listener) {
 
-        query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
-        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+//        query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
+//        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
-            poiSearch = new PoiSearch(mContext, query);
-        } catch (Exception e) {
+//            poiSearch = new PoiSearch(mContext, query);
 
-        }
+//        query.setPageNum(page);
+//        poiSearch.setOnPoiSearchListener(listener);
+//        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
+//        poiSearch.searchPOIAsyn();
 
-        query.setPageNum(page);
-        poiSearch.setOnPoiSearchListener(listener);
-        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
-
-        poiSearch.searchPOIAsyn();
-
-        try {
             query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
             poiSearch = new PoiSearch(mContext, query);

@@ -8,9 +8,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
@@ -20,7 +17,6 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
-import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.ClientApi;
@@ -29,9 +25,9 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.mobile.auth.gatewayauth.ActivityResultListener;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.AuthUIConfig;
-import com.mobile.auth.gatewayauth.AuthUIControlClickListener;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 import com.mobile.auth.gatewayauth.ResultCode;
 import com.mobile.auth.gatewayauth.TokenResultListener;
@@ -50,21 +46,17 @@ import io.reactivex.Observable;
 import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.L;
-import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.SM;
 import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.HTML;
-import static com.gxdingo.sg.http.ClientApi.SERVICE_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.ClientApi.PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.UAT_URL;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
@@ -103,16 +95,13 @@ public class OneKeyModel {
 
         if (!isEmpty(LocalConstant.AUTH_SECRET))
             sdkInit(context, customResultListener);
-         else {
+        else {
 
             Map<String, String> map = getJsonMap();
 
             map.put("os", "android");
 
             String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-
-            if (netWorkListener != null)
-                netWorkListener.onStarts();
 
             Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
                     .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -126,7 +115,6 @@ public class OneKeyModel {
                     LogUtils.e(e);
 
                     if (netWorkListener != null) {
-                        netWorkListener.onAfters();
                         netWorkListener.onMessage("没有获取到一键登录认证key");
                     } else
                         ToastUtils.showShort(e.getMessage());
@@ -140,7 +128,6 @@ public class OneKeyModel {
                         sdkInit(context, customResultListener);
                     } else {
                         if (netWorkListener != null) {
-                            netWorkListener.onAfters();
                             netWorkListener.onMessage("没有获取到一键登陆认证key");
                         } else
                             ToastUtils.showShort("没有获取到一键登陆认证key");
@@ -210,6 +197,7 @@ public class OneKeyModel {
 
                         if (customResultListener != null)
                             customResultListener.onResult(new OneKeyLoginEvent(tokenRet.getToken(), isUser));
+
                     }
 
                 } catch (Exception e) {
@@ -230,12 +218,12 @@ public class OneKeyModel {
                     //除了用户取消操作的事件，其他都跳转登录页面
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
-                    } else {
-                        OneKeyModel.quitLoginPage();
+                    }
+
 //                        Toast.makeText(getApplicationContext(), "一键登录失败切换到其他登录方式", Toast.LENGTH_SHORT).show();
 //                        Intent pIntent = new Intent(OneKeyLoginActivity.this, MessageActivity.class);
 //                        startActivityForResult(pIntent, 1002);
-                    }
+                    OneKeyModel.quitLoginPage();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -244,7 +232,13 @@ public class OneKeyModel {
         };
 
         mAuthHelper = PhoneNumberAuthHelper.getInstance(context, mTokenResultListener);
-
+        mAuthHelper.setActivityResultListener(new ActivityResultListener() {
+            @Override
+            public void onActivityResult(int i, int i1, Intent intent) {
+                LogUtils.e("i === " + i);
+                LogUtils.e("i1 === " + i1);
+            }
+        });
         mAuthHelper.getReporter().setLoggerEnable(true);
         mAuthHelper.setAuthSDKInfo(LocalConstant.AUTH_SECRET);
         mAuthHelper.checkEnvAvailable(1);
@@ -292,12 +286,15 @@ public class OneKeyModel {
                 })
                 .build());
 
-        String privacy_agreementUrl = url + HTML + "identifier=" + SERVICE_PRIVACY_AGREEMENT_KEY;
+        String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
+        String s_privacy_agreementUrl = url + HTML + "identifier=" + STORE_PRIVACY_AGREEMENT_KEY;
         String service_agreementUrl = url + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
 
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
+                .setPrivacyBefore("")
                 .setAppPrivacyOne("《服务协议》", service_agreementUrl)
-                .setAppPrivacyTwo("《隐私协议》", privacy_agreementUrl)
+                .setAppPrivacyTwo("《用户隐私协议》", c_privacy_agreementUrl)
+                .setAppPrivacyThree("《商家隐私协议》", s_privacy_agreementUrl)
                 .setNavColor(getc(R.color.white))
                 .setNavTextColor(getc(R.color.white))
                 .setLogoHidden(false)
@@ -306,7 +303,7 @@ public class OneKeyModel {
                 .setPrivacyState(false)
                 .setPrivacyTextSize(12)
                 .setPrivacyOffsetY(340)
-                .setCheckboxHidden(true)
+                .setCheckboxHidden(false)
                 .setLogBtnText("本机号码一键登陆")
                 .setLogBtnBackgroundDrawable(getd(R.drawable.module_bg_main_color_round6))
                 .setLightColor(true)

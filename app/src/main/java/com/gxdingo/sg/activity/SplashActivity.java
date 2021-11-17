@@ -106,6 +106,7 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
                             AMapLocationClient.updatePrivacyShow(this, true, true);
                             AMapLocationClient.updatePrivacyAgree(this, true);
                             goToPage(reference.get(), WelcomeActivity.class, null);
+                            finish();
                         }
                     })).show();
         } else {

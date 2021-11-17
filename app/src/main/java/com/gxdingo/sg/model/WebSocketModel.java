@@ -231,6 +231,9 @@ public class WebSocketModel {
                 if (netWorkListener != null) {
                     //netWorkListener.onAfters();
                     netWorkListener.onData(true, subscribesBean);
+
+                    if (subscribesBean != null && subscribesBean.getList() != null && subscribesBean.getList().size() > 0)
+                        netWorkListener.haveData();
                 }
             }
         };

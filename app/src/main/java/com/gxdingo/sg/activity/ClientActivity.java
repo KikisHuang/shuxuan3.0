@@ -234,6 +234,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
 
         if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
+            //todo 一键登录页面重复创建问题
             getP().goLogin();
             return;
         }

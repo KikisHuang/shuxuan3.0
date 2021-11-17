@@ -3,6 +3,7 @@ package com.gxdingo.sg;
 
 import org.junit.Test;
 
+import static com.blankj.utilcode.util.RegexUtils.isMobileExact;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
@@ -21,5 +22,8 @@ public class ExampleUnitTest {
 
 
         System.out.println(getCustomDate(string2Millis("2021-11-10 20:45:45"), string2Millis("2021-11-16 20:45:45")));
+
+
+        System.out.println(isMobileExact("19195753176"));
     }
 }

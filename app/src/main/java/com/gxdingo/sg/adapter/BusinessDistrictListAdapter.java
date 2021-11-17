@@ -120,8 +120,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 //        }
 
 
-
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
+
+        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());

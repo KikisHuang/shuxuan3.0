@@ -699,6 +699,13 @@ public static final int *;
 -keep class com.alibaba.fastjson.** {*;}
 
 
+-keepclassmembers class ** {
+     @com.squareup.otto.Subscribe public *;
+     @com.squareup.otto.Produce public *;
+}
+
+-keep class com.alipay.mobile.android.verify.** { *; }
+
 ####AndroidUtilCode####
 -keep class com.blankj.utilcode.** {*;}
 

@@ -488,13 +488,13 @@ public class NetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(e.getMessage());
-                    OneKeyModel.hideLoginLoading();
                 }
+                OneKeyModel.hideLoginLoading();
             }
 
             @Override
             public void onNext(UserBean userBean) {
-                OneKeyModel.quitLoginPage();
+
                 UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
 
                 if (netWorkListener != null)
@@ -517,7 +517,7 @@ public class NetworkModel {
                             goToPage(context, ClientActivity.class, null);
                     }
                 }
-
+                OneKeyModel.quitLoginPage();
             }
         };
 
