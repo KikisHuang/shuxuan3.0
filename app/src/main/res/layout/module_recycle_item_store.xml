@@ -108,7 +108,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginStart="4dp"
-            android:text="13877778888"
             android:textSize="12sp"
             android:textColor="#A9A9A9"
             app:layout_constraintTop_toBottomOf="@+id/call_phone_iv"

@@ -2,13 +2,19 @@ package com.gxdingo.sg.activity;
 
 import android.view.View;
 
+import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
+import butterknife.OnClick;
+
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
@@ -20,6 +26,15 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
+    @BindView(R.id.business_scope_stv)
+    public SuperTextView business_scope_stv;
+
+    @BindView(R.id.details_address_stv)
+    public SuperTextView details_address_stv;
+
+
+    private StoreAuthInfoBean authInfoBean;
+
     @Override
     protected StoreSettingsContract.StoreSettingsPresenter createPresenter() {
         return new StoreSettingsPresenter();
@@ -27,7 +42,7 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -92,6 +107,29 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
     @Override
     protected void initData() {
+        getP().getAuthInfo();
+    }
+
+    @OnClick(R.id.business_license_stv)
+    public void onClickViews(View v){
+        if (authInfoBean!=null)
+            goToPage(this,StoreQualificationActivity.class,getIntentMap(new String[]{authInfoBean.getBusinessLicence()}));
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof StoreAuthInfoBean){
+            authInfoBean = (StoreAuthInfoBean) object;
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i=0;i<authInfoBean.getCategoryList().size();i++){
+                stringBuffer.append(authInfoBean.getCategoryList().get(i).getName());
+                if (i!=authInfoBean.getCategoryList().size()-1)
+                    stringBuffer.append(",");
+            }
+            business_scope_stv.setRightString(stringBuffer.toString());
+            details_address_stv.setRightString(authInfoBean.getAddress());
+        }
 
     }
 }

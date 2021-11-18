@@ -162,6 +162,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.txt_more:
+                if (mStoreDetail!=null && mStoreDetail.getLicence()!=null)
+                    goToPage(this,StoreQualificationActivity.class,getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                 break;
             case R.id.ll_navigation:
                 if (mNavigationPopupView == null) {

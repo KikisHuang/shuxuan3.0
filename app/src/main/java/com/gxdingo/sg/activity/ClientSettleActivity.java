@@ -13,6 +13,7 @@ import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.umeng.socialize.UMShareAPI;
@@ -22,6 +23,8 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN;
 import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN_CIRCLE;
 
@@ -116,7 +119,10 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.btn_become_store:
-                getP().convertStore();
+                if (UserInfoUtils.getInstance().isLogin())
+                    getP().convertStore();
+                else
+                    getP().oauth(this);
                 break;
             case R.id.btn_invitation:
                 Intent textIntent = new Intent(Intent.ACTION_SEND);

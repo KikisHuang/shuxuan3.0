@@ -29,6 +29,7 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.HideMobile;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -176,9 +177,16 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     }
 
     @Override
+    public void unbind(int type) {
+        if (clientNetworkModel!=null)
+            clientNetworkModel.unbindThirdParty(getContext(),type);
+    }
+
+    @Override
     public void bindAli() {
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
-            simpleAuth((Activity) getContext(), (String) str, callback);
+//            simpleAuth((Activity) getContext(), (String) str, callback);
+//            auth();
         });
     }
 

@@ -32,6 +32,7 @@ import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
@@ -224,6 +225,13 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{ClientLocalConstant.BANK,mWalletBean,bankcardBean.getId()}));
         }
 
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == LocalConstant.CASH_SUCCESSS)
+            getP().getWalletHome(true);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class StoreListBean {
         private Integer id;
         private String avatar;
         private String name;
-        private String number;
+        private String contactNumber;
         private String distance;
         //是否显示附近商家布局
         private boolean showTop;
@@ -75,11 +75,11 @@ public class StoreListBean {
         }
 
         public String getContactNumber() {
-            return number;
+            return contactNumber;
         }
 
         public void setContactNumber(String contactNumber) {
-            this.number = contactNumber;
+            this.contactNumber = contactNumber;
         }
 
         public String getDistance() {

@@ -45,11 +45,11 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
         baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance());
         LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
         labelsView.setLabels(storeBean.getClassNameList());
-//        if (storeBean.isShowTop()){
-//            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);
-//        }else {
-//            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.GONE);
-//        }
+        if (storeBean.isShowTop()){
+            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);
+        }else {
+            baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.GONE);
+        }
 
 //        if (mType == 0)
         baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());

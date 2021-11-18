@@ -203,6 +203,12 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,Stor
     }
 
     @Override
+    public void getAuthInfo() {
+        if (storeNetworkModel!=null)
+            storeNetworkModel.getAuthInfo(getContext());
+    }
+
+    @Override
     public void onResult(List<LocalMedia> result) {
         String url = getPhotoUrl(result.get(0));
 

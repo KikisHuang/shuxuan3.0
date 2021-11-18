@@ -20,11 +20,11 @@ public class ClientHomeContract {
 
     public interface ClientHomePresenter extends MvpPresenter<BasicsListener,ClientHomeListener>{
 
-        void checkPermissions(RxPermissions rxPermissions);
+        void checkPermissions(RxPermissions rxPermissions,boolean search);
 
         void getCategory();
 
-        void getNearbyStore(boolean refresh,int categoryId);
+        void getNearbyStore(boolean refresh,boolean search,int categoryId);
 
         void getNearbyStore(AddressBean addressBean,int categoryId);
 
@@ -34,7 +34,7 @@ public class ClientHomeContract {
 
         void getSearchHistory();
 
-        void search(boolean refresh,String content);
+        void search(boolean refresh,boolean search,String content);
 
         void search(AddressBean addressBean,String content);
 
@@ -49,7 +49,7 @@ public class ClientHomeContract {
 
         void onCategoryResult(List<CategoriesBean> categories);
 
-        void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans);
+        void onStoresResult(boolean refresh,boolean search, List<StoreListBean.StoreBean> storeBeans);
 
         void onHistoryResult(List<String> searchHistories);
     }

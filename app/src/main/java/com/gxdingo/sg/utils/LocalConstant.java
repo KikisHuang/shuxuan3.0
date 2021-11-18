@@ -179,6 +179,7 @@ public class LocalConstant {
     public static final String EXEC = "exec";
     public static final String FINISH_APP = "finish_app";
     public static final int SOCKET_HEART_TIME = 45000;
+    public static final int CASH_SUCCESSS = 1001010;
 
     public static final int SDK_PAY_FLAG = 12113;
     public static final int SDK_AUTH_FLAG = 12315;

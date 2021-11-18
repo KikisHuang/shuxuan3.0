@@ -10,6 +10,7 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
+import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.pay.WechatUtils;
@@ -82,10 +83,32 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 goToPage(this,ChangeBindingPhoneActivity.class,null);
                 break;
             case R.id.binding_ali_stv:
-                getP().bindAli();
+                if (isEmpty(cashInfoBean.getAlipay()))
+                    getP().bindAli();
+                else {
+                    new XPopup.Builder(reference.get())
+                            .isDarkTheme(false)
+                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定解绑支付宝？", new MyConfirmListener() {
+                                @Override
+                                public void onConfirm() {
+                                    getP().unbind(0);
+                                }
+                            })).show();
+                }
                 break;
             case R.id.binding_wechat_stv:
-                getP().bindWechat();
+                if (isEmpty(cashInfoBean.getWechat()))
+                    getP().bindWechat();
+                else {
+                    new XPopup.Builder(reference.get())
+                            .isDarkTheme(false)
+                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定解绑微信？", new MyConfirmListener() {
+                                @Override
+                                public void onConfirm() {
+                                    getP().unbind(1);
+                                }
+                            })).show();
+                }
                 break;
             case R.id.binding_bankcard_stv:
                 goToPage(this, BankcardListActivity.class,null);
@@ -198,6 +221,12 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     protected void init() {
         title_layout.setTitleText(gets(R.string.account_security));
         version_stv.setRightString("当前版本 v"+getAppVersionName());
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        getP().getCashInfo();
     }
 
     @Override

@@ -55,11 +55,11 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
 
-    @BindView(R.id.ll_nearby_store)
-    public LinearLayout ll_nearby_store;
+//    @BindView(R.id.ll_nearby_store)
+//    public LinearLayout ll_nearby_store;
 
-    @BindView(R.id.recommend_store_rv)
-    public RecyclerView recommend_store_rv;
+//    @BindView(R.id.recommend_store_rv)
+//    public RecyclerView recommend_store_rv;
 
     private ClientStoreAdapter mStoreAdapter;
 
@@ -161,6 +161,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
             if (s.toString().length() == 0 && history_lv.getVisibility() == View.GONE){
                 history_lv.setVisibility(View.VISIBLE);
                 mStoreAdapter.setList(null);
+                getP().getNearbyStore(true,false,0);
             }
         }
     };
@@ -180,6 +181,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void initData() {
         getP().getSearchHistory();
+        getP().checkPermissions(getRxPermissions(),false);
     }
 
     @OnClick({R.id.btn_cancel,R.id.location_tv})
@@ -192,7 +194,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
                 if (UserInfoUtils.getInstance().isLogin())
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
                 else
-                   getP().oauth(reference.get());
+                   getP().oauth(this);
                 break;
         }
     }
@@ -208,13 +210,23 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    public void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans) {
-        if (history_lv.getVisibility() == View.VISIBLE)
-            history_lv.setVisibility(View.GONE);
-        if (refresh)
-            mStoreAdapter.setList(storeBeans);
-        else
+    public void onStoresResult(boolean refresh, boolean searchModel,List<StoreListBean.StoreBean> storeBeans) {
+        if (searchModel){
+            if (history_lv.getVisibility() == View.VISIBLE)
+                history_lv.setVisibility(View.GONE);
+            if (refresh)
+                mStoreAdapter.setList(storeBeans);
+            else
+                mStoreAdapter.addData(storeBeans);
+        }else {
             mStoreAdapter.addData(storeBeans);
+        }
+//        if (history_lv.getVisibility() == View.VISIBLE)
+//            history_lv.setVisibility(View.GONE);
+//        if (refresh)
+//            mStoreAdapter.setList(storeBeans);
+//        else
+//            mStoreAdapter.addData(storeBeans);
     }
 
     @Override
@@ -225,7 +237,8 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_SEARCH){
-            getP().search(true,keyword_et.getText().toString());
+            searchModel = true;
+            getP().search(true,true,keyword_et.getText().toString());
         }
         return true;
     }
@@ -234,6 +247,6 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     public void onLabelClick(TextView label, Object data, int position) {
         LogUtils.d("search =============" + data.toString());
         keyword_et.setText(data.toString());
-        getP().search(true,data.toString());
+        getP().search(true,true,data.toString());
     }
 }
