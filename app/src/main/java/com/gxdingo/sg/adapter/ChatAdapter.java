@@ -397,10 +397,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         //头像
         ImageView avatar_img = holder.getImageView(R.id.avatar_img);
 
-        int type = getItemViewType(position);
-
-//        if (type == OtherText || type == OtherImage || type == OtherAudio || type == OtherTransfer)
-            avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position,data.getId()));
+        avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, data.getId()));
 
         String avatarUrl = "";
         if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer) {
@@ -410,7 +407,8 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             if (mOtherAvatarInfo != null && !isEmpty(mOtherAvatarInfo.getSendAvatar()))
                 avatarUrl = mOtherAvatarInfo.getSendAvatar();
         }
-        Glide.with(mContext).load(avatarUrl).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(avatar_img);
+
+        Glide.with(mContext).load(!isEmpty(avatarUrl) ? avatarUrl : R.drawable.module_svg_client_default_avatar).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(avatar_img);
 
 
         TextView time_tv = holder.getTextView(R.id.time_tv);
