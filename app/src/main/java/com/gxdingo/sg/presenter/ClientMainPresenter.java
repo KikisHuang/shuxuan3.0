@@ -159,16 +159,18 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
             FragmentTransaction fragmentTransaction = getV().getFragmentTransaction();
 
             model.fragmentInit(fragmentTransaction, getV().getFragmentList());
-
             if (isViewAttached())
                 getV().showFragment(fragmentTransaction, 0);
         }
     }
 
     private void showFm(int tab) {
+
         model.hideAllFragment(getV().getFragmentList().size(), getContext(), index -> {
-            if (isViewAttached())
+            if (isViewAttached()) {
                 getV().hideFragment(index);
+            }
+
         });
         getV().showFragment(getV().getFragmentTransaction(), tab);
 

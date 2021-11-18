@@ -175,7 +175,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
             single_img.setOnClickListener(v -> {
                 if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(), baseViewHolder.getAdapterPosition(), data.getImages().get(0));
+                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(),0, data.getImages().get(0));
             });
 
             Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
@@ -224,9 +224,9 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, imageInfo, baseViewHolder.getAdapterPosition(), new NineClickListener() {
                 @Override
                 public void onNineGridViewClick(int position, int index) {
-                    //todo 照片点击事件有问题
+
                     if (mOnChildViewClickListener != null && data.getImages() != null)
-                        mOnChildViewClickListener.item(picture_gridview, position, position, data.getImages().get(position));
+                        mOnChildViewClickListener.item(picture_gridview, position, index, data.getImages().get(position));
                 }
             }));
         }

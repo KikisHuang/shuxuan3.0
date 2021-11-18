@@ -225,21 +225,35 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     protected void initData() {
+
+    }
+
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
         UserInfoUtils userInfo = UserInfoUtils.getInstance();
         if (userInfo != null && userInfo.isLogin()) {
-            UserBean userBean = userInfo.getUserInfo();
-            if (userBean != null) {
-                //显示头像、名称和营业状态信息
-                UserBean.StoreBean storeBean = userBean.getStore();
-                Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
-                tvStoreName.setText(storeBean.getName());
-                setBusinessStatus(storeBean);
 
-                //获取IM订阅信息
-                getP().getIMSubscribesList(true);
+            if (isFirstLoad) {
+                UserBean userBean = userInfo.getUserInfo();
+                if (userBean != null) {
+                    //显示头像、名称和营业状态信息
+                    UserBean.StoreBean storeBean = userBean.getStore();
+                    Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
+                    tvStoreName.setText(storeBean.getName());
+                    setBusinessStatus(storeBean);
+
+                    //获取IM订阅信息
+                    getP().getIMSubscribesList(true);
+                }
+            } else {
+                isFirstLoad = false;
+                getP().refreshList();
             }
         }
     }
+
 
     private void setAppBarLayoutListener() {
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -285,12 +299,6 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
             initData();
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        getP().refreshList();
     }
 
     @Override

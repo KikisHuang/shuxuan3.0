@@ -196,18 +196,27 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void initData() {
+
+
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
             //获取商圈评论未读数量
             if (mStoreId <= 0)
                 getP().getNumberUnreadComments();
 
-            //获取商圈列表
-            getP().getBusinessDistrictList(true, mStoreId);
+            if (isFirstLoad)
+                //获取商圈列表
+                getP().getBusinessDistrictList(true, mStoreId);
+            else
+                isFirstLoad = false;
+
         }
-
     }
-
 
     /**
      * event事件
@@ -323,7 +332,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         }))
                         .show();
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
-                getP().PhotoViewer(mAdapter.getData().get(position).getImages(), view.getId() == R.id.single_img ? 0 : position);
+                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), view.getId() == R.id.single_img ? 0 : position);
             } else if (view.getId() == R.id.iv_avatar) {
                 int storeId = (int) object;
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));

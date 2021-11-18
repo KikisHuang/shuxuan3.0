@@ -32,11 +32,11 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/module_unread_im_msg_red_bg"
         android:gravity="center"
-        tools:text="0"
         android:textColor="@color/white"
         android:textSize="10sp"
         app:layout_constraintLeft_toLeftOf="@+id/niv_avatar"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0" />
 
     <TextView
         android:id="@+id/tv_nickname"
@@ -81,4 +81,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/grayf6"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1068,46 +1068,6 @@ public class StoreNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
-//        if (netWorkListener != null)
-//            netWorkListener.onStarts();
-//        String url=isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-//        String timeStamp = getCurrentTimeUTCM();
-//        Map<String, String> signMap = new HashMap<>();
-//        signMap.put(LocalConstant.TIMESTAMP,timeStamp);
-//        String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-//        String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
-//        Observable<UserBean> observable = HttpClient.post(url+USER_STATUS)
-//                .headers(LocalConstant.SIGN,sign)
-//                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                if (netWorkListener != null) {
-//                    netWorkListener.onAfters();
-//                    netWorkListener.onMessage(e.getMessage());
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onNext(UserBean userBean) {
-//                if (customResultListener != null)
-//                    customResultListener.onResult(userBean);
-//
-//                if (netWorkListener != null)
-//                    netWorkListener.onAfters();
-//
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        if (netWorkListener != null)
-//            netWorkListener.onDisposable(subscriber);
     }
 
 

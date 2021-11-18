@@ -7,14 +7,13 @@ import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
-import com.gxdingo.sg.fragment.client.ClientBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
@@ -42,9 +41,7 @@ import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.kikis.commnlibrary.utils.Constant.readed;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
@@ -299,7 +296,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void showFragment(FragmentTransaction fragmentTransaction, int index) {
+
         fragmentTransaction.show(mFragmentList.get(index));
+        //android x懒加载
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.RESUMED);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -308,6 +308,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         FragmentTransaction fragmentTransaction = getFragmentTransaction();
 
         fragmentTransaction.hide(mFragmentList.get(index));
+        //android x懒加载
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.STARTED);
         fragmentTransaction.commitAllowingStateLoss();
     }
 

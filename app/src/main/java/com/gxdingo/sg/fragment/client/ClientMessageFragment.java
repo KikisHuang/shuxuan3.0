@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -138,8 +140,20 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void initData() {
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().getSubscribesMessage(true);
+
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+        if (UserInfoUtils.getInstance().isLogin()) {
+            if (isFirstLoad)
+                getP().getSubscribesMessage(true);
+            else {
+                isFirstLoad = false;
+                getP().refreshList();
+            }
+        }
     }
 
     @Override
@@ -202,13 +216,6 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         });
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().refreshList();
-    }
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {

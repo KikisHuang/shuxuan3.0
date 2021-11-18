@@ -232,6 +232,10 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         super.onTypeEvent(type);
         if (type == LocalConstant.CASH_SUCCESSS)
             getP().getWalletHome(true);
+
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+            getP().getWalletHome(true);
+        }
     }
 
     @Override

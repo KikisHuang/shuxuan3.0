@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.allen.library.SuperTextView;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -136,14 +137,20 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void initData() {
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().getUserInfo();
+
         mine_banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(Object data, int position) {
                 ToastUtils.showLong(position);
             }
         });
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().getUserInfo();
     }
 
     @Override

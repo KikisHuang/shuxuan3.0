@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -98,7 +99,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     private List<CategoriesBean> mAllTypeData;
 
     //是否获取定位
-    private boolean location = true ;
+    private boolean location = true;
 
     private int categoryId = 0;
 
@@ -150,9 +151,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (location)
-            getP().getNearbyStore(true,true,categoryId);
-        else{
-            getP().checkPermissions(getRxPermissions(),true);
+            getP().getNearbyStore(true, true, categoryId);
+        else {
+            getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishRefresh();
         }
 
@@ -168,19 +169,25 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden){
+        if (!hidden) {
             categoryId = 0;
-            getP().getNearbyStore(true,true,categoryId);
+            getP().getNearbyStore(true, true, categoryId);
         }
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (location)
-            getP().getNearbyStore(false,false,categoryId);
-        else{
-            getP().checkPermissions(getRxPermissions(),true);
+            getP().getNearbyStore(false, false, categoryId);
+        else {
+            getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishLoadMore();
         }
 
@@ -196,7 +203,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         mStoreAdapter.setOnItemClickListener(this);
         mCategoryAdapter = new ClientCategoryAdapter();
         category_rv.setAdapter(mCategoryAdapter);
-        category_rv.setLayoutManager(new GridLayoutManager(reference.get(),5){
+        category_rv.setLayoutManager(new GridLayoutManager(reference.get(), 5) {
             @Override
             public boolean canScrollVertically() {
                 return false;
@@ -205,23 +212,23 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         mCategoryAdapter.setOnItemClickListener(this);
     }
 
-    @OnClick({R.id.location_tv,R.id.location_tt_tv,R.id.ll_search,R.id.btn_search,R.id.btn_empower,R.id.btn_become_store,R.id.btn_invitation})
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.location_tt_tv:
             case R.id.location_tv:
                 if (UserInfoUtils.getInstance().isLogin())
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{1}));
                 else
                     getP().oauth(getContext());
 
                 break;
             case R.id.btn_search:
             case R.id.ll_search:
-                goToPage(getContext(), ClientSearchActivity.class,getIntentMap(new String[]{location_tv.getText().toString()}));
+                goToPage(getContext(), ClientSearchActivity.class, getIntentMap(new String[]{location_tv.getText().toString()}));
                 break;
             case R.id.btn_empower:
-                getP().checkPermissions(getRxPermissions(),true);
+                getP().checkPermissions(getRxPermissions(), true);
                 break;
             case R.id.btn_become_store:
                 if (UserInfoUtils.getInstance().isLogin())
@@ -241,11 +248,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof AddressBean){
+        if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
-            if (addressBean.selectType==1){
+            if (addressBean.selectType == 1) {
                 this.location = true;
-                getP().getNearbyStore((AddressBean) object,categoryId);
+                getP().getNearbyStore((AddressBean) object, categoryId);
             }
 
         }
@@ -254,7 +261,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED){
+        if (type == CLIENT_LOGIN_SUCCEED) {
 
         }
     }
@@ -264,7 +271,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
-        getP().checkPermissions(getRxPermissions(),true);
+        getP().checkPermissions(getRxPermissions(), true);
         getP().getCategory();
     }
 
@@ -323,7 +330,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onFailed() {
         super.onFailed();
         location = false;
-        if (noLocation_layout.getVisibility() == View.INVISIBLE ||noLocation_layout.getVisibility() == View.GONE )
+        if (noLocation_layout.getVisibility() == View.INVISIBLE || noLocation_layout.getVisibility() == View.GONE)
             noLocation_layout.setVisibility(View.VISIBLE);
     }
 
@@ -347,7 +354,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
 
     @Override
-    public void onStoresResult(boolean refresh, boolean search,List<StoreListBean.StoreBean> storeBeans) {
+    public void onStoresResult(boolean refresh, boolean search, List<StoreListBean.StoreBean> storeBeans) {
         if (refresh)
             mStoreAdapter.setList(storeBeans);
         else
@@ -370,23 +377,23 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             ((CategoriesBean) mCategoryAdapter.getData().get(mCategoryAdapter.getData().size() - 1)).isSelected = !expan;
 
             mCategoryAdapter.notifyDataSetChanged();
-        }else {
+        } else {
             CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
             categoryId = categoriesBean.getId();
             if (!location)
-                getP().checkPermissions(getRxPermissions(),true);
+                getP().checkPermissions(getRxPermissions(), true);
             else
-                getP().getNearbyStore(true,true,categoryId);
+                getP().getNearbyStore(true, true, categoryId);
         }
     }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.store_avatar_iv:
 
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())
@@ -406,12 +413,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 
-        if (UserInfoUtils.getInstance().isLogin()){
+        if (UserInfoUtils.getInstance().isLogin()) {
             StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,item.getId()}));
-        }else {
-            UserInfoUtils.getInstance().goToLoginPage(getContext(),"");
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+        } else {
+            UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
         }
     }
 }

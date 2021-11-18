@@ -48,7 +48,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="right|center"
                         android:background="@mipmap/bg_im_chat_oneself_content"
-                        android:padding="10dp"
+                        android:paddingHorizontal="12dp"
+                        android:gravity="right|center"
                         android:textColor="@color/white"
                         android:textSize="13sp"
                         tools:text="来自用户提醒：我在本" />
