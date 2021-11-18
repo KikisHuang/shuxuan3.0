@@ -334,7 +334,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), view.getId() == R.id.single_img ? 0 : position);
             } else if (view.getId() == R.id.iv_avatar) {
-                int storeId = (int) object;
+                int storeId = Integer.valueOf(String.valueOf(object));
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
             }
         }
