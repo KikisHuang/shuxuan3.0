@@ -29,6 +29,8 @@ public class ClientAccountSecurityContract {
 
         void bind(String code,int type);
 
+        void unbind(int type);
+
         void bindAli();
 
         void bindWechat();

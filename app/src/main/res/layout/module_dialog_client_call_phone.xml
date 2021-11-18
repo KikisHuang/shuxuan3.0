@@ -34,6 +34,7 @@
         android:text="@string/cancel"
         android:textSize="15sp"
         android:textColor="#2E2E2E"
+        style="?android:attr/borderlessButtonStyle"
         android:background="@drawable/module_shape_bg_gray_6r"/>
 
 </LinearLayout>

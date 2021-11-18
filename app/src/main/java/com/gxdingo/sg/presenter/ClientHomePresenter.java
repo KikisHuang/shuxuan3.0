@@ -59,6 +59,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private double lon, lat;
 
+    private boolean searchModel;
+
     public ClientHomePresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
 
@@ -71,7 +73,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void checkPermissions(RxPermissions rxPermissions) {
+    public void checkPermissions(RxPermissions rxPermissions,boolean search) {
         if (commonModel!=null){
             commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
@@ -88,7 +90,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
                                     lat = aMapLocation.getLatitude();
                                     lon=aMapLocation.getLongitude();
-                                    getNearbyStore(true,0);
+                                    getNearbyStore(true,search,0);
                                 } else {
                                     getBV().onMessage(aMapLocation.getLocationDetail());
                                     getBV().onFailed();
@@ -120,7 +122,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void getNearbyStore(boolean refresh,int categoryId) {
+    public void getNearbyStore(boolean refresh,boolean search,int categoryId) {
+        searchModel = search;
         if (clientNetworkModel!=null)
             clientNetworkModel.getStoreList(getContext(),refresh,lon,lat,categoryId,"");
     }
@@ -131,7 +134,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         lat = addressBean.getLatitude();
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
-        getNearbyStore(true,categoryId);
+        getNearbyStore(true,false,categoryId);
     }
 
 
@@ -168,7 +171,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void search(boolean refresh,String content) {
+    public void search(boolean refresh,boolean search,String content) {
+        searchModel = search;
         if (clientNetworkModel!=null){
             if (isEmpty(content)){
                 onMessage("请输入搜索内容！");
@@ -193,7 +197,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         lat = addressBean.getLatitude();
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
-        search(true,content);
+        search(true,true,content);
     }
 
     @Override
@@ -275,8 +279,18 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         if (isViewAttached()){
             if (o instanceof CategoryListBean)
                 getV().onCategoryResult(((CategoryListBean) o).getCategories());
-            else if (o instanceof StoreListBean)
-                getV().onStoresResult(refresh,((StoreListBean) o).getList());
+            else if (o instanceof StoreListBean){
+                StoreListBean storeListBean=(StoreListBean) o;
+                if (refresh && !searchModel){
+                    if (storeListBean.getList()!=null && storeListBean.getList().size()>0){
+                        storeListBean.getList().get(0).setShowTop(true);
+                        getV().onStoresResult(true,searchModel,storeListBean.getList());
+                    }
+                } else {
+                    getV().onStoresResult(refresh,searchModel,storeListBean.getList());
+                }
+            }
+
 
         }
     }

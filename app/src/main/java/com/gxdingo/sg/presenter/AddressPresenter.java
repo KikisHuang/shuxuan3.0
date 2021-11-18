@@ -141,7 +141,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
             clientNetworkModel.resetPage();
 
 //        LogUtils.d("=========城市码"+cityCode);
-        if (!isEmpty(cityCode)) {
+//        if (!isEmpty(cityCode)) {
 
             LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
@@ -165,7 +165,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                 }
             });
-        }
+//        }
     }
 
     @Override

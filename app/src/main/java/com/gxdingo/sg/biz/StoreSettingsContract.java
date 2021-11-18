@@ -32,6 +32,8 @@ public class StoreSettingsContract {
         void getDistanceList();
 
         void deliveryScope(String scope);
+
+        void getAuthInfo();
     }
 
     public interface StoreSettingsListener{

@@ -76,7 +76,10 @@ import static com.gxdingo.sg.http.StoreApi.STORE_ACCOUNT;
 import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
 import static com.gxdingo.sg.http.StoreApi.UNBIND_BANK_CARD;
 import static com.gxdingo.sg.http.StoreApi.UPDATE_WITHDRAWAL_PASSWORD;
+import static com.gxdingo.sg.utils.ClientLocalConstant.ALIPAY;
+import static com.gxdingo.sg.utils.ClientLocalConstant.BANK;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.ClientLocalConstant.WECHAT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -609,7 +612,7 @@ public class ClientNetworkModel {
         Map<String, String> map = getJsonMap();
         map.put(ClientLocalConstant.STATUS, String.valueOf(status));
         if (!isEmpty(date))
-            map.put(ClientLocalConstant.DATE, String.valueOf(status));
+            map.put(ClientLocalConstant.DATE, date);
 
         Observable<ClientAccountTransactionBean> observable = HttpClient.post(TRANSACTION_RECORD, map)
                 .execute(new CallClazzProxy<ApiResult<ClientAccountTransactionBean>, ClientAccountTransactionBean>(new TypeToken<ClientAccountTransactionBean>() {
@@ -834,8 +837,19 @@ public class ClientNetworkModel {
     public void balanceCash(Context context, int type, String amount, String withdrawalPassword, long bankCardId) {
 
         Map<String, String> map = getJsonMap();
+        //0銀行卡 10微信 20支付寶
+        switch (type){
+            case 0:
+                map.put(LocalConstant.TYPE, BANK);
+                break;
+            case 10:
+                map.put(LocalConstant.TYPE, WECHAT);
+                break;
+            case 20:
+                map.put(LocalConstant.TYPE, ALIPAY);
+                break;
+        }
 
-        map.put(LocalConstant.TYPE, String.valueOf(type));
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
         map.put(ClientLocalConstant.AMOUNT, amount);
         if (type == 0 && bankCardId > 0)
@@ -1515,7 +1529,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onSucceed(1);
+                    netWorkListener.onSucceed(3);
                 }
             }
         };

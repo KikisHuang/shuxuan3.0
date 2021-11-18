@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.biz.OnContentListener;
 import com.lxj.xpopup.core.BottomPopupView;
 
 import butterknife.BindView;
@@ -26,12 +27,14 @@ public class ClientCallPhoneDialog extends BottomPopupView {
     @BindView(R.id.phone_number_tv)
     public TextView phone_number_tv;
 
+    private OnContentListener listener;
 
     private String mPhoneNumber;
 
-    public ClientCallPhoneDialog(@NonNull Context context,String phone) {
+    public ClientCallPhoneDialog(@NonNull Context context,String phone,OnContentListener listener) {
         super(context);
         this.mPhoneNumber = phone;
+        this.listener = listener;
     }
 
     @Override
@@ -54,7 +57,8 @@ public class ClientCallPhoneDialog extends BottomPopupView {
                 this.dismiss();
                 break;
             case R.id.phone_number_tv:
-
+                if (listener!=null)
+                    listener.onConfirm(this,mPhoneNumber);
                 break;
         }
     }

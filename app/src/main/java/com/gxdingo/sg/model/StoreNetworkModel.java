@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.DistanceListBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.gxdingo.sg.bean.StoreDetailBean;
@@ -56,6 +57,7 @@ import static com.gxdingo.sg.http.HttpClient.getCurrentTimeUTCM;
 import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.StoreApi.CATEGORY_LIST;
+import static com.gxdingo.sg.http.StoreApi.CHECK_QUALIFICATION;
 import static com.gxdingo.sg.http.StoreApi.DELIVERY_SCOPE;
 import static com.gxdingo.sg.http.StoreApi.MINE_INFO;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
@@ -363,6 +365,7 @@ public class StoreNetworkModel {
             public void onNext(NormalBean normalBean) {
                 netWorkListener.onSucceed(1);
                 netWorkListener.onAfters();
+                EventBus.getDefault().post(LocalConstant.CASH_SUCCESSS);
             }
         };
 
@@ -915,6 +918,40 @@ public class StoreNetworkModel {
                 netWorkListener.onAfters();
                 if (customResultListener!=null)
                     customResultListener.onResult(status);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 营业状态修改
+     *
+     *
+     */
+    public void getAuthInfo(Context context) {
+
+
+        netWorkListener.onStarts();
+        Observable<StoreAuthInfoBean> observable = HttpClient.post(CHECK_QUALIFICATION)
+                .execute(new CallClazzProxy<ApiResult<StoreAuthInfoBean>, StoreAuthInfoBean>(new TypeToken<StoreAuthInfoBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<StoreAuthInfoBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                netWorkListener.onMessage(e.getMessage());
+                netWorkListener.onAfters();
+            }
+
+            @Override
+            public void onNext(StoreAuthInfoBean authInfoBean) {
+                netWorkListener.onAfters();
+                if (authInfoBean!=null)
+                    EventBus.getDefault().post(authInfoBean);
             }
         };
 

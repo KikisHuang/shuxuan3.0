@@ -22,6 +22,7 @@ import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.biz.OnContentListener;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -35,6 +36,7 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -148,9 +150,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (location)
-            getP().getNearbyStore(true,categoryId);
+            getP().getNearbyStore(true,true,categoryId);
         else{
-            getP().checkPermissions(getRxPermissions());
+            getP().checkPermissions(getRxPermissions(),true);
             smartrefreshlayout.finishRefresh();
         }
 
@@ -168,7 +170,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         super.onHiddenChanged(hidden);
         if (!hidden){
             categoryId = 0;
-            getP().getNearbyStore(true,categoryId);
+            getP().getNearbyStore(true,true,categoryId);
         }
     }
 
@@ -176,9 +178,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (location)
-            getP().getNearbyStore(false,categoryId);
+            getP().getNearbyStore(false,false,categoryId);
         else{
-            getP().checkPermissions(getRxPermissions());
+            getP().checkPermissions(getRxPermissions(),true);
             smartrefreshlayout.finishLoadMore();
         }
 
@@ -187,7 +189,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void init() {
         scrollViewInit();
-        mStoreAdapter = new ClientStoreAdapter(0);
+        mStoreAdapter = new ClientStoreAdapter();
         store_rv.setAdapter(mStoreAdapter);
         store_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mStoreAdapter.setOnItemChildClickListener(this);
@@ -219,10 +221,13 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 goToPage(getContext(), ClientSearchActivity.class,getIntentMap(new String[]{location_tv.getText().toString()}));
                 break;
             case R.id.btn_empower:
-                getP().checkPermissions(getRxPermissions());
+                getP().checkPermissions(getRxPermissions(),true);
                 break;
             case R.id.btn_become_store:
-                getP().convertStore();
+                if (UserInfoUtils.getInstance().isLogin())
+                    getP().convertStore();
+                else
+                    getP().oauth(getContext());
                 break;
             case R.id.btn_invitation:
                 Intent textIntent = new Intent(Intent.ACTION_SEND);
@@ -259,7 +264,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
-        getP().checkPermissions(getRxPermissions());
+        getP().checkPermissions(getRxPermissions(),true);
         getP().getCategory();
     }
 
@@ -342,7 +347,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
 
     @Override
-    public void onStoresResult(boolean refresh, List<StoreListBean.StoreBean> storeBeans) {
+    public void onStoresResult(boolean refresh, boolean search,List<StoreListBean.StoreBean> storeBeans) {
         if (refresh)
             mStoreAdapter.setList(storeBeans);
         else
@@ -369,23 +374,29 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
             categoryId = categoriesBean.getId();
             if (!location)
-                getP().checkPermissions(getRxPermissions());
+                getP().checkPermissions(getRxPermissions(),true);
             else
-                getP().getNearbyStore(true,categoryId);
+                getP().getNearbyStore(true,true,categoryId);
         }
     }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
         switch (view.getId()){
             case R.id.store_avatar_iv:
-                StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new ClientCallPhoneDialog(reference.get(),""))
+                        .asCustom(new ClientCallPhoneDialog(reference.get(), item.getContactNumber(), new OnContentListener() {
+                            @Override
+                            public void onConfirm(BasePopupView popupView, String content) {
+                                getP().callStore(content);
+                            }
+                        }))
                         .show();
                 break;
         }

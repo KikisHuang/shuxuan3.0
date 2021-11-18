@@ -182,6 +182,13 @@
 
         </activity>
 
+        <!--店铺資質页面 -->
+        <activity
+            android:name=".activity.StoreQualificationActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <!--客户端账户记录页面 -->
         <activity
             android:name=".activity.ClientAccountRecordActivity"

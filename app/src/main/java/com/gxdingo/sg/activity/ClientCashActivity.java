@@ -17,6 +17,7 @@ import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.dialog.ClientCashSelectDialog;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.gxdingo.sg.view.RegexEditText;
@@ -27,6 +28,7 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.core.CenterPopupView;
+import com.tencent.smtt.sdk.WebView;
 import com.umeng.commonsdk.debug.E;
 
 import java.util.List;
@@ -55,8 +57,12 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
+    @BindView(R.id.webView)
+    public WebView webView;
+
     private String amount = "0.0";
 
+    //0銀行卡 10微信 20支付寶
     private int mtype = -1;
 
     private int mBankCardId = -1;
@@ -245,10 +251,12 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         }else if (cashInfoBean.getBankList()!=null&&cashInfoBean.getBankList().size()>0&&cashInfoBean.getIsShowBank()==1){
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
             cash_account_stv.setLeftString(gets(R.string.back_card));
+            mBankCardId = cashInfoBean.getBankList().get(0).getId();
             mtype = 0;
         }else {
             cash_account_stv.setLeftString("选择提现账户");
         }
+        webView.loadDataWithBaseURL(null, cashInfoBean.getExplain(), "text/html", "utf-8", null);
     }
 
     @Override
@@ -311,7 +319,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     @Override
     public void onSucceed(int type) {
-//        sendEvent(StoreLocalConstant.CASH_SUCCESS);
+//        sendEvent(LocalConstant.CASH_SUCCESSS);
         finish();
     }
 

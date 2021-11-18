@@ -39,6 +39,7 @@ import com.gxdingo.sg.utils.StatusBarUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gyf.immersionbar.ImmersionBar;
 import com.gyf.immersionbar.components.SimpleImmersionOwner;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.lxj.xpopup.XPopup;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -53,6 +54,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -147,11 +149,24 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED||type == LocalConstant.CLIENT_REFRESH_USER_HOME)
+        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED
+                ||type == LocalConstant.CLIENT_REFRESH_USER_HOME
+                ||type ==LocalConstant.CASH_SUCCESSS)
             getP().getUserInfo();
         else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
             username_stv.setLeftString(UserInfoUtils.getInstance().getUserNickName());
+        }
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof ReceiveIMMessageBean){
+            ReceiveIMMessageBean messageBean = (ReceiveIMMessageBean) object;
+            if (messageBean.getType()==21){
+                getP().getUserInfo();
+            }
         }
     }
 
@@ -186,6 +201,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientFillInvitationCodeActivity.class,null);
                 break;
             case R.id.private_protocol_stv:
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true,0, CLIENT_PRIVACY_AGREEMENT_KEY}));
                 break;
             case R.id.logout_stv:
                 new XPopup.Builder(reference.get())
