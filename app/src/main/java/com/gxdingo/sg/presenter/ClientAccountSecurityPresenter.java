@@ -2,11 +2,16 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.InputType;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
@@ -29,6 +34,7 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.HideMobile;
@@ -186,7 +192,7 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     public void bindAli() {
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
 //            simpleAuth((Activity) getContext(), (String) str, callback);
-//            auth();
+            auth((Activity) getContext(), (String) str,handler);
         });
     }
 
@@ -225,6 +231,22 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
         if (mNetworkModel!=null)
             mNetworkModel.logOff(getContext());
     }
+
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+//            super.handleMessage(msg);
+            switch (msg.what){
+                case SDK_AUTH_FLAG:
+                    AuthResult authResult = (AuthResult) msg.obj;
+                    if (clientNetworkModel != null) {
+                        clientNetworkModel.bindThirdParty(getContext(), authResult.getAuthCode(),0);
+                    }
+                    break;
+            }
+        }
+    };
 
     /**
      * 支付宝sdk结果回调，主线程中执行

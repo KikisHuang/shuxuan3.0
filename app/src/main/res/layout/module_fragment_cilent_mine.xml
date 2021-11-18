@@ -115,6 +115,7 @@
                 app:sLeftTextColor="#262626"
                 app:sLeftTextSize="18sp"
                 app:sLeftViewMarginLeft="0dp"
+                app:sLeftMaxEms="12"
                 app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/capital_panel_cl"

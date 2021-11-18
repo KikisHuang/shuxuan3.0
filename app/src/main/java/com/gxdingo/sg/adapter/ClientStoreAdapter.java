@@ -42,7 +42,7 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
                 .apply(RequestOptions.bitmapTransform(new GlideRoundTransform(6)))
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
         baseViewHolder.setText(R.id.store_name_tv,storeBean.getName());
-        baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance());
+        baseViewHolder.setText(R.id.distance_tv,"距离"+storeBean.getDistance()+"m");
         LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
         labelsView.setLabels(storeBean.getClassNameList());
         if (storeBean.isShowTop()){

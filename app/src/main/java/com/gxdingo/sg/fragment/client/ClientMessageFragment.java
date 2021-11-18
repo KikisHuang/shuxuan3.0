@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.client;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -63,6 +64,9 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
+    @BindView(R.id.title)
+    public TextView title;
+
     @BindView(R.id.smartrefreshlayout)
     public SmartRefreshLayout smartrefreshlayout;
 
@@ -78,6 +82,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
         return new ClientMessagePresenter();
     }
+
 
     @Override
     protected boolean eventBusRegister() {
@@ -130,6 +135,8 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void init() {
+        title.setTextSize(16);
+        title.getPaint().setFakeBoldText(true);
         title_layout.setTitleText(gets(R.string.message));
         title_layout.setBackVisible(false);
         imMessageAdapter = new StoreHomeIMMessageAdapter();

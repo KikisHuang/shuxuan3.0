@@ -443,7 +443,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         refreshLayout.setEnableOverScrollDrag(false);
 
         MaterialHeader materialHeader = new MaterialHeader(this);
-        materialHeader.setColorSchemeResources(R.color.blue_dominant_tone, R.color.red_dominant_tone, R.color.yellow_dominant_tone);
+        materialHeader.setColorSchemeResources(R.color.green_dominant_tone);
         refreshLayout.setRefreshHeader(materialHeader);
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
 

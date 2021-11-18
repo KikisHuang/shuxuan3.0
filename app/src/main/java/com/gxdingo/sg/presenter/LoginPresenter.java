@@ -2,10 +2,15 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.LoginModel;
@@ -19,6 +24,8 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
+import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
+import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -150,7 +157,8 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void alipayAuth() {
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
-            simpleAuth((Activity) getContext(), (String) str, callback);
+            auth((Activity) getContext(), (String) str,handler);
+//            simpleAuth((Activity) getContext(), (String) str, callback);
         });
     }
 
@@ -193,6 +201,25 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
             mNetworkModel.login(getContext(), getV().getMobile(), getV().getCode(), getV().isClient());
         }
     }
+
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+//            super.handleMessage(msg);
+            switch (msg.what){
+                case SDK_AUTH_FLAG:
+                    AuthResult authResult = (AuthResult) msg.obj;
+                    if (mNetworkModel!=null){
+                        if (!isEmpty(authResult.getAuthCode())) {
+                            mNetworkModel.thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, getV().isClient());
+                        } else
+                            onMessage("没有获取到authCode");
+                    }
+                    break;
+            }
+        }
+    };
 
     /**
      * 支付宝sdk结果回调，主线程中执行

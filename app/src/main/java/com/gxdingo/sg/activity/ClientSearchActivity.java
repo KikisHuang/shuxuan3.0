@@ -8,17 +8,23 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.biz.OnContentListener;
+import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -26,6 +32,10 @@ import com.gxdingo.sg.view.ClearEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.kikis.commnlibrary.utils.Constant;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.List;
 
@@ -41,7 +51,7 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
  * @date: 2021/10/17
  * @page:
  */
-public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, TextView.OnEditorActionListener, LabelsView.OnLabelClickListener {
+public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, TextView.OnEditorActionListener, LabelsView.OnLabelClickListener, OnItemClickListener, OnItemChildClickListener {
 
     @BindView(R.id.location_tv)
     public TextView location_tv;
@@ -51,6 +61,9 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @BindView(R.id.history_lv)
     public LabelsView history_lv;
+
+    @BindView(R.id.smartrefreshlayout)
+    public SmartRefreshLayout smartrefreshlayout;
 
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
@@ -109,7 +122,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected View refreshLayout() {
-        return null;
+        return smartrefreshlayout;
     }
 
     @Override
@@ -124,12 +137,30 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected boolean refreshEnable() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean loadmoreEnable() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshLayout) {
+        super.onRefresh(refreshLayout);
+        if (searchModel)
+            getP().search(true,searchModel,keyword_et.getText().toString());
+        else
+            getP().getNearbyStore(true,searchModel,0);
+    }
+
+    @Override
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        super.onLoadMore(refreshLayout);
+        if (searchModel)
+            getP().search(false,searchModel,keyword_et.getText().toString());
+        else
+            getP().getNearbyStore(false,searchModel,0);
     }
 
     @Override
@@ -140,6 +171,8 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         mStoreAdapter = new ClientStoreAdapter();
         recyclerView.setAdapter(mStoreAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+        mStoreAdapter.setOnItemClickListener(this);
+        mStoreAdapter.setOnItemChildClickListener(this);
         keyword_et.setOnEditorActionListener(this);
         keyword_et.addTextChangedListener(textWatcher);
         history_lv.setOnLabelClickListener(this);
@@ -218,6 +251,10 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
                 mStoreAdapter.setList(storeBeans);
             else
                 mStoreAdapter.addData(storeBeans);
+            if (storeBeans.size()<15){
+                this.searchModel = false;
+                getP().getNearbyStore(true,false,0);
+            }
         }else {
             mStoreAdapter.addData(storeBeans);
         }
@@ -246,7 +283,42 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     public void onLabelClick(TextView label, Object data, int position) {
         LogUtils.d("search =============" + data.toString());
+        searchModel = true;
         keyword_et.setText(data.toString());
         getP().search(true,true,data.toString());
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        if (UserInfoUtils.getInstance().isLogin()){
+            StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,item.getId()}));
+        }else {
+            UserInfoUtils.getInstance().goToLoginPage(this,"");
+        }
+    }
+
+    @Override
+    public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+        switch (view.getId()){
+            case R.id.store_avatar_iv:
+
+                goToPagePutSerializable(this, ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                break;
+            case R.id.call_phone_iv:
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new ClientCallPhoneDialog(reference.get(), item.getContactNumber(), new OnContentListener() {
+                            @Override
+                            public void onConfirm(BasePopupView popupView, String content) {
+                                getP().callStore(content);
+                            }
+                        }))
+                        .show();
+                break;
+        }
+
     }
 }

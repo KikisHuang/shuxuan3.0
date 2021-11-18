@@ -134,7 +134,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         lat = addressBean.getLatitude();
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
-        getNearbyStore(true,false,categoryId);
+        getNearbyStore(true,true,categoryId);
     }
 
 
@@ -156,15 +156,17 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     UserBean userBean = (UserBean) o;
                     if (userBean.getStore()!=null ){
                         int status = userBean.getStore().getStatus();
-                        if (userBean.getStore().getId()<=0 && status == 20){
+                        if (userBean.getStore().getId()<=0 || status == 20){
                             goToPagePutSerializable(getContext(), StoreCertificationActivity.class,getIntentEntityMap(new Object[]{true}));
-                            return;
-                        }
-                        if (status==0){
+                        }else if (status==0){
                             onMessage("店铺审核中！");
-                        }else {
+                        }else if (status>0)
                             onMessage("该账户已有店铺！");
-                        }
+//                        if (status>0){
+//                            onMessage("店铺审核中！");
+//                        }else {
+//                            onMessage("该账户已有店铺！");
+//                        }
                     }
                 }
             });
