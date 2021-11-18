@@ -127,6 +127,11 @@ public class Api {
      */
     public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
 
+    /**
+     * 获取未读消息数
+     */
+    public static final String SUM_UNREAD = HIERARCHY + "mps/message/sum/unread";
+
 
     /**
      * 清除未读消息

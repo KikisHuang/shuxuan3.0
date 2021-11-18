@@ -442,12 +442,10 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         //关闭越界拖动
         refreshLayout.setEnableOverScrollDrag(false);
 
-
         MaterialHeader materialHeader = new MaterialHeader(this);
         materialHeader.setColorSchemeResources(R.color.blue_dominant_tone, R.color.red_dominant_tone, R.color.yellow_dominant_tone);
         refreshLayout.setRefreshHeader(materialHeader);
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
-
 
         //这里是自定义刷新头部，高优先级，会覆盖xml里面的设置，如果不需要注释代码即可，
 //        refreshLayout.setRefreshHeader(new CustomRefreshHeader(reference.get()));

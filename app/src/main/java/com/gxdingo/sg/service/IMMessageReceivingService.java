@@ -10,10 +10,10 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.google.gson.Gson;
-import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.ExitChatEvent;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
@@ -39,6 +39,7 @@ import java.util.TimerTask;
 import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.CHAT_IDENTIFIER;
 import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.isBackground;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
@@ -173,10 +174,16 @@ public class IMMessageReceivingService extends Service {
         TimerTask task2 = new TimerTask() {
             @Override
             public void run() {
-                if (mBaseWebSocket != null) {
-                    if (mBaseWebSocket.getReadyState() == ReadyState.OPEN && !isBackground) {
-                        mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
+                try {
+
+                    if (mBaseWebSocket != null && mBaseWebSocket.isOpen()) {
+                        if (mBaseWebSocket.getReadyState() == ReadyState.OPEN && !isBackground) {
+                            mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
+                        }
                     }
+
+                } catch (Exception e) {
+                    LogUtils.e("WebSocket Error === " + e);
                 }
             }
         };
@@ -211,9 +218,17 @@ public class IMMessageReceivingService extends Service {
 
                         //消息接收
                         if (messageBean != null && messageBean.getId() > 0) {
+
+                            if (!isEmpty(CHAT_IDENTIFIER)) {
+                                if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier()))
+                                    MessageCountUtils.getInstance().addNewMessage();
+                                else {
+                                    if (!isEmpty(LocalConstant.CHAT_UUID))
+                                        EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));
+                                }
+                            }
                             playBeep();
                             passMessage(messageBean);
-
                         }
                     }
 

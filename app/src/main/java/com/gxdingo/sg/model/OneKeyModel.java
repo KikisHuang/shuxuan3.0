@@ -180,6 +180,11 @@ public class OneKeyModel {
 
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
+        if (mAuthHelper != null) {
+            LogUtils.i("已启动阿里一键登录页");
+            return;
+        }
+
         mTokenResultListener = new TokenResultListener() {
             @Override
             public void onTokenSuccess(String s) {
@@ -223,7 +228,7 @@ public class OneKeyModel {
 //                        Toast.makeText(getApplicationContext(), "一键登录失败切换到其他登录方式", Toast.LENGTH_SHORT).show();
 //                        Intent pIntent = new Intent(OneKeyLoginActivity.this, MessageActivity.class);
 //                        startActivityForResult(pIntent, 1002);
-                    OneKeyModel.quitLoginPage();
+                    quitLoginPage();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -232,13 +237,7 @@ public class OneKeyModel {
         };
 
         mAuthHelper = PhoneNumberAuthHelper.getInstance(context, mTokenResultListener);
-        mAuthHelper.setActivityResultListener(new ActivityResultListener() {
-            @Override
-            public void onActivityResult(int i, int i1, Intent intent) {
-                LogUtils.e("i === " + i);
-                LogUtils.e("i1 === " + i1);
-            }
-        });
+
         mAuthHelper.getReporter().setLoggerEnable(true);
         mAuthHelper.setAuthSDKInfo(LocalConstant.AUTH_SECRET);
         mAuthHelper.checkEnvAvailable(1);
@@ -335,8 +334,11 @@ public class OneKeyModel {
 
 
     public static void quitLoginPage() {
-        if (mAuthHelper != null)
+        if (mAuthHelper != null) {
             mAuthHelper.quitLoginPage();
+            mAuthHelper.hideLoginLoading();
+            mAuthHelper = null;
+        }
     }
 
     public static void hideLoginLoading() {

@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amap.api.maps.AMap;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientAddressAdapter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
@@ -155,6 +157,10 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         if (selectType != 0) {
             AddressBean item = (AddressBean) adapter.getItem(position);
+            if (selectType==1){
+                getP().cacheAddress(item);
+
+            }
             item.selectType = selectType;
             sendEvent(item);
             finish();

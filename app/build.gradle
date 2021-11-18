@@ -143,6 +143,8 @@ dependencies {
     implementation rootProject.ext.dependencies.banner
     //websocket
     implementation rootProject.ext.dependencies.websocket
+    //badge
+    implementation rootProject.ext.dependencies.badgeview
 
     //高德3D地图so及jar
     implementation 'com.amap.api:3dmap:8.1.0'

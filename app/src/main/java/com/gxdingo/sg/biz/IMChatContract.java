@@ -126,6 +126,11 @@ public class IMChatContract {
          * 获取地址列表
          */
         void getAddressList();
+
+        /**
+         * 获取默认地址
+         */
+        void getCacheAddress();
     }
 
     public interface IMChatListener {
@@ -176,5 +181,12 @@ public class IMChatContract {
          * @param list
          */
         void showSelectAddressDialog(List<AddressBean> list);
+
+        /**
+         * 默认地址回调
+         *
+         * @param cacheDefaultAddress
+         */
+        void onAddressResult(AddressBean cacheDefaultAddress);
     }
 }

@@ -94,7 +94,6 @@ import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
-import static com.kikis.commnlibrary.utils.Constant.UserInfo;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -194,6 +193,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private AddressBean mAddress;//收货地址;
 
+    private AddressBean mDefaultAddress;//默认收货地址;
+
     private long clicktimeDValue = 0; //按下录制的时间差
     //取消发送
     private boolean mCancel = false;
@@ -271,10 +272,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
         otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
 
-        if (!isEmpty(mShareUuid)) {
-            //锁定聊天id
-            LocalConstant.SHAREUUID = mShareUuid;
-        }
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
@@ -315,6 +312,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void initData() {
+        getP().getCacheAddress();
         loadMore();
     }
 
@@ -461,9 +459,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             if (addressBean.selectType == 2) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", addressBean.getId());
+                mAddress = addressBean;
                 getP().sendMessage(mShareUuid, 30, "", 0, map);
 
-                setAddressInfo(addressBean);
             }
 
         }
@@ -702,6 +700,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
 
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
+        if (receiveIMMessageBean.getType() == 30)
+            setAddressInfo(mAddress);
 
         mChatDatas.add(receiveIMMessageBean);
         mAdapter.notifyDataSetChanged();
@@ -939,10 +939,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     public void onDestroy() {
         unregisterSoftInputChangedListener(getWindow());
 
-        sendEvent(new ExitChatEvent(LocalConstant.SHAREUUID));
-
         //清除锁定id
-        LocalConstant.SHAREUUID = "";
+        LocalConstant.CHAT_IDENTIFIER = "";
+        LocalConstant.CHAT_UUID = "";
         mAdapter.cancel();
         super.onDestroy();
     }
@@ -1095,11 +1094,15 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             if (mAdapter == null) {
                 mChatDatas.clear();
                 mMessageDetails = imChatHistoryListBean;
+                //锁定聊天id
+                LocalConstant.CHAT_IDENTIFIER = mMessageDetails.getOtherAvatarInfo().getSendIdentifier();
+                //记录聊天订阅id
+                LocalConstant.CHAT_UUID = mShareUuid;
+
                 mAdapter = new ChatAdapter(reference.get(), mChatDatas, imChatHistoryListBean, ChatActivity.this);
                 recycleView.setAdapter(mAdapter);
                 addData(imChatHistoryListBean.getList());
 
-                mAddress = imChatHistoryListBean.getAddress();
 
                 if (imChatHistoryListBean.getOtherAvatarInfo() != null) {
                     title_layout.setTitleTextSize(16);
@@ -1112,6 +1115,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                 ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.VISIBLE : View.GONE);
                 right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.GONE : View.VISIBLE);
+
+                mAddress = imChatHistoryListBean.getAddress();
 
                 if (imChatHistoryListBean.getAddress() != null) {
 
@@ -1128,9 +1133,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     //商家
                     if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11)
                         tv_no_address.setText("对方还没有添加收货地址");
-                    else
-                        tv_no_address.setText("没有收货地址去添加");
-
+                    else {
+                        if (mDefaultAddress == null)
+                            tv_no_address.setText("没有收货地址去添加");
+                        else {
+                            mAddress = mDefaultAddress;
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("id", mAddress.getId());
+                            getP().sendMessage(mShareUuid, 30, "", 0, map);
+                        }
+                    }
                 }
 
             } else {
@@ -1192,6 +1204,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                     }
                 }).show());
+    }
+
+    @Override
+    public void onAddressResult(AddressBean cacheDefaultAddress) {
+        mDefaultAddress = cacheDefaultAddress;
     }
 
     /**

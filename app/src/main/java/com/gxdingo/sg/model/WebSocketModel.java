@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.PayBean;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -36,6 +37,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.SUM_UNREAD;
 import static com.gxdingo.sg.http.Api.TRANSFER;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
@@ -156,7 +158,10 @@ public class WebSocketModel {
 //            netWorkListener.onStarts();
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
+            request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
         Observable<SubscribesListBean> observable = request
                 .execute(new CallClazzProxy<ApiResult<SubscribesListBean>, SubscribesListBean>(new TypeToken<SubscribesListBean>() {
                 }.getType()) {
@@ -209,7 +214,8 @@ public class WebSocketModel {
 //            netWorkListener.onStarts();
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
+            request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
         Observable<SubscribesListBean> observable = request
                 .execute(new CallClazzProxy<ApiResult<SubscribesListBean>, SubscribesListBean>(new TypeToken<SubscribesListBean>() {
                 }.getType()) {
@@ -235,6 +241,44 @@ public class WebSocketModel {
                     if (subscribesBean != null && subscribesBean.getList() != null && subscribesBean.getList().size() > 0)
                         netWorkListener.haveData();
                 }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+
+    /**
+     * 获取未读消息数
+     *
+     * @param context
+     */
+    public void getUnreadMessageNumber(Context context,CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        PostRequest request = HttpClient.imPost(IM_URL + SUM_UNREAD, map);
+
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
+            request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (customResultListener!=null)
+                    customResultListener.onResult(normalBean.unread);
             }
         };
 

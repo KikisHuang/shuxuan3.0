@@ -237,7 +237,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
             try{
                 String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
                 if (!isEmpty(details))
-                    getV().onHistoryResult(GsonUtil.GsonToList(details,String.class));
+                    getV().onHistoryResult(GsonUtil.jsonToList(details,String.class));
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -247,7 +247,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         try {
             String details = SPUtils.getInstance().getString("SEARCH_HISTORY","");
             if (!isEmpty(details)) {
-                return GsonUtil.GsonToList(details,String.class);
+                return GsonUtil.jsonToList(details,String.class);
             } else {
                 return new ArrayList<String>();
             }

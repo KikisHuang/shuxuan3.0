@@ -3,7 +3,9 @@ package com.gxdingo.sg.utils;
 public class LocalConstant {
 
     //聊天id
-    public static String SHAREUUID = "";
+    public static String CHAT_IDENTIFIER = "";
+    //聊天订阅id
+    public static String CHAT_UUID = "";
 
     //聊天常量
     //自己发送的文本类型

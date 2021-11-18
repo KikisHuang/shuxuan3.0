@@ -8,17 +8,22 @@ import androidx.fragment.app.FragmentTransaction;
 import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.ClientMainModel;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
+import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -26,6 +31,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
 
@@ -42,13 +48,19 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private OneKeyModel oneKeyModel;
 
+    private WebSocketModel mWebSocketModel;
+
     private LoginModel mModdel;
+
+    private BusinessDistrictModel businessDistrictModel;
 
     public ClientMainPresenter() {
         model = new ClientMainModel();
         networkModel = new NetworkModel(this);
         oneKeyModel = new OneKeyModel();
+        mWebSocketModel = new WebSocketModel(this);
         mModdel = new LoginModel();
+        businessDistrictModel = new BusinessDistrictModel(this);
     }
 
     @Override
@@ -183,7 +195,6 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void aliLogin() {
         if (networkModel != null)
-
             networkModel.getAliyPayAuthinfo(getContext(), str -> simpleAuth((Activity) getContext(), (String) str, callback));
     }
 
@@ -252,6 +263,35 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void getAliKey() {
         if (oneKeyModel != null && UserInfoUtils.getInstance().isLogin())
-        oneKeyModel.getKey(getContext());
+            oneKeyModel.getKey(getContext());
+    }
+
+    /**
+     * 获取未读消息数
+     */
+    @Override
+    public void getUnreadMessageNum() {
+
+        if (mWebSocketModel != null) {
+            mWebSocketModel.getUnreadMessageNumber(getContext(), data -> {
+                MessageCountUtils.getInstance().setUnreadMessageNum((Integer) data);
+                if (isViewAttached())
+                    getV().setUnreadMsgNum((Integer) data);
+            });
+        }
+        if (businessDistrictModel != null) {
+            businessDistrictModel.getNumberUnreadComments(getContext(), objects -> {
+                if (objects[0] instanceof NumberUnreadCommentsBean) {
+                    /**
+                     * 返回商圈评论未读数
+                     */
+                    NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
+                    if (isViewAttached())
+                        getV().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                }
+            });
+        }
+
+
     }
 }

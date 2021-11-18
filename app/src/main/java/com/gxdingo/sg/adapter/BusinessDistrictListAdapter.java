@@ -64,6 +64,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
     Context mContext;
     PullDividerItemDecoration mSpaceItemDecoration;
     StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
+    //消息评论总数
+    private int mTotal = 0;
 
     public BusinessDistrictListAdapter(Context context
             , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
@@ -71,6 +73,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         this.mContext = context;
         mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
         mOnChildViewClickListener = onChildViewClickListener;
+    }
+
+    public void setTotal(int total) {
+        mTotal = total;
     }
 
     @Override
@@ -225,6 +231,22 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             }));
         }
 
+        if (data.getCommentList().size() < 10) {
+            //小余10条不显示 展开、收起布局
+            llCommentUnfoldPutAwayLayout.setVisibility(View.GONE);
+        } else if (data.getCommentList().size() == 10 && data.getCommentList().size() != data.getComments()) {
+
+            llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
+            tvCommentUnfoldPutAwayText.setText("展开更多");
+            changeDrawable(tvCommentUnfoldPutAwayText, R.drawable.module_svg_business_district_comment_unfold);
+
+        } else if (data.getCommentList().size() == data.getComments()) {
+            //已经显示完所有评论并且超过10条显示收起布局
+            llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
+            tvCommentUnfoldPutAwayText.setText("收起");
+            changeDrawable(tvCommentUnfoldPutAwayText, R.drawable.module_svg_business_district_comment_put_away);
+        }
+
 
         tvCommentCount.setText(data.getComments() + "评论");
         //点击评论数量展开评论列表
@@ -316,4 +338,17 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
         return options;
     }
+
+    /**
+     * 更换TextView图标
+     *
+     * @param textView
+     * @param resId
+     */
+    private void changeDrawable(TextView textView, int resId) {
+        Drawable drawable = mContext.getResources().getDrawable(resId);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(null, null, drawable, null);
+    }
+
 }

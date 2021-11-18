@@ -24,6 +24,9 @@ public class ExampleUnitTest {
         System.out.println(getCustomDate(string2Millis("2021-11-10 20:45:45"), string2Millis("2021-11-16 20:45:45")));
 
 
-        System.out.println(isMobileExact("19195753176"));
+        int a = 25;
+        int b = 10;
+
+        System.out.println("" + a % b);
     }
 }

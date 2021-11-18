@@ -585,6 +585,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     }
 
+    @Override
+    public void onAddressResult(AddressBean cacheDefaultAddress) {
+
+    }
+
     /**
      * 转账
      */

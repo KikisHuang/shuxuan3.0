@@ -24,10 +24,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
+import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -176,8 +179,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         if (UserInfoUtils.getInstance().isLogin())
-        //获取IM订阅信息
-        getP().getIMSubscribesList(true);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(true);
     }
 
 
@@ -187,8 +190,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         if (UserInfoUtils.getInstance().isLogin())
-        //获取IM订阅信息
-        getP().getIMSubscribesList(false);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(false);
     }
 
     @Override
@@ -211,6 +214,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
                 goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{subscribesMessage.getShareUuid(), subscribesMessage.getSendUserRole()}));
                 getP().clearUnreadMsg(subscribesMessage.getShareUuid());
+
+                if (StoreActivity.getInstance() != null)
+                    StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().reduceUnreadMessageNum(subscribesMessage.getUnreadNum()));
+
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
@@ -389,6 +396,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 SubscribesListBean.SubscribesMessage data = mStoreHomeIMMessageAdapter.getData().get(i);
 
                 if (data.getShareUuid().equals(id)) {
+                    MessageCountUtils.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
                     data.setUnreadNum(0);
                     e.onNext(i);
                 }
@@ -396,6 +404,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             e.onComplete();
         }), (BaseActivity) reference.get()).subscribe(o -> {
             int pos = (int) o;
+
+            if (StoreActivity.getInstance() != null)
+                StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+
             mStoreHomeIMMessageAdapter.notifyItemChanged(pos);
         });
 

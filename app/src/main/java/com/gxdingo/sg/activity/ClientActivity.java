@@ -3,6 +3,7 @@ package com.gxdingo.sg.activity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,6 +21,7 @@ import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
@@ -30,10 +32,14 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
+import q.rorbin.badgeview.QBadgeView;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.Constant.readed;
@@ -53,6 +59,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @BindViews({R.id.home_page_layout, R.id.message_layout, R.id.business_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
+
+    @BindView(R.id.msg_fl)
+    public FrameLayout msg_fl;
+
+    @BindView(R.id.business_fl)
+    public FrameLayout business_fl;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
@@ -146,6 +158,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 //            showLogin = !showLogin;
 //        }
 
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().getUnreadMessageNum();
+
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {
             boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
@@ -182,8 +197,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     protected void onBaseEvent(Object object) {
 
         //全局新消息布局
-        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
-            showNewMessageDialog((ReceiveIMMessageBean) object);
+        if (object instanceof ReceiveIMMessageBean) {
+            if (!isAcBackground)
+                showNewMessageDialog((ReceiveIMMessageBean) object);
+
+            setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+        }
+
 
         if (object instanceof OneKeyLoginEvent) {
             getP().oneKeyLogin(((OneKeyLoginEvent) object).code, ((OneKeyLoginEvent) object).isUser);
@@ -210,11 +230,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().checkTab(0);
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
             finish();
+        } else if (type == CLIENT_LOGIN_SUCCEED) {
+            getP().getUnreadMessageNum();
         }
     }
 
     @Override
     protected void initData() {
+
 
     }
 
@@ -234,7 +257,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
 
         if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
-            //todo 一键登录页面重复创建问题
             getP().goLogin();
             return;
         }
@@ -295,6 +317,16 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mMenuLayout.get(checkTab).setonSelected(true);
 
         mMenuLayout.get(oldTab).setonSelected(false);
+    }
+
+    @Override
+    public void setUnreadMsgNum(int data) {
+        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(msg_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(data);
+    }
+
+    @Override
+    public void setBusinessUnreadMsgNum(int num) {
+        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(business_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(num);
     }
 
     @Override

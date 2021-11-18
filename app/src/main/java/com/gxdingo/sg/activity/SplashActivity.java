@@ -100,14 +100,12 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
                     .dismissOnTouchOutside(false)
                     .asCustom(new ProtocolPopupView(reference.get(), o -> {
                         int type = (int) o;
-                        if (type == 0)
-                            finish();
-                        else {
+                        if (type != 0) {
                             AMapLocationClient.updatePrivacyShow(this, true, true);
                             AMapLocationClient.updatePrivacyAgree(this, true);
                             goToPage(reference.get(), WelcomeActivity.class, null);
-                            finish();
                         }
+                        finish();
                     })).show();
         } else {
             AMapLocationClient.updatePrivacyShow(this, true, true);
