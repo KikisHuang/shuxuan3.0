@@ -59,9 +59,7 @@ import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.HTML;
-import static com.gxdingo.sg.http.ClientApi.SERVICE_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.UAT_URL;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
@@ -228,6 +226,11 @@ public class OneKeyModel {
 
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
+        if (mAuthHelper != null) {
+            LogUtils.i("已启动阿里一键登录页");
+            return;
+        }
+
         mTokenResultListener = new TokenResultListener() {
             @Override
             public void onTokenSuccess(String s) {
@@ -333,12 +336,16 @@ public class OneKeyModel {
                 })
                 .build());
 
-        String privacy_agreementUrl = url + HTML + "identifier=" + SERVICE_PRIVACY_AGREEMENT_KEY;
+
+        String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
+        String s_privacy_agreementUrl = url + HTML + "identifier=" + STORE_PRIVACY_AGREEMENT_KEY;
         String service_agreementUrl = url + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
 
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
+                .setPrivacyBefore("")
                 .setAppPrivacyOne("《服务协议》", service_agreementUrl)
-                .setAppPrivacyTwo("《隐私协议》", privacy_agreementUrl)
+                .setAppPrivacyTwo("《用户隐私协议》", c_privacy_agreementUrl)
+                .setAppPrivacyThree("《商家隐私协议》", s_privacy_agreementUrl)
                 .setNavColor(getc(R.color.white))
                 .setNavTextColor(getc(R.color.white))
                 .setLogoHidden(false)
@@ -347,7 +354,7 @@ public class OneKeyModel {
                 .setPrivacyState(false)
                 .setPrivacyTextSize(12)
                 .setPrivacyOffsetY(340)
-                .setCheckboxHidden(true)
+                .setCheckboxHidden(false)
                 .setLogBtnText("本机号码一键登陆")
                 .setLogBtnBackgroundDrawable(getd(R.drawable.module_bg_main_color_round6))
                 .setLightColor(true)
@@ -379,8 +386,11 @@ public class OneKeyModel {
 
 
     public static void quitLoginPage() {
-        if (mAuthHelper != null)
+        if (mAuthHelper != null) {
             mAuthHelper.quitLoginPage();
+            mAuthHelper.hideLoginLoading();
+            mAuthHelper = null;
+        }
     }
 
     public static void hideLoginLoading() {
