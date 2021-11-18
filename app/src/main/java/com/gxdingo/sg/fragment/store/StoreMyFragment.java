@@ -34,6 +34,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -127,13 +128,14 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
                 goToPage(getContext(), StoreAuthInfoActivity.class,null);
                 break;
             case R.id.settle_protocol_stv:
+                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanshangjiaxieyi"}));
                 break;
             case R.id.contract_server_stv:
                 String url = WEB_URL + ClientApi.SERVER_URL;
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
                 break;
             case R.id.about_us_stv:
-                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about_us"}));
+                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about us"}));
                 break;
             case R.id.logout_stv:
                 new XPopup.Builder(reference.get())

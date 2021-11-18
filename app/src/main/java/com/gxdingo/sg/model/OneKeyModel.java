@@ -51,6 +51,7 @@ import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
+import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SM;
 import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
@@ -191,6 +192,40 @@ public class OneKeyModel {
         observable.subscribe(subscriber);
     }
 
+    /**
+     * 动态获取一键登录key
+     *
+     * @param context
+     */
+    public void getAliAuthInfo(Context context,CustomResultListener customResultListener) {
+        Observable<NormalBean> observable = HttpClient.post(PAYMENT_ALIPAY_AUTHINFO)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+//                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+//                    netWorkListener.onMessage(e.getMessage());
+//                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null)
+                    customResultListener.onResult(normalBean.auth);
+            }
+        };
+
+        observable.subscribe(subscriber);
+    }
+
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
         mTokenResultListener = new TokenResultListener() {
@@ -278,13 +313,19 @@ public class OneKeyModel {
                         findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
+                                getAliAuthInfo(getContext(), new CustomResultListener() {
+                                    @Override
+                                    public void onResult(Object o) {
+
+                                    }
+                                });
+//                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
                             }
                         });
                         findViewById(R.id.wechat_login).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                EventBus.getDefault().post(LocalConstant.WECHAT_LOGIN_EVENT);
+//                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
                             }
                         });
 

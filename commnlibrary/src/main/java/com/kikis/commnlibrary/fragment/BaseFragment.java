@@ -452,7 +452,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
 
         MaterialHeader materialHeader = new MaterialHeader(reference.get());
-        materialHeader.setColorSchemeColors(getc(R.color.pink_dominant_tone));
+        materialHeader.setColorSchemeColors(getc(R.color.green_dominant_tone));
         refreshLayout.setRefreshHeader(materialHeader);
         refreshLayout.setRefreshFooter(new ClassicsFooter(reference.get()));
 

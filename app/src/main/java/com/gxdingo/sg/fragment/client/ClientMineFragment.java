@@ -195,7 +195,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
                 break;
             case R.id.ll_about_us:
-                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about_us"}));
+                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about our"}));
                 break;
             case R.id.fill_invitation_code_stv:
                 goToPage(getContext(), ClientFillInvitationCodeActivity.class,null);

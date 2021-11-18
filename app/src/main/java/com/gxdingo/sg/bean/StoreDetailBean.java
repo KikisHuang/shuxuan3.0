@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import java.util.ArrayList;
+
 /**
  * @author: Weaving
  * @date: 2021/11/11
@@ -39,12 +41,12 @@ public class StoreDetailBean {
     private Integer status;
     private Double latitude;
     private Double longitude;
-    private Integer maxDistance;
+    private String maxDistance;
     private String introduction;
     private Integer businessStatus;
     private String openTime;
     private String closeTime;
-    private String businessScope;
+    private ArrayList<BusinessScopeBean> businessScope;
     private Double salesAmount;
     private Integer productSales;
     private Integer followCount;
@@ -123,11 +125,11 @@ public class StoreDetailBean {
         this.longitude = longitude;
     }
 
-    public Integer getMaxDistance() {
+    public String getMaxDistance() {
         return maxDistance;
     }
 
-    public void setMaxDistance(Integer maxDistance) {
+    public void setMaxDistance(String maxDistance) {
         this.maxDistance = maxDistance;
     }
 
@@ -163,11 +165,11 @@ public class StoreDetailBean {
         this.closeTime = closeTime;
     }
 
-    public String getBusinessScope() {
+    public ArrayList<BusinessScopeBean> getBusinessScope() {
         return businessScope;
     }
 
-    public void setBusinessScope(String businessScope) {
+    public void setBusinessScope(ArrayList<BusinessScopeBean> businessScope) {
         this.businessScope = businessScope;
     }
 

@@ -209,7 +209,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
         change_address_stv.setRightString(storeDetailBean.getAddress());
         change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
         business_time_stv.setRightString(dealDateFormat(storeDetailBean.getOpenTime(),"HH:mm")+"-"+dealDateFormat(storeDetailBean.getCloseTime(),"HH:mm"));
-        business_scope_stv.setRightString(storeDetailBean.getMaxDistance()+"m");
+        business_scope_stv.setRightString(storeDetailBean.getMaxDistance());
     }
 
     @Override

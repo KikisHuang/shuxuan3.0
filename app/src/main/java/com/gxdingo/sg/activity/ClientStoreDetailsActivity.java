@@ -21,6 +21,7 @@ import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.presenter.ClientStorePresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.Constant;
@@ -176,8 +177,14 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     mNavigationPopupView.show();
                 break;
             case R.id.business_district_cl:
+                goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
                 break;
             case R.id.ll_send_message:
+                if (UserInfoUtils.getInstance().isLogin()){
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,mStoreDetail.getId()}));
+                }else {
+                    UserInfoUtils.getInstance().goToLoginPage(this,"");
+                }
                 break;
             case R.id.ll_phone_contract:
                 if (mStoreDetail != null)

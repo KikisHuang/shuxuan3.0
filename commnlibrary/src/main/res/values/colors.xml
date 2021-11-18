@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">@color/pink_dominant_tone</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#599252</color>
 
 
     <!-- 辅助、内容、标签、关键字  -->
@@ -93,6 +93,7 @@
     <color name="graya8">#A8A8A8</color>
 
     <color name="red_dominant_tone">#f52121</color>
+    <color name="green_dominant_tone">#599252</color>
     <!-- 主色调 -->
     <color name="remind">#ff0a0a</color>
     <color name="maintain_color">#ff4200</color>
