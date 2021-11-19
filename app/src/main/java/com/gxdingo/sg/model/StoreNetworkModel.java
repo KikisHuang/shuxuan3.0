@@ -38,6 +38,7 @@ import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 import com.zhouyou.http.model.HttpParams;
+import com.zhouyou.http.request.PostRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -267,7 +268,28 @@ public class StoreNetworkModel {
         if (UserInfoUtils.getInstance().isLogin())
             map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
 
-        Observable<NormalBean> observable = HttpClient.post(SETTLE, map)
+
+        String url = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
+        String timeStamp = getCurrentTimeUTCM();
+        Map<String, String> signMap = new HashMap<>();
+        signMap.putAll(map);
+        signMap.put(LocalConstant.TIMESTAMP, timeStamp);
+        String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
+        String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
+
+        HttpParams req = new HttpParams();
+
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            try {
+                req.put(entry.getKey(), entry.getValue());
+            } catch (Exception e) {
+                LogUtils.e("http error === " + e);
+            }
+        }
+
+        Observable<NormalBean> observable = HttpClient.post(url + SETTLE)
+                .headers(LocalConstant.TIMESTAMP, timeStamp).params(req)
+                .headers(LocalConstant.SIGN, sign).headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken())
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1028,7 +1050,6 @@ public class StoreNetworkModel {
         String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
 
-
         HttpParams params = new HttpParams();
         for (Map.Entry<String, String> entry : signMap.entrySet()) {
             try {
@@ -1060,6 +1081,8 @@ public class StoreNetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
+
+
                 if (customResultListener != null)
                     customResultListener.onResult(userBean);
 

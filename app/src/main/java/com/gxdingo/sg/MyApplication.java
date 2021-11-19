@@ -134,7 +134,6 @@ public class MyApplication extends Application {
         tntX5Init();
         initCloudChannel(this);
         svgaCacheInit();
-
     }
 
     /**
@@ -256,7 +255,6 @@ public class MyApplication extends Application {
      * Bugly异常统计初始化
      */
     private void buglyInit() {
-
         //使用异常上报功能的初始化。
 //        CrashReport.initCrashReport(getApplicationContext(), BUGLYAPPID, !isDebug);
 //        CrashReport.setAppChannel(this,AnalyticsConfig.getChannel(this));

@@ -84,6 +84,7 @@ public class UserInfoUtils {
             saveIdentifier("");
             saveWallpaper("");
             saveOpenId("");
+            MessageCountUtils.getInstance().setUnreadMessageNum(0);
 
             SPUtils.getInstance().put(ADDRESS_CACHE, "");
             EventBus.getDefault().post(LOGOUT);
@@ -105,8 +106,6 @@ public class UserInfoUtils {
             LogUtils.w("保存的token === " + token);
 
         SPUtils.getInstance().put(Constant.TOKEN_KEY, token);
-
-        LocalConstant.TEMPTOKEN = token;
     }
 
     /**
@@ -244,13 +243,8 @@ public class UserInfoUtils {
      * @return
      */
     public String getUserToken() {
-
-        //只从sp中获取一次后存在本地。
-        String token = isEmpty(LocalConstant.TEMPTOKEN) ? SPUtils.getInstance().getString(Constant.TOKEN_KEY, "") : LocalConstant.TEMPTOKEN;
-
-        if (isEmpty(LocalConstant.TEMPTOKEN))
-            LocalConstant.TEMPTOKEN = SPUtils.getInstance().getString(Constant.TOKEN_KEY);
-        if (isDebug && !isEmpty(token))
+        String token = SPUtils.getInstance().getString(Constant.TOKEN_KEY, "");
+        if (isDebug)
             LogUtils.i("token === " + token);
 
         return token;

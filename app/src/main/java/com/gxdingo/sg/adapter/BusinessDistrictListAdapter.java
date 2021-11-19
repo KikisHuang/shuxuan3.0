@@ -130,6 +130,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
 
+        tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());
@@ -175,7 +177,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
             single_img.setOnClickListener(v -> {
                 if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(),0, data.getImages().get(0));
+                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(), 0, data.getImages());
             });
 
             Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
@@ -205,30 +207,40 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                     }
                 }
             });
+
+            LogUtils.e("图片 单张" + getItemPosition(data));
         } else {
+
+            LogUtils.e("图片 多图 pos === " + getItemPosition(data));
+
             picture_gridview.setVisibility(View.VISIBLE);
             single_img.setVisibility(View.GONE);
+
+            if (getItemPosition(data) == 0)
+                picture_gridview.setVisibility(View.GONE);
+
             //单张图片宽度
             //picture_gridview.setSingleImageSize((int) (getScreenWidth() * 1.5 / 2));
             //picture_gridview.setSingleImageRatio(0.5625f);
 
-            ArrayList<ImageInfo> imageInfo = new ArrayList<>();
+     /*       ArrayList<ImageInfo> imageInfo = new ArrayList<>();
 
             for (int i = 0; i < data.getImages().size(); i++) {
                 ImageInfo info = new ImageInfo();
                 info.setThumbnailUrl(data.getImages().get(i));
                 info.setBigImageUrl(data.getImages().get(i));
                 imageInfo.add(info);
+            }*/
+            if (data.imageInfos != null && data.imageInfos.size() > 0) {
+                picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, baseViewHolder.getAdapterPosition(), new NineClickListener() {
+                    @Override
+                    public void onNineGridViewClick(int position, int index) {
+
+                        if (mOnChildViewClickListener != null && data.getImages() != null)
+                            mOnChildViewClickListener.item(picture_gridview, position, index, data.getImages());
+                    }
+                }));
             }
-
-            picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, imageInfo, baseViewHolder.getAdapterPosition(), new NineClickListener() {
-                @Override
-                public void onNineGridViewClick(int position, int index) {
-
-                    if (mOnChildViewClickListener != null && data.getImages() != null)
-                        mOnChildViewClickListener.item(picture_gridview, position, index, data.getImages().get(position));
-                }
-            }));
         }
 
         if (data.getCommentList().size() < 10) {

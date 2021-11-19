@@ -98,7 +98,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override

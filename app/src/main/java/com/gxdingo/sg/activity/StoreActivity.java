@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -36,7 +37,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
-import q.rorbin.badgeview.QBadgeView;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
@@ -68,6 +68,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @BindView(R.id.business_fl)
     public FrameLayout business_fl;
+
+
+    @BindView(R.id.tv_unread_msg_count)
+    public TextView tv_unread_msg_count;
+
+    @BindView(R.id.tv_business_unread_msg_count)
+    public TextView tv_business_unread_msg_count;
 
     public static StoreActivity getInstance() {
         return instance;
@@ -375,12 +382,14 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     public void setUnreadMsgNum(int data) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(msg_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(data);
+        tv_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
-    public void setBusinessUnreadMsgNum(int num) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(business_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(num);
+    public void setBusinessUnreadMsgNum(int data) {
+        tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
 

@@ -544,7 +544,6 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
     @Override
     public void onStarts() {
-        LogUtils.w("dialog test onStarts");
         if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).onStarts();
     }

@@ -209,7 +209,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             if (mStoreId <= 0)
                 getP().getNumberUnreadComments();
 
-            if (isFirstLoad){
+            if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
@@ -333,7 +333,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         .show();
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), view.getId() == R.id.single_img ? 0 : position);
-            } else if (view.getId() == R.id.iv_avatar) {
+            } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
                 int storeId = Integer.valueOf(String.valueOf(object));
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
             }

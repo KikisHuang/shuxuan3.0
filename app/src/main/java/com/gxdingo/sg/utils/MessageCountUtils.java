@@ -1,5 +1,7 @@
 package com.gxdingo.sg.utils;
 
+import com.blankj.utilcode.util.LogUtils;
+
 /**
  * 未读消息统计util
  * kikis
@@ -7,6 +9,8 @@ package com.gxdingo.sg.utils;
 public class MessageCountUtils {
 
     private static MessageCountUtils instance;
+    private static final String TAG = MessageCountUtils.class.toString();
+
 
     private int count = 0;
 
@@ -28,6 +32,7 @@ public class MessageCountUtils {
      * @param num
      */
     public void setUnreadMessageNum(int num) {
+        LogUtils.i(TAG, "setUnreadMessageNum === " + count);
         count = num;
     }
 
@@ -37,6 +42,7 @@ public class MessageCountUtils {
      * @param num
      */
     public int reduceUnreadMessageNum(int num) {
+        LogUtils.i(TAG, "reduceUnreadMessageNum === " + count);
         return count -= num;
     }
 
@@ -45,7 +51,8 @@ public class MessageCountUtils {
      * 增加未读消息数
      */
     public int addNewMessage() {
-       return count++;
+        LogUtils.i(TAG, "addNewMessage === " + count);
+        return count++;
     }
 
     /**
@@ -54,6 +61,7 @@ public class MessageCountUtils {
      * @return
      */
     public int getUnreadMessageNum() {
+        LogUtils.i(TAG, "getUnreadMessageNum === " + count);
         return count;
     }
 

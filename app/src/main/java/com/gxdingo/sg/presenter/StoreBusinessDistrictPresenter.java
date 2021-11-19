@@ -14,6 +14,7 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.lzy.ninegrid.ImageInfo;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
@@ -66,7 +67,25 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
         if (isBViewAttached()) {
             //商圈列表回调
             if (o instanceof BusinessDistrictListBean) {
-                getV().onBusinessDistrictData(refresh, (BusinessDistrictListBean) o);
+                RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                    BusinessDistrictListBean districtListBean = (BusinessDistrictListBean) o;
+
+                    for (BusinessDistrictListBean.BusinessDistrict businessDistrict : districtListBean.getList()) {
+                        if (businessDistrict.getImages() != null && businessDistrict.getImages().size() > 1) {
+                            for (String img : businessDistrict.getImages()) {
+                                ImageInfo info = new ImageInfo();
+                                info.setThumbnailUrl(img);
+                                info.setBigImageUrl(img);
+                                businessDistrict.imageInfos.add(info);
+                            }
+                        }
+                    }
+                    e.onNext(districtListBean);
+                    e.onComplete();
+                }), (BaseActivity) getContext()).subscribe(data -> {
+                    getV().onBusinessDistrictData(refresh, (BusinessDistrictListBean) data);
+                });
+
             }
         }
     }
@@ -166,6 +185,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     /**
      * 去重合并评论数据
+     *
      * @param commentList       原来的评论数据
      * @param unfoldCommentList 展开评论获取的评论数据
      * @param businessDistrict
@@ -197,7 +217,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
             e.onComplete();
         }), (BaseActivity) getContext()).subscribe(o -> {
             if (isViewAttached())
-                getV().onCommentListRefresh(commentList,unfoldCommentList,businessDistrict,total);
+                getV().onCommentListRefresh(commentList, unfoldCommentList, businessDistrict, total);
         });
 
     }

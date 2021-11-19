@@ -164,8 +164,6 @@ public class LocalConstant {
 
     public static String WEB_SOCKET_UAT_KEY = "f0438ff6a8792aada17a04e0541db8b3";
 
-    public static String TEMPTOKEN = "";
-
     public static String AAC = ".aac";
 
     //websocket类型
