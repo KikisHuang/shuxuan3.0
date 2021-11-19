@@ -272,8 +272,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             if (data != null) {
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
-                //todo 扫描结果处理
-                ToastUtils.showLong(content);
+//                ToastUtils.showLong(content);
+                getP().scanCode(content);
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }

@@ -66,6 +66,7 @@ import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
 import static com.gxdingo.sg.http.StoreApi.SETTLE;
 import static com.gxdingo.sg.http.StoreApi.STORE_PORT;
 import static com.gxdingo.sg.http.StoreApi.STORE_QR_CODE;
+import static com.gxdingo.sg.http.StoreApi.STORE_SCAN_CODE;
 import static com.gxdingo.sg.http.StoreApi.STORE_UPDATE;
 import static com.gxdingo.sg.http.StoreApi.TRANSACTION_DETAILS;
 import static com.gxdingo.sg.http.StoreApi.USER_STATUS;
@@ -334,6 +335,45 @@ public class StoreNetworkModel {
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
     }
+
+    /**
+     * 扫码核销优惠券
+     *
+     * @param
+     */
+    public void scanCode(Context context) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_SCAN_CODE)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+
+                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage("使用优惠劵成功！");
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
+
 
     /**
      * 额度提现
