@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
@@ -253,7 +254,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onStart() {
         super.onStart();
-        if (UserInfoUtils.getInstance().isLogin())
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10)
             getP().getUnreadMessageNum();
     }
 
@@ -279,6 +280,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     public void showFragment(FragmentTransaction fragmentTransaction, int index) {
 
         fragmentTransaction.show(mFragmentList.get(index));
+        //android x懒加载
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.RESUMED);
         fragmentTransaction.commitAllowingStateLoss();
 
     }
@@ -293,6 +296,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         FragmentTransaction fragmentTransaction = getFragmentTransaction();
 
         fragmentTransaction.hide(mFragmentList.get(index));
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.STARTED);
         fragmentTransaction.commitAllowingStateLoss();
     }
 

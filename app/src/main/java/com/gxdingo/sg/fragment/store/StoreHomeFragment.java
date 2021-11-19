@@ -234,23 +234,26 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         super.lazyInit();
         UserInfoUtils userInfo = UserInfoUtils.getInstance();
         if (userInfo != null && userInfo.isLogin()) {
-
             if (isFirstLoad) {
-                UserBean userBean = userInfo.getUserInfo();
-                if (userBean != null) {
-                    //显示头像、名称和营业状态信息
-                    UserBean.StoreBean storeBean = userBean.getStore();
-                    Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
-                    tvStoreName.setText(storeBean.getName());
-                    setBusinessStatus(storeBean);
-
-                    //获取IM订阅信息
-                    getP().getIMSubscribesList(true);
-                }
+                isFirstLoad = !isFirstLoad;
+                setStoreInfo(userInfo);
+                //获取IM订阅信息
+                getP().getIMSubscribesList(true);
             } else {
-                isFirstLoad = false;
                 getP().refreshList();
+                setStoreInfo(userInfo);
             }
+        }
+    }
+
+    private void setStoreInfo(UserInfoUtils userInfo) {
+        UserBean userBean = userInfo.getUserInfo();
+        if (userBean != null) {
+            //显示头像、名称和营业状态信息
+            UserBean.StoreBean storeBean = userBean.getStore();
+            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
+            tvStoreName.setText(storeBean.getName());
+            setBusinessStatus(storeBean);
         }
     }
 
@@ -297,7 +300,12 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         super.onTypeEvent(type);
         //店铺审核成功重新初始化数据
         if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
-            initData();
+
+            UserInfoUtils userInfo = UserInfoUtils.getInstance();
+            if (userInfo != null && userInfo.isLogin())
+                setStoreInfo(userInfo);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(true);
         }
     }
 
@@ -351,7 +359,6 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
                 .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
-
                     @Override
                     public void onStatus(int code, String name) {
 
@@ -392,7 +399,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     public void changeBusinessStatus(int status) {
-        tvBusinessStatus.setText(status == 1 ? "营业中" : "未营业");
+        tvBusinessStatus.setText(status == 1 ? "正常营业" : "暂停营业");
     }
 
     @Override

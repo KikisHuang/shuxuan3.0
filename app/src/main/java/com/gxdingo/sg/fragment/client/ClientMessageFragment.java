@@ -154,10 +154,13 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     protected void lazyInit() {
         super.lazyInit();
         if (UserInfoUtils.getInstance().isLogin()) {
-            if (isFirstLoad)
+            if (isFirstLoad){
+                isFirstLoad = !isFirstLoad;
                 getP().getSubscribesMessage(true);
+            }
+
             else {
-                isFirstLoad = false;
+
                 getP().refreshList();
             }
         }

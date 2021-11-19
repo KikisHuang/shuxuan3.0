@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amap.api.services.core.PoiItem;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.DistanceListBean;
@@ -923,6 +924,12 @@ public class StoreNetworkModel {
                 netWorkListener.onAfters();
                 if (customResultListener != null)
                     customResultListener.onResult(status);
+
+                if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getStore() != null) {
+                    UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                    userBean.getStore().setBusinessStatus(status);
+                    UserInfoUtils.getInstance().saveUserInfo(userBean);
+                }
             }
         };
 
@@ -932,8 +939,6 @@ public class StoreNetworkModel {
 
     /**
      * 营业状态修改
-     *
-     *
      */
     public void getAuthInfo(Context context) {
 
@@ -955,7 +960,7 @@ public class StoreNetworkModel {
             @Override
             public void onNext(StoreAuthInfoBean authInfoBean) {
                 netWorkListener.onAfters();
-                if (authInfoBean!=null)
+                if (authInfoBean != null)
                     EventBus.getDefault().post(authInfoBean);
             }
         };

@@ -209,11 +209,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             if (mStoreId <= 0)
                 getP().getNumberUnreadComments();
 
-            if (isFirstLoad)
+            if (isFirstLoad){
+                isFirstLoad = !isFirstLoad;
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
-            else
-                isFirstLoad = false;
+            }
 
         }
     }

@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.store;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -16,6 +17,7 @@ import com.gxdingo.sg.activity.StoreUpdateNameActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.StoreMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMyContract;
 import com.gxdingo.sg.biz.StoreWalletContract;
@@ -163,6 +165,25 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     public void onDataResult(StoreMineBean mineBean) {
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(store_avatar_iv);
         store_name_tv.setText(mineBean.getName());
+
+        if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getStore() != null) {
+            UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+            if (!isEmpty(mineBean.getCloseTime()))
+                userBean.getStore().setCloseTime(mineBean.getCloseTime());
+
+            if (!isEmpty(mineBean.getOpenTime()))
+                userBean.getStore().setOpenTime(mineBean.getOpenTime());
+
+            if (!isEmpty(mineBean.getAvatar()))
+                userBean.getStore().setAvatar(mineBean.getAvatar());
+
+            if (!isEmpty(mineBean.getName()))
+                userBean.getStore().setName(mineBean.getName());
+
+            UserInfoUtils.getInstance().saveUserInfo(userBean);
+        }
+
+
         type_and_open_time_tv.setText(dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
         if (mineBean.getAdsList() != null) {
             store_mine_banner.setAdapter(new BannerImageAdapter<StoreMineBean.AdsListBean>(mineBean.getAdsList()) {

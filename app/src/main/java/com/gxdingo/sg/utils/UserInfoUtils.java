@@ -230,6 +230,15 @@ public class UserInfoUtils {
     }
 
     /**
+     * 保存用户信息
+     *
+     * @param userBean
+     */
+    public void saveUserInfo(UserBean userBean) {
+        SPUtils.getInstance().put(USER_INFO_KEY, GsonUtil.gsonToStr(userBean));
+    }
+
+    /**
      * 获取token
      *
      * @return
