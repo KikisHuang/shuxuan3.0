@@ -238,7 +238,21 @@ public class OneKeyModel {
 
 //                if (customResultListener != null)
 //                    customResultListener.onResult(normalBean.auth);
-                auth((Activity) context, normalBean.auth, handler);
+                auth((Activity) context, normalBean.auth,  new Handler() {
+                    @Override
+                    public void handleMessage(@NonNull Message msg) {
+//            super.handleMessage(msg);
+                        switch (msg.what) {
+                            case SDK_AUTH_FLAG:
+                                AuthResult authResult = (AuthResult) msg.obj;
+                                if (!TextUtils.isEmpty(authResult.getAuthCode())) {
+                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY, isUser);
+                                } else
+                                    ToastUtils.showLong("没有获取到authCode");
+                                break;
+                        }
+                    }
+                });
             }
         };
 
@@ -412,7 +426,7 @@ public class OneKeyModel {
                         findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                getAliAuthInfo(getContext());
+                                getAliAuthInfo(context);
 //                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
                             }
                         });

@@ -1,5 +1,7 @@
 package com.gxdingo.sg.biz;
 
+import android.app.Activity;
+
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -41,6 +43,5 @@ public class LoginContract {
         void setVerificationCodeTime(int time);
 
         void showIdButton();
-
     }
 }
