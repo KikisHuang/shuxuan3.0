@@ -12,6 +12,7 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -188,9 +189,10 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void oauth(Context context) {
-        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+      /*  new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
             new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });
+        });*/
+        UserInfoUtils.getInstance().goToOauthPage(context);
     }
 
     @Override

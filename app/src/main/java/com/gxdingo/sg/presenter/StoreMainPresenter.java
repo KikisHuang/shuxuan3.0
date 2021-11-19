@@ -114,17 +114,18 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     @Override
     public void logout() {
         UserInfoUtils.getInstance().clearLoginStatus();
-//        UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
-        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+        UserInfoUtils.getInstance().goToOauthPage(getContext());
+    /*    new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
             new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });
+        });*/
     }
 
     @Override
     public void login() {
-        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+        UserInfoUtils.getInstance().goToOauthPage(getContext());
+        /* new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
             new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });
+        });*/
     }
 
     @Override

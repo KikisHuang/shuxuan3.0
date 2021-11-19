@@ -797,10 +797,10 @@ public class NetworkModel {
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
 
-                new OneKeyModel().getKey(context, netWorkListener, (CustomResultListener<OneKeyLoginEvent>) event -> {
+      /*          new OneKeyModel().getKey(context, netWorkListener, (CustomResultListener<OneKeyLoginEvent>) event -> {
                     new NetworkModel(netWorkListener).oneClickLogin(context, event.code, event.isUser);
-                });
-//                UserInfoUtils.getInstance().goToLoginPage(context, "");
+                });*/
+                UserInfoUtils.getInstance().goToOauthPage(context);
 
             }
         };

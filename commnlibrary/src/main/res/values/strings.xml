@@ -1,5 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">树选易购</string>
+    <string name="app_name">树选</string>
 
     <string name="no_data">数据传输异常</string>
     <string name="is_bottom">最底部了哦</string>

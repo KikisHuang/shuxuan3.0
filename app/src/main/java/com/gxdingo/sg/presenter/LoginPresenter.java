@@ -11,13 +11,16 @@ import androidx.annotation.NonNull;
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AuthResult;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -142,13 +145,11 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     public void getWechatAuth() {
         if (!isViewAttached() || mModdel == null)
             return;
-        if (isWeixinAvilible(getContext()))
-        {
+        if (isWeixinAvilible(getContext())) {
             //普通登录无需过主页面登陆逻辑
             LocalConstant.isLogin = false;
             mModdel.wxLogin();
-        }
-        else {
+        } else {
             if (isBViewAttached())
                 getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
         }
@@ -157,7 +158,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void alipayAuth() {
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
-            auth((Activity) getContext(), (String) str,handler);
+            auth((Activity) getContext(), (String) str, handler);
 //            simpleAuth((Activity) getContext(), (String) str, callback);
         });
     }
@@ -202,15 +203,25 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         }
     }
 
+    /**
+     * 一键登陆
+     */
+    @Override
+    public void oauth() {
+        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+        });
+    }
 
-    private Handler handler = new Handler(){
+
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
 //            super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case SDK_AUTH_FLAG:
                     AuthResult authResult = (AuthResult) msg.obj;
-                    if (mNetworkModel!=null){
+                    if (mNetworkModel != null) {
                         if (!isEmpty(authResult.getAuthCode())) {
                             mNetworkModel.thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, getV().isClient());
                         } else

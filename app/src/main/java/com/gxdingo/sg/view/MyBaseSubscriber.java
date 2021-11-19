@@ -13,6 +13,8 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
+import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
+
 
 /**
  * 作者： zhouyou<br>
@@ -52,11 +54,13 @@ public class MyBaseSubscriber<T> extends BaseSubscriber<T> {
             //缺少token或token失效，需要重新登录
             case 401:
             case 2:
-                new OneKeyModel().getKey(mContext, null, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                UserInfoUtils.getInstance().clearLoginStatus();
+                EventBus.getDefault().post(new ReLoginBean(0, ""));
+                UserInfoUtils.getInstance().goToOauthPage(mContext);
+              /*  new OneKeyModel().getKey(mContext, null, (CustomResultListener<OneKeyLoginEvent>) event -> {
                     new NetworkModel(null).oneClickLogin(mContext, event.code, event.isUser);
-                });
-//                UserInfoUtils.getInstance().clearLoginStatus();
-//                EventBus.getDefault().post(new ReLoginBean(0, ""));
+                });*/
+
 //                UserInfoUtils.getInstance().goToLoginPage(contextWeakReference.get(), "");
                 break;
 

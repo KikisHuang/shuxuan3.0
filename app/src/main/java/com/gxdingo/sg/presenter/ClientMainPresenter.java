@@ -221,11 +221,12 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void goLogin() {
-        if (oneKeyModel != null)
+     /*   if (oneKeyModel != null)
             oneKeyModel.getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
                 if (networkModel != null)
                     networkModel.oneClickLogin(getContext(), event.code, event.isUser);
-            });
+            });*/
+        UserInfoUtils.getInstance().goToOauthPage(getContext());
     }
 
 

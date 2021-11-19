@@ -15,6 +15,7 @@ import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.LoginActivity;
+import com.gxdingo.sg.activity.OauthActivity;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.kikis.commnlibrary.utils.Constant;
@@ -202,14 +203,13 @@ public class UserInfoUtils {
 
     }
 
-    public void goToLoginPageBack(Context context, String errormsg) {
-
-        goToPagePutSerializable(context, LoginActivity.class, getIntentEntityMap(new Object[]{false}));
-        if (!isEmpty(errormsg))
-            customToast(errormsg);
-        else
-            customToast(gets(R.string.please_login));
-
+    /**
+     * 跳转一键登录
+     *
+     * @param context
+     */
+    public void goToOauthPage(Context context) {
+        goToPage(context, OauthActivity.class, null);
     }
 
     /**

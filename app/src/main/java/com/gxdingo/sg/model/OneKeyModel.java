@@ -102,7 +102,7 @@ public class OneKeyModel {
 
         if (!isEmpty(LocalConstant.AUTH_SECRET))
             sdkInit(context, customResultListener);
-         else {
+        else {
 
             Map<String, String> map = getJsonMap();
 
@@ -110,8 +110,6 @@ public class OneKeyModel {
 
             String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
-            if (netWorkListener != null)
-                netWorkListener.onStarts();
 
             Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
                     .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -125,7 +123,6 @@ public class OneKeyModel {
                     LogUtils.e(e);
 
                     if (netWorkListener != null) {
-                        netWorkListener.onAfters();
                         netWorkListener.onMessage("没有获取到一键登录认证key");
                     } else
                         ToastUtils.showShort(e.getMessage());
@@ -139,7 +136,6 @@ public class OneKeyModel {
                         sdkInit(context, customResultListener);
                     } else {
                         if (netWorkListener != null) {
-                            netWorkListener.onAfters();
                             netWorkListener.onMessage("没有获取到一键登陆认证key");
                         } else
                             ToastUtils.showShort("没有获取到一键登陆认证key");
@@ -195,7 +191,7 @@ public class OneKeyModel {
      *
      * @param context
      */
-    public void getAliAuthInfo(Context context,CustomResultListener customResultListener) {
+    public void getAliAuthInfo(Context context, CustomResultListener customResultListener) {
         Observable<NormalBean> observable = HttpClient.post(PAYMENT_ALIPAY_AUTHINFO)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
@@ -268,22 +264,26 @@ public class OneKeyModel {
                     //除了用户取消操作的事件，其他都跳转登录页面
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
-                    } else {
-                        OneKeyModel.quitLoginPage();
+                    }
+                    OneKeyModel.quitLoginPage();
 //                        Toast.makeText(getApplicationContext(), "一键登录失败切换到其他登录方式", Toast.LENGTH_SHORT).show();
 //                        Intent pIntent = new Intent(OneKeyLoginActivity.this, MessageActivity.class);
 //                        startActivityForResult(pIntent, 1002);
-                    }
-                } catch (Exception e) {
+                } catch (
+                        Exception e) {
                     e.printStackTrace();
                 }
-                mAuthHelper.setAuthListener(null);
             }
-        };
+        }
+
+        ;
 
         mAuthHelper = PhoneNumberAuthHelper.getInstance(context, mTokenResultListener);
 
-        mAuthHelper.getReporter().setLoggerEnable(true);
+        mAuthHelper.getReporter().
+
+                setLoggerEnable(true);
+
         mAuthHelper.setAuthSDKInfo(LocalConstant.AUTH_SECRET);
         mAuthHelper.checkEnvAvailable(1);
         mAuthHelper.removeAuthRegisterXmlConfig();
@@ -387,9 +387,10 @@ public class OneKeyModel {
 
     public static void quitLoginPage() {
         if (mAuthHelper != null) {
+            mAuthHelper.setAuthListener(null);
             mAuthHelper.quitLoginPage();
-            mAuthHelper.hideLoginLoading();
             mAuthHelper = null;
+            EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
         }
     }
 
