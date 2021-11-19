@@ -30,9 +30,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,7 +43,6 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.Constant.CLOSE_ALL_ACTIVITY;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
 
@@ -92,6 +88,8 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     //点击时间间隔
     private int clickInterval = 300;
 
+    //首次加载
+    protected boolean isFirstLoad = true;
 
     /**
      * 创建fragment的静态方法，方便传递参数
@@ -136,6 +134,22 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         eventBusInit();
         initData();
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //增加了Fragment是否可见的判断
+        if (!isHidden())
+            lazyInit();
+    }
+
+    /**
+     * Android x版本 懒加载 ，需要自行重写(fragment不销毁)
+     */
+    protected void lazyInit() {
+
     }
 
     /**
@@ -251,6 +265,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         unbinder.unbind();
         EventBus.getDefault().unregister(this);
         clearDisposable();
+
     }
 
     public RxPermissions getRxPermissions() {

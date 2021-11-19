@@ -54,18 +54,19 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     private CameraPosition mCameraPosition;
 
+
     private boolean isPOIAsyn = false;
 
     public AddressPresenter() {
-        model =new SelectAddressModel();
+        model = new SelectAddressModel();
         mClientCommonModel = new CommonModel();
         clientNetworkModel = new ClientNetworkModel(this);
     }
 
     @Override
     public void getAddressList(boolean refresh) {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.getAddressList(getContext(),refresh,this);
+        if (clientNetworkModel != null)
+            clientNetworkModel.getAddressList(getContext(), refresh, this);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     @Override
     public void checkCompileInfo() {
         if (model != null && isViewAttached())
-            model.checkStatus(getV().getAddress(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(),getV().getDoorplate(), b -> getV().saveBtnEnable(b));
+            model.checkStatus(getV().getAddress(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), getV().getDoorplate(), b -> getV().saveBtnEnable(b));
     }
 
     @Override
@@ -134,7 +135,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void searchPOIAsyn(boolean refresh, String keyword, String cityCode)  {
+    public void searchPOIAsyn(boolean refresh, String keyword, String cityCode) {
         isPOIAsyn = true;
 
         if (refresh)
@@ -143,33 +144,33 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 //        LogUtils.d("=========城市码"+cityCode);
 //        if (!isEmpty(cityCode)) {
 
-            LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
+        LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
-            model.retrievalPOI(keyword, isEmpty(cityCode) ? cityCode : cityCode, new PoiSearch.OnPoiSearchListener() {
-                @Override
-                public void onPoiSearched(PoiResult poiResult, int errorCode) {
+        model.retrievalPOI(keyword, isEmpty(cityCode) ? cityCode : cityCode, new PoiSearch.OnPoiSearchListener() {
+            @Override
+            public void onPoiSearched(PoiResult poiResult, int errorCode) {
 
-                    if (errorCode == 1000) {
-                        if (isViewAttached()) {
+                if (errorCode == 1000) {
+                    if (isViewAttached()) {
 
-                            getV().searchResult(refresh, poiResult.getPois());
+                        getV().searchResult(refresh, poiResult.getPois());
 
-                            clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
-                        }
-                    } else
-                        clientNetworkModel.pageReset(refresh, "请求失败");
-                }
+                        clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
+                    }
+                } else
+                    clientNetworkModel.pageReset(refresh, "请求失败");
+            }
 
-                @Override
-                public void onPoiItemSearched(PoiItem poiItem, int i) {
+            @Override
+            public void onPoiItemSearched(PoiItem poiItem, int i) {
 
-                }
-            });
+            }
+        });
 //        }
     }
 
     @Override
-    public void loadmoreData(String key)  {
+    public void loadmoreData(String key) {
         if (isPOIAsyn)
             searchPOIAsyn(false, key, cityCode);
         else
@@ -184,7 +185,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void searchBound(boolean refresh, LatLng latLng, String cityCode)  {
+    public void searchBound(boolean refresh, LatLng latLng, String cityCode) {
         LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         isPOIAsyn = false;
@@ -252,6 +253,12 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
+    public void cacheAddress(AddressBean item) {
+        if (mClientCommonModel != null)
+            mClientCommonModel.cacheDefaultAddress(item);
+    }
+
+    @Override
     public void onSucceed(int type) {
 
         if (type == ADDADDRESS_SUCCEED)
@@ -286,9 +293,9 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     @Override
     public void onData(boolean refresh, Object o) {
 
-        if (o instanceof AddressListBean){
+        if (o instanceof AddressListBean) {
             if (isViewAttached())
-                getV().onDataResult(refresh, (List<AddressBean>)((AddressListBean) o).getList());
+                getV().onDataResult(refresh, (List<AddressBean>) ((AddressListBean) o).getList());
         }
     }
 

@@ -3,6 +3,8 @@ package com.gxdingo.sg.utils.emotion;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +48,8 @@ public class EmotionKeyboard {
     private ImageView expressionimg;
     private ImageView voiceimg;
     private TextView voicetv;
+    private TextView send_tv;
+    private ImageView funcation_button;
     private boolean showVoice = false;
     private long onTouchtime = 0;
 
@@ -85,7 +89,7 @@ public class EmotionKeyboard {
      * @return
      */
     public EmotionKeyboard bindToFuncationButton(View funcationBt) {
-
+        funcation_button = (ImageView) funcationBt;
         funcationBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,7 +167,24 @@ public class EmotionKeyboard {
                 return false;
             }
         });
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                send_tv.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+                funcation_button.setVisibility(send_tv.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+            }
+        });
         //软键盘发送按钮事件监听
         mEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
@@ -237,6 +258,8 @@ public class EmotionKeyboard {
      * @return
      */
     public EmotionKeyboard bindToSendButton(View send_button, final String chatId) {
+        send_tv = (TextView) send_button;
+
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -453,10 +476,10 @@ public class EmotionKeyboard {
             }
 
         } else {
+
             if (mFuncationLayout.getVisibility() == View.VISIBLE) {
                 mFuncationLayout.setVisibility(View.GONE);
             }
-
         }
     }
 

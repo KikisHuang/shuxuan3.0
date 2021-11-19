@@ -2,7 +2,9 @@ package com.gxdingo.sg.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -10,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.PayBean;
 import com.gxdingo.sg.biz.IMTransferAccountsPayContract;
 import com.gxdingo.sg.dialog.EnterPaymentPasswordPopupView;
@@ -19,6 +23,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.NiceImageView;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
@@ -81,6 +86,8 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     private String mShareUuid = "";
 
     private int mPayType = 30;
+
+    private IMChatHistoryListBean.OtherAvatarInfo otherInfo;
 
     private PayBean.TransferAccountsDTO transferAccounts;
 
@@ -155,11 +162,23 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
         etAmount.setInputType(InputType.TYPE_NULL);
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         mPayType = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 30);
+        otherInfo = (IMChatHistoryListBean.OtherAvatarInfo) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 2);
+
+
+        if (otherInfo != null) {
+            if (!isEmpty(otherInfo.getSendNickname()))
+                tvPayeeName.setText(otherInfo.getSendNickname());
+
+            if (!isEmpty(otherInfo.getSendAvatar()))
+            Glide.with(reference.get()).load(otherInfo.getSendAvatar()).apply(GlideUtils.getInstance().getCircleCrop()).into(nivAvatar);
+        }
+
+
         if (isEmpty(mShareUuid)) {
             onMessage("没有获取到 shareUuid ");
             finish();
         }
-
+        etAmount.addTextChangedListener(textWatcher);
     }
 
     @Override
@@ -171,6 +190,48 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     public void onKeyboardHeightChanged(int height, int orientation) {
 
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (s.toString().contains(".")) {
+                if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                    s = s.toString().subSequence(0,
+                            s.toString().indexOf(".") + 3);
+                    etAmount.setText(s);
+                    etAmount.setSelection(s.length());
+                }
+            }
+            if (s.toString().trim().substring(0).equals(".")) {
+                s = "0" + s;
+                etAmount.setText(s);
+                etAmount.setSelection(2);
+            }
+
+            if (s.toString().startsWith("0")
+                    && s.toString().trim().length() > 1) {
+                if (!s.toString().substring(1, 2).equals(".")) {
+                    etAmount.setText(s.subSequence(0, 1));
+                    etAmount.setSelection(1);
+                    return;
+                }
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+
+        }
+    };
 
 
     @OnClick({R.id.tv_1, R.id.tv_2, R.id.tv_3, R.id.rl_back, R.id.tv_4, R.id.tv_5, R.id.tv_6, R.id.tv_7, R.id.tv_8, R.id.tv_9, R.id.tv_0, R.id.tv_point, R.id.tv_submit})

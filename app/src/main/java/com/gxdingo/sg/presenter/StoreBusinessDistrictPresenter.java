@@ -9,14 +9,19 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.model.BusinessDistrictModel;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
@@ -129,8 +134,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      * 获取商圈列表
      */
     @Override
-    public void getBusinessDistrictList(boolean refresh,int storeId) {
-        businessDistrictModel.getBusinessDistrict(getContext(), refresh,storeId);
+    public void getBusinessDistrictList(boolean refresh, int storeId) {
+        businessDistrictModel.getBusinessDistrict(getContext(), refresh, storeId);
     }
 
     /**
@@ -161,31 +166,40 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     /**
      * 去重合并评论数据
-     *
      * @param commentList       原来的评论数据
      * @param unfoldCommentList 展开评论获取的评论数据
+     * @param businessDistrict
+     * @param total
      */
     @Override
     public void onDuplicateRemovalMerge(ArrayList<BusinessDistrictListBean.Comment> commentList
-            , ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList) {
+            , ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total) {
 
-        if (commentList != null && unfoldCommentList != null) {
-            for (int i = 0; i < unfoldCommentList.size(); i++) {
-                BusinessDistrictUnfoldCommentListBean.UnfoldComment uc = unfoldCommentList.get(i);
-                //使用迭代器删除commentList重复的评论
-                Iterator<BusinessDistrictListBean.Comment> iterator = commentList.iterator();
-                while (iterator.hasNext()) {
-                    BusinessDistrictListBean.Comment c = iterator.next();
-                    if (uc.getId() == c.getId()) {
-                        iterator.remove();
+        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+            if (commentList != null && unfoldCommentList != null) {
+                for (int i = 0; i < unfoldCommentList.size(); i++) {
+                    BusinessDistrictUnfoldCommentListBean.UnfoldComment uc = unfoldCommentList.get(i);
+                    //使用迭代器删除commentList重复的评论
+                    Iterator<BusinessDistrictListBean.Comment> iterator = commentList.iterator();
+                    while (iterator.hasNext()) {
+                        BusinessDistrictListBean.Comment c = iterator.next();
+                        if (uc.getId() == c.getId()) {
+                            iterator.remove();
+                        }
                     }
                 }
+                //合并数据
+                commentList.addAll(unfoldCommentList);
+                //根据ID排序，最早的在前面
+                Collections.sort(commentList);
             }
-            //合并数据
-            commentList.addAll(unfoldCommentList);
-            //根据ID排序，最早的在前面
-            Collections.sort(commentList);
-        }
+            e.onNext(0);
+            e.onComplete();
+        }), (BaseActivity) getContext()).subscribe(o -> {
+            if (isViewAttached())
+                getV().onCommentListRefresh(commentList,unfoldCommentList,businessDistrict,total);
+        });
+
     }
 
     /**

@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
+import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
@@ -39,6 +42,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * 商家端商圈
@@ -183,24 +189,34 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+
 //        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     protected void initData() {
+
+
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
             //获取商圈评论未读数量
             if (mStoreId <= 0)
                 getP().getNumberUnreadComments();
 
-            //获取商圈列表
-            getP().getBusinessDistrictList(true, mStoreId);
+            if (isFirstLoad){
+                isFirstLoad = !isFirstLoad;
+                //获取商圈列表
+                getP().getBusinessDistrictList(true, mStoreId);
+            }
+
         }
-
     }
-
 
     /**
      * event事件
@@ -210,7 +226,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     protected void onTypeEvent(Integer type) {
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
-                || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
+                || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == SOTRE_REVIEW_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
@@ -250,9 +266,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }
     }
 
-    @OnClick({R.id.unread_iv, R.id.iv_send_business_district})
+    @OnClick({R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.img_back:
+                getActivity().finish();
+                break;
             case R.id.unread_iv:
                 startActivity(new Intent(mContext, BusinessDistrictMessageActivity.class));
                 break;
@@ -313,7 +332,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         }))
                         .show();
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
-                getP().PhotoViewer(mAdapter.getData().get(position).getImages(), view.getId() == R.id.single_img ? 0 : position);
+                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), view.getId() == R.id.single_img ? 0 : position);
+            } else if (view.getId() == R.id.iv_avatar) {
+                int storeId = Integer.valueOf(String.valueOf(object));
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
             }
         }
     };
@@ -399,27 +421,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList = commentListBean.getList();
             if (unfoldCommentList != null) {
                 //去重合并评论数据
-                getP().onDuplicateRemovalMerge(commentList, unfoldCommentList);
-                //根据总数判断是否还有数据
-                if (commentList.size() >= commentListBean.getTotal()) {
-                    //没有下一页
-                    if (tvCommentUnfoldText != null) {
-                        tvCommentUnfoldText.setText("收起");
-                        //替换向上图标
-                        changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_put_away);
-                        tvCommentUnfoldText = null;
-                    }
-                } else {
-                    //有下一页页面累加1
-                    businessDistrict.setCurrentPage(businessDistrict.getCurrentPage() + 1);
-                    if (tvCommentUnfoldText != null) {
-                        tvCommentUnfoldText.setText("展开更多");
-                        //替换向下图标
-                        changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_unfold);
-                        tvCommentUnfoldText = null;
-                    }
-                }
-                mAdapter.notifyDataSetChanged();
+                getP().onDuplicateRemovalMerge(commentList, unfoldCommentList, businessDistrict, commentListBean.getTotal());
             }
         }
     }
@@ -431,6 +433,40 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
         tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
+
+        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+            if (ClientActivity.getInstance() != null)
+                ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+        } else {
+            if (StoreActivity.getInstance() != null)
+                StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+        }
+
+    }
+
+    @Override
+    public void onCommentListRefresh(ArrayList<BusinessDistrictListBean.Comment> commentList, ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total) {
+        //根据总数判断是否还有数据  if (commentList.size() >= commentListBean.getTotal()
+
+        if (commentList.size() >= total) {
+            //没有下一页
+            if (tvCommentUnfoldText != null) {
+                tvCommentUnfoldText.setText("收起");
+                //替换向上图标
+                changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_put_away);
+                tvCommentUnfoldText = null;
+            }
+        } else {
+            //有下一页页面累加1
+            businessDistrict.setCurrentPage(businessDistrict.getCurrentPage() + 1);
+            if (tvCommentUnfoldText != null) {
+                tvCommentUnfoldText.setText("展开更多");
+                //替换向下图标
+                changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_unfold);
+                tvCommentUnfoldText = null;
+            }
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     /**

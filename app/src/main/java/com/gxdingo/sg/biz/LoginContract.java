@@ -12,7 +12,6 @@ public class LoginContract {
 
     public interface LoginPresenter extends MvpPresenter<BasicsListener,LoginListener>{
 
-
         void switchUrl(boolean isUserId);
 
         void getWechatAuth();
@@ -28,6 +27,8 @@ public class LoginContract {
         void weChatLogin(String code);
 
         void login();
+
+        void oauth();
     }
 
     public interface LoginListener{

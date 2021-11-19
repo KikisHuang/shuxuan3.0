@@ -8,22 +8,24 @@ import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.lxj.xpopup.XPopup;
 
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
+import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
- * @author: Weaving
- * @date: 2021/10/12
- * @page:
+ * @author: Kikis
+ * @date: 2021/11/19
+ * @page:一键登录唤起页
  */
-public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
+public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
         return new LoginPresenter();
@@ -31,7 +33,7 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -91,36 +93,12 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
 
     @Override
     protected void init() {
-        if (SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true)) {
-            new XPopup.Builder(reference.get())
-                    .isDestroyOnDismiss(true)
-                    .isDarkTheme(false)
-                    .autoDismiss(false)
-                    .dismissOnBackPressed(false)
-                    .dismissOnTouchOutside(false)
-                    .asCustom(new ProtocolPopupView(reference.get(), o -> {
-                        int type = (int) o;
-                        if (type != 0) {
-                            AMapLocationClient.updatePrivacyShow(this, true, true);
-                            AMapLocationClient.updatePrivacyAgree(this, true);
-                            goToPage(reference.get(), WelcomeActivity.class, null);
-                        }
-                        finish();
-                    })).show();
-        } else {
-            AMapLocationClient.updatePrivacyShow(this, true, true);
-            AMapLocationClient.updatePrivacyAgree(this, true);
 
-            boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-            Class clas = isUser ? ClientActivity.class : StoreActivity.class;
-            goToPage(reference.get(), clas, null);
-            finish();
-        }
     }
 
     @Override
     protected void initData() {
-
+        getP().oauth();
     }
 
     @Override
@@ -136,7 +114,13 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         switch (v.getId()) {
 
         }
+    }
 
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE)
+            finish();
 
     }
 }

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_other_side_address"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="68dp"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
@@ -113,14 +113,13 @@
         android:id="@+id/cl_no_address_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_no_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
             android:text="没有收货地址去添加"
             android:textColor="#2E2E2E"
             android:textSize="16sp"

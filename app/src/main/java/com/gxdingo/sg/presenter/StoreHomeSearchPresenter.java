@@ -123,7 +123,7 @@ public class StoreHomeSearchPresenter extends BaseMvpPresenter<BasicsListener, S
         if (isViewAttached())
             try {
                 String details = SPUtils.getInstance().getString("STORE_SEARCH_HISTORY", "");
-                getV().onHistoryResult(GsonUtil.GsonToList(details, String.class));
+                getV().onHistoryResult(GsonUtil.jsonToList(details, String.class));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -169,7 +169,7 @@ public class StoreHomeSearchPresenter extends BaseMvpPresenter<BasicsListener, S
         try {
             String details = SPUtils.getInstance().getString("STORE_SEARCH_HISTORY", "");
             if (!isEmpty(details)) {
-                return GsonUtil.GsonToList(details, String.class);
+                return GsonUtil.jsonToList(details, String.class);
             } else {
                 return new ArrayList<String>();
             }

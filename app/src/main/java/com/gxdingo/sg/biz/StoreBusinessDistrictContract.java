@@ -45,12 +45,13 @@ public class StoreBusinessDistrictContract {
 
         /**
          * 去重合并评论
-         *
          * @param commentList       原来的评论数据
          * @param unfoldCommentList 展开评论获取的评论数据
+         * @param businessDistrict
+         * @param total
          */
         void onDuplicateRemovalMerge(ArrayList<BusinessDistrictListBean.Comment> commentList
-                , ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList);
+                , ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total);
 
         /**
          * 获取商圈评论未读数量
@@ -91,5 +92,7 @@ public class StoreBusinessDistrictContract {
          * 返回商圈评论未读数量
          */
         void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean);
+
+        void onCommentListRefresh(ArrayList<BusinessDistrictListBean.Comment> commentList, ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total);
     }
 }

@@ -128,12 +128,12 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                     e.onComplete();
                 }), ((BaseActivity) getContext())).subscribe(data -> {
 
-                    if(isViewAttached())
+                    if (isViewAttached())
                         getV().showSelectAddressDialog((List<AddressBean>) data);
 
                 });
-            }else {
-                if(isViewAttached())
+            } else {
+                if (isViewAttached())
                     getV().showSelectAddressDialog(addressListBean.getList());
             }
 
@@ -363,7 +363,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
                     public void onResult(List<LocalMedia> result) {
-                        getBV().onStarts();
 //                        String url = getPhotoUrl(result.get(0));
                         String url = !isEmpty(result.get(0).getCompressPath()) ? result.get(0).getCompressPath() : result.get(0).getPath();
                         getV().onUploadImageUrl(url);
@@ -588,6 +587,16 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
         if (clientNetworkModel != null)
             clientNetworkModel.getAddressList(getContext(), true, this);
+
+    }
+
+    /**
+     * 获取默认地址
+     */
+    @Override
+    public void getCacheAddress() {
+        if (commonModel != null)
+            getV().onAddressResult(commonModel.getCacheDefaultAddress());
 
     }
 

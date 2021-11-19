@@ -3,7 +3,9 @@ package com.gxdingo.sg.utils;
 public class LocalConstant {
 
     //聊天id
-    public static String SHAREUUID = "";
+    public static String CHAT_IDENTIFIER = "";
+    //聊天订阅id
+    public static String CHAT_UUID = "";
 
     //聊天常量
     //自己发送的文本类型
@@ -47,6 +49,7 @@ public class LocalConstant {
     public static final int WECHAT_LOGIN_EVENT = 934946;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
+    public static final int QUITLOGINPAGE = 404;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int STORE_LOGIN_SUCCEED = 21;

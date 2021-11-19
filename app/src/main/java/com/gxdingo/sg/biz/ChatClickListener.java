@@ -1,7 +1,5 @@
 package com.gxdingo.sg.biz;
 
-import android.graphics.drawable.AnimationDrawable;
-
 public interface ChatClickListener {
     void onImageClick(String string);
 
@@ -10,4 +8,6 @@ public interface ChatClickListener {
     void clearUnread(long id);
 
     void onTransferClick(int position, long id);
+
+    void onAvatarClickListener(int position, long id);
 }

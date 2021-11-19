@@ -16,7 +16,7 @@ import com.lxj.xpopup.core.CenterPopupView;
 /**
  * @author: Kikis
  * @date: 2021/4/21
- * @page: 树选易购通用自定义确认弹窗
+ * @page: 树选通用自定义确认弹窗
  */
 public class SgConfirmPopupView extends CenterPopupView implements View.OnClickListener {
 

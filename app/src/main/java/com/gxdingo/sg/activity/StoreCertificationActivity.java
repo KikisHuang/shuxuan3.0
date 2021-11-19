@@ -189,7 +189,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("认证信息");
-        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
+        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
         initAgreementStyle();
     }
 
@@ -213,8 +213,10 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
                 .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登陆吗？", "", () -> {
-                    getP().logout();//请求退出接口
-                    sendEvent(new ReLoginBean());//重新登录全局事件
+                    if (!isUser) {
+                        getP().logout();//请求退出接口
+                        sendEvent(new ReLoginBean());//重新登录全局事件
+                    }
                     finish();
                 }))
                 .show();

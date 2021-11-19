@@ -44,7 +44,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 public class BusinessDistrictModel {
 
     protected int mPage = 1;
-    protected int mPageSize = 15;
+    protected int mPageSize = 10;
     private NetWorkListener netWorkListener;
 
     public BusinessDistrictModel(NetWorkListener netWorkListener) {

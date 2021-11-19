@@ -6,6 +6,12 @@ apply plugin: 'bugly'
 //    id 'com.android.application'
 //}
 
+bugly {
+    appId = "9c912b9d6d"
+    appKey = "c7497641-b621-4366-9e6f-c0d00a3a0518"
+    debug = false
+}
+
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -137,6 +143,8 @@ dependencies {
     implementation rootProject.ext.dependencies.banner
     //websocket
     implementation rootProject.ext.dependencies.websocket
+    //badge
+    implementation rootProject.ext.dependencies.badgeview
 
     //高德3D地图so及jar
     implementation 'com.amap.api:3dmap:8.1.0'

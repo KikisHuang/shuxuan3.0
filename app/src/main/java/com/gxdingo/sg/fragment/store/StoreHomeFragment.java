@@ -24,10 +24,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
+import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.IMChatActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -176,8 +179,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         if (UserInfoUtils.getInstance().isLogin())
-        //获取IM订阅信息
-        getP().getIMSubscribesList(true);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(true);
     }
 
 
@@ -187,8 +190,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         if (UserInfoUtils.getInstance().isLogin())
-        //获取IM订阅信息
-        getP().getIMSubscribesList(false);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(false);
     }
 
     @Override
@@ -211,6 +214,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
                 goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{subscribesMessage.getShareUuid(), subscribesMessage.getSendUserRole()}));
                 getP().clearUnreadMsg(subscribesMessage.getShareUuid());
+
+                if (StoreActivity.getInstance() != null)
+                    StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().reduceUnreadMessageNum(subscribesMessage.getUnreadNum()));
+
             }
         });
         recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
@@ -218,21 +225,38 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     protected void initData() {
+
+    }
+
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
         UserInfoUtils userInfo = UserInfoUtils.getInstance();
         if (userInfo != null && userInfo.isLogin()) {
-            UserBean userBean = userInfo.getUserInfo();
-            if (userBean != null) {
-                //显示头像、名称和营业状态信息
-                UserBean.StoreBean storeBean = userBean.getStore();
-                Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
-                tvStoreName.setText(storeBean.getName());
-                setBusinessStatus(storeBean);
-
+            if (isFirstLoad) {
+                isFirstLoad = !isFirstLoad;
+                setStoreInfo(userInfo);
                 //获取IM订阅信息
                 getP().getIMSubscribesList(true);
+            } else {
+                getP().refreshList();
+                setStoreInfo(userInfo);
             }
         }
     }
+
+    private void setStoreInfo(UserInfoUtils userInfo) {
+        UserBean userBean = userInfo.getUserInfo();
+        if (userBean != null) {
+            //显示头像、名称和营业状态信息
+            UserBean.StoreBean storeBean = userBean.getStore();
+            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
+            tvStoreName.setText(storeBean.getName());
+            setBusinessStatus(storeBean);
+        }
+    }
+
 
     private void setAppBarLayoutListener() {
         appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -276,14 +300,13 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         super.onTypeEvent(type);
         //店铺审核成功重新初始化数据
         if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
-            initData();
-        }
-    }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getP().refreshList();
+            UserInfoUtils userInfo = UserInfoUtils.getInstance();
+            if (userInfo != null && userInfo.isLogin())
+                setStoreInfo(userInfo);
+            //获取IM订阅信息
+            getP().getIMSubscribesList(true);
+        }
     }
 
     @Override
@@ -336,7 +359,6 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
                 .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
-
                     @Override
                     public void onStatus(int code, String name) {
 
@@ -377,7 +399,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     public void changeBusinessStatus(int status) {
-        tvBusinessStatus.setText(status == 1 ? "营业中" : "未营业");
+        tvBusinessStatus.setText(status == 1 ? "正常营业" : "暂停营业");
     }
 
     @Override
@@ -389,6 +411,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
                 SubscribesListBean.SubscribesMessage data = mStoreHomeIMMessageAdapter.getData().get(i);
 
                 if (data.getShareUuid().equals(id)) {
+                    MessageCountUtils.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
                     data.setUnreadNum(0);
                     e.onNext(i);
                 }
@@ -396,6 +419,10 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             e.onComplete();
         }), (BaseActivity) reference.get()).subscribe(o -> {
             int pos = (int) o;
+
+            if (StoreActivity.getInstance() != null)
+                StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+
             mStoreHomeIMMessageAdapter.notifyItemChanged(pos);
         });
 

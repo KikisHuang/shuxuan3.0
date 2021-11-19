@@ -165,4 +165,9 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
 
     }
+
+    @Override
+    public void onCommentListRefresh(ArrayList<BusinessDistrictListBean.Comment> commentList, ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total) {
+
+    }
 }

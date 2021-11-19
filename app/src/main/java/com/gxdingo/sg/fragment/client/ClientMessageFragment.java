@@ -6,15 +6,19 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
+import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.SubscribesBean;
@@ -23,6 +27,7 @@ import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
@@ -72,6 +77,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     public View nodata_layout;
 
     private StoreHomeIMMessageAdapter imMessageAdapter;
+
     @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
         return new ClientMessagePresenter();
@@ -80,7 +86,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -90,7 +96,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_fragment_cilent_msg;
     }
 
     @Override
@@ -117,14 +123,14 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (UserInfoUtils.getInstance().isLogin())
-        getP().getSubscribesMessage(true);
+            getP().getSubscribesMessage(true);
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (UserInfoUtils.getInstance().isLogin())
-        getP().getSubscribesMessage(false);
+            getP().getSubscribesMessage(false);
     }
 
     @Override
@@ -141,15 +147,29 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void initData() {
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().getSubscribesMessage(true);
+
+    }
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+        if (UserInfoUtils.getInstance().isLogin()) {
+            if (isFirstLoad){
+                isFirstLoad = !isFirstLoad;
+                getP().getSubscribesMessage(true);
+            }
+
+            else {
+
+                getP().refreshList();
+            }
+        }
     }
 
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED){
-            getP().refreshList();
+        if (type == CLIENT_LOGIN_SUCCEED) {
             getP().getSubscribesMessage(true);
         }
 
@@ -158,6 +178,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     public void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean) {
         if (subscribesListBean != null && subscribesListBean.getList() != null) {
+
             //取出本地存储的websocket url
             String webSocketUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
             /*
@@ -189,6 +210,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
                 SubscribesListBean.SubscribesMessage data = imMessageAdapter.getData().get(i);
 
                 if (data.getShareUuid().equals(id)) {
+                    MessageCountUtils.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
                     data.setUnreadNum(0);
                     e.onNext(i);
                 }
@@ -196,22 +218,21 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             e.onComplete();
         }), (BaseActivity) reference.get()).subscribe(o -> {
             int pos = (int) o;
+
+            if (ClientActivity.getInstance() != null)
+                ClientActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+
             imMessageAdapter.notifyItemChanged(pos);
         });
     }
 
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (UserInfoUtils.getInstance().isLogin())
-            getP().refreshList();
-    }
-
-    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         SubscribesListBean.SubscribesMessage item = (SubscribesListBean.SubscribesMessage) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{item.getShareUuid(),item.getSendUserRole()}));
+        goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{item.getShareUuid(), item.getSendUserRole()}));
+        getP().clearUnreadMsg(item.getShareUuid());
+        ClientActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().reduceUnreadMessageNum(item.getUnreadNum()));
     }
 
     @Override
@@ -228,7 +249,6 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         if (object instanceof ExitChatEvent) {
             ExitChatEvent exitChatEvent = (ExitChatEvent) object;
             getP().clearUnreadMsg(exitChatEvent.id);
-
         }
     }
 }

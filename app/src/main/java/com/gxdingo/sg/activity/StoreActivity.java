@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
@@ -20,6 +22,7 @@ import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -30,10 +33,13 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
+import q.rorbin.badgeview.QBadgeView;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -57,6 +63,11 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     private static StoreActivity instance;
 
+    @BindView(R.id.msg_fl)
+    public FrameLayout msg_fl;
+
+    @BindView(R.id.business_fl)
+    public FrameLayout business_fl;
 
     public static StoreActivity getInstance() {
         return instance;
@@ -206,10 +217,14 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onBaseEvent(Object object) {
 
-
         //全局新消息布局
-        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
-            showNewMessageDialog((ReceiveIMMessageBean) object);
+        if (object instanceof ReceiveIMMessageBean) {
+            if (!isAcBackground)
+                showNewMessageDialog((ReceiveIMMessageBean) object);
+
+            setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+        }
+
 
         if (object instanceof ReLoginBean)
             getP().logout();
@@ -236,6 +251,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         super.onStarts();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10)
+            getP().getUnreadMessageNum();
+    }
+
     /**
      * 获取fragment集合
      */
@@ -258,6 +280,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     public void showFragment(FragmentTransaction fragmentTransaction, int index) {
 
         fragmentTransaction.show(mFragmentList.get(index));
+        //android x懒加载
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.RESUMED);
         fragmentTransaction.commitAllowingStateLoss();
 
     }
@@ -272,6 +296,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         FragmentTransaction fragmentTransaction = getFragmentTransaction();
 
         fragmentTransaction.hide(mFragmentList.get(index));
+        fragmentTransaction.setMaxLifecycle(mFragmentList.get(index), Lifecycle.State.STARTED);
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -298,8 +323,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         if (type == LOGOUT)
             finish();
         else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
+
             finish();
-        }
+        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED)
+            getP().getUnreadMessageNum();
 
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
 //            checkUserStatus();//检查用户状态
@@ -346,6 +373,16 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void setUnreadMsgNum(int data) {
+        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(msg_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(data);
+    }
+
+    @Override
+    public void setBusinessUnreadMsgNum(int num) {
+        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(business_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(num);
+    }
+
 
     @Override
     public void onForeground(Activity activity) {
@@ -361,7 +398,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     protected void onDestroy() {
         super.onDestroy();
         getP().release();
-        if(instance!=null)
-            instance =null;
+        if (instance != null)
+            instance = null;
     }
 }

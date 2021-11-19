@@ -49,8 +49,13 @@ import butterknife.ButterKnife;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
  * 用户端和商家端商圈列表适配器
@@ -59,6 +64,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
     Context mContext;
     PullDividerItemDecoration mSpaceItemDecoration;
     StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
+    //消息评论总数
+    private int mTotal = 0;
 
     public BusinessDistrictListAdapter(Context context
             , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
@@ -66,6 +73,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         this.mContext = context;
         mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
         mOnChildViewClickListener = onChildViewClickListener;
+    }
+
+    public void setTotal(int total) {
+        mTotal = total;
     }
 
     @Override
@@ -116,16 +127,19 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
 
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
+
+        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
-        String createTime = DateUtils.convertTheTimeFormatOfT(data.getCreateTime());
+        String createTime = dealDateFormat(data.getCreateTime());
         if (isUse) {
-            client_date_tv.setText(createTime);
+            client_date_tv.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);
             ivDelete.setVisibility(View.GONE);
         } else {
-            tvTime.setText(createTime);
+            tvTime.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);
             client_date_tv.setVisibility(View.GONE);
@@ -161,7 +175,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
             single_img.setOnClickListener(v -> {
                 if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(single_img,  baseViewHolder.getAdapterPosition(),  baseViewHolder.getAdapterPosition(), data.getImages().get(0));
+                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(),0, data.getImages().get(0));
             });
 
             Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
@@ -210,10 +224,27 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, imageInfo, baseViewHolder.getAdapterPosition(), new NineClickListener() {
                 @Override
                 public void onNineGridViewClick(int position, int index) {
+
                     if (mOnChildViewClickListener != null && data.getImages() != null)
-                        mOnChildViewClickListener.item(picture_gridview, position, position, data.getImages().get(position));
+                        mOnChildViewClickListener.item(picture_gridview, position, index, data.getImages().get(position));
                 }
             }));
+        }
+
+        if (data.getCommentList().size() < 10) {
+            //小余10条不显示 展开、收起布局
+            llCommentUnfoldPutAwayLayout.setVisibility(View.GONE);
+        } else if (data.getCommentList().size() == 10 && data.getCommentList().size() != data.getComments()) {
+
+            llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
+            tvCommentUnfoldPutAwayText.setText("展开更多");
+            changeDrawable(tvCommentUnfoldPutAwayText, R.drawable.module_svg_business_district_comment_unfold);
+
+        } else if (data.getCommentList().size() == data.getComments()) {
+            //已经显示完所有评论并且超过10条显示收起布局
+            llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
+            tvCommentUnfoldPutAwayText.setText("收起");
+            changeDrawable(tvCommentUnfoldPutAwayText, R.drawable.module_svg_business_district_comment_put_away);
         }
 
 
@@ -307,4 +338,17 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
         return options;
     }
+
+    /**
+     * 更换TextView图标
+     *
+     * @param textView
+     * @param resId
+     */
+    private void changeDrawable(TextView textView, int resId) {
+        Drawable drawable = mContext.getResources().getDrawable(resId);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        textView.setCompoundDrawables(null, null, drawable, null);
+    }
+
 }

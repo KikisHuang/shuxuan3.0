@@ -38,8 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:background="@mipmap/bg_im_chat_others_content"
-                android:gravity="center"
-                android:paddingHorizontal="10dp"
+                android:gravity="left|center"
+                android:paddingHorizontal="12dp"
                 android:textColor="@color/gray_33"
                 android:textSize="13sp"
                 tools:text="来自用户提醒：我在本店付款的 210" />

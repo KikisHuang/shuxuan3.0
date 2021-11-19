@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.store;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -16,12 +17,15 @@ import com.gxdingo.sg.activity.StoreUpdateNameActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.StoreMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMyContract;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.StoreMyPresenter;
+import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
@@ -107,25 +111,32 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
 
     @Override
     protected void initData() {
-        getP().getInfo();
+
     }
 
-    @OnClick({R.id.store_avatar_iv,R.id.btn_setting,R.id.btn_qr_code,R.id.account_security_stv,R.id.auth_info_stv
-            ,R.id.settle_protocol_stv,R.id.contract_server_stv,R.id.about_us_stv,R.id.logout_stv})
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+        if (UserInfoUtils.getInstance().isLogin())
+            getP().getInfo();
+    }
+
+    @OnClick({R.id.store_avatar_iv, R.id.btn_setting, R.id.btn_qr_code, R.id.account_security_stv, R.id.auth_info_stv
+            , R.id.settle_protocol_stv, R.id.contract_server_stv, R.id.about_us_stv, R.id.logout_stv})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.store_avatar_iv:
             case R.id.btn_setting:
-                goToPage(getContext(), StoreSettingActivity.class,null);
+                goToPage(getContext(), StoreSettingActivity.class, null);
                 break;
             case R.id.btn_qr_code:
-                goToPage(getContext(), StoreQRCodeActivity.class,null);
+                goToPage(getContext(), StoreQRCodeActivity.class, null);
                 break;
             case R.id.account_security_stv:
-                goToPage(getContext(), ClientAccountSecurityActivity.class,null);
+                goToPage(getContext(), ClientAccountSecurityActivity.class, null);
                 break;
             case R.id.auth_info_stv:
-                goToPage(getContext(), StoreAuthInfoActivity.class,null);
+                goToPage(getContext(), StoreAuthInfoActivity.class, null);
                 break;
             case R.id.settle_protocol_stv:
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanshangjiaxieyi"}));
@@ -154,8 +165,27 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     public void onDataResult(StoreMineBean mineBean) {
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(store_avatar_iv);
         store_name_tv.setText(mineBean.getName());
-        type_and_open_time_tv.setText(dealDateFormat(mineBean.getOpenTime(),"HH:mm") +" - "+dealDateFormat(mineBean.getCloseTime(),"HH:mm"));
-        if (mineBean.getAdsList()!=null){
+
+        if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getStore() != null) {
+            UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+            if (!isEmpty(mineBean.getCloseTime()))
+                userBean.getStore().setCloseTime(mineBean.getCloseTime());
+
+            if (!isEmpty(mineBean.getOpenTime()))
+                userBean.getStore().setOpenTime(mineBean.getOpenTime());
+
+            if (!isEmpty(mineBean.getAvatar()))
+                userBean.getStore().setAvatar(mineBean.getAvatar());
+
+            if (!isEmpty(mineBean.getName()))
+                userBean.getStore().setName(mineBean.getName());
+
+            UserInfoUtils.getInstance().saveUserInfo(userBean);
+        }
+
+
+        type_and_open_time_tv.setText(dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
+        if (mineBean.getAdsList() != null) {
             store_mine_banner.setAdapter(new BannerImageAdapter<StoreMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, StoreMineBean.AdsListBean data, int position, int size) {
@@ -172,7 +202,13 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (store_mine_banner!=null)
+        if (store_mine_banner != null)
             store_mine_banner.stop();
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+
     }
 }

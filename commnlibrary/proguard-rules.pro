@@ -590,7 +590,7 @@
 ##---------------End: proguard configuration for Gson  ----------
 
 -keep class com.kikis.commnlibrary.bean.**{*;}
--keep class com.diangou.shuxiang.bean.**{*;}
+-keep class com.gxdingo.sg.bean.**{*;}
 
 
 ####design####

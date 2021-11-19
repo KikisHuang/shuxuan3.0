@@ -30,6 +30,8 @@ public class StoreMainContract {
         void login();
 
         void getAliKey();
+
+        void getUnreadMessageNum();
     }
 
     public interface StoreMainListener {
@@ -45,6 +47,20 @@ public class StoreMainContract {
         void onSeleted(int checkTab, int oldTab);
 
 
+        /**
+         * 设置底部菜单未读消息
+         *
+         * @param data
+         */
+        void setUnreadMsgNum(int data);
+
+
+        /**
+         * 设置商圈消息未读
+         *
+         * @param num
+         */
+        void setBusinessUnreadMsgNum(int num);
     }
 
     public interface StoreMainModelListener {

@@ -265,7 +265,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     //身份切换
     @Override
     public void showIdButton() {
-        role_tv.setText(isUserId ? "树享客户端" : "树享商家端");
+        role_tv.setText(isUserId ? "树选客户端" : "树选商家端");
         switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
     }
 

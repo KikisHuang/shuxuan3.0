@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:paddingBottom="10dp"
     tools:ignore="MissingConstraints">
 
     <com.kikis.commnlibrary.view.RoundImageView
@@ -13,25 +14,57 @@
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:src="@mipmap/p1"
+        android:src="@mipmap/test_bg1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_store_name"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/store_name_ll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="13dp"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:singleLine="true"
-        android:textColor="#FF1F1F1F"
-        android:textSize="16sp"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toRightOf="@+id/iv_avatar"
         app:layout_constraintRight_toLeftOf="@+id/client_date_tv"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="金源便利店金源便利店金源便利店" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_store_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:singleLine="true"
+            android:textColor="#FF1F1F1F"
+            android:textSize="16sp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/authenticated_img"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="金源便金源便金源便" />
+
+        <ImageView
+            android:id="@+id/authenticated_img"
+            android:layout_width="52dp"
+            android:layout_height="14dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/store_authenticated"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_store_name"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintStart_toEndOf="@id/tv_store_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_store_name"></ImageView>
+
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="store_name_ll" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_today_new_products_label"
@@ -46,7 +79,7 @@
         android:textColor="#599252"
         android:textSize="12sp"
         app:layout_constraintLeft_toRightOf="@+id/iv_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/tv_store_name" />
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll" />
 
     <ImageView
         android:id="@+id/iv_delete"
@@ -66,7 +99,7 @@
         android:layout_marginTop="9dp"
         android:layout_marginRight="20dp"
         android:padding="6dp"
-        android:textColor="@color/gray_ac"
+        android:textColor="@color/gray_a9"
         android:textSize="12sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -82,7 +115,7 @@
         android:lineSpacingExtra="3dp"
         android:text="今日上架元气森林山楂味气泡水，6元一瓶56元一箱，一箱/10瓶"
         android:textColor="#FF2E2E2E"
-        android:textSize="16sp"
+        android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_today_new_products_label" />
@@ -124,7 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
-        android:textColor="@color/gray_ac"
+        android:textColor="@color/gray_a9"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture_fml"
@@ -140,7 +173,7 @@
         android:drawablePadding="5dp"
         android:text="0条评论"
         android:textColor="#FF2E2E2E"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture_fml" />
 
@@ -210,4 +243,14 @@
                 android:textSize="10sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="45dp"
+        android:background="#F1EFEF"
+        app:layout_constraintTop_toBottomOf="@+id/ll_comment_layout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

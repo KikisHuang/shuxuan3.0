@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amap.api.services.core.PoiItem;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.DistanceListBean;
@@ -31,6 +32,7 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
+import com.tencent.bugly.beta.Beta;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
@@ -69,6 +71,7 @@ import static com.gxdingo.sg.http.StoreApi.TRANSACTION_DETAILS;
 import static com.gxdingo.sg.http.StoreApi.USER_STATUS;
 import static com.gxdingo.sg.http.StoreApi.WALLET_HOME;
 import static com.gxdingo.sg.utils.LocalConstant.GLOBAL_SIGN;
+import static com.gxdingo.sg.utils.LocalConstant.IDENTIFIER;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
@@ -261,6 +264,8 @@ public class StoreNetworkModel {
         map.put(StoreLocalConstant.LONGITUDE, String.valueOf(longitude));
         map.put(StoreLocalConstant.LATITUDE, String.valueOf(latitude));
 
+        if (UserInfoUtils.getInstance().isLogin())
+            map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
 
         Observable<NormalBean> observable = HttpClient.post(SETTLE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -295,7 +300,7 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void getWalletHome(Context context,boolean refresh) {
+    public void getWalletHome(Context context, boolean refresh) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -311,7 +316,7 @@ public class StoreNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-                    pageReset(refresh,e.getMessage());
+                    pageReset(refresh, e.getMessage());
                 }
             }
 
@@ -320,8 +325,8 @@ public class StoreNetworkModel {
                 netWorkListener.onAfters();
                 if (netWorkListener != null) {
                     netWorkListener.onData(true, storeWalletBean);
-                    if (storeWalletBean.getTransactionList()!=null)
-                        pageNext(refresh,storeWalletBean.getTransactionList().size());
+                    if (storeWalletBean.getTransactionList() != null)
+                        pageNext(refresh, storeWalletBean.getTransactionList().size());
                 }
             }
         };
@@ -335,14 +340,14 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void balanceCash(Context context,String type ,String amount, String withdrawalPassword, long bankCardId) {
+    public void balanceCash(Context context, String type, String amount, String withdrawalPassword, long bankCardId) {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(LocalConstant.TYPE,type);
+        map.put(LocalConstant.TYPE, type);
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
         map.put(ClientLocalConstant.AMOUNT, amount);
-        if (type.equals(ClientLocalConstant.BANK) && bankCardId>0)
+        if (type.equals(ClientLocalConstant.BANK) && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
 
         netWorkListener.onStarts();
@@ -432,14 +437,14 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void getTransactionDetail(Context context,long moneyLogId) {
+    public void getTransactionDetail(Context context, long moneyLogId) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
         Map<String, String> map = getJsonMap();
-        map.put("moneyLogId",String.valueOf(moneyLogId));
+        map.put("moneyLogId", String.valueOf(moneyLogId));
 
-        Observable<TransactionDetails> observable = HttpClient.post(TRANSACTION_DETAILS,map)
+        Observable<TransactionDetails> observable = HttpClient.post(TRANSACTION_DETAILS, map)
                 .execute(new CallClazzProxy<ApiResult<TransactionDetails>, TransactionDetails>(new TypeToken<TransactionDetails>() {
                 }.getType()) {
                 });
@@ -578,6 +583,7 @@ public class StoreNetworkModel {
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
     }
+
     /**
      * 我的首页
      *
@@ -622,7 +628,7 @@ public class StoreNetworkModel {
      */
     public void updateStoreAvatar(Context context, String avatar) {
         Map<String, String> map = new HashMap<>();
-        map.put(StoreLocalConstant.AVATAR,avatar);
+        map.put(StoreLocalConstant.AVATAR, avatar);
 
         Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -655,7 +661,7 @@ public class StoreNetworkModel {
      */
     public void updateStoreName(Context context, String name) {
         Map<String, String> map = new HashMap<>();
-        map.put(Constant.NAME,name);
+        map.put(Constant.NAME, name);
 
         Observable<NormalBean> observable = HttpClient.post(STORE_UPDATE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -895,7 +901,7 @@ public class StoreNetworkModel {
      *
      * @param status
      */
-    public void updateBusinessStatus(Context context,int status,CustomResultListener customResultListener) {
+    public void updateBusinessStatus(Context context, int status, CustomResultListener customResultListener) {
 
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.BUSINESSSTATUS, String.valueOf(status));
@@ -916,8 +922,14 @@ public class StoreNetworkModel {
             @Override
             public void onNext(NormalBean normalBean) {
                 netWorkListener.onAfters();
-                if (customResultListener!=null)
+                if (customResultListener != null)
                     customResultListener.onResult(status);
+
+                if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getStore() != null) {
+                    UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                    userBean.getStore().setBusinessStatus(status);
+                    UserInfoUtils.getInstance().saveUserInfo(userBean);
+                }
             }
         };
 
@@ -927,8 +939,6 @@ public class StoreNetworkModel {
 
     /**
      * 营业状态修改
-     *
-     *
      */
     public void getAuthInfo(Context context) {
 
@@ -950,7 +960,7 @@ public class StoreNetworkModel {
             @Override
             public void onNext(StoreAuthInfoBean authInfoBean) {
                 netWorkListener.onAfters();
-                if (authInfoBean!=null)
+                if (authInfoBean != null)
                     EventBus.getDefault().post(authInfoBean);
             }
         };
@@ -1005,16 +1015,16 @@ public class StoreNetworkModel {
      * @param context
      * @param customResultListener
      */
-    public void refreshLoginStauts(Context context,int isConvertToSeller ,CustomResultListener customResultListener) {
+    public void refreshLoginStauts(Context context, int isConvertToSeller, CustomResultListener customResultListener) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
-        String url=isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
+        String url = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
         String timeStamp = getCurrentTimeUTCM();
         Map<String, String> signMap = new HashMap<>();
-        signMap.put(LocalConstant.IDENTIFIER,UserInfoUtils.getInstance().getIdentifier());
-        signMap.put("isConvertToSeller",String.valueOf(isConvertToSeller));
-        signMap.put(LocalConstant.TIMESTAMP,timeStamp);
+        signMap.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
+        signMap.put("isConvertToSeller", String.valueOf(isConvertToSeller));
+        signMap.put(LocalConstant.TIMESTAMP, timeStamp);
         String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
 
@@ -1027,9 +1037,9 @@ public class StoreNetworkModel {
                 LogUtils.e("http error === " + e);
             }
         }
-        Observable<UserBean> observable = EasyHttp.post(url+USER_STATUS)
-                .headers( LocalConstant.TIMESTAMP, timeStamp)
-                .headers(LocalConstant.SIGN,sign)
+        Observable<UserBean> observable = EasyHttp.post(url + USER_STATUS)
+                .headers(LocalConstant.TIMESTAMP, timeStamp)
+                .headers(LocalConstant.SIGN, sign)
                 .headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken())
                 .params(params)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
@@ -1063,46 +1073,6 @@ public class StoreNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
-//        if (netWorkListener != null)
-//            netWorkListener.onStarts();
-//        String url=isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-//        String timeStamp = getCurrentTimeUTCM();
-//        Map<String, String> signMap = new HashMap<>();
-//        signMap.put(LocalConstant.TIMESTAMP,timeStamp);
-//        String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-//        String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
-//        Observable<UserBean> observable = HttpClient.post(url+USER_STATUS)
-//                .headers(LocalConstant.SIGN,sign)
-//                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                if (netWorkListener != null) {
-//                    netWorkListener.onAfters();
-//                    netWorkListener.onMessage(e.getMessage());
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onNext(UserBean userBean) {
-//                if (customResultListener != null)
-//                    customResultListener.onResult(userBean);
-//
-//                if (netWorkListener != null)
-//                    netWorkListener.onAfters();
-//
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        if (netWorkListener != null)
-//            netWorkListener.onDisposable(subscriber);
     }
 
 

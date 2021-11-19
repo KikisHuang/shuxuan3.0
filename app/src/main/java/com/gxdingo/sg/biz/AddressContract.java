@@ -44,6 +44,8 @@ public class AddressContract {
         void mapInit();
 
         void moveCamera();
+
+        void cacheAddress(AddressBean item);
     }
 
     public interface AddressListener {

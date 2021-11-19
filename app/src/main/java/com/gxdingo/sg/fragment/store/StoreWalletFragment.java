@@ -136,26 +136,18 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected void initData() {
-//        getP().getWalletHome(true);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    protected void lazyInit() {
+        super.lazyInit();
         if (UserInfoUtils.getInstance().isLogin())
-        getP().getWalletHome(true);
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden&&UserInfoUtils.getInstance().isLogin())
             getP().getWalletHome(true);
     }
 
-    @OnClick({R.id.img_more,R.id.alipay_stv,R.id.wechat_stv,R.id.bankcard_stv,R.id.record_stv})
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.img_more, R.id.alipay_stv, R.id.wechat_stv, R.id.bankcard_stv, R.id.record_stv})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.img_more:
 //                Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
 //                startActivityForResult(intent, REQUEST_CODE_SCAN);
@@ -173,10 +165,10 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 goToCash(ClientLocalConstant.WECHAT);
                 break;
             case R.id.bankcard_stv:
-                goToPagePutSerializable(getContext(), BankcardListActivity.class,getIntentEntityMap(new Object[]{true,true}));
+                goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true, true}));
                 break;
             case R.id.record_stv:
-                goToPage(getContext(), ClientAccountRecordActivity.class,null);
+                goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
         }
     }
@@ -188,22 +180,22 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         startActivityForResult(intent, REQUEST_CODE_SCAN);
     }
 
-    private void goToCash(String type){
+    private void goToCash(String type) {
 
-        if (mWalletBean == null)return;
+        if (mWalletBean == null) return;
 
-        if (type.equals(ClientLocalConstant.ALIPAY) && isEmpty(mWalletBean.getAlipay())){
+        if (type.equals(ClientLocalConstant.ALIPAY) && isEmpty(mWalletBean.getAlipay())) {
             getP().bindAli();
             return;
         }
 
-        if (type.equals(ClientLocalConstant.WECHAT) && isEmpty(mWalletBean.getWechat())){
+        if (type.equals(ClientLocalConstant.WECHAT) && isEmpty(mWalletBean.getWechat())) {
             getP().bindWechat();
             return;
         }
 
 
-        goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{type,mWalletBean}));
+        goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{type, mWalletBean}));
     }
 
     @Override
@@ -212,17 +204,17 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code))
-                getP().bind(event.code,1);
-        } else if (object instanceof ThirdPartyBean){
+                getP().bind(event.code, 1);
+        } else if (object instanceof ThirdPartyBean) {
             ThirdPartyBean thirdPartyBean = (ThirdPartyBean) object;
             if (thirdPartyBean.type == 0)
                 mWalletBean.setAlipay(thirdPartyBean.getNickname());
             else if (thirdPartyBean.type == 1)
                 mWalletBean.setWechat(thirdPartyBean.getNickname());
-            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{thirdPartyBean.type==1?ClientLocalConstant.WECHAT:ClientLocalConstant.ALIPAY,mWalletBean}));
-        }else if (object instanceof BankcardBean){
+            goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{thirdPartyBean.type == 1 ? ClientLocalConstant.WECHAT : ClientLocalConstant.ALIPAY, mWalletBean}));
+        } else if (object instanceof BankcardBean) {
             BankcardBean bankcardBean = (BankcardBean) object;
-            goToPagePutSerializable(getContext(), StoreCashActivity.class,getIntentEntityMap(new Object[]{ClientLocalConstant.BANK,mWalletBean,bankcardBean.getId()}));
+            goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{ClientLocalConstant.BANK, mWalletBean, bankcardBean.getId()}));
         }
 
     }
@@ -232,6 +224,10 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         super.onTypeEvent(type);
         if (type == LocalConstant.CASH_SUCCESSS)
             getP().getWalletHome(true);
+
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+            getP().getWalletHome(true);
+        }
     }
 
     @Override
@@ -240,21 +236,19 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     }
 
     @Override
-    public void onWalletHomeResult(boolean refresh,StoreWalletBean walletBean) {
+    public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
         mWalletBean = walletBean;
-        if (refresh){
+        if (refresh) {
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(String.valueOf(walletBean.getBalance()));
-            if (walletBean.getIsShowAlipay()==0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() ==0){
+            if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
                 ll_account.setVisibility(View.GONE);
-            }else {
-                alipay_stv.setVisibility(walletBean.getIsShowAlipay()==1?View.VISIBLE:View.GONE);
-                wechat_stv.setVisibility(walletBean.getIsShowWechat()==1?View.VISIBLE:View.GONE);
-                bankcard_stv.setVisibility(walletBean.getIsShowBank()==1?View.VISIBLE:View.GONE);
+            } else {
+                alipay_stv.setVisibility(walletBean.getIsShowAlipay() == 1 ? View.VISIBLE : View.GONE);
+                wechat_stv.setVisibility(walletBean.getIsShowWechat() == 1 ? View.VISIBLE : View.GONE);
+                bankcard_stv.setVisibility(walletBean.getIsShowBank() == 1 ? View.VISIBLE : View.GONE);
             }
-        }
-
-        else
+        } else
             mAdapter.addData(walletBean.getTransactionList());
     }
 
@@ -290,6 +284,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         TransactionBean item = (TransactionBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
-        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

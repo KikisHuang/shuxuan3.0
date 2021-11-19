@@ -3,6 +3,7 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 import android.content.Context;
 
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
@@ -15,7 +16,10 @@ import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
@@ -79,8 +83,23 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (isViewAttached()) {
             if (o instanceof StoreBusinessScopeBean) {
                 StoreBusinessScopeBean businessScopeBean = (StoreBusinessScopeBean) o;
-                if (businessScopeBean.getList() != null && businessScopeBean.getList().size() > 0)
-                    getV().onBusinessScopeResult(businessScopeBean.getList());
+                if (businessScopeBean.getList() != null && businessScopeBean.getList().size() > 0) {
+
+                    //清除item未读消息
+                    RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                        for (int i = 0; i < businessScopeBean.getList().size(); i++) {
+                            if (businessScopeBean.getList().get(i).getId() == 0) {
+                                businessScopeBean.getList().remove(i);
+                                break;
+                            }
+                        }
+                        e.onNext(0);
+                        e.onComplete();
+                    }), ((BaseActivity) getContext())).subscribe(data -> {
+                        getV().onBusinessScopeResult(businessScopeBean.getList());
+                    });
+                }
+
             }
 
         }
@@ -244,7 +263,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (!UserInfoUtils.getInstance().isLogin())
             return;
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), 0,o -> {
+            storeNetworkModel.refreshLoginStauts(getContext(), 0, o -> {
                 UserBean data = (UserBean) o;
                 int status = data.getStore().getStatus();
                 int storeId = data.getStore().getId();
