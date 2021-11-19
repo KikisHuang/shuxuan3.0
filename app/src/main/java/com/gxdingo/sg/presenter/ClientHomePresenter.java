@@ -27,6 +27,7 @@ import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
@@ -136,6 +137,16 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
         getNearbyStore(true,true,categoryId);
+    }
+
+    @Override
+    public void fllInvitationCode(String code) {
+        if (isEmpty(code)){
+            onMessage("请填写商家邀请码");
+            return;
+        }
+        if (clientNetworkModel!=null)
+            clientNetworkModel.receiveCoupon(getContext(),code);
     }
 
 

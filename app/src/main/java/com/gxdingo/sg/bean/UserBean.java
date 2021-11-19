@@ -27,6 +27,7 @@ public class UserBean implements Serializable {
     private String avatar;
     private Integer gender;
     private Integer status;
+    private Integer inviterId;
     private Integer role;
     private Boolean isSetPassword;
     private StoreBean store;
@@ -95,6 +96,14 @@ public class UserBean implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getInviterId() {
+        return inviterId;
+    }
+
+    public void setInviterId(Integer inviterId) {
+        this.inviterId = inviterId;
     }
 
     public Integer getRole() {

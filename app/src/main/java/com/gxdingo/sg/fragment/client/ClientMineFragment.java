@@ -79,6 +79,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
 
+    @BindView(R.id.fill_invitation_code_stv)
+    public SuperTextView fill_invitation_code_stv;
+
     @BindView(R.id.mine_banner)
     public Banner mine_banner;
 
@@ -149,8 +152,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        if (UserInfoUtils.getInstance().isLogin())
+        if (UserInfoUtils.getInstance().isLogin()){
             getP().getUserInfo();
+            checkShowFillCode();
+        }
+
     }
 
     @Override
@@ -158,11 +164,16 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         super.onTypeEvent(type);
         if (type == LocalConstant.CLIENT_LOGIN_SUCCEED
                 ||type == LocalConstant.CLIENT_REFRESH_USER_HOME
-                ||type ==LocalConstant.CASH_SUCCESSS)
+                ||type ==LocalConstant.CASH_SUCCESSS){
             getP().getUserInfo();
+            checkShowFillCode();
+        }
+
         else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
             username_stv.setLeftString(UserInfoUtils.getInstance().getUserNickName());
+        }else if (type == ClientLocalConstant.FILL_SUCCESS){
+            fill_invitation_code_stv.setVisibility(View.GONE);
         }
     }
 
@@ -226,6 +237,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void changeAvatar(Object o) {
 
+    }
+
+    private void checkShowFillCode(){
+        if (UserInfoUtils.getInstance().getUserInfo().getInviterId() !=0)
+            fill_invitation_code_stv.setVisibility(View.GONE);
     }
 
     @Override
