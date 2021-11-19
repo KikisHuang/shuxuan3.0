@@ -151,7 +151,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void convertStore() {
         if (storeNetworkModel!=null)
-            storeNetworkModel.refreshLoginStauts(getContext(), 1,new CustomResultListener() {
+            storeNetworkModel.refreshLoginStauts(getContext(), 0,new CustomResultListener() {
                 @Override
                 public void onResult(Object o) {
                     UserBean userBean = (UserBean) o;
