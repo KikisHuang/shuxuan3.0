@@ -348,7 +348,7 @@ public class OneKeyModel {
 
                 hideLoginLoading();
 
-                Log.e("oneKey-login", "获取token失败：" + s);
+                Log.e("oneKey-login", "获取token失败： " + s);
 
                 TokenRet tokenRet = null;
                 try {
