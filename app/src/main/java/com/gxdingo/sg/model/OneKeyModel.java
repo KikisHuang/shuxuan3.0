@@ -238,7 +238,7 @@ public class OneKeyModel {
 
 //                if (customResultListener != null)
 //                    customResultListener.onResult(normalBean.auth);
-                auth((Activity) context, normalBean.auth,  new Handler() {
+                auth((Activity) context, normalBean.auth, new Handler() {
                     @Override
                     public void handleMessage(@NonNull Message msg) {
 //            super.handleMessage(msg);
@@ -312,28 +312,6 @@ public class OneKeyModel {
         observable.subscribe(subscriber);
     }
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-//            super.handleMessage(msg);
-            switch (msg.what) {
-                case SDK_AUTH_FLAG:
-                    AuthResult authResult = (AuthResult) msg.obj;
-//                    if (mNetworkModel!=null){
-//                        if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-//                            mNetworkModel.thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, getV().isClient());
-//                        } else
-//                            onMessage("没有获取到authCode");
-//                    }
-                    if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-                        thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, isUser);
-                    } else
-                        ToastUtils.showLong("没有获取到authCode");
-                    break;
-            }
-        }
-    };
-
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
         if (mAuthHelper != null) {
@@ -376,14 +354,11 @@ public class OneKeyModel {
                 try {
                     tokenRet = TokenRet.fromJson(s);
                     //除了用户取消操作的事件，其他都跳转登录页面
-                    if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
+                    if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
-                    } else {
-                        OneKeyModel.quitLoginPage();
-//                        Toast.makeText(getApplicationContext(), "一键登录失败切换到其他登录方式", Toast.LENGTH_SHORT).show();
-//                        Intent pIntent = new Intent(OneKeyLoginActivity.this, MessageActivity.class);
-//                        startActivityForResult(pIntent, 1002);
-                    }
+
+                    OneKeyModel.quitLoginPage();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -434,8 +409,7 @@ public class OneKeyModel {
                             @Override
                             public void onClick(View v) {
 
-                                if (isWeixinAvilible(getContext()))
-                                {
+                                if (isWeixinAvilible(getContext())) {
 
                                     final SendAuth.Req req = new SendAuth.Req();
 
@@ -443,8 +417,7 @@ public class OneKeyModel {
                                     req.state = "wechat_sdk_demo";
 
                                     WechatUtils.getInstance().getWxApi().sendReq(req);
-                                }
-                                else {
+                                } else {
                                     ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
                                 }
 //                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
@@ -496,7 +469,7 @@ public class OneKeyModel {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWechatEvent(Object object){
+    public void onWechatEvent(Object object) {
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;

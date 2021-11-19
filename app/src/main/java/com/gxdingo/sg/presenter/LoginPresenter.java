@@ -46,8 +46,10 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     private LoginModel mModdel;
 
-    public LoginPresenter() {
+    private OneKeyModel oneKeyModel;
 
+    public LoginPresenter() {
+        oneKeyModel = new OneKeyModel();
         mModdel = new LoginModel();
         mNetworkModel = new NetworkModel(this);
     }
@@ -209,11 +211,20 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
      */
     @Override
     public void oauth() {
-        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
-            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });
+        if (oneKeyModel != null) {
+            oneKeyModel.getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+            });
+        }
+
     }
 
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+        if (oneKeyModel != null)
+            oneKeyModel.quitLoginPage();
+    }
 
     private Handler handler = new Handler() {
         @Override
