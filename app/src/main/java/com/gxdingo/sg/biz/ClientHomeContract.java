@@ -28,6 +28,8 @@ public class ClientHomeContract {
 
         void getNearbyStore(AddressBean addressBean,int categoryId);
 
+        void fllInvitationCode(String code);
+
         void callStore(String s);
 
         void convertStore();

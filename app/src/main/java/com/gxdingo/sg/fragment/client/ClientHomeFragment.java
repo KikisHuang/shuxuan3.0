@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -23,7 +24,11 @@ import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.OnContentListener;
+import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -36,6 +41,7 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -50,6 +56,8 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -104,6 +112,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     private int categoryId = 0;
 
     private int mTitleHeight = dp2px(80);
+
+    private BasePopupView fillCodePopupView;
 
 
     @Override
@@ -273,6 +283,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         mDefaultTypeData = new ArrayList<>();
         getP().checkPermissions(getRxPermissions(), true);
         getP().getCategory();
+
+        if (SPUtils.getInstance().getBoolean(FIRST_INTER_KEY, true))
+            showInvitationCodeDialog();
     }
 
     private void addData(List<CategoriesBean> categories) {
@@ -420,5 +433,32 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         } else {
             UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
         }
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == ClientLocalConstant.FILL_SUCCESS){
+            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
+            fillCodePopupView.dismiss();
+        }
+
+    }
+
+    private void showInvitationCodeDialog(){
+        if (fillCodePopupView==null){
+            fillCodePopupView = new XPopup.Builder(reference.get())
+                    .maxWidth((int) (ScreenUtils.getScreenWidth(getContext()) ))
+                    .isDarkTheme(false)
+                    .asCustom(new FillInvitationCodePopupView(getContext(), new OnContentListener() {
+                        @Override
+                        public void onConfirm(BasePopupView popupView, String content) {
+                            getP().fllInvitationCode(content);
+                        }
+                    })).show();
+        }else {
+            fillCodePopupView.show();
+        }
+
     }
 }

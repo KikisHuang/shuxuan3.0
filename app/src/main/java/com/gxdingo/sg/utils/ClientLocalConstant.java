@@ -94,6 +94,8 @@ public class ClientLocalConstant {
     public static final String ALIPAY = "alipay";
     public static final String BANK = "bank";
 
+    public static final int FILL_SUCCESS = 41354;
+
     public static final int COMMONLY_USED_STORE_HORIZONTAL = 1;
 
     public static final int COMMONLY_USED_STORE_VERTICAL = 2;

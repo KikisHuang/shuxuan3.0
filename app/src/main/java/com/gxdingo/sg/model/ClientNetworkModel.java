@@ -729,7 +729,8 @@ public class ClientNetworkModel {
             public void onNext(NormalBean normalBean) {
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(1);
+                    netWorkListener.onSucceed(ClientLocalConstant.FILL_SUCCESS);
+                    EventBus.getDefault().post(ClientLocalConstant.FILL_SUCCESS);
                     netWorkListener.onAfters();
                 }
 
