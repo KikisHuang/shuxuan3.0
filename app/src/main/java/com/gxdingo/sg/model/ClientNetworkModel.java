@@ -333,7 +333,7 @@ public class ClientNetworkModel {
             map.put(ClientLocalConstant.CATEGORYID, String.valueOf(categoryId));
 
         if (!isEmpty(key))
-            map.put(ClientLocalConstant.KEY, String.valueOf(key));
+            map.put("keyword", String.valueOf(key));
 
 
         map.put(LocalConstant.CURRENT, String.valueOf(getPage()));
