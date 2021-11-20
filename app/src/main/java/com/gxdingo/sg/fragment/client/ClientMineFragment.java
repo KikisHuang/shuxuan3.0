@@ -219,7 +219,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientFillInvitationCodeActivity.class,null);
                 break;
             case R.id.private_protocol_stv:
-                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true,0, CLIENT_PRIVACY_AGREEMENT_KEY}));
+                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghuxieyi"}));
+//                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true,0, CLIENT_PRIVACY_AGREEMENT_KEY}));
                 break;
             case R.id.logout_stv:
                 new XPopup.Builder(reference.get())
