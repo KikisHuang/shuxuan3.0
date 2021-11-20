@@ -151,6 +151,7 @@ public class WelcomeActivity extends BaseMvpActivity<LoginContract.LoginPresente
     protected void initData() {
 
     }
+
     @OnClick({R.id.skip_tv, R.id.go_bt})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
