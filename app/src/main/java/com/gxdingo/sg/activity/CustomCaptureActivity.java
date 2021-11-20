@@ -222,9 +222,8 @@ public class CustomCaptureActivity extends BaseMvpActivity<StoreWalletContract.S
                 if (result == null) {
                     ToastUtils.showLong("识别失败，请试试其它二维码");
                 } else {
-//                    tv_content.setText(result.getText());
-                    //todo 获取到二维码扫描结果处理
-                    LogUtils.d(result.getText());
+//                    LogUtils.d(result.getText());
+                    getP().scanCode(result.getText());
                 }
             }
         }

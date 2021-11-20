@@ -144,6 +144,11 @@ public class StoreApi {
      * 钱包首页数据
      */
     public static final String WALLET_HOME = HIERARCHY + "wallet/home";
+
+    /**
+     * 扫码核销优惠券
+     */
+    public static final String STORE_SCAN_CODE = HIERARCHY + "store/scanning/code";
     /**
      * 钱包首页数据
      */

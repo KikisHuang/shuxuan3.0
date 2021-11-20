@@ -45,7 +45,7 @@ public class StoreListBean {
         private String avatar;
         private String name;
         private String contactNumber;
-        private String distance;
+        private Double distance;
         //是否显示附近商家布局
         private boolean showTop;
         private List<String> classNameList;
@@ -82,11 +82,11 @@ public class StoreListBean {
             this.contactNumber = contactNumber;
         }
 
-        public String getDistance() {
+        public Double getDistance() {
             return distance;
         }
 
-        public void setDistance(String distance) {
+        public void setDistance(Double distance) {
             this.distance = distance;
         }
 

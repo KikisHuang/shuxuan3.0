@@ -19,6 +19,8 @@ public class StoreWalletContract {
 
         void checkPermissions(RxPermissions rxPermissions);
 
+        void scanCode(String couponIdentifier);
+
         void cash(String balance,String password);
 
         void bind(String code,int type);
