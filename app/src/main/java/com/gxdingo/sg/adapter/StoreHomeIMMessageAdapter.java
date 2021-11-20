@@ -15,9 +15,12 @@ import com.kikis.commnlibrary.view.RoundAngleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.IsToday;
 import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
  * 商家主页IM消息适配器
@@ -42,12 +45,16 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
 
         String date = DateUtils.dealDateFormat(subscribesMessage.getUpdateTime(), "yyyy-MM-dd HH:mm");
 
+/*
         if (IsToday(date))
             tvTime.setText(dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
         else if (IsYesterday(date))
             tvTime.setText("昨天" + dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
         else
             tvTime.setText(date);
+*/
+
+        tvTime.setText(getCustomDate(string2Millis(dealDateFormat(subscribesMessage.getUpdateTime())), getNowMills()));
 
         tvUnreadMsgCount.setVisibility(subscribesMessage.getUnreadNum() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(subscribesMessage.getUnreadNum()));

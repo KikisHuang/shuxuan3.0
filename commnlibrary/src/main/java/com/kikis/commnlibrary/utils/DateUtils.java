@@ -506,10 +506,10 @@ public class DateUtils {
             return "今天";
         } else if (start >= wee - TimeConstants.DAY) {
             return "昨天";
-        } else if (days > 1)
+        } else
             return days + "天前";
 
-        return DateUtils.getDateText(new Date(start), DateUtils.CMD);
+//        return DateUtils.getDateText(new Date(start), DateUtils.CMD);
     }
 
     /**

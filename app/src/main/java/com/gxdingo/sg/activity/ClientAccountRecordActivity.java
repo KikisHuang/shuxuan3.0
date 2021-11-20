@@ -250,7 +250,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
         if (!isUser){
             TransactionBean item = (TransactionBean) adapter.getItem(position);
-            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
+            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
         }
     }
 }

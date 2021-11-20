@@ -133,7 +133,7 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreWalletContract
     @Override
     protected void init() {
         title_layout.setTitleText("账单详情");
-        moneyLogId= getIntent().getIntExtra(Constant.SERIALIZABLE+0,-1);
+        moneyLogId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, -1);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreWalletContract
 
     @Override
     public void onTransactionDetail(TransactionDetails transactionDetails) {
-        Glide.with(this).load(isEmpty(transactionDetails.getAvatar())?R.drawable.module_svg_client_default_avatar:transactionDetails.getAvatar())
+        Glide.with(this).load(isEmpty(transactionDetails.getAvatar()) ? R.drawable.module_svg_client_default_avatar : transactionDetails.getAvatar())
                 .into(avatar_img);
         transfer_object_tv.setText(transactionDetails.getTitle());
         amount_tv.setText(String.valueOf(transactionDetails.getAmount()));
