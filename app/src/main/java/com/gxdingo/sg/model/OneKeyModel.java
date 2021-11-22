@@ -23,7 +23,9 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
+import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.LoginActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -38,6 +40,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.WechatUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
@@ -306,6 +309,19 @@ public class OneKeyModel {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     SPUtils.getInstance().put(LOGIN_WAY,isUse);
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    if (isUse) {
+                        SPUtils.getInstance().put(LOGIN_WAY, true);
+//                    sendEvent(new ReLoginBean());
+                        goToPage(getContext(), ClientActivity.class, null);
+
+
+                    } else {
+
+//                        sendEvent(new ReLoginBean());
+                        SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
+
+                        goToPage(getContext(), StoreActivity.class, null);
+                    }
                 }
             }
         };
