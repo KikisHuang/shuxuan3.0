@@ -3,20 +3,20 @@ package com.gxdingo.sg.utils;
 public class ClientLocalConstant {
 
     //sp final
-    public static final String USER_INFO_KEY = "shugou_user_info_key";
-    public static final String USER_TOKEN_KEY = "shugou_user_token_key";
-    public static final String USER_ID_KEY = "shugou_user_id_key";
-    public static final String USER_AVATAR_KEY = "shugou_user_avatar_key";
-    public static final String USER_PHONE_KEY = "shugou_user_phone_key";
-    public static final String USER_NICKNAME_KEY = "shugou_user_nickname_key";
-    public static final String USER_OPENID_KEY = "shugou_user_openid_key";
-    public static final String USER_WALLPAGER_KEY = "shugou_user_wallpager_key";
-    public static final String USER_IDENTIFIER = "shugou_user_identifier_key";
+    public static final String USER_INFO_KEY = "shuxuan_user_info_key";
+    public static final String USER_TOKEN_KEY = "shuxuan_user_token_key";
+    public static final String USER_ID_KEY = "shuxuan_user_id_key";
+    public static final String USER_AVATAR_KEY = "shuxuan_user_avatar_key";
+    public static final String USER_PHONE_KEY = "shuxuan_user_phone_key";
+    public static final String USER_NICKNAME_KEY = "shuxuan_user_nickname_key";
+    public static final String USER_OPENID_KEY = "shuxuan_user_openid_key";
+    public static final String USER_WALLPAGER_KEY = "shuxuan_user_wallpager_key";
+    public static final String USER_IDENTIFIER = "shuxuan_user_identifier_key";
 
-    public static final String MESSAGE_NOTICE_KEY = "shugou_message_notice_key";
+    public static final String MESSAGE_NOTICE_KEY = "shuxuan_message_notice_key";
 
-    public static final String LOCATION_LATITUDE_KEY = "shugou_user_latitude_key";
-    public static final String LOCATION_LONGITUDE_KEY = "shugou_user_longitude_key";
+    public static final String LOCATION_LATITUDE_KEY = "shuxuan_user_latitude_key";
+    public static final String LOCATION_LONGITUDE_KEY = "shuxuan_user_longitude_key";
 
     //heads params
     public static final String APP = "APP";

@@ -185,7 +185,7 @@ public class MyApplication extends Application {
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
 
 
-        //正式环境路径测试
+    /*    //正式环境路径测试
         if (isUser) {
             //客户端
             LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
@@ -196,7 +196,7 @@ public class MyApplication extends Application {
 
         LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
 
-        LocalConstant.OSS_SIGN_KEY = OSS_KEY;
+        LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
 
 
     }
@@ -378,7 +378,8 @@ public class MyApplication extends Application {
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
 
-                //正式环境测试
+/*
+        //正式环境测试
         if (isUser) {
             //客户端
             Api.URL = HTTP + ClientApi.OFFICIAL_URL;
@@ -388,8 +389,9 @@ public class MyApplication extends Application {
             Api.URL = HTTP + StoreApi.OFFICIAL_URL;
             Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
         }
-        Api.IM_URL =HTTP + IM_OFFICIAL_URL;
-        ClientApi.WEB_URL =  OFFICIAL_WEB_URL;
+        Api.IM_URL = HTTP + IM_OFFICIAL_URL;
+        ClientApi.WEB_URL = OFFICIAL_WEB_URL;
+*/
 
         EasyHttp.init(this);//默认初始化
 
@@ -415,7 +417,7 @@ public class MyApplication extends Application {
                 .setBaseUrl(Api.URL)//设置全局URL  url只能是域名 或者域名+端口号
                 // 打开该调试开关并设置TAG,不需要就不要加入该行
                 // 最后的true表示是否打印内部异常，一般打开方便调试错误
-                .debug("Http - Logcat", true)
+                .debug("Http - Logcat", isUat ? true : isDebug)
                 //如果使用默认的60秒,以下三行也不需要设置
                 .setReadTimeOut(60 * 1000)
                 .setWriteTimeOut(60 * 100)
