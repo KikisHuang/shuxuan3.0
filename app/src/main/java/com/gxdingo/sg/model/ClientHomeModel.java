@@ -110,6 +110,7 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.setOnMyLocationChangeListener(this);
         // myLocationStyle.myLocationIcon();//设置定位蓝点的icon图标方法，需要用到BitmapDescriptor类对象作为参数。
+        aMap.getUiSettings().setZoomControlsEnabled(false);
     }
 
     @Override

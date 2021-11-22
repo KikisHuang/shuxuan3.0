@@ -172,7 +172,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {
-            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
+            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY,true);
             if (!isUse) {
                 goToPage(this, StoreActivity.class, null);
                 finish();
