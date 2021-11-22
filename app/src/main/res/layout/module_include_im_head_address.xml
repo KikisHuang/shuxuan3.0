@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_other_side_address"
     android:layout_width="match_parent"
-    android:layout_height="68dp"
+    android:layout_height="75dp"
     android:layout_marginLeft="10dp"
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
@@ -29,7 +29,10 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginTop="10dp"
-            tools:text="Siwuliu"
+            tools:text="时代峰峻SDK练腹肌时空断裂福建烤老鼠低级房了开始"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="#FF2E2E2E"
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -43,6 +46,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="11dp"
             tools:text="13766666969"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="#FF2E2E2E"
             android:textSize="14sp"
             app:layout_constraintLeft_toRightOf="@+id/tv_other_side_nick_name"
@@ -60,9 +65,11 @@
             tools:text="金源CBD现代城·B座13楼1301室"
             android:textColor="#FFA9A9A9"
             android:textSize="14sp"
+            android:singleLine="true"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/right_arrow"
+            app:layout_constraintRight_toLeftOf="@+id/ll_navigation"
             app:layout_constraintTop_toBottomOf="@+id/tv_other_side_nick_name" />
 
         <TextView
@@ -72,7 +79,7 @@
             android:layout_marginRight="12dp"
             android:drawableRight="@drawable/module_svg_right_arrow_8934"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/ll_navigation"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -81,12 +88,12 @@
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_marginRight="12dp"
-            android:visibility="gone"
             android:background="@drawable/module_shape_bg_map_navigation_gray"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingHorizontal="10dp"
             android:paddingVertical="4dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
