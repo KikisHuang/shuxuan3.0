@@ -1,6 +1,8 @@
 
 package com.gxdingo.sg.activity;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -67,6 +69,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -87,6 +90,7 @@ import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
@@ -260,17 +264,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void init() {
-        //todo 客服类型
 
         title_layout.setBackgroundColor(getc(R.color.white));
 
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         //用户首页进入时，没有ShareUuid，需要传入otherRole、otherId
-
         otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
         otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
-
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
@@ -314,6 +315,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         getP().getCacheAddress();
         loadMore();
     }
+
 
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
@@ -1020,9 +1022,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent);
-        init();
-        initData();
+//        setIntent(intent);
+//        init();
+//        initData();
     }
 
     @Override

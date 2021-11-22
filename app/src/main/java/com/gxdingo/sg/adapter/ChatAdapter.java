@@ -38,6 +38,7 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
@@ -61,6 +62,8 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
     //显示日期时间间隔（单位毫秒）
     private int showDateInterval = 900000;
+    //当前时间间隔（单位毫秒）
+    private int nowTimeInterval = 300000;
 
     private ChatClickListener chatClickListener;
 
@@ -286,7 +289,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                         chatClickListener.onAudioClick(data.getContent(), true, position);
 
                         if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(position,data.getId());
+                            chatClickListener.clearUnread(position, data.getId());
                     }
 
                 }
@@ -434,10 +437,13 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 //上一次的发送时间
                 long lasttime = string2Millis(t);
                 //本次消息的发送时间
-                long nowtime = string2Millis(d);
+                long postime = string2Millis(d);
+
+                //当前时间
+                long nowtime = getNowMills();
 
                 //如果上次发送消息的时间超过当前消息900秒(15分钟)才重新显示，否则不显示时间。
-                if ((nowtime - lasttime) > showDateInterval) {
+                if (postime - lasttime > showDateInterval && nowtime - postime > nowTimeInterval) {
                     time_tv.setVisibility(View.VISIBLE);
                 } else
                     time_tv.setVisibility(View.GONE);

@@ -22,7 +22,7 @@ public class Constant {
     public static final Object COMMODITYDETAILSRICHTEXT = "commodity_details_richtext";
 
     public static final String HTML_LOADING_SUCCEED = "html_loading_succeed";
-
+    //是否debug环境
     public static boolean isDebug = false;
 
     /**

@@ -291,14 +291,16 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      */
     @Override
     public void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params) {
-        mEndSendTime = System.currentTimeMillis();
-        if (mEndSendTime - mStartSendTime > 500) {
-            SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
-            mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, receiveIMMessageBean -> getV().onSendMessageSuccess(receiveIMMessageBean));
-        } else {
-            onMessage("发送过于频繁");
+        if (mWebSocketModel!=null){
+            mEndSendTime = System.currentTimeMillis();
+            if (mEndSendTime - mStartSendTime > 500) {
+                SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
+                mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, receiveIMMessageBean -> getV().onSendMessageSuccess(receiveIMMessageBean));
+            } else {
+                onMessage("发送过于频繁");
+            }
+            mStartSendTime = mEndSendTime;
         }
-        mStartSendTime = mEndSendTime;
     }
 
     /**

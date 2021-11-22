@@ -112,7 +112,7 @@ public class IMMessageReceivingService extends Service {
             mSoundPool.release();
             mSoundPool = null;
         }
-        Log.e(TAG, "WebSocketService服务被销毁");
+            Log.e(TAG, "WebSocketService服务被销毁");
 
         if (mWebsocketStatusTimer != null) {
             mWebsocketStatusTimer.cancel();

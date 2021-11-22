@@ -32,6 +32,8 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_NICKNAME_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_OPENID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_PHONE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
+import static com.gxdingo.sg.utils.ImServiceUtils.isServiceRunning;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -90,7 +92,8 @@ public class UserInfoUtils {
             EventBus.getDefault().post(LOGOUT);
 
             //停止IM消息接收服务
-            MyApplication.getInstance().stopService(new Intent(MyApplication.getInstance(), IMMessageReceivingService.class));
+            if (isServiceRunning(MyApplication.getInstance(), IMMessageReceivingService.class.getName()))
+                MyApplication.getInstance().stopService(new Intent(MyApplication.getInstance(), IMMessageReceivingService.class));
 
         }
     }
