@@ -154,7 +154,7 @@ public class OneKeyModel {
 
                     if (netWorkListener != null) {
                         netWorkListener.onAfters();
-                        netWorkListener.onMessage("没有获取到一键登录认证key");
+                        netWorkListener.onMessage(e.getMessage());
                     } else
                         ToastUtils.showShort(e.getMessage());
 
