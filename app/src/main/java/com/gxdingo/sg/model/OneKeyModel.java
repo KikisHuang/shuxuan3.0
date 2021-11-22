@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -28,6 +29,7 @@ import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.OauthEventBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -43,6 +45,7 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.AuthUIConfig;
 import com.mobile.auth.gatewayauth.AuthUIControlClickListener;
@@ -98,6 +101,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+import static com.mobile.auth.gatewayauth.ResultCode.CODE_ERROR_USER_CHECKBOX;
 
 /**
  * @author: Weaving
@@ -112,12 +116,13 @@ public class OneKeyModel {
     private TokenResultListener mTokenResultListener;
 
     //客户端还是商家端
-    private boolean isUser;
+    public boolean isUser;
+    //协议是否勾选
+    private boolean isCheck;
 
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
-        EventBus.getDefault().register(this);
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
     }
 
@@ -280,7 +285,6 @@ public class OneKeyModel {
             return;
         }
 
-
         Map<String, String> map = getJsonMap();
 
         map.put(LocalConstant.APPNAME, type);
@@ -309,13 +313,12 @@ public class OneKeyModel {
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    SPUtils.getInstance().put(LOGIN_WAY,isUse);
+                    SPUtils.getInstance().put(LOGIN_WAY, isUse);
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                     if (isUse) {
                         SPUtils.getInstance().put(LOGIN_WAY, true);
 //                    sendEvent(new ReLoginBean());
                         goToPage(getContext(), ClientActivity.class, null);
-
 
                     } else {
 
@@ -420,7 +423,10 @@ public class OneKeyModel {
                         findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                getAliAuthInfo(context);
+                                if (isCheck)
+                                    getAliAuthInfo(context);
+                                else
+                                    ToastUtils.showShort("请同意服务条款");
 //                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
                             }
                         });
@@ -428,17 +434,20 @@ public class OneKeyModel {
                             @Override
                             public void onClick(View v) {
 
-                                if (isWeixinAvilible(getContext())) {
+                                if (isCheck) {
+                                    if (isWeixinAvilible(getContext())) {
 
-                                    final SendAuth.Req req = new SendAuth.Req();
+                                        final SendAuth.Req req = new SendAuth.Req();
 
-                                    req.scope = "snsapi_userinfo";
-                                    req.state = "wechat_sdk_demo";
+                                        req.scope = "snsapi_userinfo";
+                                        req.state = "wechat_sdk_demo";
 
-                                    WechatUtils.getInstance().getWxApi().sendReq(req);
-                                } else {
-                                    ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
-                                }
+                                        WechatUtils.getInstance().getWxApi().sendReq(req);
+                                    } else {
+                                        ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
+                                    }
+                                } else
+                                    ToastUtils.showShort("请同意服务条款");
 //                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
                             }
                         });
@@ -447,10 +456,22 @@ public class OneKeyModel {
                 })
                 .build());
 
+        mAuthHelper.setUIClickListener(new AuthUIControlClickListener() {
+            @Override
+            public void onClick(String code, Context context, String jsonObj) {
+                if (isDebug)
+                    Log.e("xxxxxx", "OnUIControlClick:code=" + code + ", jsonObj=" + (jsonObj == null ? "" : jsonObj));
+
+
+                if (code.equals(CODE_ERROR_USER_CHECKBOX))
+                    isCheck = GsonUtil.GsonToBean(jsonObj, OauthEventBean.class).isIsChecked();
+
+            }
+        });
+
         String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
         String s_privacy_agreementUrl = url + HTML + "identifier=" + STORE_PRIVACY_AGREEMENT_KEY;
         String service_agreementUrl = url + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
-
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
                 .setPrivacyBefore("")
                 .setAppPrivacyOne("《服务协议》", service_agreementUrl)
@@ -485,16 +506,6 @@ public class OneKeyModel {
                 .setScreenOrientation(authPageOrientation)
                 .create());
         mAuthHelper.getLoginToken(context, 2000);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWechatEvent(Object object) {
-        //微信登录事件
-        if (object instanceof WeChatLoginEvent) {
-            WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!TextUtils.isEmpty(event.code))
-                thirdPartyLogin(getContext(), event.code, ClientLocalConstant.WECHAT, isUser);
-        }
     }
 
     private void settingButtnStatus(View view) {

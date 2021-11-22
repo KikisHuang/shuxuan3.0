@@ -34,6 +34,7 @@ import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
+import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * @author: Weaving
@@ -216,6 +217,13 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
                 new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
             });
         }
+
+    }
+
+    @Override
+    public void oauthWeChatLogin(String code) {
+        if (oneKeyModel != null)
+            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, oneKeyModel.isUser);
 
     }
 

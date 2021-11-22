@@ -186,7 +186,7 @@ public class MyApplication extends Application {
 
 
         //正式环境路径测试
-/*        if (isUser) {
+        if (isUser) {
             //客户端
             LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
         } else {
@@ -196,7 +196,7 @@ public class MyApplication extends Application {
 
         LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
 
-        LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
+        LocalConstant.OSS_SIGN_KEY = OSS_KEY;
 
 
     }
@@ -378,7 +378,7 @@ public class MyApplication extends Application {
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
 
-        /*        //正式环境测试
+                //正式环境测试
         if (isUser) {
             //客户端
             Api.URL = HTTP + ClientApi.OFFICIAL_URL;
@@ -389,7 +389,7 @@ public class MyApplication extends Application {
             Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
         }
         Api.IM_URL =HTTP + IM_OFFICIAL_URL;
-        ClientApi.WEB_URL =  OFFICIAL_WEB_URL;*/
+        ClientApi.WEB_URL =  OFFICIAL_WEB_URL;
 
         EasyHttp.init(this);//默认初始化
 

@@ -31,6 +31,12 @@ public class LoginContract {
         void login();
 
         void oauth();
+
+        /**
+         * 一键登录页面微信登陆
+         * @param code
+         */
+        void oauthWeChatLogin(String code);
     }
 
     public interface LoginListener{

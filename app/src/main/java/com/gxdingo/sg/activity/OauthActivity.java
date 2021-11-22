@@ -1,16 +1,22 @@
 package com.gxdingo.sg.activity;
 
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocationClient;
 import com.blankj.utilcode.util.SPUtils;
+import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.lxj.xpopup.XPopup;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.OnClick;
 
@@ -19,6 +25,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * @author: Kikis
@@ -113,6 +120,17 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             return;
         switch (v.getId()) {
 
+        }
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        //微信登录事件
+        if (object instanceof WeChatLoginEvent) {
+            WeChatLoginEvent event = (WeChatLoginEvent) object;
+            if (!TextUtils.isEmpty(event.code))
+                getP().oauthWeChatLogin(event.code);
         }
     }
 
