@@ -14,7 +14,7 @@
     <LinearLayout
         android:id="@+id/menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
         android:background="#EDEDED"
         android:clipChildren="false"
@@ -62,7 +62,7 @@
             android:id="@+id/settle_in"
             android:layout_width="0dp"
             android:layout_height="58dp"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="10dp"
             android:layout_weight="1"
             app:anim_show="false"
             app:defocus_color="@color/gray202"

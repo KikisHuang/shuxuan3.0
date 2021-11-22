@@ -304,6 +304,7 @@ public class OneKeyModel {
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+                    SPUtils.getInstance().put(LOGIN_WAY,isUse);
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                 }
             }
