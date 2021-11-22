@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -37,6 +38,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
@@ -161,8 +163,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 //            showLogin = !showLogin;
 //        }
 
-        if (UserInfoUtils.getInstance().isLogin())
+        if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
+            //im服务启动检测
+            startImService(reference.get());
+        }
+
 
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {

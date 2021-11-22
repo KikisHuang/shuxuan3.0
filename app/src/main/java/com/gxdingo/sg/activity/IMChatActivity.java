@@ -60,6 +60,7 @@ import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -526,6 +527,17 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
         //停止下拉刷新
         chatContentList.stopRefresh();
 
+    }
+
+    @Override
+    public void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> data) {
+
+    }
+
+
+    @Override
+    public LinkedList<ReceiveIMMessageBean> getNowChatHistoryList() {
+        return null;
     }
 
     /**

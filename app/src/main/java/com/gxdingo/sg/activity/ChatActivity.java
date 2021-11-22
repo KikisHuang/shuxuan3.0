@@ -32,6 +32,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
+import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
@@ -65,6 +66,7 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -90,6 +92,7 @@ import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
+import static com.gxdingo.sg.utils.ImServiceUtils.isServiceRunning;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
@@ -318,9 +321,25 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        //如果页面恢复回来，消息im服务不存在，进行刷新页面操作
+        if (!isServiceRunning(reference.get(), IMMessageReceivingService.class.getName()))
+            getP().refreshHistoryList(mShareUuid, otherId, otherRole);
+
+        if (UserInfoUtils.getInstance().isLogin())
+            //im服务启动检测
+            startImService(reference.get());
+
+
+    }
+
+    @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         loadMore();
+        getP().getChatHistoryList(mShareUuid, otherId, otherRole);//获取聊天记录
     }
 
     /**
@@ -1156,6 +1175,20 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         }
 
+    }
+
+    @Override
+    public void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> list) {
+
+        mChatDatas.clear();
+        mChatDatas.addAll(list);
+        moveTo(mChatDatas.size() - 1);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public LinkedList<ReceiveIMMessageBean> getNowChatHistoryList() {
+        return mChatDatas;
     }
 
     @Override

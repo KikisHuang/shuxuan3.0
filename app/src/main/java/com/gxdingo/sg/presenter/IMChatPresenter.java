@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
@@ -36,6 +37,7 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +58,7 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatContract.IMChatListener> implements IMChatContract.IMChatPresenter, NetWorkListener {
@@ -214,6 +217,53 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         });
     }
 
+    /**
+     * 刷新聊天记录
+     *
+     * @param shareUuid
+     * @param otherId
+     * @param otherRole
+     */
+    @Override
+    public void refreshHistoryList(String shareUuid, int otherId, int otherRole) {
+
+        mWebSocketModel.refreshChatHistoryList(getContext(), shareUuid, otherId, otherRole, (CustomResultListener<IMChatHistoryListBean>) imChatHistoryListBean -> {
+
+            if (isViewAttached()) {
+
+                    RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                        //判断是否有新消息,有的话重新计数翻页，设置新数据
+                        for (ReceiveIMMessageBean ndata : imChatHistoryListBean.getList()) {
+                            boolean newMesssage = true;
+                            LinkedList<ReceiveIMMessageBean> oldData = getV().getNowChatHistoryList();
+                            for (int i = 0; i < getV().getNowChatHistoryList().size(); i++) {
+                                if (ndata.getId() == oldData.get(i).getId()) {
+                                    newMesssage = false;
+                                    continue;
+                                }
+                            }
+                            if (newMesssage) {
+                                break;
+                            }
+                        }
+                        e.onNext(imChatHistoryListBean.getList());
+                        e.onComplete();
+                    }), (BaseActivity) getContext()).subscribe(o -> {
+
+                        ArrayList<ReceiveIMMessageBean> newData = (ArrayList<ReceiveIMMessageBean>) o;
+
+                        if (isViewAttached() && newData.size() > 0) {
+                            if (isDebug)
+                                LogUtils.i("有新消息，添加到消息列表");
+
+                            getV().onAddNewChatHistoryList(newData);
+                        }
+                    });
+            }
+
+        });
+    }
+
 
     /**
      * 发送文本消息
@@ -291,7 +341,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      */
     @Override
     public void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params) {
-        if (mWebSocketModel!=null){
+        if (mWebSocketModel != null) {
             mEndSendTime = System.currentTimeMillis();
             if (mEndSendTime - mStartSendTime > 500) {
                 SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
@@ -553,9 +603,9 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void clearMessageUnread(int position, long id) {
         if (mWebSocketModel != null) {
-            mWebSocketModel.messageRead(getContext(), id, data->{
+            mWebSocketModel.messageRead(getContext(), id, data -> {
                 if (isViewAttached())
-                    getV().readAudioMsg(position,id);
+                    getV().readAudioMsg(position, id);
 
             });
         }

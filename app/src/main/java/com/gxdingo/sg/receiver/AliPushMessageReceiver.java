@@ -17,7 +17,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.Map;
 
+import static com.blankj.utilcode.util.ScreenUtils.isScreenLock;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -48,14 +50,20 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
         String orderId = extraMap.get("orderId");
 
+
 /*
         if (!isEmpty(orderId))
             EventBus.getDefault().post(new OrderRefreshBean(Long.valueOf(orderId)));
 */
 
-        //应用不是后台状态，不显示通知栏
-        if (!LocalConstant.isBackground)
-            PushServiceFactory.getCloudPushService().clearNotifications();
+        //非锁屏状态
+        if (!isScreenLock()) {
+            //应用不是后台状态，不显示通知栏
+            if (!LocalConstant.isBackground)
+                PushServiceFactory.getCloudPushService().clearNotifications();
+        }
+
+
     }
 
 

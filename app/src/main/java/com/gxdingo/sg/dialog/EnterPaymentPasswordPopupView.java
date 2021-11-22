@@ -83,7 +83,7 @@ public class EnterPaymentPasswordPopupView extends CenterPopupView implements Vi
 
     @Override
     protected int getMaxWidth() {
-        return (int) (ScreenUtils.getScreenWidth() * 2.6 / 3);
+        return (int) (ScreenUtils.getScreenWidth() * 2.8 / 3);
     }
 
     @Override

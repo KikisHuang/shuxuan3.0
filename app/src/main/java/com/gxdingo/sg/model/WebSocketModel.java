@@ -255,7 +255,7 @@ public class WebSocketModel {
      *
      * @param context
      */
-    public void getUnreadMessageNumber(Context context,CustomResultListener customResultListener) {
+    public void getUnreadMessageNumber(Context context, CustomResultListener customResultListener) {
 
         Map<String, String> map = getJsonMap();
 
@@ -277,7 +277,7 @@ public class WebSocketModel {
 
             @Override
             public void onNext(NormalBean normalBean) {
-                if (customResultListener!=null)
+                if (customResultListener != null)
                     customResultListener.onResult(normalBean.unread);
             }
         };
@@ -402,6 +402,56 @@ public class WebSocketModel {
         netWorkListener.onDisposable(subscriber);
     }
 
+
+    /**
+     * 刷新聊天记录列表
+     */
+    public void refreshChatHistoryList(Context context, String shareUuid, int otherId, int otherRole, CustomResultListener customResultListener) {
+        Map<String, String> map = new HashMap<>();
+
+        if (!isEmpty(shareUuid))
+            map.put("shareUuid", shareUuid);
+        else {
+            map.put("otherId", String.valueOf(otherId));
+            map.put("otherRole", String.valueOf(otherRole));
+        }
+
+        map.put("current", String.valueOf(1));
+        map.put("size", String.valueOf(mPageSize));
+/*
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }*/
+
+        PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<IMChatHistoryListBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<IMChatHistoryListBean>, IMChatHistoryListBean>(new TypeToken<IMChatHistoryListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<IMChatHistoryListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (customResultListener != null) {
+                    customResultListener.onResult(null);
+                }
+            }
+
+            @Override
+            public void onNext(IMChatHistoryListBean imChatHistoryListBean) {
+                if (customResultListener != null) {
+                    customResultListener.onResult(imChatHistoryListBean);
+                }
+                netWorkListener.finishRefresh(true);//完成刷新
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
 
     /**
      * 清除未读消息

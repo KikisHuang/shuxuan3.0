@@ -39,6 +39,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -261,8 +262,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onStart() {
         super.onStart();
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10)
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10){
             getP().getUnreadMessageNum();
+            //im服务启动检测
+            startImService(reference.get());
+        }
+
     }
 
     /**
