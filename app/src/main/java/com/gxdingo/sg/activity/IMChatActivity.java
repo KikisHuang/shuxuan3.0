@@ -590,6 +590,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     }
 
+    @Override
+    public void readAudioMsg(int position, long id) {
+
+    }
+
     /**
      * 转账
      */

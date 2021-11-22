@@ -505,7 +505,7 @@ public class NetworkModel {
                     netWorkListener.onMessage(gets(R.string.login_succeed));
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
 
-                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登陆状态
+                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登录状态
 
                     if (!isUse) {
                       //商家

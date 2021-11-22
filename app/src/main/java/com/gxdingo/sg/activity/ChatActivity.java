@@ -31,7 +31,6 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
 import com.kikis.commnlibrary.bean.AddressBean;
-import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
@@ -1045,11 +1044,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     /**
      * 清除语音未读
      *
+     * @param position
      * @param id
      */
     @Override
-    public void clearUnread(long id) {
-        getP().clearMessageUnread(id);
+    public void clearUnread(int position, long id) {
+        getP().clearMessageUnread(position, id);
 
     }
 
@@ -1209,6 +1209,23 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onAddressResult(AddressBean cacheDefaultAddress) {
         mDefaultAddress = cacheDefaultAddress;
+    }
+
+    /**
+     * 已读语音消息回调
+     *
+     * @param position
+     * @param id
+     */
+    @Override
+    public void readAudioMsg(int position, long id) {
+
+        if (mChatDatas != null && mChatDatas.size() >= position && mChatDatas.get(position).getId() == id && mChatDatas.get(position).recipientRead == 0) {
+            mChatDatas.get(position).recipientRead = 1;
+            mAdapter.notifyItemChanged(position);
+        }
+
+
     }
 
     /**

@@ -212,7 +212,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
-                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登陆吗？", "", () -> {
+                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登录吗？", "", () -> {
                     if (!isUser) {
                         getP().logout();//请求退出接口
                         sendEvent(new ReLoginBean());//重新登录全局事件
@@ -284,7 +284,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                         , mPoiItem.getLatLonPoint().getLongitude(), mPoiItem.getLatLonPoint().getLatitude());
                 break;
             case R.id.btn_result_botton:
-                //刷新登陆信息
+                //刷新登录信息
                 getP().getLoginInfoStatus();
                 break;
         }

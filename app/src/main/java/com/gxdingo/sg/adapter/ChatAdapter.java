@@ -212,7 +212,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             if (data.getVoiceDuration() > 0) {
                 //动态设置语音宽度
-                int value = (int) ((25 + data.getVoiceDuration()) * 2.5);
+                int value = (int) ((28 + data.getVoiceDuration()) * 2.5);
 
                 voice_ll.getLayoutParams().width = value > 160 ? dp2px(160) : dp2px(value);
 
@@ -262,7 +262,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     if (chatClickListener != null) {
                         chatClickListener.onAudioClick(data.getContent(), true, position);
                         if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(data.getId());
+                            chatClickListener.clearUnread(position, data.getId());
                     }
 
                 } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
@@ -286,7 +286,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                         chatClickListener.onAudioClick(data.getContent(), true, position);
 
                         if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(data.getId());
+                            chatClickListener.clearUnread(position,data.getId());
                     }
 
                 }

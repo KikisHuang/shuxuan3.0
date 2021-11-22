@@ -110,9 +110,10 @@ public class IMChatContract {
         /**
          * 清除语音未读
          *
+         * @param position
          * @param id
          */
-        void clearMessageUnread(long id);
+        void clearMessageUnread(int position, long id);
 
         /**
          * 领取转账
@@ -188,5 +189,13 @@ public class IMChatContract {
          * @param cacheDefaultAddress
          */
         void onAddressResult(AddressBean cacheDefaultAddress);
+
+        /**
+         * 已读语音消息回调
+         *
+         * @param position
+         * @param id
+         */
+        void readAudioMsg(int position, long id);
     }
 }

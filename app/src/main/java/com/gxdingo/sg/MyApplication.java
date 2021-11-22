@@ -170,7 +170,6 @@ public class MyApplication extends Application {
     private void keyInt() {
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-
         //全局url初始化
         if (isUser) {
             //客户端
@@ -179,19 +178,26 @@ public class MyApplication extends Application {
             //商家端
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
-
         Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
-//
-//        if (isUser) {
-//            //客户端
-//            LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_UAT_HTTP_KEY : TEST_HTTP_KEY;
-//        } else {
-//            //商家端
-//            LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_UAT_HTTP_KEY : TEST_HTTP_KEY;
-//        }
+
         LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
 
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
+
+
+        //正式环境路径测试
+/*        if (isUser) {
+            //客户端
+            LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
+        } else {
+            //商家端
+            LocalConstant.GLOBAL_SIGN = STORE_OFFICIAL_HTTP_KEY;
+        }
+
+        LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
+
+        LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
+
 
     }
 
@@ -360,21 +366,30 @@ public class MyApplication extends Application {
         if (isUser) {
             //客户端
             Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-//            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
             Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-//            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
         } else {
             //商家端
             Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTP + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
             Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+
         }
 
-//        if (isUat)
-//            Api.IM_URL = HTTP + UAT_URL;
         Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTP + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
-
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
+
+        /*        //正式环境测试
+        if (isUser) {
+            //客户端
+            Api.URL = HTTP + ClientApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
+        } else {
+            //商家端
+            Api.URL = HTTP + StoreApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
+        }
+        Api.IM_URL =HTTP + IM_OFFICIAL_URL;
+        ClientApi.WEB_URL =  OFFICIAL_WEB_URL;*/
 
         EasyHttp.init(this);//默认初始化
 
@@ -400,7 +415,7 @@ public class MyApplication extends Application {
                 .setBaseUrl(Api.URL)//设置全局URL  url只能是域名 或者域名+端口号
                 // 打开该调试开关并设置TAG,不需要就不要加入该行
                 // 最后的true表示是否打印内部异常，一般打开方便调试错误
-                .debug("Http - Logcat", isUat ? true : isDebug)
+                .debug("Http - Logcat", true)
                 //如果使用默认的60秒,以下三行也不需要设置
                 .setReadTimeOut(60 * 1000)
                 .setWriteTimeOut(60 * 100)

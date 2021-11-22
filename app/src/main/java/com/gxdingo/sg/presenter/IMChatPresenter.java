@@ -545,12 +545,17 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     /**
      * 清除语音未读
      *
+     * @param position
      * @param id
      */
     @Override
-    public void clearMessageUnread(long id) {
+    public void clearMessageUnread(int position, long id) {
         if (mWebSocketModel != null) {
-            mWebSocketModel.messageRead(getContext(), id, null);
+            mWebSocketModel.messageRead(getContext(), id, data->{
+                if (isViewAttached())
+                    getV().readAudioMsg(position,id);
+
+            });
         }
 
     }

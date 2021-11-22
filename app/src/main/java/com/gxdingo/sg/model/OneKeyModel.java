@@ -80,6 +80,7 @@ import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.UAT_URL;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
@@ -148,6 +149,7 @@ public class OneKeyModel {
                 public void onError(ApiException e) {
                     super.onError(e);
                     LogUtils.e(e);
+                    quitLoginPage();
 
                     if (netWorkListener != null) {
                         netWorkListener.onAfters();
@@ -165,9 +167,9 @@ public class OneKeyModel {
                     } else {
                         if (netWorkListener != null) {
                             netWorkListener.onAfters();
-                            netWorkListener.onMessage("没有获取到一键登陆认证key");
+                            netWorkListener.onMessage("没有获取到一键登录认证key");
                         } else
-                            ToastUtils.showShort("没有获取到一键登陆认证key");
+                            ToastUtils.showShort("没有获取到一键登录认证key");
                     }
 
                 }
@@ -202,7 +204,7 @@ public class OneKeyModel {
                 super.onError(e);
                 LogUtils.e(e);
 
-                LogUtils.i("获取阿里一键登陆key 异常 === " + e.getMessage());
+                LogUtils.i("获取阿里一键登录key 异常 === " + e.getMessage());
 
             }
 
@@ -216,7 +218,7 @@ public class OneKeyModel {
     }
 
     /**
-     * 动态获取一键登录key
+     * 支付宝获取infoStr
      *
      * @param context
      */
@@ -446,7 +448,7 @@ public class OneKeyModel {
                 .setPrivacyTextSize(12)
                 .setPrivacyOffsetY(340)
                 .setCheckboxHidden(false)
-                .setLogBtnText("本机号码一键登陆")
+                .setLogBtnText("本机号码一键登录")
                 .setLogBtnBackgroundDrawable(getd(R.drawable.module_bg_main_color_round6))
                 .setLightColor(true)
                 .setWebViewStatusBarColor(Color.TRANSPARENT)
@@ -479,7 +481,7 @@ public class OneKeyModel {
     }
 
     private void settingButtnStatus(View view) {
-        ((TextView) view.findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登陆" : "用户身份登陆");
+        ((TextView) view.findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登录" : "用户身份登录");
         ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isUser);
 

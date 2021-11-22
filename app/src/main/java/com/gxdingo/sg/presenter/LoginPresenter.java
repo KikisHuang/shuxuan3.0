@@ -149,7 +149,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         if (!isViewAttached() || mModdel == null)
             return;
         if (isWeixinAvilible(getContext())) {
-            //普通登录无需过主页面登陆逻辑
+            //普通登录无需过主页面登录逻辑
             LocalConstant.isLogin = false;
             mModdel.wxLogin();
         } else {
@@ -207,7 +207,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     }
 
     /**
-     * 一键登陆
+     * 一键登录
      */
     @Override
     public void oauth() {
@@ -222,8 +222,8 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void onMvpDestroy() {
         super.onMvpDestroy();
-        if (oneKeyModel != null)
-            oneKeyModel.quitLoginPage();
+//        if (oneKeyModel != null)
+//            oneKeyModel.quitLoginPage();
     }
 
     private Handler handler = new Handler() {
