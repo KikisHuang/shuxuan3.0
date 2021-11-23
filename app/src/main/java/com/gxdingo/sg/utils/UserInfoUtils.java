@@ -106,7 +106,7 @@ public class UserInfoUtils {
      * @param token
      */
     public void saveUserToken(String token) {
-            BaseLogUtils.w("保存的token === " + token);
+        BaseLogUtils.w("保存的token === " + token);
 
         SPUtils.getInstance().put(Constant.TOKEN_KEY, token);
     }
@@ -189,7 +189,7 @@ public class UserInfoUtils {
      * 登录判断通用方法;
      */
     public boolean isLogin() {
-        if (getUserToken() == null || getUserToken().equals(""))
+        if (getUserToken() == null || getUserToken().equals("") || getUserInfo() == null || isEmpty(getUserInfo().getCrossToken()))
             return false;
         else
             return true;
@@ -247,7 +247,7 @@ public class UserInfoUtils {
      */
     public String getUserToken() {
         String token = SPUtils.getInstance().getString(Constant.TOKEN_KEY, "");
-            BaseLogUtils.i("token === " + token);
+        BaseLogUtils.i("token === " + token);
 
         return token;
     }
@@ -333,7 +333,7 @@ public class UserInfoUtils {
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                        BaseLogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                    BaseLogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override

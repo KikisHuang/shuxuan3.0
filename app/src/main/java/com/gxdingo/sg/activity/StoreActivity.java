@@ -26,6 +26,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
+import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
@@ -95,7 +96,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected boolean ImmersionBar() {
-        return true;
+        return false;
     }
 
     @Override
@@ -263,7 +264,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onStart() {
         super.onStart();
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10){
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
             //im服务启动检测
             startImService(reference.get());

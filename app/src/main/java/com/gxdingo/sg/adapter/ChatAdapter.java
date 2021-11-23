@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.bumptech.glide.Glide;
@@ -21,6 +23,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.emotion.EmotionUtils;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.adapter.RecyclerViewHolder;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 
 import java.text.NumberFormat;
@@ -543,7 +546,6 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             animationDrawable.stop();
         }
     }
-
 
     /**
      * 取消订阅

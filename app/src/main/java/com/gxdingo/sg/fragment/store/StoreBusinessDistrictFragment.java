@@ -6,8 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,6 +47,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * 商家端商圈
@@ -78,6 +81,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     ClassicsFooter classicsFooter;
     @BindView(R.id.smartrefreshlayout)
     SmartRefreshLayout smartrefreshlayout;
+
+    @BindView(R.id.title_cl)
+    ConstraintLayout title_cl;
+
     @BindView(R.id.nodata_layout)
     View nodataLayout;
 
@@ -87,6 +94,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
     private int mStoreId = 0;
+
+    boolean isUser;
 
     /**
      * 商圈子视图点击监听接口
@@ -173,7 +182,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void init() {
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         if (args != null)
             mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
 
@@ -184,13 +193,16 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         if (isUser) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
-        } else
+        } else {
             title_tv.setText("我的商圈");
+            LinearLayout.LayoutParams clp = (LinearLayout.LayoutParams) title_cl.getLayoutParams();
+            clp.topMargin = dp2px(40);
+        }
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 
-//        recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
+        //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
     }
 
@@ -334,8 +346,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), view.getId() == R.id.single_img ? 0 : position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
-                int storeId = Integer.valueOf(String.valueOf(object));
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
+                if (isUser) {
+                    int storeId = Integer.valueOf(String.valueOf(object));
+                    goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
+                }
             }
         }
     };

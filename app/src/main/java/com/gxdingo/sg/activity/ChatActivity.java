@@ -961,7 +961,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //清除锁定id
         LocalConstant.CHAT_IDENTIFIER = "";
         LocalConstant.CHAT_UUID = "";
-        mAdapter.cancel();
+        if (mAdapter != null)
+            mAdapter.cancel();
         super.onDestroy();
     }
 

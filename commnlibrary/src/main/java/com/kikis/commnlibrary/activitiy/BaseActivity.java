@@ -823,14 +823,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
     protected void statusBarInit() {
 
         if (ImmersionBar()) {
-            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true);
-            mImmersionBar.statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
+            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true).statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
         } else
             mImmersionBar = ImmersionBar.with(reference.get());
-
-
-        if (NavigationBarColor() != 0)
-            mImmersionBar.navigationBarColor(NavigationBarColor()).autoNavigationBarDarkModeEnable(true, 0.2f);
 
         mImmersionBar.init();
     }

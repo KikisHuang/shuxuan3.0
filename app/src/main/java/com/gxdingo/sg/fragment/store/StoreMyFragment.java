@@ -64,6 +64,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     @BindView(R.id.store_mine_banner)
     public Banner store_mine_banner;
 
+
     @Override
     protected StoreMyContract.StoreMyPresenter createPresenter() {
         return new StoreMyPresenter();
