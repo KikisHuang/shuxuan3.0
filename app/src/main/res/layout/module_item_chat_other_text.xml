@@ -39,7 +39,7 @@
                 android:layout_gravity="left"
                 android:background="@mipmap/bg_im_chat_others_content_text"
                 android:gravity="center"
-                android:paddingVertical="8dp"
+                android:paddingVertical="10dp"
                 android:paddingLeft="14dp"
                 android:paddingRight="8dp"
                 android:textColor="@color/gray_33"

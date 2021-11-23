@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
     android:focusable="true"
     android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:padding="20dp"
     tools:context="com.gxdingo.sg.activity.ClientActivity"
     tools:ignore="MissingConstraints">
 
@@ -56,15 +56,16 @@
         android:id="@+id/nick_name_edt"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:background="@null"
+        android:maxLength="12"
         android:paddingHorizontal="30dp"
-        tools:text="巴扎黑呀"
         android:textColor="#2E2E2E"
         android:textSize="14sp"
-        android:background="@null"
         app:layout_constraintBottom_toBottomOf="@+id/nick_name_tag"
         app:layout_constraintLeft_toRightOf="@+id/nick_name_tag"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nick_name_tag" />
+        app:layout_constraintTop_toTopOf="@+id/nick_name_tag"
+        tools:text="巴扎黑呀" />
 
 
     <TextView

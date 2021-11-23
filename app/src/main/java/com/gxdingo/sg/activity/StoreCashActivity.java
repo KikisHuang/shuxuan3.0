@@ -3,6 +3,7 @@ package com.gxdingo.sg.activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
@@ -39,7 +40,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/11/11
  * @page:
  */
-public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.StoreWalletPresenter> implements StoreWalletContract.StoreWalletListener  {
+public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.StoreWalletPresenter> implements StoreWalletContract.StoreWalletListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -50,8 +51,8 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
-    @BindView(R.id.webView)
-    public WebView webView;
+    @BindView(R.id.content_tv)
+    public TextView content_tv;
 
     //	提现类型。bank=银行卡、alipay=支付宝、wechat=微信
     private String mType;
@@ -130,15 +131,17 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.balance_cash));
-        mType = getIntent().getStringExtra(Constant.SERIALIZABLE+0);
-        mWalletBean = (StoreWalletBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE+1);
-        mBankCardId = getIntent().getIntExtra(Constant.SERIALIZABLE+2,-1);
-        if (mWalletBean == null || isEmpty(mType)){
+        mType = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+        mWalletBean = (StoreWalletBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 1);
+        mBankCardId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, -1);
+        if (mWalletBean == null || isEmpty(mType)) {
             onMessage("请先选择提现账户！");
             finish();
 
         }
-        et_cash_amount.setHint("可转出到卡"+mWalletBean.getBalance()+"元");
+        if (mWalletBean != null)
+            et_cash_amount.setHint("可转出到卡" + mWalletBean.getBalance() + "元");
+
         et_cash_amount.addTextChangedListener(textWatcher);
         if (mType.equals(ClientLocalConstant.ALIPAY))
             cash_account_stv.setRightString(gets(R.string.alipay));
@@ -146,7 +149,9 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
             cash_account_stv.setRightString(gets(R.string.wechat));
         else
             cash_account_stv.setRightString(gets(R.string.back_card));
-        webView.loadDataWithBaseURL(null, mWalletBean.getExplain(), "text/html", "utf-8", null);
+
+        if (mWalletBean != null && !isEmpty(mWalletBean.getExplain()))
+            content_tv.setText(mWalletBean.getExplain());
     }
 
     @Override
@@ -154,9 +159,9 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
 
     }
 
-    @OnClick({R.id.cash_account_stv,R.id.btn_all,R.id.btn_confirm})
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.cash_account_stv, R.id.btn_all, R.id.btn_confirm})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
 //            case R.id.cash_account_stv:
 //                if (mType == 2)
 //                    goToPagePutSerializable(this,BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
@@ -166,11 +171,11 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                 break;
             case R.id.btn_confirm:
                 String balance = et_cash_amount.getText().toString();
-                if (isEmpty(balance)){
+                if (isEmpty(balance)) {
                     onMessage("请输入提现金额");
                     return;
                 }
-                if (!BigDecimalUtils.compare(balance,"0")){
+                if (!BigDecimalUtils.compare(balance, "0")) {
                     onMessage("请输入有效提现金额");
                     return;
                 }
@@ -179,7 +184,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         }
     }
 
-    private void showPayPswDialog(String balance){
+    private void showPayPswDialog(String balance) {
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
@@ -187,7 +192,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                     @Override
                     public void finished(CenterPopupView popupView, PasswordLayout passwordLayout, String password) {
                         mPasswordLayout = passwordLayout;
-                        getP().cash(balance,password);
+                        getP().cash(balance, password);
                     }
                 }))
                 .show();
@@ -232,7 +237,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         @Override
         public void afterTextChanged(Editable s) {
             if (!isEmpty(s.toString()))
-                if (BigDecimalUtils.compare(s.toString(),String.valueOf(mWalletBean.getBalance())))
+                if (BigDecimalUtils.compare(s.toString(), String.valueOf(mWalletBean.getBalance())))
                     et_cash_amount.setText(String.valueOf(mWalletBean.getBalance()));
         }
     };
@@ -266,7 +271,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     public void onMessage(String msg) {
         super.onMessage(msg);
-        if (mPasswordLayout!=null)
+        if (mPasswordLayout != null)
             mPasswordLayout.removeAllPwd();
     }
 }

@@ -33,7 +33,7 @@
             android:background="@mipmap/bg_im_chat_others_content_text"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingVertical="8dp"
+            android:paddingVertical="10dp"
             android:paddingRight="10dp">
 
             <ImageView

@@ -3,6 +3,7 @@ package com.gxdingo.sg.activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.LogUtils;
@@ -57,8 +58,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
-    @BindView(R.id.webView)
-    public WebView webView;
+    @BindView(R.id.content_tv)
+    public TextView content_tv;
 
     private String amount = "0.0";
 
@@ -140,8 +141,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     protected void init() {
         title_layout.setTitleText(gets(R.string.balance_cash));
         et_cash_amount.addTextChangedListener(textWatcher);
-        amount=getIntent().getStringExtra(Constant.PARAMAS+0);
-        et_cash_amount.setHint("可转出到卡"+amount+"元");
+        amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        et_cash_amount.setHint("可转出到卡" + amount + "元");
     }
 
     @Override
@@ -150,35 +151,35 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
 
-    @OnClick({R.id.cash_account_stv,R.id.btn_all,R.id.btn_confirm})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.cash_account_stv, R.id.btn_all, R.id.btn_confirm})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.cash_account_stv:
-                if (cashInfoBean!=null)
+                if (cashInfoBean != null)
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
                             .asCustom(new ClientCashSelectDialog(reference.get(), cashInfoBean, new OnAccountSelectListener() {
                                 @Override
-                                public void onSelected(BottomPopupView dialog, String account, int type,int bankCardId) {
-                                    if (bankCardId>0){
+                                public void onSelected(BottomPopupView dialog, String account, int type, int bankCardId) {
+                                    if (bankCardId > 0) {
                                         mBankCardId = bankCardId;
                                         dialog.dismiss();
                                         cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
                                         cash_account_stv.setLeftString(gets(R.string.back_card));
-                                        mtype= 0;
+                                        mtype = 0;
                                         return;
                                     }
-                                    if (isEmpty(account)){
+                                    if (isEmpty(account)) {
                                         if (type == 0)
                                             getP().bindAli();
                                         else if (type == 1)
                                             getP().bindWechat();
-                                    }else {
-                                        if (type == 0){
+                                    } else {
+                                        if (type == 0) {
                                             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
                                             cash_account_stv.setLeftString(gets(R.string.alipay));
-                                            mtype= 20;
-                                        }else if (type == 1){
+                                            mtype = 20;
+                                        } else if (type == 1) {
                                             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
                                             cash_account_stv.setLeftString(gets(R.string.wechat));
                                             mtype = 10;
@@ -194,11 +195,11 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 break;
             case R.id.btn_confirm:
                 String balance = et_cash_amount.getText().toString();
-                if (isEmpty(balance)){
+                if (isEmpty(balance)) {
                     onMessage("请输入提现金额");
                     return;
                 }
-                if (!BigDecimalUtils.compare(balance,"0")){
+                if (!BigDecimalUtils.compare(balance, "0")) {
                     onMessage("请输入有效提现金额");
                     return;
                 }
@@ -207,7 +208,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         }
     }
 
-    private void showPayPswDialog(){
+    private void showPayPswDialog() {
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .dismissOnTouchOutside(false)
@@ -232,7 +233,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code))
-                getP().bind(event.code,1);
+                getP().bind(event.code, 1);
         }
 
     }
@@ -240,23 +241,24 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @Override
     public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
         this.cashInfoBean = cashInfoBean;
-        if (!isEmpty(cashInfoBean.getAlipay())&&cashInfoBean.getIsShowAlipay()==1){
+        if (!isEmpty(cashInfoBean.getAlipay()) && cashInfoBean.getIsShowAlipay() == 1) {
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
             cash_account_stv.setLeftString(gets(R.string.alipay));
             mtype = 20;
-        }else if (!isEmpty(cashInfoBean.getWechat())&&cashInfoBean.getIsShowWechat()==1){
+        } else if (!isEmpty(cashInfoBean.getWechat()) && cashInfoBean.getIsShowWechat() == 1) {
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
             cash_account_stv.setLeftString(gets(R.string.wechat));
             mtype = 10;
-        }else if (cashInfoBean.getBankList()!=null&&cashInfoBean.getBankList().size()>0&&cashInfoBean.getIsShowBank()==1){
+        } else if (cashInfoBean.getBankList() != null && cashInfoBean.getBankList().size() > 0 && cashInfoBean.getIsShowBank() == 1) {
             cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
             cash_account_stv.setLeftString(gets(R.string.back_card));
             mBankCardId = cashInfoBean.getBankList().get(0).getId();
             mtype = 0;
-        }else {
+        } else {
             cash_account_stv.setLeftString("选择提现账户");
         }
-        webView.loadDataWithBaseURL(null, cashInfoBean.getExplain(), "text/html", "utf-8", null);
+        if (!isEmpty(cashInfoBean.getExplain()))
+            content_tv.setText(cashInfoBean.getExplain());
     }
 
     @Override
@@ -312,7 +314,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         @Override
         public void afterTextChanged(Editable s) {
             if (!isEmpty(s.toString()))
-                if (BigDecimalUtils.compare(s.toString(),amount))
+                if (BigDecimalUtils.compare(s.toString(), amount))
                     et_cash_amount.setText(amount);
         }
     };
@@ -326,7 +328,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @Override
     public void onMessage(String msg) {
         super.onMessage(msg);
-        if (mPasswordLayout!=null)
+        if (mPasswordLayout != null)
             mPasswordLayout.removeAllPwd();
     }
 

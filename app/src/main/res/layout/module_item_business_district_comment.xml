@@ -15,6 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Siwuliu"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="#FFA3BC69"
             android:textSize="12sp" />
 
@@ -32,6 +35,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Siwuliu"
+            android:maxEms="10"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:textColor="#FFA3BC69"
             android:textSize="12sp" />
     </LinearLayout>

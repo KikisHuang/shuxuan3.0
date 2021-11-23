@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:paddingLeft="10dp"
-                    android:paddingVertical="8dp"
+                    android:paddingVertical="10dp"
                     android:background="@mipmap/bg_im_chat_oneself_content_text"
                     android:gravity="right|center"
                     android:orientation="horizontal"
