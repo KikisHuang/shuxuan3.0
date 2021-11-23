@@ -177,10 +177,11 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     mNavigationPopupView.show();
                 break;
             case R.id.business_district_cl:
+                if (mStoreDetail != null)
                 goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
                 break;
             case R.id.ll_send_message:
-                if (UserInfoUtils.getInstance().isLogin()){
+                if (UserInfoUtils.getInstance().isLogin()&&  mStoreDetail != null){
                     goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,mStoreDetail.getId()}));
                 }else {
                     UserInfoUtils.getInstance().goToLoginPage(this,"");

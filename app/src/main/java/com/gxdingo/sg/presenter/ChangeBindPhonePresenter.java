@@ -84,7 +84,7 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
                             if (isViewAttached()) {
                                 getV().setEdittextHint(gets(R.string.input_new_phone_number));
                                 getV().changeTitle(gets(R.string.binding_new_phone_number));
-                                getV().changeHint("更换手机号后，下次登陆可使用新手机号登陆");
+                                getV().changeHint("更换手机号后，下次登录可使用新手机号登录");
                                 getV().countryCodeShow(true);
                                 getV().oldPhoneCodeCountdownVisibility(View.GONE);
                                 getV().newPhoneCodeCountdownVisibility(View.GONE);
@@ -165,7 +165,7 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
                 case 3:
                     if (isViewAttached()) {
                         getV().changeTitle(gets(R.string.binding_new_phone_number));
-                        getV().changeHint("更换手机号后，下次登陆可使用新手机号登陆");
+                        getV().changeHint("更换手机号后，下次登录可使用新手机号登录");
                         getV().countryCodeShow(false);
                         getV().setEdittextHint(gets(R.string.input_new_phone_number));
                         getV().oldPhoneCodeCountdownVisibility(View.GONE);

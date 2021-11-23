@@ -43,6 +43,11 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+
 /**
  * 商圈消息适配器
  *
@@ -81,16 +86,10 @@ public class BusinessDistrictMessageAdapter extends BaseQuickAdapter<BusinessDis
         tvStoreName.setText(comment.getReplyNickname());
         tvContent.setText(TextViewUtils.contentConversion(getContext(), comment.getContent()));
 
-//        if (!TextUtils.isEmpty(comment.getCreateTime())) {
-//            //当前时间戳
-//            long timecurrentTimeMillis = System.currentTimeMillis();
-//            //评论创建时间戳
-//            long createTimeMillis = DateUtils.getTimeStamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), comment.getCreateTime());
-//            String timeFormat = DateUtils.getEventtimeDiffText(timecurrentTimeMillis, createTimeMillis);
-//            ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(timeFormat);
-//        }
-        ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(comment.getCreateTime());
         Glide.with(getContext()).load(comment.getCircleImage()).into(ivPicture);
+
+        if (!TextUtils.isEmpty(comment.getCreateTime()))
+            ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(getCustomDate(string2Millis(dealDateFormat(comment.getCreateTime())), getNowMills()));
 
         //回复评论的内容
         RecyclerView recyclerView = baseViewHolder.findView(R.id.rv_reply_content);

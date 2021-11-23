@@ -25,6 +25,7 @@ import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.NewMessage;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.BaseMessageLayout;
 import com.lxj.xpopup.XPopup;
@@ -553,7 +554,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         }, BackpressureStrategy.ERROR), BaseActivity.this).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) {
-                LogUtils.i("fmlayout count === " + fmlayout.getChildCount());
+                BaseLogUtils.i("fmlayout count === " + fmlayout.getChildCount());
 
                 final ReceiveIMMessageBean messageInfoBean = (ReceiveIMMessageBean) o;
                 final BaseMessageLayout baseMessageLayout = new BaseMessageLayout(reference.get());
@@ -715,7 +716,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         try {
             customToast(msg);
         } catch (Exception e) {
-            LogUtils.e(e);
+            BaseLogUtils.e(e);
         }
 
     }
@@ -822,14 +823,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
     protected void statusBarInit() {
 
         if (ImmersionBar()) {
-            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true);
-            mImmersionBar.statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
+            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true).statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
         } else
             mImmersionBar = ImmersionBar.with(reference.get());
-
-
-        if (NavigationBarColor() != 0)
-            mImmersionBar.navigationBarColor(NavigationBarColor()).autoNavigationBarDarkModeEnable(true, 0.2f);
 
         mImmersionBar.init();
     }

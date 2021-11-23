@@ -60,6 +60,9 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
+    @BindView(R.id.title)
+    public TextView title;
+
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
 
@@ -94,7 +97,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -125,6 +128,9 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @Override
     protected void init() {
         title_layout.setTitleText("钱包");
+        title.setTextSize(16);
+        title.getPaint().setFakeBoldText(true);
+
         title_layout.setMoreImg(R.drawable.module_svg_scan);
         title_layout.setBackVisible(false);
         mAdapter = new ClientTransactionRecordAdapter();

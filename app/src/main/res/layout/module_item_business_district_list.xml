@@ -75,7 +75,7 @@
         android:background="@drawable/module_bg_business_district_today_new_products"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:text="今日上新"
+        android:text="新品上架"
         android:textColor="#599252"
         android:textSize="12sp"
         app:layout_constraintLeft_toRightOf="@+id/iv_avatar"
@@ -97,11 +97,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
-        android:layout_marginRight="20dp"
         android:padding="6dp"
         android:textColor="@color/gray_a9"
         android:textSize="12sp"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/iv_delete"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="2021-05-21 " />
 

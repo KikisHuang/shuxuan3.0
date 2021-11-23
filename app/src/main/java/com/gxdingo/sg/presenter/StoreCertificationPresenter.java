@@ -83,8 +83,8 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (isViewAttached()) {
             if (o instanceof StoreBusinessScopeBean) {
                 StoreBusinessScopeBean businessScopeBean = (StoreBusinessScopeBean) o;
-                if (businessScopeBean.getList() != null && businessScopeBean.getList().size() > 0) {
 
+                if (businessScopeBean.getList() != null && businessScopeBean.getList().size() > 0) {
                     //清除item未读消息
                     RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
                         for (int i = 0; i < businessScopeBean.getList().size(); i++) {
@@ -263,18 +263,11 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (!UserInfoUtils.getInstance().isLogin())
             return;
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), 0, o -> {
+            storeNetworkModel.refreshLoginStauts(getContext(), 1, o -> {
                 UserBean data = (UserBean) o;
-                int status = data.getStore().getStatus();
-                int storeId = data.getStore().getId();
 
-                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-
-                userBean.getStore().setId(storeId);
-
-                userBean.getStore().setStatus(status);
-
-                UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+                if (!isEmpty(data.getToken()))
+                    UserInfoUtils.getInstance().saveLoginUserInfo(data);
 
                 if (isViewAttached()) {
 

@@ -34,6 +34,7 @@ import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
+import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * @author: Weaving
@@ -46,8 +47,10 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     private LoginModel mModdel;
 
-    public LoginPresenter() {
+    private OneKeyModel oneKeyModel;
 
+    public LoginPresenter() {
+        oneKeyModel = new OneKeyModel();
         mModdel = new LoginModel();
         mNetworkModel = new NetworkModel(this);
     }
@@ -147,7 +150,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         if (!isViewAttached() || mModdel == null)
             return;
         if (isWeixinAvilible(getContext())) {
-            //普通登录无需过主页面登陆逻辑
+            //普通登录无需过主页面登录逻辑
             LocalConstant.isLogin = false;
             mModdel.wxLogin();
         } else {
@@ -205,15 +208,31 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     }
 
     /**
-     * 一键登陆
+     * 一键登录
      */
     @Override
     public void oauth() {
-        new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
-            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });
+        if (oneKeyModel != null) {
+            oneKeyModel.getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
+            });
+        }
+
     }
 
+    @Override
+    public void oauthWeChatLogin(String code) {
+        if (oneKeyModel != null)
+            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, oneKeyModel.isUser);
+
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+//        if (oneKeyModel != null)
+//            oneKeyModel.quitLoginPage();
+    }
 
     private Handler handler = new Handler() {
         @Override

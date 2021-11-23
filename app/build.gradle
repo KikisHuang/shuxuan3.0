@@ -40,7 +40,7 @@ android {
         VIVO {}
         MI {}
         YingYongBao {}
-
+        Official {}
         //遍历productFlavors
         productFlavors.all {
                 //动态设置UMENG_CHANNEL_VALUE对应的值
@@ -143,8 +143,6 @@ dependencies {
     implementation rootProject.ext.dependencies.banner
     //websocket
     implementation rootProject.ext.dependencies.websocket
-    //badge
-    implementation rootProject.ext.dependencies.badgeview
 
     //高德3D地图so及jar
     implementation 'com.amap.api:3dmap:8.1.0'
@@ -156,5 +154,4 @@ dependencies {
     implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
-
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -28,6 +29,7 @@ import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.OauthEventBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -43,6 +45,7 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.AuthUIConfig;
 import com.mobile.auth.gatewayauth.AuthUIControlClickListener;
@@ -83,6 +86,7 @@ import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.UAT_URL;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
@@ -97,6 +101,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+import static com.mobile.auth.gatewayauth.ResultCode.CODE_ERROR_USER_CHECKBOX;
 
 /**
  * @author: Weaving
@@ -111,12 +116,13 @@ public class OneKeyModel {
     private TokenResultListener mTokenResultListener;
 
     //客户端还是商家端
-    private boolean isUser;
+    public boolean isUser;
+    //协议是否勾选
+    private boolean isCheck;
 
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
-        EventBus.getDefault().register(this);
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
     }
 
@@ -151,6 +157,7 @@ public class OneKeyModel {
                 public void onError(ApiException e) {
                     super.onError(e);
                     LogUtils.e(e);
+                    quitLoginPage();
 
                     if (netWorkListener != null) {
                         netWorkListener.onAfters();
@@ -168,9 +175,9 @@ public class OneKeyModel {
                     } else {
                         if (netWorkListener != null) {
                             netWorkListener.onAfters();
-                            netWorkListener.onMessage("没有获取到一键登陆认证key");
+                            netWorkListener.onMessage("没有获取到一键登录认证key");
                         } else
-                            ToastUtils.showShort("没有获取到一键登陆认证key");
+                            ToastUtils.showShort("没有获取到一键登录认证key");
                     }
 
                 }
@@ -205,7 +212,7 @@ public class OneKeyModel {
                 super.onError(e);
                 LogUtils.e(e);
 
-                LogUtils.i("获取阿里一键登陆key 异常 === " + e.getMessage());
+                LogUtils.i("获取阿里一键登录key 异常 === " + e.getMessage());
 
             }
 
@@ -219,7 +226,7 @@ public class OneKeyModel {
     }
 
     /**
-     * 动态获取一键登录key
+     * 支付宝获取infoStr
      *
      * @param context
      */
@@ -241,7 +248,7 @@ public class OneKeyModel {
 
 //                if (customResultListener != null)
 //                    customResultListener.onResult(normalBean.auth);
-                auth((Activity) context, normalBean.auth,  new Handler() {
+                auth((Activity) context, normalBean.auth, new Handler() {
                     @Override
                     public void handleMessage(@NonNull Message msg) {
 //            super.handleMessage(msg);
@@ -278,7 +285,6 @@ public class OneKeyModel {
             return;
         }
 
-
         Map<String, String> map = getJsonMap();
 
         map.put(LocalConstant.APPNAME, type);
@@ -307,13 +313,12 @@ public class OneKeyModel {
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    SPUtils.getInstance().put(LOGIN_WAY,isUse);
+                    SPUtils.getInstance().put(LOGIN_WAY, isUse);
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                     if (isUse) {
                         SPUtils.getInstance().put(LOGIN_WAY, true);
 //                    sendEvent(new ReLoginBean());
                         goToPage(getContext(), ClientActivity.class, null);
-
 
                     } else {
 
@@ -328,28 +333,6 @@ public class OneKeyModel {
 
         observable.subscribe(subscriber);
     }
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-//            super.handleMessage(msg);
-            switch (msg.what) {
-                case SDK_AUTH_FLAG:
-                    AuthResult authResult = (AuthResult) msg.obj;
-//                    if (mNetworkModel!=null){
-//                        if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-//                            mNetworkModel.thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, getV().isClient());
-//                        } else
-//                            onMessage("没有获取到authCode");
-//                    }
-                    if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-                        thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, isUser);
-                    } else
-                        ToastUtils.showLong("没有获取到authCode");
-                    break;
-            }
-        }
-    };
 
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
@@ -387,20 +370,17 @@ public class OneKeyModel {
 
                 hideLoginLoading();
 
-                Log.e("oneKey-login", "获取token失败：" + s);
+                Log.e("oneKey-login", "获取token失败： " + s);
 
                 TokenRet tokenRet = null;
                 try {
                     tokenRet = TokenRet.fromJson(s);
                     //除了用户取消操作的事件，其他都跳转登录页面
-                    if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode())) {
+                    if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
-                    } else {
-                        OneKeyModel.quitLoginPage();
-//                        Toast.makeText(getApplicationContext(), "一键登录失败切换到其他登录方式", Toast.LENGTH_SHORT).show();
-//                        Intent pIntent = new Intent(OneKeyLoginActivity.this, MessageActivity.class);
-//                        startActivityForResult(pIntent, 1002);
-                    }
+
+                    OneKeyModel.quitLoginPage();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -443,7 +423,10 @@ public class OneKeyModel {
                         findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                getAliAuthInfo(context);
+                                if (isCheck)
+                                    getAliAuthInfo(context);
+                                else
+                                    ToastUtils.showShort("请同意服务条款");
 //                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
                             }
                         });
@@ -451,19 +434,20 @@ public class OneKeyModel {
                             @Override
                             public void onClick(View v) {
 
-                                if (isWeixinAvilible(getContext()))
-                                {
+                                if (isCheck) {
+                                    if (isWeixinAvilible(getContext())) {
 
-                                    final SendAuth.Req req = new SendAuth.Req();
+                                        final SendAuth.Req req = new SendAuth.Req();
 
-                                    req.scope = "snsapi_userinfo";
-                                    req.state = "wechat_sdk_demo";
+                                        req.scope = "snsapi_userinfo";
+                                        req.state = "wechat_sdk_demo";
 
-                                    WechatUtils.getInstance().getWxApi().sendReq(req);
-                                }
-                                else {
-                                    ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
-                                }
+                                        WechatUtils.getInstance().getWxApi().sendReq(req);
+                                    } else {
+                                        ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
+                                    }
+                                } else
+                                    ToastUtils.showShort("请同意服务条款");
 //                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
                             }
                         });
@@ -472,10 +456,22 @@ public class OneKeyModel {
                 })
                 .build());
 
+        mAuthHelper.setUIClickListener(new AuthUIControlClickListener() {
+            @Override
+            public void onClick(String code, Context context, String jsonObj) {
+                if (isDebug)
+                    Log.e("xxxxxx", "OnUIControlClick:code=" + code + ", jsonObj=" + (jsonObj == null ? "" : jsonObj));
+
+
+                if (code.equals(CODE_ERROR_USER_CHECKBOX))
+                    isCheck = GsonUtil.GsonToBean(jsonObj, OauthEventBean.class).isIsChecked();
+
+            }
+        });
+
         String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
         String s_privacy_agreementUrl = url + HTML + "identifier=" + STORE_PRIVACY_AGREEMENT_KEY;
         String service_agreementUrl = url + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
-
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
                 .setPrivacyBefore("")
                 .setAppPrivacyOne("《服务协议》", service_agreementUrl)
@@ -490,7 +486,7 @@ public class OneKeyModel {
                 .setPrivacyTextSize(12)
                 .setPrivacyOffsetY(340)
                 .setCheckboxHidden(false)
-                .setLogBtnText("本机号码一键登陆")
+                .setLogBtnText("本机号码一键登录")
                 .setLogBtnBackgroundDrawable(getd(R.drawable.module_bg_main_color_round6))
                 .setLightColor(true)
                 .setWebViewStatusBarColor(Color.TRANSPARENT)
@@ -512,18 +508,8 @@ public class OneKeyModel {
         mAuthHelper.getLoginToken(context, 2000);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWechatEvent(Object object){
-        //微信登录事件
-        if (object instanceof WeChatLoginEvent) {
-            WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!TextUtils.isEmpty(event.code))
-                thirdPartyLogin(getContext(), event.code, ClientLocalConstant.WECHAT, isUser);
-        }
-    }
-
     private void settingButtnStatus(View view) {
-        ((TextView) view.findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登陆" : "用户身份登陆");
+        ((TextView) view.findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登录" : "用户身份登录");
         ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isUser);
 

@@ -37,14 +37,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:background="@mipmap/bg_im_chat_others_content"
-                android:gravity="left|center"
-                android:paddingHorizontal="12dp"
+                android:background="@mipmap/bg_im_chat_others_content_text"
+                android:gravity="center"
+                android:paddingVertical="8dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="8dp"
                 android:textColor="@color/gray_33"
                 android:textSize="13sp"
-                tools:text="来自用户提醒：我在本店付款的 210" />
+                tools:text="来" />
+
         </LinearLayout>
 
-
     </LinearLayout>
+
 </LinearLayout>

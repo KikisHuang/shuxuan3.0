@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -190,8 +191,11 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             }
             //保存web socket接入url
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
+
+
             //启动IM消息接收服务
-            getContext().startService(new Intent(getContext(), IMMessageReceivingService.class));
+            startImService(reference.get());
+//            getContext().startService(new Intent(getContext(), IMMessageReceivingService.class));
 
             if (refresh) {
                 imMessageAdapter.setList(subscribesListBean.getList());

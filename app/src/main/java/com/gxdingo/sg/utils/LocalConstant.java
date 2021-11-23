@@ -76,7 +76,7 @@ public class LocalConstant {
     //第一次进入用户端标识符 用于显示输入邀请码弹框
     public static final String FIRST_INTER_KEY = "shugou_first_login_key";
     //sp final
-    //登陆方式 true 用户 false商家端
+    //登录方式 true 用户 false商家端
     public static final String LOGIN_WAY = "shugou_login_way_key";
     //默认地址缓存
     public static final String ADDRESS_CACHE = "address_cache_key";
@@ -165,8 +165,6 @@ public class LocalConstant {
     public static String WEB_SOCKET_KEY = "9e8252612f954ee42a50b3096827fc33";
 
     public static String WEB_SOCKET_UAT_KEY = "f0438ff6a8792aada17a04e0541db8b3";
-
-    public static String TEMPTOKEN = "";
 
     public static String AAC = ".aac";
 

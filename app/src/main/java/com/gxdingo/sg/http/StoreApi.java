@@ -13,7 +13,7 @@ public class StoreApi {
     public static final String UAT_URL = "uat.gxdingo.com/exseller/";
 
     //正式路径
-    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/sapp/";
+    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/exseller/";
 
     //测试路径
     public static final String TEST_URL = "192.168.110.248";

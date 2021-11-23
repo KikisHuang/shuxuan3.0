@@ -45,6 +45,21 @@
             app:is_selected="true"
             app:text="@string/store_home_page" />
 
+            <TextView
+                android:id="@+id/tv_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="28dp"
+                android:visibility="gone"
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                tools:text="1" />
+
+
         </FrameLayout>
 
         <com.gxdingo.sg.view.CircularRevealButton
@@ -80,6 +95,20 @@
             app:focus_icon="@drawable/module_svg_store_main_menu_business_district_selected"
             app:is_selected="false"
             app:text="@string/store_business_district" />
+
+            <TextView
+                android:id="@+id/tv_business_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                tools:text="1" />
         </FrameLayout>
         <com.gxdingo.sg.view.CircularRevealButton
             android:id="@+id/crb_store_my"

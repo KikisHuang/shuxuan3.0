@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.blankj.utilcode.util.LogUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.trello.rxlifecycle3.LifecycleProvider;
 
 import java.lang.ref.WeakReference;
@@ -36,7 +37,7 @@ public class BaseMvpPresenter<BV, V> implements MvpPresenter<BV, V> {
         try {
             return viewRef.get();
         } catch (Exception e) {
-            LogUtils.e("BaseMvpPresenter contextWeak error == " + e);
+            BaseLogUtils.e("BaseMvpPresenter contextWeak error == " + e);
             return null;
         }
     }
@@ -46,7 +47,7 @@ public class BaseMvpPresenter<BV, V> implements MvpPresenter<BV, V> {
         try {
             return bviewRef.get();
         } catch (Exception e) {
-            LogUtils.e("BaseMvpPresenter contextWeak error == " + e);
+            BaseLogUtils.e("BaseMvpPresenter contextWeak error == " + e);
             return null;
         }
     }

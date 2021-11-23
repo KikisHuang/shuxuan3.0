@@ -5,7 +5,7 @@ public interface ChatClickListener {
 
     void onAudioClick(String content,  boolean isPlay,int pos);
 
-    void clearUnread(long id);
+    void clearUnread(int position, long id);
 
     void onTransferClick(int position, long id);
 

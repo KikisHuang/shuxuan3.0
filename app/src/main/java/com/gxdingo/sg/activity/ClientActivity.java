@@ -4,11 +4,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -34,9 +36,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
-import q.rorbin.badgeview.QBadgeView;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
@@ -62,6 +64,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @BindView(R.id.business_fl)
     public FrameLayout business_fl;
+
+    @BindView(R.id.tv_unread_msg_count)
+    public TextView tv_unread_msg_count;
+
+    @BindView(R.id.tv_business_unread_msg_count)
+    public TextView tv_business_unread_msg_count;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
@@ -155,8 +163,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 //            showLogin = !showLogin;
 //        }
 
-        if (UserInfoUtils.getInstance().isLogin())
+        if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
+            //im服务启动检测
+            startImService(reference.get());
+        }
+
 
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {
@@ -323,12 +335,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void setUnreadMsgNum(int data) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(msg_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(data);
+        tv_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
-    public void setBusinessUnreadMsgNum(int num) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(business_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(num);
+    public void setBusinessUnreadMsgNum(int data) {
+        tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override

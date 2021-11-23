@@ -19,6 +19,7 @@ import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.SelectAddressModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -144,7 +145,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 //        LogUtils.d("=========城市码"+cityCode);
 //        if (!isEmpty(cityCode)) {
 
-        LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
+        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         model.retrievalPOI(keyword, isEmpty(cityCode) ? cityCode : cityCode, new PoiSearch.OnPoiSearchListener() {
             @Override
@@ -186,7 +187,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void searchBound(boolean refresh, LatLng latLng, String cityCode) {
-        LogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
+        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         isPOIAsyn = false;
         model.retrievalBoundPOI("", cityCode, latLng.latitude, latLng.longitude, clientNetworkModel.getPage(), new PoiSearch.OnPoiSearchListener() {
@@ -226,10 +227,8 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                     mCameraPosition = cameraPosition;
 
-                    if (isDebug) {
-                        LogUtils.i("CameraPosition  latitude === " + cameraPosition.target.latitude);
-                        LogUtils.i("CameraPosition  longitude === " + cameraPosition.target.longitude);
-                    }
+                    BaseLogUtils.i("CameraPosition  latitude === " + cameraPosition.target.latitude);
+                    BaseLogUtils.i("CameraPosition  longitude === " + cameraPosition.target.longitude);
 
                     if (model != null)
                         clientNetworkModel.resetPage();

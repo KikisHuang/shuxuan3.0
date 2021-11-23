@@ -355,9 +355,7 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-
                 if (netWorkListener != null) {
-
                     netWorkListener.onMessage(e.getMessage());
                     resetPage();
                 }

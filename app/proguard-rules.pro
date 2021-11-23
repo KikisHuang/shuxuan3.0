@@ -698,6 +698,7 @@ public static final int *;
 -keep class org.json.**{*;}
 -keep class com.alibaba.fastjson.** {*;}
 
+-keep class android.support.**{*;}
 
 -keepclassmembers class ** {
      @com.squareup.otto.Subscribe public *;

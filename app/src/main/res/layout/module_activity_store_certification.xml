@@ -52,19 +52,22 @@
                 android:gravity="center"
                 android:text="《店铺名称规则》"
                 android:textColor="#FF74A0EC"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
 
             <com.gxdingo.sg.view.RegexEditText
                 android:id="@+id/et_store_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="15dp"
+                android:layout_marginHorizontal="8dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:gravity="end|center"
+                android:gravity="right|center"
+                android:maxLength="12"
+                android:text="是克劳德附加赛开了多久分"
                 android:hint="输入店铺名称"
-                android:paddingRight="26dp"
+                android:paddingRight="10dp"
                 android:singleLine="true"
+                android:ellipsize="end"
                 android:textColorHint="@color/graya9a9a9"
                 android:textSize="@dimen/sp_14" />
 

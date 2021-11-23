@@ -62,6 +62,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -387,7 +388,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
 
             //启动IM消息接收服务
-            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
+            startImService(reference.get());
+//            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
             if (refresh) {
                 mStoreHomeIMMessageAdapter.setList(subscribesListBean.getList());

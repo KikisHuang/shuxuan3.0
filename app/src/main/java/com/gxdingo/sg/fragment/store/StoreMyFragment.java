@@ -64,6 +64,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     @BindView(R.id.store_mine_banner)
     public Banner store_mine_banner;
 
+
     @Override
     protected StoreMyContract.StoreMyPresenter createPresenter() {
         return new StoreMyPresenter();
@@ -151,7 +152,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
             case R.id.logout_stv:
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定退出登陆？", new MyConfirmListener() {
+                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定退出登录？", new MyConfirmListener() {
                             @Override
                             public void onConfirm() {
                                 getP().logout();

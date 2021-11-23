@@ -1,6 +1,8 @@
 
 package com.gxdingo.sg.activity;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -30,8 +32,8 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
+import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.kikis.commnlibrary.bean.AddressBean;
-import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
@@ -64,10 +66,12 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -88,6 +92,8 @@ import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
+import static com.gxdingo.sg.utils.ImServiceUtils.isServiceRunning;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
@@ -261,17 +267,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void init() {
-        //todo 客服类型
 
         title_layout.setBackgroundColor(getc(R.color.white));
 
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         //用户首页进入时，没有ShareUuid，需要传入otherRole、otherId
-
         otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
         otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
-
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
@@ -314,6 +317,22 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     protected void initData() {
         getP().getCacheAddress();
         loadMore();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //如果页面恢复回来，消息im服务不存在，进行刷新页面操作
+        if (!isServiceRunning(reference.get(), IMMessageReceivingService.class.getName()))
+            getP().refreshHistoryList(mShareUuid, otherId, otherRole);
+
+        if (UserInfoUtils.getInstance().isLogin())
+            //im服务启动检测
+            startImService(reference.get());
+
+
     }
 
     @Override
@@ -942,7 +961,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //清除锁定id
         LocalConstant.CHAT_IDENTIFIER = "";
         LocalConstant.CHAT_UUID = "";
-        mAdapter.cancel();
+        if (mAdapter != null)
+            mAdapter.cancel();
         super.onDestroy();
     }
 
@@ -1021,9 +1041,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        setIntent(intent);
-        init();
-        initData();
+//        setIntent(intent);
+//        init();
+//        initData();
     }
 
     @Override
@@ -1045,11 +1065,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     /**
      * 清除语音未读
      *
+     * @param position
      * @param id
      */
     @Override
-    public void clearUnread(long id) {
-        getP().clearMessageUnread(id);
+    public void clearUnread(int position, long id) {
+        getP().clearMessageUnread(position, id);
 
     }
 
@@ -1072,14 +1093,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     @Override
     public void onAvatarClickListener(int position, long id) {
-
-
-        if (mChatDatas.get(position).getSendIdentifier() != UserInfoUtils.getInstance().getIdentifier()) {
+        if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
             goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
-
-
-        }
-
     }
 
     @Override
@@ -1157,6 +1172,20 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     @Override
+    public void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> list) {
+
+        mChatDatas.clear();
+        mChatDatas.addAll(list);
+        moveTo(mChatDatas.size() - 1);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public LinkedList<ReceiveIMMessageBean> getNowChatHistoryList() {
+        return mChatDatas;
+    }
+
+    @Override
     public void onSendMessageSuccess(ReceiveIMMessageBean receiveIMMessageBean) {
         createNewMsg(receiveIMMessageBean);
     }
@@ -1209,6 +1238,23 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onAddressResult(AddressBean cacheDefaultAddress) {
         mDefaultAddress = cacheDefaultAddress;
+    }
+
+    /**
+     * 已读语音消息回调
+     *
+     * @param position
+     * @param id
+     */
+    @Override
+    public void readAudioMsg(int position, long id) {
+
+        if (mChatDatas != null && mChatDatas.size() >= position && mChatDatas.get(position).getId() == id && mChatDatas.get(position).recipientRead == 0) {
+            mChatDatas.get(position).recipientRead = 1;
+            mAdapter.notifyItemChanged(position);
+        }
+
+
     }
 
     /**

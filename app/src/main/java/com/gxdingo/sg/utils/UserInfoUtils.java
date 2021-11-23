@@ -18,6 +18,7 @@ import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.OauthActivity;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
@@ -32,6 +33,8 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_NICKNAME_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_OPENID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_PHONE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
+import static com.gxdingo.sg.utils.ImServiceUtils.isServiceRunning;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -84,12 +87,14 @@ public class UserInfoUtils {
             saveIdentifier("");
             saveWallpaper("");
             saveOpenId("");
+            MessageCountUtils.getInstance().setUnreadMessageNum(0);
 
             SPUtils.getInstance().put(ADDRESS_CACHE, "");
             EventBus.getDefault().post(LOGOUT);
 
             //停止IM消息接收服务
-            MyApplication.getInstance().stopService(new Intent(MyApplication.getInstance(), IMMessageReceivingService.class));
+            if (isServiceRunning(MyApplication.getInstance(), IMMessageReceivingService.class.getName()))
+                MyApplication.getInstance().stopService(new Intent(MyApplication.getInstance(), IMMessageReceivingService.class));
 
         }
     }
@@ -101,12 +106,9 @@ public class UserInfoUtils {
      * @param token
      */
     public void saveUserToken(String token) {
-        if (isDebug)
-            LogUtils.w("保存的token === " + token);
+        BaseLogUtils.w("保存的token === " + token);
 
         SPUtils.getInstance().put(Constant.TOKEN_KEY, token);
-
-        LocalConstant.TEMPTOKEN = token;
     }
 
     /**
@@ -115,7 +117,7 @@ public class UserInfoUtils {
      * @param userId
      */
     public void saveUserId(long userId) {
-        LogUtils.w("保存的 userId  === " + userId);
+        BaseLogUtils.w("保存的 userId  === " + userId);
         SPUtils.getInstance().put(USER_ID_KEY, userId);
     }
 
@@ -187,7 +189,7 @@ public class UserInfoUtils {
      * 登录判断通用方法;
      */
     public boolean isLogin() {
-        if (getUserToken() == null || getUserToken().equals(""))
+        if (getUserToken() == null || getUserToken().equals("") || getUserInfo() == null || isEmpty(getUserInfo().getCrossToken()))
             return false;
         else
             return true;
@@ -223,7 +225,7 @@ public class UserInfoUtils {
             String json = SPUtils.getInstance().getString(USER_INFO_KEY);
             userBean = GsonUtil.GsonToBean(json, UserBean.class);
         } catch (Exception e) {
-            LogUtils.e("get shop info Error === " + e);
+            BaseLogUtils.e("get shop info Error === " + e);
             return null;
         }
         return userBean;
@@ -244,14 +246,8 @@ public class UserInfoUtils {
      * @return
      */
     public String getUserToken() {
-
-        //只从sp中获取一次后存在本地。
-        String token = isEmpty(LocalConstant.TEMPTOKEN) ? SPUtils.getInstance().getString(Constant.TOKEN_KEY, "") : LocalConstant.TEMPTOKEN;
-
-        if (isEmpty(LocalConstant.TEMPTOKEN))
-            LocalConstant.TEMPTOKEN = SPUtils.getInstance().getString(Constant.TOKEN_KEY);
-        if (isDebug && !isEmpty(token))
-            LogUtils.i("token === " + token);
+        String token = SPUtils.getInstance().getString(Constant.TOKEN_KEY, "");
+        BaseLogUtils.i("token === " + token);
 
         return token;
     }
@@ -331,21 +327,19 @@ public class UserInfoUtils {
 
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
             if (pushService == null) {
-                LogUtils.w("pushService is null ");
+                BaseLogUtils.w("pushService is null ");
                 return;
             }
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    if (isDebug)
-                        LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                    BaseLogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override
                 public void onFailed(String s, String s1) {
 
-                    if (isDebug)
-                        LogUtils.w("bind account onfailed ");
+                    BaseLogUtils.w("bind account onfailed ");
                 }
             });
         }
@@ -362,14 +356,12 @@ public class UserInfoUtils {
         pushService.unbindAccount(new CommonCallback() {
             @Override
             public void onSuccess(String s) {
-                if (isDebug)
-                    LogUtils.d("unbind Account success ");
+                BaseLogUtils.d("unbind Account success ");
             }
 
             @Override
             public void onFailed(String s, String s1) {
-                if (isDebug)
-                    LogUtils.d("unbind Account onfailed ");
+                BaseLogUtils.d("unbind Account onfailed ");
             }
         });
     }

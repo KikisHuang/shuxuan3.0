@@ -102,10 +102,9 @@
         </activity>
         <activity
             android:name=".activity.OauthActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
             android:launchMode="singleTask"
-            >
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
 
         </activity>
 
@@ -143,7 +142,7 @@
         <!--登录页面 -->
         <activity
             android:name=".activity.LoginActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"></activity>
 
         <!--绑定手机号 -->
@@ -214,8 +213,8 @@
         <!--客户端商圈页面 -->
         <activity
             android:name=".activity.ClientBusinessCircleActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
 
         </activity>
         <!--客户端提现页面 -->
@@ -471,6 +470,8 @@
         <activity
             android:name=".activity.StoreBillDetailActivity"
             android:screenOrientation="portrait" />
+
+
     </application>
 
 </manifest>

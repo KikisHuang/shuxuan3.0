@@ -7,6 +7,8 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,14 @@ public class IMChatContract {
          */
         void getChatHistoryList(String shareUuid, int otherId, int otherRole);
 
+        /**
+         * 刷新聊天记录
+         *
+         * @param shareUuid
+         * @param otherId
+         * @param otherRole
+         */
+        void refreshHistoryList(String shareUuid, int otherId, int otherRole);
 
         /**
          * 发送消息
@@ -110,9 +120,10 @@ public class IMChatContract {
         /**
          * 清除语音未读
          *
+         * @param position
          * @param id
          */
-        void clearMessageUnread(long id);
+        void clearMessageUnread(int position, long id);
 
         /**
          * 领取转账
@@ -131,6 +142,7 @@ public class IMChatContract {
          * 获取默认地址
          */
         void getCacheAddress();
+
     }
 
     public interface IMChatListener {
@@ -139,6 +151,16 @@ public class IMChatContract {
          * 返回聊天记录列表
          */
         void onChatHistoryList(IMChatHistoryListBean imChatHistoryListBean);
+
+        /**
+         * 新增消息
+         */
+        void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> data);
+
+        /**
+         * 获取当前聊天数据集
+         */
+        LinkedList<ReceiveIMMessageBean> getNowChatHistoryList();
 
         /**
          * 发送(文字、图片、语音、转账)消息成功
@@ -188,5 +210,13 @@ public class IMChatContract {
          * @param cacheDefaultAddress
          */
         void onAddressResult(AddressBean cacheDefaultAddress);
+
+        /**
+         * 已读语音消息回调
+         *
+         * @param position
+         * @param id
+         */
+        void readAudioMsg(int position, long id);
     }
 }

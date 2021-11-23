@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.StringUtils;
 import com.bumptech.glide.Glide;
@@ -21,6 +23,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.emotion.EmotionUtils;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.adapter.RecyclerViewHolder;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 
 import java.text.NumberFormat;
@@ -38,7 +41,9 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.isToday;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
@@ -59,8 +64,8 @@ import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
  */
 public class ChatAdapter extends BaseRecyclerAdapter {
 
-    //显示日期时间间隔（单位毫秒）
-    private int showDateInterval = 900000;
+    //显示日期时间间隔（单位毫秒） 5分钟
+    private int showDateInterval = 300000;
 
     private ChatClickListener chatClickListener;
 
@@ -212,7 +217,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             if (data.getVoiceDuration() > 0) {
                 //动态设置语音宽度
-                int value = (int) ((25 + data.getVoiceDuration()) * 2.5);
+                int value = (int) ((28 + data.getVoiceDuration()) * 2.5);
 
                 voice_ll.getLayoutParams().width = value > 160 ? dp2px(160) : dp2px(value);
 
@@ -262,7 +267,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     if (chatClickListener != null) {
                         chatClickListener.onAudioClick(data.getContent(), true, position);
                         if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(data.getId());
+                            chatClickListener.clearUnread(position, data.getId());
                     }
 
                 } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
@@ -286,7 +291,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                         chatClickListener.onAudioClick(data.getContent(), true, position);
 
                         if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(data.getId());
+                            chatClickListener.clearUnread(position, data.getId());
                     }
 
                 }
@@ -413,15 +418,30 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
         TextView time_tv = holder.getTextView(R.id.time_tv);
 
-        if (!isEmpty(data.getCreateTime()))
-            time_tv.setText(dealDateFormat(data.getCreateTime()));
+        if (!isEmpty(data.getCreateTime())) {
+
+            String date = dealDateFormat(data.getCreateTime());
+
+            time_tv.setText(isToday(date) ? dealDateFormat(data.getCreateTime(), "HH:mm") : date);
+        }
+
 
         if (position == 0)
             time_tv.setVisibility(View.VISIBLE);
         else {
-            ReceiveIMMessageBean temp = (ReceiveIMMessageBean) mData.get(position - 1);
 
-            String t = dealDateFormat(temp.getCreateTime());
+            ReceiveIMMessageBean temp = null;
+
+            //此方法是为了排除地址类型
+            for (int i = position - 1; i >= 0; i--) {
+                //只取不是地址类型的消息时间对比
+                if (((ReceiveIMMessageBean) getData().get(i)).getType() != 30) {
+                    temp = (ReceiveIMMessageBean) getData().get(i);
+                    break;
+                }
+            }
+
+            String t = dealDateFormat(temp != null ? temp.getCreateTime() : "2020-04-09 23:00:00");
 
             String d = dealDateFormat(data.getCreateTime());
 
@@ -434,10 +454,10 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 //上一次的发送时间
                 long lasttime = string2Millis(t);
                 //本次消息的发送时间
-                long nowtime = string2Millis(d);
+                long postime = string2Millis(d);
 
                 //如果上次发送消息的时间超过当前消息900秒(15分钟)才重新显示，否则不显示时间。
-                if ((nowtime - lasttime) > showDateInterval) {
+                if (postime - lasttime >= showDateInterval) {
                     time_tv.setVisibility(View.VISIBLE);
                 } else
                     time_tv.setVisibility(View.GONE);
@@ -526,7 +546,6 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             animationDrawable.stop();
         }
     }
-
 
     /**
      * 取消订阅

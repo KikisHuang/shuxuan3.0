@@ -4,6 +4,7 @@ import android.media.MediaRecorder;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.biz.AudioModelListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.trello.rxlifecycle3.LifecycleProvider;
 
 import java.util.concurrent.TimeUnit;
@@ -34,8 +35,7 @@ public class MediaRecorderUtil {
 
     public static void startRecordering(String filePath, AudioModelListener audioModelListener, LifecycleProvider lifecycle) {
 
-        if (isDebug)
-            LogUtils.i("outputPath === " + filePath);
+            BaseLogUtils.i("outputPath === " + filePath);
 
         try {
             if (recorder != null) {
@@ -69,7 +69,7 @@ public class MediaRecorderUtil {
         } catch (Exception e) {
             if (audioModelListener != null)
                 audioModelListener.onAudioError("");
-            LogUtils.e("start recorder error === " + e);
+            BaseLogUtils.e("start recorder error === " + e);
 
         }
     }
@@ -94,7 +94,7 @@ public class MediaRecorderUtil {
             @Override
             public void onNext(@NonNull Long number) {
                 mCountDownTime--;
-                LogUtils.i("mMaxTime === " + mCountDownTime);
+                BaseLogUtils.i("mMaxTime === " + mCountDownTime);
                 if (mCountDownTime <= 0)
                     onComplete();
             }
@@ -126,7 +126,7 @@ public class MediaRecorderUtil {
                 recorder.release();
                 recorder = null;
             } catch (Exception e) {
-                LogUtils.e("stop recorder error === " + e);
+                BaseLogUtils.e("stop recorder error === " + e);
             }
 
         }
@@ -140,7 +140,7 @@ public class MediaRecorderUtil {
         if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
-            LogUtils.w("====定时器取消======");
+            BaseLogUtils.w("====定时器取消======");
         }
     }
 }

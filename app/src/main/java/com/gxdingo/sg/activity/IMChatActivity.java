@@ -60,6 +60,7 @@ import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -528,6 +529,17 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     }
 
+    @Override
+    public void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> data) {
+
+    }
+
+
+    @Override
+    public LinkedList<ReceiveIMMessageBean> getNowChatHistoryList() {
+        return null;
+    }
+
     /**
      * 没有更多历史聊天记录
      */
@@ -587,6 +599,11 @@ public class IMChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresent
 
     @Override
     public void onAddressResult(AddressBean cacheDefaultAddress) {
+
+    }
+
+    @Override
+    public void readAudioMsg(int position, long id) {
 
     }
 

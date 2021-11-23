@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,10 +26,12 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
+import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +39,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
-import q.rorbin.badgeview.QBadgeView;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -69,6 +72,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @BindView(R.id.business_fl)
     public FrameLayout business_fl;
 
+
+    @BindView(R.id.tv_unread_msg_count)
+    public TextView tv_unread_msg_count;
+
+    @BindView(R.id.tv_business_unread_msg_count)
+    public TextView tv_business_unread_msg_count;
+
     public static StoreActivity getInstance() {
         return instance;
     }
@@ -86,7 +96,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected boolean ImmersionBar() {
-        return true;
+        return false;
     }
 
     @Override
@@ -254,8 +264,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onStart() {
         super.onStart();
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10)
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
+            //im服务启动检测
+            startImService(reference.get());
+        }
+
     }
 
     /**
@@ -352,7 +366,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         //当store.id == 0（表示未填写过入驻信息）或store.status == 0（表示正在审核）或store.status == 20 （表示被驳回）的时候需要跳转到商家认证界面获取显示状态或者填写入驻信息
         if (userBean.getStore().getId() == 0 || userBean.getStore().getStatus() == 0 || userBean.getStore().getStatus() == 20) {
 
-            LogUtils.e("Store status === " + userBean.getStore().getStatus());
+            BaseLogUtils.e("Store status === " + userBean.getStore().getStatus());
             //跳转到商家认证界面
             goToPage(reference.get(), StoreCertificationActivity.class, null);
         }
@@ -375,12 +389,14 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     public void setUnreadMsgNum(int data) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(msg_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(data);
+        tv_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
-    public void setBusinessUnreadMsgNum(int num) {
-        new QBadgeView(reference.get()).setShowShadow(false).bindTarget(business_fl).setBadgeBackgroundColor(getc(R.color.msg_dot_red)).setGravityOffset(18, -2, true).setBadgeNumber(num);
+    public void setBusinessUnreadMsgNum(int data) {
+        tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
+        tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
     }
 
 

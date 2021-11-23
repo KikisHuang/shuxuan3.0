@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="98dp"
-                android:text="用户端登陆"
+                android:text="用户端登录"
                 android:textColor="@color/gray_a9"
                 android:textSize="16sp" />
 

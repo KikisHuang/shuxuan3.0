@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.blankj.utilcode.util.LogUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 
 /**
@@ -73,7 +74,7 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends BaseFragme
         try {
             super.onSaveInstanceState(outState);
         } catch (Exception e) {
-            LogUtils.e(" onSaveInstanceState error === " + e);
+            BaseLogUtils.e(" onSaveInstanceState error === " + e);
         }
         if (presenter != null) {
             presenter.onMvpSaveInstanceState(outState);

@@ -8,6 +8,7 @@ package com.gxdingo.sg.http;
 public class Api {
 
     public static String URL;
+
     //uat服务器开关
     public static final boolean isUat = true;
 
@@ -37,7 +38,7 @@ public class Api {
     //im 测试
     public static final String IM_TEST_URL = "192.168.110.236:8083/";
     //im 正式
-    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsg/";
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsgr/";
 
 
     //oss路径

@@ -15,6 +15,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.util.Hashtable;
 
@@ -103,7 +104,7 @@ public class QRCodeUtil {
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.e("error == " + e);
+            BaseLogUtils.e("error == " + e);
         }
 
         return null;

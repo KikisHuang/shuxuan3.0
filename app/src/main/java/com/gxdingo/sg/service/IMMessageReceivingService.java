@@ -112,7 +112,7 @@ public class IMMessageReceivingService extends Service {
             mSoundPool.release();
             mSoundPool = null;
         }
-        Log.e(TAG, "WebSocketService服务被销毁");
+            Log.e(TAG, "WebSocketService服务被销毁");
 
         if (mWebsocketStatusTimer != null) {
             mWebsocketStatusTimer.cancel();
@@ -219,13 +219,11 @@ public class IMMessageReceivingService extends Service {
                         //消息接收
                         if (messageBean != null && messageBean.getId() > 0) {
 
-                            if (!isEmpty(CHAT_IDENTIFIER)) {
-                                if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier()))
-                                    MessageCountUtils.getInstance().addNewMessage();
-                                else {
-                                    if (!isEmpty(LocalConstant.CHAT_UUID))
-                                        EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));
-                                }
+                            if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier()))
+                                MessageCountUtils.getInstance().addNewMessage();
+                            else {
+                                if (!isEmpty(LocalConstant.CHAT_UUID))
+                                    EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));
                             }
                             playBeep();
                             passMessage(messageBean);

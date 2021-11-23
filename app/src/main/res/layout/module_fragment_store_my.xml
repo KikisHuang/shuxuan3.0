@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:paddingTop="40dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,8 +18,8 @@
             android:layout_height="50dp"
             android:layout_marginStart="@dimen/dp20"
             android:src="@drawable/module_svg_client_default_avatar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/store_name_tv"
@@ -27,13 +28,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:text="金源便利店"
-            android:textSize="18sp"
             android:textColor="#2E2E2E"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:maxEms="12"
+            android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/store_avatar_iv"
-            app:layout_constraintTop_toTopOf="@+id/store_avatar_iv"/>
+            app:layout_constraintTop_toTopOf="@+id/store_avatar_iv" />
 
         <TextView
             android:id="@+id/type_and_open_time_tv"
@@ -41,10 +39,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="便利店 | 08:30-21:30"
-            android:textSize="12sp"
             android:textColor="@color/gray_a9"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/store_name_tv"
-            app:layout_constraintTop_toBottomOf="@+id/store_name_tv"/>
+            app:layout_constraintTop_toBottomOf="@+id/store_name_tv" />
 
         <ImageView
             android:id="@+id/btn_qr_code"
@@ -52,8 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"
             android:src="@drawable/module_svg_qr_code_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/btn_setting"
@@ -61,92 +59,86 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:src="@drawable/module_svg_settings"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_qr_code"/>
+            app:layout_constraintEnd_toStartOf="@+id/btn_qr_code"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.youth.banner.Banner
         android:id="@+id/store_mine_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_10"/>
+        android:layout_marginHorizontal="@dimen/dp_10" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/account_security_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:sDividerLineType="none"
         app:sLeftIconMarginLeft="25dp"
         app:sLeftIconRes="@drawable/module_svg_store_account_security"
-        app:sLeftTextString="账户安全"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="账户安全"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/auth_info_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:sDividerLineType="none"
         app:sLeftIconMarginLeft="25dp"
         app:sLeftIconRes="@drawable/module_svg_store_auth_info"
-        app:sLeftTextString="认证信息"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="认证信息"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/settle_protocol_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:sDividerLineType="none"
         app:sLeftIconMarginLeft="25dp"
         app:sLeftIconRes="@drawable/module_svg_client_private_protocol"
-        app:sLeftTextString="入驻协议"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="入驻协议"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/contract_server_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:sDividerLineType="none"
         app:sLeftIconMarginLeft="25dp"
         app:sLeftIconRes="@drawable/module_svg_contract_server"
-        app:sLeftTextString="联系客服"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="联系客服"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/about_us_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:sDividerLineType="none"
         app:sLeftIconMarginLeft="25dp"
         app:sLeftIconRes="@drawable/module_svg_about_us"
-        app:sLeftTextString="关于我们"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="关于我们"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/logout_stv"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         app:sLeftIconMarginLeft="25dp"
-        app:sDividerLineType="none"
         app:sLeftIconRes="@drawable/module_svg_client_logout"
-        app:sLeftTextString="退出登录"
-        app:sLeftViewMarginLeft="@dimen/dp20"
         app:sLeftTextColor="#1F1F1F"
         app:sLeftTextSize="15sp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sLeftTextString="退出登录"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
 
 </LinearLayout>
