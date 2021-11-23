@@ -272,7 +272,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == CLIENT_LOGIN_SUCCEED) {
-
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin()==1){
+                showInvitationCodeDialog();
+            }
         }
     }
 
@@ -284,8 +286,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         getP().checkPermissions(getRxPermissions(), true);
         getP().getCategory();
 
-        if (SPUtils.getInstance().getBoolean(FIRST_INTER_KEY, true))
-            showInvitationCodeDialog();
     }
 
     private void addData(List<CategoriesBean> categories) {
