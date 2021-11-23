@@ -511,12 +511,10 @@ public class MyApplication extends Application {
         //8.0及其以上的设配设置NotificaitonChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//Android 8.0及以上
-                NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
-                if (channel.getImportance() == NotificationManager.IMPORTANCE_DEFAULT) {//未开启
-                    // 跳转到设置页面
-                    BaseLogUtils.i("未开启 横幅通知");
-                }
+            NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
+            if (channel.getImportance() == NotificationManager.IMPORTANCE_DEFAULT) {//未开启
+                // 跳转到设置页面
+                BaseLogUtils.i("未开启 横幅通知");
             }
             // 通知渠道的id
             String id = "1";//这个是与后台约定好的，要不收不到，该方法主要是适配Android 8.0以上，避免接收不到通知
@@ -526,6 +524,7 @@ public class MyApplication extends Application {
             String description = "通知";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+
             // 配置通知渠道的属性
             mChannel.setDescription(description);
             // 设置通知出现时的闪灯（如果 android 设备支持的话）
@@ -533,11 +532,11 @@ public class MyApplication extends Application {
             mChannel.setLightColor(Color.RED);
 
             //取消震动
-            mChannel.enableVibration(false);
-            mChannel.setVibrationPattern(new long[]{0});
+//            mChannel.enableVibration(false);
+//            mChannel.setVibrationPattern(new long[]{0});
             // 设置通知出现时的震动（如果 android 设备支持的话）
-//            mChannel.enableVibration(true);
-//            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             //最后在notificationmanager中创建该通知渠道
             mNotificationManager.createNotificationChannel(mChannel);
         }

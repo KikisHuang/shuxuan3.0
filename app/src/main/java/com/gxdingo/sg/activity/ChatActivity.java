@@ -339,7 +339,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         loadMore();
-        getP().getChatHistoryList(mShareUuid, otherId, otherRole);//获取聊天记录
     }
 
     /**
@@ -1093,14 +1092,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     @Override
     public void onAvatarClickListener(int position, long id) {
-
-
-        if (mChatDatas.get(position).getSendIdentifier() != UserInfoUtils.getInstance().getIdentifier()) {
+        if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
             goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
-
-
-        }
-
     }
 
     @Override

@@ -62,12 +62,12 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:gravity="right|center"
+                android:maxLength="12"
                 android:text="是克劳德附加赛开了多久分"
                 android:hint="输入店铺名称"
                 android:paddingRight="10dp"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:maxEms="12"
                 android:textColorHint="@color/graya9a9a9"
                 android:textSize="@dimen/sp_14" />
 

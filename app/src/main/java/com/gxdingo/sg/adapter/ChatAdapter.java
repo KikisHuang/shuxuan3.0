@@ -40,6 +40,7 @@ import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.isToday;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
@@ -60,10 +61,8 @@ import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
  */
 public class ChatAdapter extends BaseRecyclerAdapter {
 
-    //显示日期时间间隔（单位毫秒）
-    private int showDateInterval = 900000;
-    //当前时间间隔（单位毫秒）
-    private int nowTimeInterval = 300000;
+    //显示日期时间间隔（单位毫秒） 5分钟
+    private int showDateInterval = 300000;
 
     private ChatClickListener chatClickListener;
 
@@ -416,15 +415,30 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
         TextView time_tv = holder.getTextView(R.id.time_tv);
 
-        if (!isEmpty(data.getCreateTime()))
-            time_tv.setText(dealDateFormat(data.getCreateTime()));
+        if (!isEmpty(data.getCreateTime())) {
+
+            String date = dealDateFormat(data.getCreateTime());
+
+            time_tv.setText(isToday(date) ? dealDateFormat(data.getCreateTime(), "HH:mm") : date);
+        }
+
 
         if (position == 0)
             time_tv.setVisibility(View.VISIBLE);
         else {
-            ReceiveIMMessageBean temp = (ReceiveIMMessageBean) mData.get(position - 1);
 
-            String t = dealDateFormat(temp.getCreateTime());
+            ReceiveIMMessageBean temp = null;
+
+            //此方法是为了排除地址类型
+            for (int i = position - 1; i >= 0; i--) {
+                //只取不是地址类型的消息时间对比
+                if (((ReceiveIMMessageBean) getData().get(i)).getType() != 30) {
+                    temp = (ReceiveIMMessageBean) getData().get(i);
+                    break;
+                }
+            }
+
+            String t = dealDateFormat(temp != null ? temp.getCreateTime() : "2020-04-09 23:00:00");
 
             String d = dealDateFormat(data.getCreateTime());
 
@@ -439,11 +453,8 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 //本次消息的发送时间
                 long postime = string2Millis(d);
 
-                //当前时间
-                long nowtime = getNowMills();
-
                 //如果上次发送消息的时间超过当前消息900秒(15分钟)才重新显示，否则不显示时间。
-                if (postime - lasttime > showDateInterval && nowtime - postime > nowTimeInterval) {
+                if (postime - lasttime >= showDateInterval) {
                     time_tv.setVisibility(View.VISIBLE);
                 } else
                     time_tv.setVisibility(View.GONE);
