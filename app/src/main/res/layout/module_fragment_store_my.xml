@@ -30,6 +30,9 @@
             android:text="金源便利店"
             android:textColor="#2E2E2E"
             android:textSize="18sp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxEms="12"
             app:layout_constraintStart_toEndOf="@+id/store_avatar_iv"
             app:layout_constraintTop_toTopOf="@+id/store_avatar_iv" />
 

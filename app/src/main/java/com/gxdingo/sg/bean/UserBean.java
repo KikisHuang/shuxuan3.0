@@ -28,6 +28,7 @@ public class UserBean implements Serializable {
     private Integer gender;
     private Integer status;
     private Integer inviterId;
+    private Integer isFirstLogin;
     private Integer role;
     private Boolean isSetPassword;
     private StoreBean store;
@@ -104,6 +105,14 @@ public class UserBean implements Serializable {
 
     public void setInviterId(Integer inviterId) {
         this.inviterId = inviterId;
+    }
+
+    public Integer getIsFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setIsFirstLogin(Integer isFirstLogin) {
+        this.isFirstLogin = isFirstLogin;
     }
 
     public Integer getRole() {
