@@ -969,7 +969,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private void upLoadFile(String url) {
 
-
         onStarts();
         ReceiveIMMessageBean cb = new ReceiveIMMessageBean();
         cb.upload_progress = 1;
