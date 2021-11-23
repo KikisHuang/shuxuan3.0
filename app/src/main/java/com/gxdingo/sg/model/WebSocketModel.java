@@ -17,6 +17,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.zhouyou.http.callback.CallClazzProxy;
@@ -170,7 +171,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
@@ -224,7 +225,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
@@ -272,7 +273,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
             }
 
             @Override
@@ -317,7 +318,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
 //                    netWorkListener.onAfters();
@@ -371,7 +372,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
@@ -434,7 +435,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (customResultListener != null) {
                     customResultListener.onResult(null);
                 }
@@ -472,7 +473,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
             }
 
             @Override
@@ -506,7 +507,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
             }
 
             @Override
@@ -547,7 +548,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (e.getCode() == 601) {
                     if (netWorkListener != null)
                         netWorkListener.onSucceed(601);
@@ -590,7 +591,7 @@ public class WebSocketModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null)
                     netWorkListener.onMessage(e.getMessage());
             }

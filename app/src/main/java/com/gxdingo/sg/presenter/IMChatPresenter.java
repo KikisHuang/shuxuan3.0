@@ -25,6 +25,7 @@ import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -253,8 +254,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                         ArrayList<ReceiveIMMessageBean> newData = (ArrayList<ReceiveIMMessageBean>) o;
 
                         if (isViewAttached() && newData.size() > 0) {
-                            if (isDebug)
-                                LogUtils.i("有新消息，添加到消息列表");
+                            BaseLogUtils.i("有新消息，添加到消息列表");
 
                             getV().onAddNewChatHistoryList(newData);
                         }

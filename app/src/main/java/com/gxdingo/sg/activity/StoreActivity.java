@@ -30,6 +30,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -364,7 +365,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         //当store.id == 0（表示未填写过入驻信息）或store.status == 0（表示正在审核）或store.status == 20 （表示被驳回）的时候需要跳转到商家认证界面获取显示状态或者填写入驻信息
         if (userBean.getStore().getId() == 0 || userBean.getStore().getStatus() == 0 || userBean.getStore().getStatus() == 20) {
 
-            LogUtils.e("Store status === " + userBean.getStore().getStatus());
+            BaseLogUtils.e("Store status === " + userBean.getStore().getStatus());
             //跳转到商家认证界面
             goToPage(reference.get(), StoreCertificationActivity.class, null);
         }

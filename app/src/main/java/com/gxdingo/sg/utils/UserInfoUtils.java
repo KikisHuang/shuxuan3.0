@@ -18,6 +18,7 @@ import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.OauthActivity;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
@@ -105,8 +106,7 @@ public class UserInfoUtils {
      * @param token
      */
     public void saveUserToken(String token) {
-        if (isDebug)
-            LogUtils.w("保存的token === " + token);
+            BaseLogUtils.w("保存的token === " + token);
 
         SPUtils.getInstance().put(Constant.TOKEN_KEY, token);
     }
@@ -117,7 +117,7 @@ public class UserInfoUtils {
      * @param userId
      */
     public void saveUserId(long userId) {
-        LogUtils.w("保存的 userId  === " + userId);
+        BaseLogUtils.w("保存的 userId  === " + userId);
         SPUtils.getInstance().put(USER_ID_KEY, userId);
     }
 
@@ -225,7 +225,7 @@ public class UserInfoUtils {
             String json = SPUtils.getInstance().getString(USER_INFO_KEY);
             userBean = GsonUtil.GsonToBean(json, UserBean.class);
         } catch (Exception e) {
-            LogUtils.e("get shop info Error === " + e);
+            BaseLogUtils.e("get shop info Error === " + e);
             return null;
         }
         return userBean;
@@ -247,8 +247,7 @@ public class UserInfoUtils {
      */
     public String getUserToken() {
         String token = SPUtils.getInstance().getString(Constant.TOKEN_KEY, "");
-        if (isDebug)
-            LogUtils.i("token === " + token);
+            BaseLogUtils.i("token === " + token);
 
         return token;
     }
@@ -328,21 +327,19 @@ public class UserInfoUtils {
 
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
             if (pushService == null) {
-                LogUtils.w("pushService is null ");
+                BaseLogUtils.w("pushService is null ");
                 return;
             }
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    if (isDebug)
-                        LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                        BaseLogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override
                 public void onFailed(String s, String s1) {
 
-                    if (isDebug)
-                        LogUtils.w("bind account onfailed ");
+                    BaseLogUtils.w("bind account onfailed ");
                 }
             });
         }
@@ -359,14 +356,12 @@ public class UserInfoUtils {
         pushService.unbindAccount(new CommonCallback() {
             @Override
             public void onSuccess(String s) {
-                if (isDebug)
-                    LogUtils.d("unbind Account success ");
+                BaseLogUtils.d("unbind Account success ");
             }
 
             @Override
             public void onFailed(String s, String s1) {
-                if (isDebug)
-                    LogUtils.d("unbind Account onfailed ");
+                BaseLogUtils.d("unbind Account onfailed ");
             }
         });
     }

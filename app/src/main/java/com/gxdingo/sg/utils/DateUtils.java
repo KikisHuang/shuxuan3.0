@@ -1,6 +1,7 @@
 package com.gxdingo.sg.utils;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -85,7 +86,7 @@ public class DateUtils {
             DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return df2.format(date1);
         } catch (ParseException e) {
-            LogUtils.e("ParseException === " + e);
+            BaseLogUtils.e("ParseException === " + e);
             return "";
         }
     }
@@ -107,7 +108,7 @@ public class DateUtils {
             DateFormat df2 = new SimpleDateFormat(pattern);
             return df2.format(date1);
         } catch (ParseException e) {
-            LogUtils.e("ParseException === " + e);
+            BaseLogUtils.e("ParseException === " + e);
             return "";
         }
     }
@@ -127,7 +128,7 @@ public class DateUtils {
             DateFormat df2 = new SimpleDateFormat("HH:mm");
             return df2.format(date1);
         } catch (ParseException e) {
-            LogUtils.e("ParseException === " + e);
+            BaseLogUtils.e("ParseException === " + e);
             return "";
         }
     }
@@ -195,7 +196,7 @@ public class DateUtils {
                 }
             }
         } catch (ParseException e) {
-            LogUtils.e("ParseException === " + e);
+            BaseLogUtils.e("ParseException === " + e);
         }
         return false;
     }
@@ -226,7 +227,7 @@ public class DateUtils {
                 }
             }
         } catch (ParseException e) {
-            LogUtils.e("ParseException === " + e);
+            BaseLogUtils.e("ParseException === " + e);
         }
         return false;
     }

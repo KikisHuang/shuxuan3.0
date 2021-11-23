@@ -30,6 +30,7 @@ import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
@@ -210,7 +211,7 @@ public class NetworkModel {
             mLocationClient = new AMapLocationClient(context);
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.e("AMapLocationClient == " + e);
+            BaseLogUtils.e("AMapLocationClient == " + e);
         }
 
         mLocationClient.setLocationListener(mLocationListener);
@@ -264,7 +265,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -321,7 +322,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -383,7 +384,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -438,7 +439,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -483,7 +484,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -560,7 +561,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -603,7 +604,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -658,7 +659,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -730,7 +731,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -781,7 +782,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -830,7 +831,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -881,7 +882,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -968,7 +969,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(e.getMessage());
@@ -1028,7 +1029,7 @@ public class NetworkModel {
 
             distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
         } catch (Exception e) {
-            LogUtils.e(e);
+            BaseLogUtils.e(e);
         }
 
     }
@@ -1084,7 +1085,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
             }
 
@@ -1143,7 +1144,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null)
                     netWorkListener.onMessage(e.getMessage());
             }

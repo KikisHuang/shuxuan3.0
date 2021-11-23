@@ -6,6 +6,7 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 /**
  * @author: Kikis
@@ -34,7 +35,7 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
         //由于每行都只有3个，所以第一个都是3的倍数，把左边距设为0
         if (parent.getChildLayoutPosition(view) % itemCount == 0) {
-            LogUtils.i("parent.getChildLayoutPosit  ion(view) " + parent.getChildLayoutPosition(view));
+            BaseLogUtils.i("parent.getChildLayoutPosit  ion(view) " + parent.getChildLayoutPosition(view));
             outRect.left = 0;
         }
     }

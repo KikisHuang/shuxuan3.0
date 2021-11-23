@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.gxdingo.sg.R;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import static com.amap.api.maps.model.MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER;
 import static com.gxdingo.sg.utils.ClientLocalConstant.LOCATION_LATITUDE_KEY;
@@ -45,7 +46,7 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
             mLocationClient = new AMapLocationClient(context);
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.i("AMapLocationClient == " + e);
+            BaseLogUtils.i("AMapLocationClient == " + e);
         }
 
         mLocationClient.setLocationListener(mLocationListener);
@@ -54,7 +55,7 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
         mLocationClient.setLocationOption(mLocationOption);
         mLocationClient.startLocation();
         }catch (Exception e){
-            LogUtils.e("AMapLocationClient Error === "+e);
+            BaseLogUtils.e("AMapLocationClient Error === "+e);
         }
     }
 

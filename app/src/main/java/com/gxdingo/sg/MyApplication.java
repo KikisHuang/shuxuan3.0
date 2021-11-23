@@ -26,6 +26,7 @@ import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.gxdingo.sg.view.NineGridGlideImageLoader;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
@@ -212,12 +213,12 @@ public class MyApplication extends Application {
             @Override
             public void onViewInitFinished(boolean arg0) {
                 //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                LogUtils.d("开启TBS===X5加速成功");
+                BaseLogUtils.d("开启TBS===X5加速成功");
             }
 
             @Override
             public void onCoreInitFinished() {
-                LogUtils.d("开启TBS===X5加速失败");
+                BaseLogUtils.d("开启TBS===X5加速失败");
 
             }
         };
@@ -349,7 +350,7 @@ public class MyApplication extends Application {
     private void rxInit() {
         if (!isDebug) {
             RxJavaPlugins.setErrorHandler(throwable -> {
-                LogUtils.e("RxJava Error === " + throwable);
+                BaseLogUtils.e("RxJava Error === " + throwable);
                 CrashReport.postCatchedException(throwable);
             });
         }
@@ -485,20 +486,20 @@ public class MyApplication extends Application {
                 @Override
                 public void onSuccess(String response) {
                     String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+                    BaseLogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 
                 @Override
                 public void onFailed(String errorCode, String errorMessage) {
-                    LogUtils.w("init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+                    BaseLogUtils.w("init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
                 }
             });
 
             auxiliaryChannelInit();
 
         } catch (Exception e) {
-            LogUtils.e("initCloudChannel error  == " + e);
+            BaseLogUtils.e("initCloudChannel error  == " + e);
         }
     }
 
@@ -510,6 +511,13 @@ public class MyApplication extends Application {
         //8.0及其以上的设配设置NotificaitonChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//Android 8.0及以上
+                NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
+                if (channel.getImportance() == NotificationManager.IMPORTANCE_DEFAULT) {//未开启
+                    // 跳转到设置页面
+                    BaseLogUtils.i("未开启 横幅通知");
+                }
+            }
             // 通知渠道的id
             String id = "1";//这个是与后台约定好的，要不收不到，该方法主要是适配Android 8.0以上，避免接收不到通知
             // 用户可以看到的通知渠道的名字.

@@ -17,6 +17,7 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.PreloadListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -537,7 +538,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         try {
             customToast(msg);
         } catch (Exception e) {
-            LogUtils.e(e);
+            BaseLogUtils.e(e);
         }
     }
 
