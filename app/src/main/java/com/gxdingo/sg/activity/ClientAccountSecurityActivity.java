@@ -68,21 +68,23 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     private ClientCashInfoBean cashInfoBean;
 
 
-    @OnClick({R.id.pay_psw_stv,R.id.binding_phone_stv,R.id.binding_ali_stv,R.id.binding_wechat_stv,R.id.binding_bankcard_stv,R.id.version_stv,R.id.cancel_account_stv,})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.pay_psw_stv, R.id.binding_phone_stv, R.id.binding_ali_stv, R.id.binding_wechat_stv, R.id.binding_bankcard_stv, R.id.version_stv, R.id.cancel_account_stv,})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.pay_psw_stv:
-                if (cashInfoBean==null)
+                if (cashInfoBean == null)
                     return;
-                if (cashInfoBean.getWithdrawalPassword()==0)
-                    goToPage(this,ClientSettingPayPwd1Activity.class,null);
+                if (cashInfoBean.getWithdrawalPassword() == 0)
+                    goToPage(this, ClientSettingPayPwd1Activity.class, null);
                 else
-                    goToPage(this,ClientUpdatePayPwdActivity.class,null);
+                    goToPage(this, ClientUpdatePayPwdActivity.class, null);
                 break;
             case R.id.binding_phone_stv:
-                goToPage(this,ChangeBindingPhoneActivity.class,null);
+                goToPage(this, ChangeBindingPhoneActivity.class, null);
                 break;
             case R.id.binding_ali_stv:
+                if (cashInfoBean == null)
+                    return;
                 if (isEmpty(cashInfoBean.getAlipay()))
                     getP().bindAli();
                 else {
@@ -97,6 +99,8 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 }
                 break;
             case R.id.binding_wechat_stv:
+                if (cashInfoBean == null)
+                    return;
                 if (isEmpty(cashInfoBean.getWechat()))
                     getP().bindWechat();
                 else {
@@ -111,7 +115,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 }
                 break;
             case R.id.binding_bankcard_stv:
-                goToPage(this, BankcardListActivity.class,null);
+                goToPage(this, BankcardListActivity.class, null);
                 break;
             case R.id.version_stv:
                 Beta.checkUpgrade(true, false);
@@ -132,12 +136,12 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
         super.onBaseEvent(object);
         if (object instanceof WeChatLoginEvent)
             getP().bind(((WeChatLoginEvent) object).code, 1);
-        else if (object instanceof ThirdPartyBean){
-            ThirdPartyBean thirdPartyBean = (ThirdPartyBean)object;
-            if (thirdPartyBean.type==0){
+        else if (object instanceof ThirdPartyBean) {
+            ThirdPartyBean thirdPartyBean = (ThirdPartyBean) object;
+            if (thirdPartyBean.type == 0) {
                 binding_ali_stv.setRightString("解绑");
                 cashInfoBean.setAlipay(thirdPartyBean.getNickname());
-            }else if (thirdPartyBean.type==1){
+            } else if (thirdPartyBean.type == 1) {
                 binding_wechat_stv.setRightString("解绑");
                 cashInfoBean.setWechat(thirdPartyBean.getNickname());
             }
@@ -220,7 +224,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.account_security));
-        version_stv.setRightString("当前版本 v"+getAppVersionName());
+        version_stv.setRightString("当前版本 v" + getAppVersionName());
     }
 
     @Override
@@ -242,25 +246,25 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @Override
     public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
         this.cashInfoBean = cashInfoBean;
-        if (cashInfoBean.getWithdrawalPassword()==0)
+        if (cashInfoBean.getWithdrawalPassword() == 0)
             pay_psw_stv.setRightString("去设置");
         else
             pay_psw_stv.setRightString("修改");
         if (!isEmpty(cashInfoBean.getMobile()))
             binding_phone_stv.setRightString(cashInfoBean.getMobile());
 
-        if (isEmpty(cashInfoBean.getAlipay())){
+        if (isEmpty(cashInfoBean.getAlipay())) {
             binding_ali_stv.setRightString("去绑定");
             binding_ali_stv.setRightTextColor(getc(R.color.blue_text));
-        }else {
+        } else {
             binding_ali_stv.setRightString("解绑");
             binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
         }
 
-        if (isEmpty(cashInfoBean.getWechat())){
+        if (isEmpty(cashInfoBean.getWechat())) {
             binding_wechat_stv.setRightString("去绑定");
             binding_wechat_stv.setRightTextColor(getc(R.color.blue_text));
-        }else {
+        } else {
             binding_wechat_stv.setRightString("解绑");
             binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));
         }

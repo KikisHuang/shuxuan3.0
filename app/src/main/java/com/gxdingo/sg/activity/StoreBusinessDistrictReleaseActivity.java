@@ -154,10 +154,10 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
             onMessage("请输入内容！");
             etContent.requestFocus();
             return;
-        } else if (gpePicture.getValueCount() == 0) {
+        }/* else if (gpePicture.getValueCount() == 0) {
             onMessage("请上传图片！");
             return;
-        }
+        }*/
         ArrayList<GridPictureEditing.PictureValue> tempPictureValues = gpePicture.getValues();
         if (tempPictureValues != null) {
             ArrayList<String> images = new ArrayList<>();
