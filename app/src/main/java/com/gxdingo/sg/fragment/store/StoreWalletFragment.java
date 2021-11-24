@@ -220,7 +220,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{thirdPartyBean.type == 1 ? ClientLocalConstant.WECHAT : ClientLocalConstant.ALIPAY, mWalletBean}));
         } else if (object instanceof BankcardBean) {
             BankcardBean bankcardBean = (BankcardBean) object;
-            goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{ClientLocalConstant.BANK, mWalletBean, bankcardBean.getId()}));
+            if (bankcardBean.isCash())
+                goToPagePutSerializable(getContext(), StoreCashActivity.class, getIntentEntityMap(new Object[]{ClientLocalConstant.BANK, mWalletBean, bankcardBean.getId()}));
         }
 
     }

@@ -15,6 +15,7 @@ public class BankcardBean implements Serializable {
      * icon : https://apimg.alipay.com/combo.png?d=cashier&t=ABC
      */
     private int id;
+    private boolean cash;
     private String number;
     private String cardName;
     private String bankType;
@@ -28,6 +29,14 @@ public class BankcardBean implements Serializable {
 
     public void setBankType(String bankType) {
         this.bankType = bankType;
+    }
+
+    public boolean isCash() {
+        return cash;
+    }
+
+    public void setCash(boolean cash) {
+        this.cash = cash;
     }
 
     public String getName() {
