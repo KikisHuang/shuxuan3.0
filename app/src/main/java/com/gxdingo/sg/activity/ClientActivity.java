@@ -40,6 +40,7 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
@@ -172,7 +173,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {
-            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY,true);
+            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
             if (!isUse) {
                 goToPage(this, StoreActivity.class, null);
                 finish();
@@ -241,6 +242,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             finish();
         } else if (type == CLIENT_LOGIN_SUCCEED) {
             getP().getUnreadMessageNum();
+        } else if (type == SOTRE_REVIEW_SUCCEED) {
+            //用户认证成功，关闭客户端
+            finish();
         }
     }
 

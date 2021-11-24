@@ -3,9 +3,11 @@ package com.gxdingo.sg.utils;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 
 import java.util.List;
 
@@ -21,9 +23,9 @@ public class ImServiceUtils {
      */
     public static void startImService(Context context) {
 
-        if (!isServiceRunning(context, IMMessageReceivingService.class.getName()))
+        if (!isServiceRunning(context, IMMessageReceivingService.class.getName())) {
             context.startService(new Intent(context, IMMessageReceivingService.class));
-        else {
+        } else {
             if (isDebug)
                 LogUtils.i("Im 服务运行中，无需启动");
         }
@@ -50,7 +52,7 @@ public class ImServiceUtils {
         }
 
         for (ActivityManager.RunningServiceInfo item : serviceList) {
-            if (item.service.getClassName().equals(className) ) {
+            if (item.service.getClassName().equals(className)) {
                 isRunning = true;
                 break;
             }

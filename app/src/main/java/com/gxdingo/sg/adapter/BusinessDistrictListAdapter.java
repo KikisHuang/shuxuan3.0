@@ -2,52 +2,34 @@ package com.gxdingo.sg.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.biz.NineClickListener;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
-import com.kikis.commnlibrary.utils.DateUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
 import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
-import com.kikis.commnlibrary.view.recycler_view.PullGridLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
-import com.lzy.ninegrid.ImageInfo;
 import com.lzy.ninegrid.NineGridView;
-import com.lzy.ninegrid.NineGridViewAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
@@ -75,17 +57,11 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         mOnChildViewClickListener = onChildViewClickListener;
     }
 
-    public void setTotal(int total) {
-        mTotal = total;
-    }
-
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, BusinessDistrictListBean.BusinessDistrict data) {
 
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
-        ImageView single_img = baseViewHolder.findView(R.id.single_img);
-        FrameLayout picture_fml = baseViewHolder.findView(R.id.picture_fml);
         RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
         TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
@@ -93,6 +69,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         LinearLayout llCommentLayout = baseViewHolder.findView(R.id.ll_comment_layout);
         TextView tvOpenComment = baseViewHolder.findView(R.id.tv_open_comment);
         NineGridView picture_gridview = baseViewHolder.findView(R.id.picture_gridview);
+        ImageView single_img = baseViewHolder.findView(R.id.single_img);
+
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
@@ -165,6 +143,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             }
         });
 
+
         /**
          * 图片列表
          */
@@ -203,15 +182,13 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                         Glide.with(mContext).load(data.getImages().get(0)).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(single_img);
 
                     } catch (Exception e) {
-                        LogUtils.e("图片宽高计算异常 === " + e);
+                        BaseLogUtils.e("图片宽高计算异常 === " + e);
                     }
                 }
             });
 
-            LogUtils.e("图片 单张" + getItemPosition(data));
         } else {
 
-            LogUtils.e("图片 多图 pos === " + getItemPosition(data));
 
             picture_gridview.setVisibility(View.VISIBLE);
             single_img.setVisibility(View.GONE);
@@ -243,6 +220,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             }
         }
 
+
         if (data.getCommentList().size() < 10) {
             //小余10条不显示 展开、收起布局
             llCommentUnfoldPutAwayLayout.setVisibility(View.GONE);
@@ -262,24 +240,21 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         tvCommentCount.setText(data.getComments() + "评论");
         //点击评论数量展开评论列表
-        tvCommentCount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        tvCommentCount.setOnClickListener(v -> {
 
-                //评论展开状态是初始状态并且布局是隐藏的并且评论数大于等于10的，回调给界面那边请求“展开评论”接口获取评论数据
-                if (data.getCommentOpen() == 0 && llCommentLayout.getVisibility() == View.GONE && data.getComments() >= 10) {
-                    //只在初始化的时候执行一次，获取更多展开评论则通过点击展开评论文本控件
-                    if (mOnChildViewClickListener != null)
-                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, tvCommentUnfoldPutAwayText);//将tvCommentUnfoldPutAwayText传递到界面去
-                }
+            //评论展开状态是初始状态并且布局是隐藏的并且评论数大于等于10的，回调给界面那边请求“展开评论”接口获取评论数据
+            if (data.getCommentOpen() == 0 && llCommentLayout.getVisibility() == View.GONE && data.getComments() >= 10) {
+                //只在初始化的时候执行一次，获取更多展开评论则通过点击展开评论文本控件
+                if (mOnChildViewClickListener != null)
+                    mOnChildViewClickListener.item(v, getItemPosition(data), -1, tvCommentUnfoldPutAwayText);//将tvCommentUnfoldPutAwayText传递到界面去
+            }
 
-                if (llCommentLayout.getVisibility() == View.VISIBLE) {
-                    llCommentLayout.setVisibility(View.GONE);
-                    data.setCommentOpen(2);//关闭状态
-                } else {
-                    llCommentLayout.setVisibility(View.VISIBLE);
-                    data.setCommentOpen(1);//打开状态
-                }
+            if (llCommentLayout.getVisibility() == View.VISIBLE) {
+                llCommentLayout.setVisibility(View.GONE);
+                data.setCommentOpen(2);//关闭状态
+            } else {
+                llCommentLayout.setVisibility(View.VISIBLE);
+                data.setCommentOpen(1);//打开状态
             }
         });
         //点击展开更多/收起
@@ -331,15 +306,12 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         rvCommentList.setRecyclerViewScrollEnabled(false);
         rvCommentList.setNestedScrollingEnabled(false);
         rvCommentList.setLayoutManager(new PullLinearLayoutManager(mContext));
-        rvCommentList.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int p) {
-                if (mOnChildViewClickListener != null && data.getCommentList() != null)
-                    mOnChildViewClickListener.item(rvCommentList, getItemPosition(data), p, null);
-            }
+
+        rvCommentList.setOnItemClickListener((view, p) -> {
+            if (mOnChildViewClickListener != null && data.getCommentList() != null)
+                mOnChildViewClickListener.item(rvCommentList, getItemPosition(data), p, null);
         });
         rvCommentList.setPullAdapter(mBusinessDistrictCommentAdapter);
-
 
     }
 

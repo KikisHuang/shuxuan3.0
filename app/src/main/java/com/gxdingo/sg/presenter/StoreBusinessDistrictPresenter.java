@@ -87,6 +87,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                 });
 
             }
+
         }
     }
 

@@ -192,7 +192,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             ImageView content_img = holder.getImageView(R.id.content_img);
 
             Glide.with(mContext)
-                    .load(!isEmpty(data.getContent()) ? data.getContent() : R.drawable.ic_default_image)
+                    .load(!isEmpty(data.getContent()) ? data.getContent() : R.drawable.load_faile_icon)
                     .apply(GlideUtils.getInstance().getGlideRoundOptions(3))
                     .placeholder(R.drawable.module_shape_bg_graydd)
                     .into(content_img);
