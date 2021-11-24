@@ -21,6 +21,7 @@ import com.gxdingo.sg.presenter.WebPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.List;
@@ -145,15 +146,18 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         WebBean item = (WebBean) adapter.getItem(position);
         if (RegexUtils.isMobileExact(item.getIdentifier())){
-            new ClientCallPhoneDialog(this, item.getIdentifier(), new OnContentListener() {
-                @Override
-                public void onConfirm(BasePopupView popupView, String content) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:" + content));
-                    startActivity(intent);
-                }
-            });
+            new XPopup.Builder(reference.get())
+                    .isDarkTheme(false)
+                    .asCustom(new ClientCallPhoneDialog(reference.get(), item.getIdentifier(), new OnContentListener() {
+                        @Override
+                        public void onConfirm(BasePopupView popupView, String content) {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + content));
+                            startActivity(intent);
+                        }
+                    }))
+                    .show();
             return;
         }
         goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, item.getIdentifier()}));

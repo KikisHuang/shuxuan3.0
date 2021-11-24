@@ -221,6 +221,7 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         if (!isSelect) return;
         BankcardBean item = (BankcardBean) adapter.getItem(position);
+        item.setCash(true);
         sendEvent(item);
         if (!isCash)finish();
     }
