@@ -1,3 +1,4 @@
+include ':ninegridview'
 include ':commnlibrary'
 include ':app'
 rootProject.name = "sg"

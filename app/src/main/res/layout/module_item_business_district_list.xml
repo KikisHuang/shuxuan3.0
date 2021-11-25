@@ -138,15 +138,6 @@
             app:ngv_maxSize="9"
             app:ngv_mode="fill"></com.lzy.ninegrid.NineGridView>
 
-
-        <ImageView
-            android:id="@+id/single_img"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            tools:src="@drawable/default_bg" />
-
     </FrameLayout>
 
 

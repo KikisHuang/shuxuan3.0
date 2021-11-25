@@ -184,4 +184,5 @@
         <attr name="leftBottom" format="dimension" />
         <attr name="rightBottom" format="dimension" />
     </declare-styleable>
+
 </resources>

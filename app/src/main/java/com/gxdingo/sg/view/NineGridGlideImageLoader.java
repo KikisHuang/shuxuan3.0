@@ -5,10 +5,13 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.kikis.commnlibrary.utils.GlideUtils;
+import com.kikis.commnlibrary.view.GlideRoundTransform;
 import com.lzy.ninegrid.NineGridView;
+
+import static android.text.TextUtils.isEmpty;
 
 
 /**
@@ -21,9 +24,7 @@ public class NineGridGlideImageLoader implements NineGridView.ImageLoader {
     @Override
     public void onDisplayImage(Context context, ImageView imageView, String url) {
 
-        Glide.with(context).load(url)//
-                .apply(GlideUtils.getInstance().getGlideRoundOptions(6).placeholder(R.drawable.module_shape_bg_white_round6))
-                .override(320)
+        Glide.with(context).load(url).apply(GlideUtils.getInstance().getDefaultOptions().placeholder(R.drawable.load_faile_icon))
                 .into(imageView);
 
     }

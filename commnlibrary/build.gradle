@@ -50,6 +50,7 @@ dependencies {
 
     //glide-transformations
     api rootProject.ext.dependencies.glidetransformations
+    api rootProject.ext.dependencies.gpuimage
 
     api rootProject.ext.dependencies.gson
 

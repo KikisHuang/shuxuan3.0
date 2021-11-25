@@ -71,7 +71,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                     BusinessDistrictListBean districtListBean = (BusinessDistrictListBean) o;
 
                     for (BusinessDistrictListBean.BusinessDistrict businessDistrict : districtListBean.getList()) {
-                        if (businessDistrict.getImages() != null && businessDistrict.getImages().size() > 1) {
+                        if (businessDistrict.getImages() != null && businessDistrict.getImages().size() > 0) {
                             for (String img : businessDistrict.getImages()) {
                                 ImageInfo info = new ImageInfo();
                                 info.setThumbnailUrl(img);
@@ -87,6 +87,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                 });
 
             }
+
         }
     }
 

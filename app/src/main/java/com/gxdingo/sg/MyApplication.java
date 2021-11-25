@@ -15,8 +15,6 @@ import androidx.multidex.MultiDex;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import com.amap.api.location.AMapLocationClient;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.http.Api;
@@ -47,10 +45,6 @@ import com.zhouyou.http.cache.model.CacheMode;
 import com.zhouyou.http.cookie.CookieManger;
 import com.zhouyou.http.model.HttpHeaders;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -60,7 +54,6 @@ import static cc.shinichi.library.tool.file.FileUtil.createOrExistsDir;
 import static com.blankj.utilcode.util.AppUtils.getAppName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.gxdingo.sg.http.Api.HTTP;
-import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.IM_OFFICIAL_URL;
 import static com.gxdingo.sg.http.Api.IM_TEST_URL;
 import static com.gxdingo.sg.http.Api.IM_UAT_URL;
@@ -128,13 +121,13 @@ public class MyApplication extends Application {
 
         initGreenDao();
         xPopupInit();
-        nineGridInit();
         rxInit();
         umengInit();
         buglyInit();
         tntX5Init();
         initCloudChannel(this);
         svgaCacheInit();
+        nineGridLayout();
     }
 
     /**
@@ -149,15 +142,6 @@ public class MyApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    /**
-     * 九宫格控件初始化
-     */
-    private void nineGridInit() {
-
-        NineGridView.setImageLoader(new NineGridGlideImageLoader());
     }
 
 
@@ -511,11 +495,12 @@ public class MyApplication extends Application {
         //8.0及其以上的设配设置NotificaitonChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
+        /*    NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
             if (channel.getImportance() == NotificationManager.IMPORTANCE_DEFAULT) {//未开启
                 // 跳转到设置页面
                 BaseLogUtils.i("未开启 横幅通知");
-            }
+            }*/
+
             // 通知渠道的id
             String id = "1";//这个是与后台约定好的，要不收不到，该方法主要是适配Android 8.0以上，避免接收不到通知
             // 用户可以看到的通知渠道的名字.
@@ -553,6 +538,14 @@ public class MyApplication extends Application {
         HuaWeiRegister.register(this);
         // OPPO辅助通道注册
         OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取*/
+
+    }
+
+    /**
+     * 九宫格
+     */
+    private void nineGridLayout() {
+        NineGridView.setImageLoader(new NineGridGlideImageLoader());
 
     }
 

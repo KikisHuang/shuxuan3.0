@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.allen.library.SuperTextView;
 import com.amap.api.services.core.PoiItem;
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
@@ -49,11 +50,14 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.STORE_NAMING_RULES;
+import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * 商家认证
@@ -201,7 +205,10 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     public void onBackPressed() {
-        showBackDialog();
+        if (!isUser)
+            showBackDialog();
+        else
+            super.onBackPressed();
     }
 
     /**
@@ -226,7 +233,10 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back://返回
-                showBackDialog();
+                if (!isUser)
+                    showBackDialog();
+                else
+                    finish();
                 break;
             case R.id.stv_avatar://头像
                 mType = 1;
@@ -415,6 +425,15 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
      */
     @Override
     public void certificationPassed() {
+        //如果是用户端入驻，切换全局路径，切换登录方式。
+        if (isUser) {
+            switchGlobalUrl(!isUser);
+
+            SPUtils.getInstance().put(LOGIN_WAY, !isUser);
+
+            if (StoreActivity.getInstance() == null)
+                goToPage(getContext(), StoreActivity.class, null);
+        }
         sendEvent(StoreLocalConstant.SOTRE_REVIEW_SUCCEED);
         onMessage("店铺已认证");
         finish();

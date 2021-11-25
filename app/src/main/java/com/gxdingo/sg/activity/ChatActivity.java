@@ -1048,7 +1048,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onImageClick(String string) {
         if (!isEmpty(string))
-            getImagePreviewInstance(this, NetworkAuto, 0, false).setImage(string).start();
+            getImagePreviewInstance(this, NetworkAuto, 0, true).setImage(string).start();
     }
 
     @Override
