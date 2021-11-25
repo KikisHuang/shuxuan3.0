@@ -137,8 +137,6 @@ dependencies {
     //二维码扫描
     api 'cn.yipianfengye.android:zxing-library:2.2'
 
-    //九宫格
-    implementation rootProject.ext.dependencies.ninegridview
     //banner
     implementation rootProject.ext.dependencies.banner
     //websocket
@@ -154,4 +152,6 @@ dependencies {
     implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
+    compile project(':ninegridview')
 }

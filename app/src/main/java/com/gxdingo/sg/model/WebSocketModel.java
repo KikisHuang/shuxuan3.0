@@ -356,13 +356,10 @@ public class WebSocketModel {
 
         map.put("current", String.valueOf(mPage));
         map.put("size", String.valueOf(mPageSize));
-/*
-        if (netWorkListener != null) {
-            netWorkListener.onStarts();
-        }*/
 
         PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        if (UserInfoUtils.getInstance().isLogin())
+            request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
         Observable<IMChatHistoryListBean> observable = request
                 .execute(new CallClazzProxy<ApiResult<IMChatHistoryListBean>, IMChatHistoryListBean>(new TypeToken<IMChatHistoryListBean>() {
                 }.getType()) {

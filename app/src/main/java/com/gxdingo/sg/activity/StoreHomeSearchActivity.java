@@ -5,6 +5,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -40,6 +41,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.view.View.VISIBLE;
+import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -73,8 +76,10 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
     View nodataLayout;
 
     StoreHomeSearchResultAdapter mAdapter;
+
     @BindView(R.id.search_labels)
     public LabelsView search_labels;
+    private TextView mSearchTitleTv;
 
     @Override
     protected StoreHomeSearchContract.StoreHomeSearchPresenter createPresenter() {
@@ -164,6 +169,9 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
                     ivEmpty.setVisibility(VISIBLE);
                     search_labels.setVisibility(View.GONE);
                 }
+                
+                mSearchTitleTv.setVisibility(mAdapter.getData().size() > 0 ? VISIBLE : View.GONE);
+
             }
 
             @Override
@@ -185,7 +193,11 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
         mAdapter = new StoreHomeSearchResultAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{((SubscribesListBean.SubscribesMessage) mAdapter.getData().get(position)).getShareUuid(), ((SubscribesListBean.SubscribesMessage)mAdapter.getData().get(position)).getSendUserRole()})));
+        LinearLayout head_layout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_store_search_head, new LinearLayout(reference.get()), false);
+        mSearchTitleTv = head_layout.findViewById(R.id.seach_title_tv);
+
+        mAdapter.addHeaderView(head_layout);
+        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{((SubscribesListBean.SubscribesMessage) mAdapter.getData().get(position)).getShareUuid(), ((SubscribesListBean.SubscribesMessage) mAdapter.getData().get(position)).getSendUserRole()})));
     }
 
     @Override
@@ -248,8 +260,16 @@ public class StoreHomeSearchActivity extends BaseMvpActivity<StoreHomeSearchCont
     @Override
     public void onSearchResult(boolean refresh, ArrayList<SubscribesListBean.SubscribesMessage> list) {
 
-        if (list != null)
-            mAdapter.setList(list);
+        if (list != null) {
+            if (refresh)
+                mAdapter.setList(list);
+            else
+                mAdapter.addData(list);
+
+            mSearchTitleTv.setText(String.format(getString(R.string.find_x_contact), mAdapter.getData().size() + ""));
+            mSearchTitleTv.setVisibility(mAdapter.getData().size() > 0 ? VISIBLE : View.GONE);
+            search_labels.setVisibility(mAdapter.getData().size() > 0 ? View.GONE : VISIBLE);
+        }
     }
 
     /**
