@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grayf5">
@@ -94,7 +95,8 @@
         android:layout_height="71dp"
         android:layout_marginTop="2dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/address_cl">
+        app:layout_constraintTop_toBottomOf="@+id/address_cl"
+        tools:layout_editor_absoluteX="0dp">
 
 
         <TextView
@@ -114,7 +116,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
             app:layout_constraintEnd_toStartOf="@+id/right_arrow_iv"
-            app:layout_constraintStart_toEndOf="@+id/business_circle_text"/>
+            app:layout_constraintStart_toEndOf="@+id/business_circle_text" />
 
         <ImageView
             android:id="@+id/right_arrow_iv"
@@ -122,9 +124,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"
             android:src="@drawable/module_svg_right_gray_arrow_little"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
