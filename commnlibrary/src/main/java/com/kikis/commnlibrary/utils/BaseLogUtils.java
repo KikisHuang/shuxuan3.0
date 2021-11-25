@@ -9,32 +9,34 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
  */
 public class BaseLogUtils {
 
-    public static void w(final Object... contents) {
-        if (contents==null)
-            return;
+    //    private boolean D = isDebug;
+    private static boolean D = true;
 
-        if (isDebug)
+    public static void w(final Object... contents) {
+        if (contents == null)
+            return;
+        if (D)
             LogUtils.w(contents);
     }
 
     public static void i(final Object... contents) {
-        if (contents==null)
+        if (contents == null)
             return;
-        if (isDebug)
+        if (D)
             LogUtils.i(contents);
     }
 
     public static void e(final Object... contents) {
-        if (contents==null)
+        if (contents == null)
             return;
-        if (isDebug)
+        if (D)
             LogUtils.e(contents);
     }
 
     public static void d(final Object... contents) {
-        if (contents==null)
+        if (contents == null)
             return;
-        if (isDebug)
+        if (D)
             LogUtils.d(contents);
     }
 

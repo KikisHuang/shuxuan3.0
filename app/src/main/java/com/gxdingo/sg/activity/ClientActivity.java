@@ -1,5 +1,7 @@
 package com.gxdingo.sg.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,6 +14,8 @@ import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.Utils;
+import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -21,14 +25,19 @@ import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.gxdingo.sg.utils.ImMessageUtils;
+import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
+import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +47,7 @@ import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
@@ -53,7 +63,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ClientMainContract.ClientMainListener {
+public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, ClientMainContract.ClientMainListener {
 
     private List<Fragment> mFragmentList;
 
@@ -78,6 +88,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private static ClientActivity instance;
     StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
+    //屏幕监听
+    private ScreenListener screenListener;
 
     public static ClientActivity getInstance() {
         return instance;
@@ -154,6 +166,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         fragmentInit();
         getP().persenterInit();
         getP().getAliKey();
+        registerAppStatusChangedListener(this);
+        screenListener = new ScreenListener(reference.get());
+        screenListener.begin(this);
     }
 
     @Override
@@ -377,5 +392,37 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         super.onDestroy();
         if (instance != null)
             instance = null;
+
+        if (screenListener != null)
+            screenListener.unregisterListener();
+    }
+
+    @Override
+    public void onForeground(Activity activity) {
+        LocalConstant.isBackground = false;
+    }
+
+    @Override
+    public void onBackground(Activity activity) {
+        LocalConstant.isBackground = true;
+
+        if (ImMessageUtils.getInstance().isRunning())
+            ImServiceUtils.stopImService();
+    }
+
+    @Override
+    public void onScreenOn() {
+
+    }
+
+    @Override
+    public void onScreenOff() {
+        if (ImMessageUtils.getInstance().isRunning())
+            ImServiceUtils.stopImService();
+    }
+
+    @Override
+    public void onUserPresent() {
+
     }
 }

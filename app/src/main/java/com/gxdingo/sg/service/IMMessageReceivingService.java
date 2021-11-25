@@ -21,6 +21,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.websocket.BaseWebSocket;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -49,9 +50,10 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 /**
  * WebSocket消息接收服务
  *
- * @author JM
+ * @author JM (废弃，因为websocket只存活于前台，切换后台用的是阿里的推送服务，根本没必要把websocket写到服务中)
  */
 public class IMMessageReceivingService extends Service {
+
     private final String TAG = "IMMessageReceivingService";
     private BaseWebSocket mBaseWebSocket;
     private String mUrl = "";//web socket接入url
@@ -112,7 +114,8 @@ public class IMMessageReceivingService extends Service {
             mSoundPool.release();
             mSoundPool = null;
         }
-            Log.e(TAG, "WebSocketService服务被销毁");
+
+        BaseLogUtils.e(TAG, "WebSocketService服务被销毁");
 
         if (mWebsocketStatusTimer != null) {
             mWebsocketStatusTimer.cancel();
@@ -183,7 +186,7 @@ public class IMMessageReceivingService extends Service {
                     }
 
                 } catch (Exception e) {
-                    LogUtils.e("WebSocket Error === " + e);
+                    BaseLogUtils.e("WebSocket Error === " + e);
                 }
             }
         };
@@ -201,7 +204,7 @@ public class IMMessageReceivingService extends Service {
             mBaseWebSocket = new BaseWebSocket(uri) {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
-                    Log.e(TAG, "onOpen：连接成功");
+                    BaseLogUtils.e(TAG, "onOpen：连接成功");
                     if (mBaseWebSocket.isOpen()) {
                         //连接成功后，发送登录信息
                         mBaseWebSocket.send(getWebSocketPassParameters(LocalConstant.PING));
@@ -211,7 +214,7 @@ public class IMMessageReceivingService extends Service {
                 @Override
                 public void onMessage(String message) {
                     //接收到服务器传来的消息
-                    Log.e(TAG, "onMessage：" + message);
+                    BaseLogUtils.e(TAG, "onMessage：" + message);
 
                     if (!isEmpty(message)) {
                         ReceiveIMMessageBean messageBean = GsonUtil.GsonToBean(message, ReceiveIMMessageBean.class);

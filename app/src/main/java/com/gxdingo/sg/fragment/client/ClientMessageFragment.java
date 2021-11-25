@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
@@ -148,19 +149,18 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void initData() {
-
+        //先获取一次im服务
+        getP().getSubscribesMessage(true);
     }
 
     @Override
     protected void lazyInit() {
         super.lazyInit();
         if (UserInfoUtils.getInstance().isLogin()) {
-            if (isFirstLoad){
+            if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
                 getP().getSubscribesMessage(true);
-            }
-
-            else {
+            } else {
 
                 getP().refreshList();
             }
@@ -187,7 +187,8 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
              * 需要将BaseWebSocket设置null,重新连接（前提是IMMessageReceivingService在运行）
              */
             if (!webSocketUrl.equals(subscribesListBean.getWebsocketUrl())) {
-                EventBus.getDefault().post(100999);//发送重置码
+//                EventBus.getDefault().post(100999);//发送重置码
+                resetImService();
             }
             //保存web socket接入url
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());

@@ -380,10 +380,6 @@ public class MyApplication extends Application {
 
         EasyHttp.init(this);//默认初始化
 
-        // 打开该调试开关并设置TAG,不需要就不要加入该行
-        // 最后的true表示是否打印内部异常，一般打开方便调试错误
-        EasyHttp.getInstance();
-
         //全局设置请求头
         HttpHeaders headers = new HttpHeaders();
 

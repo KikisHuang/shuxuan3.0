@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.bean.PushBean;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,7 +47,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
     @Override
     public void onNotification(Context context, String title, String summary, Map<String, String> extraMap) {
 
-        LogUtils.d(TAG, "Receive notification, title: " + title + ", summary: " + summary + ", extraMap: " + extraMap);
+        BaseLogUtils.d(TAG, "Receive notification, title: " + title + ", summary: " + summary + ", extraMap: " + extraMap);
 
         String orderId = extraMap.get("orderId");
 
@@ -75,7 +76,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
      */
     @Override
     public void onMessage(Context context, CPushMessage cPushMessage) {
-        LogUtils.d(TAG, "onMessage, messageId: " + cPushMessage.getMessageId() + ", title: " + cPushMessage.getTitle() + ", content:" + cPushMessage.getContent());
+        BaseLogUtils.d(TAG, "onMessage, messageId: " + cPushMessage.getMessageId() + ", title: " + cPushMessage.getTitle() + ", content:" + cPushMessage.getContent());
     }
 
     /**
@@ -88,7 +89,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
      */
     @Override
     public void onNotificationOpened(Context context, String title, String summary, String extraMap) {
-        LogUtils.d(TAG, "onNotificationOpened, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap);
+        BaseLogUtils.d(TAG, "onNotificationOpened, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap);
         try {
 
             PushBean pushBean = GsonUtil.GsonToBean(extraMap, PushBean.class);
@@ -98,7 +99,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
 
         } catch (Exception e) {
-            LogUtils.e("ali push paser error == " + e);
+            BaseLogUtils.e("ali push paser error == " + e);
         }
     }
 
@@ -112,7 +113,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
      */
     @Override
     protected void onNotificationClickedWithNoAction(Context context, String title, String summary, String extraMap) {
-        LogUtils.d(TAG, "onNotificationClickedWithNoAction, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap);
+        BaseLogUtils.d(TAG, "onNotificationClickedWithNoAction, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap);
 
 
     }
@@ -130,7 +131,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
      */
     @Override
     protected void onNotificationReceivedInApp(Context context, String title, String summary, Map<String, String> extraMap, int openType, String openActivity, String openUrl) {
-        LogUtils.d(TAG, "onNotificationReceivedInApp, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap + ", openType:" + openType + ", openActivity:" + openActivity + ", openUrl:" + openUrl);
+        BaseLogUtils.d(TAG, "onNotificationReceivedInApp, title: " + title + ", summary: " + summary + ", extraMap:" + extraMap + ", openType:" + openType + ", openActivity:" + openActivity + ", openUrl:" + openUrl);
     }
 
     /**
@@ -141,7 +142,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
      */
     @Override
     protected void onNotificationRemoved(Context context, String messageId) {
-        LogUtils.d(TAG, "onNotificationRemoved");
+        BaseLogUtils.d(TAG, "onNotificationRemoved");
 
     }
 }

@@ -189,7 +189,8 @@ public class ChangeBindPhonePresenter extends BaseMvpPresenter<BasicsListener, C
         if (type == BIND_NEW_PHONE) {
             if (isBViewAttached()) {
                 UserInfoUtils.getInstance().clearLoginStatus();
-                UserInfoUtils.getInstance().goToLoginPage(getContext(), gets(R.string.please_relogin));
+                UserInfoUtils.getInstance().goToOauthPage(getContext());
+                onMessage(gets(R.string.please_relogin));
                 getBV().onFailed();
             }
 

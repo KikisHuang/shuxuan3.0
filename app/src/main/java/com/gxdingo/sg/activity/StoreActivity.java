@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +14,7 @@ import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
+import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
@@ -22,8 +24,12 @@ import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
+import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.gxdingo.sg.utils.ImMessageUtils;
+import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
+import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
@@ -53,7 +59,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * Created by Kikis on 2021/4/6
  * 商家端主页面
  */
-public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPresenter> implements Utils.OnAppStatusChangedListener, StoreMainContract.StoreMainListener {
+public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, StoreMainContract.StoreMainListener {
 
 
     private List<Fragment> mFragmentList;
@@ -78,6 +84,9 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @BindView(R.id.tv_business_unread_msg_count)
     public TextView tv_business_unread_msg_count;
+
+    //屏幕监听
+    private ScreenListener screenListener;
 
     public static StoreActivity getInstance() {
         return instance;
@@ -172,6 +181,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         getP().persenterInit();
 
         registerAppStatusChangedListener(this);
+
+        registerAppStatusChangedListener(this);
+        screenListener = new ScreenListener(reference.get());
+        screenListener.begin(this);
     }
 
     StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
@@ -408,6 +421,9 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     public void onBackground(Activity activity) {
         LocalConstant.isBackground = true;
+
+        if (ImMessageUtils.getInstance().isRunning())
+            ImServiceUtils.stopImService();
     }
 
     @Override
@@ -416,5 +432,21 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         getP().release();
         if (instance != null)
             instance = null;
+    }
+
+    @Override
+    public void onScreenOn() {
+
+    }
+
+    @Override
+    public void onScreenOff() {
+        if (ImMessageUtils.getInstance().isRunning())
+            ImServiceUtils.stopImService();
+    }
+
+    @Override
+    public void onUserPresent() {
+
     }
 }

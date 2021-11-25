@@ -228,7 +228,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
         String userInfo = GsonUtil.gsonToStr(userBean);
         if (userBean == null || isEmpty(userInfo)) {
-            UserInfoUtils.getInstance().goToLoginPage(reference.get(), "");
+            UserInfoUtils.getInstance().goToOauthPage(reference.get());
             finish();
         }
         return userInfo;

@@ -47,7 +47,7 @@ public class ClientApi {
 
     public static final String HTML = "article/html?";
 
-    public static final String OFFICIAL_WEB_URL = "https://shuxuan.gxdingo.com/h5";
+    public static final String OFFICIAL_WEB_URL = "http://shuxuan.gxdingo.com/h5";
 
     //代付path
     public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";

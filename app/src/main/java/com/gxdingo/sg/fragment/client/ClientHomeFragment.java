@@ -431,7 +431,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
             goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
         } else {
-            UserInfoUtils.getInstance().goToLoginPage(getContext(), "");
+            UserInfoUtils.getInstance().goToOauthPage(getContext());
         }
     }
 

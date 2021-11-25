@@ -846,7 +846,7 @@ public class NetworkModel {
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
-                UserInfoUtils.getInstance().goToLoginPage(context, "");
+                UserInfoUtils.getInstance().goToOauthPage(context);
 
             }
         };

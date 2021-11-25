@@ -143,6 +143,7 @@ public class LocalConstant {
 
     //im uat http 签名
     public static final String IM_UAT_HTTP_KEY = "4ee5515ac41d433cabfa7b741c07f55f";
+
     //im official http
     public static final String IM_OFFICIAL_HTTP_KEY = "1b4c26cf72b24e47afb4d9d033714fc1";
 
@@ -162,7 +163,7 @@ public class LocalConstant {
     public static String WEB_SOCKET_TEST_KEY = "d4a02249b24eeb795ac47b1c09b3b810";
 
     //d4a02249b24eeb795ac47b1c09b3b810
-    public static String WEB_SOCKET_KEY = "9e8252612f954ee42a50b3096827fc33";
+    public static String WEB_SOCKET_KEY = "6669ec3d6f724252b32d773adc1a2fca";
 
     public static String WEB_SOCKET_UAT_KEY = "f0438ff6a8792aada17a04e0541db8b3";
 

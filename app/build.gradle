@@ -153,5 +153,5 @@ dependencies {
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
-    compile project(':ninegridview')
+    api project(':ninegridview')
 }

@@ -62,6 +62,7 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
@@ -381,7 +382,8 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
              * 需要将BaseWebSocket设置null,重新连接（前提是IMMessageReceivingService在运行）
              */
             if (!webSocketUrl.equals(subscribesListBean.getWebsocketUrl())) {
-                EventBus.getDefault().post(100999);//发送重置码
+//                EventBus.getDefault().post(100999);//发送重置码
+                resetImService();
             }
 
             //保存web socket接入url

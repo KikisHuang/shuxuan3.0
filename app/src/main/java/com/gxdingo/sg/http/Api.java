@@ -10,7 +10,7 @@ public class Api {
     public static String URL;
 
     //uat服务器开关
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
 
     public static final String SM = ":";
 
@@ -25,7 +25,7 @@ public class Api {
     //测试oss上传路径
     public static final String TEST_OSS_UPLOAD_URL = "192.168.110.248:8080/";
     //正式oss上传路径
-    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/app/";
+    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/exuser/";
 
     //uat oss上传路径
     public static final String UAT_OSS_UPLOAD_URL = "uat.gxdingo.com/public/";

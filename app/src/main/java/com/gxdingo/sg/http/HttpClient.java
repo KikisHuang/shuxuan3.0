@@ -255,13 +255,14 @@ public class HttpClient {
 
             Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
 
-            //客户端
+            //客户端 key
             LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         } else {
             //商家端
             Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
+
             Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-            //商家端
+            //商家端 key
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
 
@@ -270,8 +271,6 @@ public class HttpClient {
         EasyHttp.getInstance()
                 //可以全局统一设置全局URL
                 .setBaseUrl(Api.URL);//设置全局URL  url只能是域名 或者域名+端口号
-
-//        SPUtils.getInstance().put(LOGIN_WAY, isUser);
 
     }
 

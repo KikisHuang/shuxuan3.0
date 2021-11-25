@@ -33,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
@@ -92,7 +93,6 @@ import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
-import static com.gxdingo.sg.utils.ImServiceUtils.isServiceRunning;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
@@ -325,7 +325,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         super.onStart();
 
         //如果页面恢复回来，消息im服务不存在，进行刷新页面操作
-        if (!isServiceRunning(reference.get(), IMMessageReceivingService.class.getName()))
+        if (!ImMessageUtils.getInstance().isRunning())
             getP().refreshHistoryList(mShareUuid, otherId, otherRole);
 
         if (UserInfoUtils.getInstance().isLogin())

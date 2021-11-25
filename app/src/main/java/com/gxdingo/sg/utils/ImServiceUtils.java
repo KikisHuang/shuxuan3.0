@@ -1,19 +1,12 @@
 package com.gxdingo.sg.utils;
 
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.gxdingo.sg.service.IMMessageReceivingService;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
-import java.util.List;
-
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
-
+/**
+ * im操作类
+ */
 public class ImServiceUtils {
 
     /**
@@ -22,42 +15,27 @@ public class ImServiceUtils {
      * @param context
      */
     public static void startImService(Context context) {
+        if (!ImMessageUtils.getInstance().isRunning())
+            ImMessageUtils.getInstance().start();
+        else
+            BaseLogUtils.i("Im 服务运行中，无需启动");
 
-        if (!isServiceRunning(context, IMMessageReceivingService.class.getName())) {
-            context.startService(new Intent(context, IMMessageReceivingService.class));
-        } else {
-            if (isDebug)
-                LogUtils.i("Im 服务运行中，无需启动");
-        }
+    }
 
+
+    /**
+     * 停止im服务
+     */
+    public static void stopImService() {
+        if (ImMessageUtils.getInstance().isRunning())
+            ImMessageUtils.getInstance().stop();
     }
 
     /**
-     * 判断服务是否运行
-     *
-     * @param context
-     * @param className
-     * @return
+     * 重置im服务
      */
-    public static boolean isServiceRunning(Context context, String className) {
-        if (isEmpty(className)) {
-            return false;
-        }
-        boolean isRunning = false;
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> serviceList = activityManager.getRunningServices(30);
-
-        if (serviceList.isEmpty()) {
-            return false;
-        }
-
-        for (ActivityManager.RunningServiceInfo item : serviceList) {
-            if (item.service.getClassName().equals(className)) {
-                isRunning = true;
-                break;
-            }
-        }
-        return isRunning;
+    public static void resetImService() {
+        if (ImMessageUtils.getInstance().isRunning())
+            ImMessageUtils.getInstance().reSet();
     }
-
 }

@@ -184,7 +184,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                 if (UserInfoUtils.getInstance().isLogin()&&  mStoreDetail != null){
                     goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,mStoreDetail.getId()}));
                 }else {
-                    UserInfoUtils.getInstance().goToLoginPage(this,"");
+                    UserInfoUtils.getInstance().goToOauthPage(this);
                 }
                 break;
             case R.id.ll_phone_contract:
