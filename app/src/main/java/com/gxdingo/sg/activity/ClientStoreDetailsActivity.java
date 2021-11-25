@@ -1,6 +1,8 @@
 package com.gxdingo.sg.activity;
 
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
@@ -71,6 +74,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     private StoreDetail mStoreDetail;
 
     private ClientStorePhotoAdapter mPhotoAdapter;
+
+    private GestureDetector  gestureDetector;
 
 
     @Override
@@ -148,15 +153,51 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
         mPhotoAdapter = new ClientStorePhotoAdapter();
         store_photo_rv.setAdapter(mPhotoAdapter);
-        mPhotoAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
-            }
-        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(reference.get());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         store_photo_rv.setLayoutManager(linearLayoutManager);
+
+        gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public void onShowPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                if (mStoreDetail != null)
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                return false;
+            }
+
+            @Override
+            public void onLongPress(MotionEvent e) {
+
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+        });
+
+        store_photo_rv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+
     }
 
     @OnClick({R.id.txt_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
@@ -178,7 +219,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                 break;
             case R.id.business_district_cl:
                 if (mStoreDetail != null)
-                goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
                 break;
             case R.id.ll_send_message:
                 if (UserInfoUtils.getInstance().isLogin()&&  mStoreDetail != null){
@@ -193,6 +234,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                 break;
         }
     }
+
 
     @Override
     public void onStarts() {
