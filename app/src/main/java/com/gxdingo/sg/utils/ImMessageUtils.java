@@ -29,6 +29,7 @@ import java.util.TimerTask;
 import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.utils.LocalConstant.CHAT_IDENTIFIER;
 import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_SIGN;
 import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.isBackground;
@@ -197,7 +198,7 @@ public class ImMessageUtils {
             signMap.put(LocalConstant.CROSSTOKEN, crossToken);
         }
 
-        String sign = SignatureUtils.generate(signMap, isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : WEB_SOCKET_KEY, SignatureUtils.SignType.MD5);
+        String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
 
         String loginParameter = "";
         if (exec == LocalConstant.LOGIN) {

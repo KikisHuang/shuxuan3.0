@@ -9,8 +9,8 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
  */
 public class BaseLogUtils {
 
-    //    private boolean D = isDebug;
-    private static boolean D = true;
+        private static boolean D = isDebug;
+//    private static boolean D = true;
 
     public static void w(final Object... contents) {
         if (contents == null)
