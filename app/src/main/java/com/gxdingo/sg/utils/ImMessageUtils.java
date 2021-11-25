@@ -122,7 +122,6 @@ public class ImMessageUtils {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     super.onClose(code, reason, remote);
-                    ToastUtils.showShort("onClose " + code);
                 }
 
                 @Override

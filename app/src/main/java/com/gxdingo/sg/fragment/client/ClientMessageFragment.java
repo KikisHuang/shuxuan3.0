@@ -149,8 +149,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void initData() {
-        //先获取一次im服务
-        getP().getSubscribesMessage(true);
+
     }
 
     @Override

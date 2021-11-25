@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
@@ -12,9 +13,10 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.view.ViewCompat;
 
-public class NineGridViewWrapper extends ImageView {
+public class NineGridViewWrapper extends AppCompatImageView {
 
     private int moreNum = 0;              //显示更多的数量
     private int maskColor = 0x88000000;   //默认的遮盖颜色
@@ -23,6 +25,7 @@ public class NineGridViewWrapper extends ImageView {
 
     private TextPaint textPaint;              //文字的画笔
     private String msg = "";                  //要绘制的文字
+
 
     public NineGridViewWrapper(Context context) {
         this(context, null);
@@ -46,13 +49,18 @@ public class NineGridViewWrapper extends ImageView {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
         if (moreNum > 0) {
             canvas.drawColor(maskColor);
             float baseY = getHeight() / 2 - (textPaint.ascent() + textPaint.descent()) / 2;
             canvas.drawText(msg, getWidth() / 2, baseY, textPaint);
         }
+        super.onDraw(canvas);
     }
 
     @Override

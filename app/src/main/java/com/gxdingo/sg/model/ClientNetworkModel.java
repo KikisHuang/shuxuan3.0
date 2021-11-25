@@ -33,6 +33,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
@@ -83,6 +84,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.WECHAT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Weaving
@@ -274,7 +276,9 @@ public class ClientNetworkModel {
      * @param context
      */
     public void getCategories(Context context) {
-        netWorkListener.onStarts();
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
 
         Observable<CategoryListBean> observable = HttpClient.post(CATEGORY_CATEGORIES)
                 .execute(new CallClazzProxy<ApiResult<CategoryListBean>, CategoryListBean>(new TypeToken<CategoryListBean>() {
@@ -286,6 +290,7 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
+
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
@@ -837,7 +842,7 @@ public class ClientNetworkModel {
 
         Map<String, String> map = getJsonMap();
         //0銀行卡 10微信 20支付寶
-        switch (type){
+        switch (type) {
             case 0:
                 map.put(LocalConstant.TYPE, BANK);
                 break;

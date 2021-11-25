@@ -142,6 +142,9 @@ public class WebSocketModel {
      * @param content
      */
     public void getMessageSubscribesList(Context context, boolean refresh, String content) {
+        if (!UserInfoUtils.getInstance().isLogin())
+            return;
+
         if (refresh)
             resetPage();//重置页码
 

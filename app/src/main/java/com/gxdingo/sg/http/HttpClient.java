@@ -7,6 +7,7 @@ import com.gxdingo.sg.biz.ProgressListener;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.body.UIProgressResponseCallBack;
@@ -74,10 +75,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, GLOBAL_SIGN, SignatureUtils.SignType.MD5);
 
-        if (isDebug) {
-            LogUtils.d(" SIGN === " + sign);
-            LogUtils.d(" timeStamp === " + timeStamp);
-        }
+            BaseLogUtils.d(" SIGN === " + sign);
+            BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -85,16 +84,14 @@ public class HttpClient {
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
 
-            if (isDebug) {
-                LogUtils.d(" USERIDENTIFIER === " + timeStamp);
-            }
+            BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 
@@ -121,10 +118,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
 
-        if (isDebug) {
-            LogUtils.d(" SIGN === " + sign);
-            LogUtils.d(" timeStamp === " + timeStamp);
-        }
+            BaseLogUtils.d(" SIGN === " + sign);
+            BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -132,16 +127,14 @@ public class HttpClient {
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
 
-            if (isDebug) {
-                LogUtils.d(" USERIDENTIFIER === " + timeStamp);
-            }
+            BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 
@@ -180,7 +173,7 @@ public class HttpClient {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 

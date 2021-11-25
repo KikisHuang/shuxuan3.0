@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
@@ -46,20 +47,20 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 //                    EventBus.getDefault().post(Constant.WECHAT_PAYMENT_SUCCESS);
                     EventBus.getDefault().post(Constant.PAYMENT_SUCCESS);
 //                    ToastUtils.showShort("支付成功");
-                    LogUtils.i("支付成功");
+                    BaseLogUtils.i("支付成功");
                 } catch (Exception e) {
-                    LogUtils.i("Error ==== " + e);
+                    BaseLogUtils.i("Error ==== " + e);
                 }
                 break;
             case -1:
 //                EventBus.getDefault().post(Constant.WECHAT_PAYMENT_FAILED);
                 EventBus.getDefault().post(Constant.PAYMENT_FAILED);
 //              ToastUtils.showShort("-1支付失败");
-                LogUtils.i("支付失败");
+                BaseLogUtils.i("支付失败");
                 break;
             case -2:
                 //USER_CANCEL
-                LogUtils.i("用户取消了微信支付 ");
+                BaseLogUtils.i("用户取消了微信支付 ");
                 break;
         }
         finish();
@@ -68,7 +69,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onReq(BaseReq req) {
         EventBus.getDefault().post(Constant.PAYMENT_FAILED);
-        LogUtils.i(" onReq 支付失败");
+        BaseLogUtils.i(" onReq 支付失败");
     }
 
 }

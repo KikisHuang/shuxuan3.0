@@ -140,7 +140,7 @@ public class MediaRecorderUtil {
         if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
-            BaseLogUtils.w("====定时器取消======");
+            BaseLogUtils.w("MediaRecorderUtil","====定时器取消======");
         }
     }
 }

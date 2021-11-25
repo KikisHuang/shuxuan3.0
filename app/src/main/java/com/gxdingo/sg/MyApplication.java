@@ -89,6 +89,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.BUGLYAPPID;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * Created by Kikis on 2021/3/16.
@@ -358,7 +359,6 @@ public class MyApplication extends Application {
             Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
 
         }
-
         Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTP + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
@@ -466,13 +466,13 @@ public class MyApplication extends Application {
                 @Override
                 public void onSuccess(String response) {
                     String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-                    BaseLogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 
                 @Override
                 public void onFailed(String errorCode, String errorMessage) {
-                    BaseLogUtils.w("init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
                 }
             });
 
