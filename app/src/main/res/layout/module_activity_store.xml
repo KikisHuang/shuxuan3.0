@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context="com.gxdingo.sg.activity.ClientActivity">
+
+    <FrameLayout
+        android:id="@+id/main_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#FAFAFF"
+        android:orientation="horizontal"
+        >
+
+
+        <FrameLayout
+            android:id="@+id/msg_fl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+        <com.gxdingo.sg.view.CircularRevealButton
+            android:id="@+id/crb_store_home_page_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:anim_show="false"
+            android:layout_marginVertical="5dp"
+            app:defocus_color="@color/gray202"
+            app:defocus_icon="@drawable/module_svg_store_main_menu_home_unselected"
+            app:focus_color="@color/gray202"
+            app:focus_icon="@drawable/module_svg_store_main_menu_home_selected"
+            app:is_selected="true"
+            app:text="@string/store_home_page" />
+
+            <TextView
+                android:id="@+id/tv_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="28dp"
+                android:visibility="gone"
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                tools:text="1" />
+
+
+        </FrameLayout>
+
+        <com.gxdingo.sg.view.CircularRevealButton
+            android:id="@+id/crb_store_wallet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:anim_show="false"
+            app:defocus_color="@color/gray202"
+            android:layout_marginVertical="5dp"
+            app:defocus_icon="@drawable/module_svg_store_main_menu_wallet_unselected"
+            app:focus_color="@color/gray202"
+            app:focus_icon="@drawable/module_svg_store_main_menu_wallet_selected"
+            app:is_selected="false"
+            app:text="@string/store_wallet" />
+
+        <FrameLayout
+            android:id="@+id/business_fl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            >
+
+        <com.gxdingo.sg.view.CircularRevealButton
+            android:id="@+id/crb_store_business_district"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:anim_show="false"
+            android:layout_marginVertical="5dp"
+            app:defocus_color="@color/gray202"
+            app:defocus_icon="@drawable/module_svg_store_main_menu_business_district_unselected"
+            app:focus_color="@color/gray202"
+            app:focus_icon="@drawable/module_svg_store_main_menu_business_district_selected"
+            app:is_selected="false"
+            app:text="@string/store_business_district" />
+
+            <TextView
+                android:id="@+id/tv_business_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="28dp"
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                tools:text="1" />
+        </FrameLayout>
+        <com.gxdingo.sg.view.CircularRevealButton
+            android:id="@+id/crb_store_my"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:anim_show="false"
+            android:layout_marginVertical="5dp"
+            app:defocus_color="@color/gray202"
+            app:defocus_icon="@drawable/module_svg_store_main_menu_mine_unselected"
+            app:focus_color="@color/gray202"
+            app:focus_icon="@drawable/module_svg_store_main_menu_mine_selected"
+            app:is_selected="false"
+            app:text="@string/store_mine" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -13,12 +13,24 @@ public class ClientApi {
     public static final String UAT_URL = "uat.gxdingo.com/exuser/";
 
     //正式路径
-    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
+    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/exuser/";
 
-    //隐私协议文章
-    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "yonghuxieyi";
-    //服务协议文章
-    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "fufeixieyi";
+    //客户端隐私协议文章
+    public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";
+    //客户端服务协议文章
+    public static final String CLIENT_SERVICE_AGREEMENT_KEY = "yonghufuwuxieyi";
+
+    //商家端隐私协议文章
+    public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
+    //商家端服务协议文章
+    public static final String STORE_SERVICE_AGREEMENT_KEY = "shangjiafuwuxieyi";
+    //树选用户及商家隐私协议
+    public static final String PRIVACY_AGREEMENT_KEY = "azyhsjyhxy";
+
+
+    //店铺命名规则
+    public static final String STORE_NAMING_RULES = "mingmingguize";
+
 
     //测试路径
     public static final String TEST_URL = "192.168.110.248";
@@ -33,13 +45,15 @@ public class ClientApi {
 
     public static final String UAT_WEB_URL = "http://uat.gxdingo.com/html";
 
-    public static final String OFFICIAL_WEB_URL = "https://shuxuan.gxdingo.com/h5";
+    public static final String HTML = "article/html?";
+
+    public static final String OFFICIAL_WEB_URL = "http://shuxuan.gxdingo.com/h5";
 
     //代付path
     public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";
 
     //平台客服path
-    public static final String SERVER_URL = "/#/pages/message/contact-server";
+    public static final String SERVER_URL = "/#/pages/message/chat";
 
 
     /**
@@ -138,14 +152,46 @@ public class ClientApi {
 
 
     /**
-     * 系统壁纸
+     * 绑定第三方提现账号
      */
-    public static final String WALLPAPER_WALLPAPERS = HIERARCHY + "wallpaper/wallpapers";
+    public static final String WALLET_BINDING = HIERARCHY + "wallet/binding";
 
+    /**
+     * 解绑第三方提现方式
+     */
+    public static final String WALLET_UNBINDING = HIERARCHY + "wallet/unbound";
+
+    /**
+     * 我的主页
+     */
+    public static final String MINE_HOME = HIERARCHY + "user/home";
+
+    /**
+     * 交易记录
+     */
+    public static final String TRANSACTION_RECORD = HIERARCHY + "wallet/transaction/list";
+
+    /**
+     * 提现信息
+     */
+    public static final String Cash_ACCOUNT_INFO = HIERARCHY + "wallet/bank/list";
+    /**
+     * 校验支付密码
+     */
+    public static final String CHECK_PAY_PASSWORD = HIERARCHY + "wallet/authentication/old/password";
     /**
      * 获取地址列表
      */
     public static final String ADDRESS_ADDRESSES = HIERARCHY + "address/addresses";
+
+    /**
+     * 填写商家邀请码（领取优惠券）
+     */
+    public static final String COUPON_RECEIVE = HIERARCHY + "coupon/receive";
+    /**
+     * 已领取的优惠券列表
+     */
+    public static final String COUPON_LIST = HIERARCHY + "coupon/list";
     /**
      * 获取文章列表
      */
@@ -157,6 +203,11 @@ public class ClientApi {
     public static final String ARTICLE_DETAIL = HIERARCHY + "article/detail";
 
     /**
+     * 获取图片文章形式
+     */
+    public static final String ARTICLE_IMAGE = HIERARCHY + "article/image";
+
+    /**
      * 语音获取匹配度最高的店铺信息
      */
     public static final String FIND_STORE = HIERARCHY + "voice/find/store";
@@ -166,7 +217,7 @@ public class ClientApi {
     public static final String FIND_CATEGORY = HIERARCHY + "voice/find/category";
 
     /**
-     * 语音获取匹配度最高的分类信息
+     * 分类列表
      */
     public static final String CATEGORY_CATEGORIES = HIERARCHY + "category/categories";
 
@@ -211,5 +262,8 @@ public class ClientApi {
      */
     public static final String APPEAL_SUBMIT = HIERARCHY + "appeal/submit";
 
-
+    /**
+     * 商圈评论/回复
+     */
+    public static final String BUSINESS_DISTRICT_COMMENT_OR_ADD = HIERARCHY + "circle/comment/add";
 }

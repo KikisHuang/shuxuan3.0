@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.allen.library.SuperTextView android:id="@+id/stv_item_about_us"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    app:sLeftTextSize="@dimen/sp_14"
+    app:sLeftTextColor="@color/gray202"
+    app:sLeftViewMarginLeft="25dp"
+    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+</com.allen.library.SuperTextView>

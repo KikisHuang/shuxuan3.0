@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/module_bg_im_popup_view_background"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+        <View
+            android:id="@+id/line_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="#F1EFEF" />
+
+        <!--使用其他地址和没有收货地址 去添加共用，改变字体演示即可-->
+        <TextView
+            android:id="@+id/tv_use_another_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="使用其他地址"
+            android:textColor="#FF599252"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/no_address_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="12dp"
+            android:visibility="gone"
+            android:text="没有收货地址 去添加"
+            android:textColor="@color/gray_2e"></TextView>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/module_select_send_address_cancel_button"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="取消"
+            android:textColor="#FF2E2E2E"
+            android:textSize="16sp" />
+    </LinearLayout>
+</LinearLayout>

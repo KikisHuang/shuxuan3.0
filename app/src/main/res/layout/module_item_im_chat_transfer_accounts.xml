@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints">
+
+    <!--消息时间-->
+    <include layout="@layout/module_view_im_chat_message_time" />
+
+    <!--IM聊天自己发送转账布局-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_oneself_send_transfer_accounts_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tv_message_time">
+
+
+        <com.kikis.commnlibrary.view.RoundAngleImageView
+            android:id="@+id/niv_oneself_avatar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="15dp"
+            android:src="@drawable/module_svg_user_default_avatar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:leftBottom="6dp"
+            app:leftTop="6dp"
+            app:rightBottom="6dp"
+            app:rightTop="6dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="6dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/niv_oneself_avatar"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.3" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_oneself_transfer_accounts_bg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:background="@mipmap/bg_im_chat_oneself_transfer_accounts_pay">
+
+                <ImageView
+                    android:id="@+id/iv_oneself_transfer_accounts_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/module_svg_im_chat_transfer_accounts_icon"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_oneself_rmb_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="¥"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_oneself_transfer_accounts_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_oneself_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="0"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_oneself_rmb_icon" />
+
+                <TextView
+                    android:id="@+id/tv_oneself_receive_payment_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:text="待接收"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_oneself_rmb_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_oneself_amount" />
+
+                <View
+                    android:id="@+id/oneself_shape_dotted_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@drawable/module_shape_dotted_line"
+                    android:layerType="software"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_oneself_receive_payment_status" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/oneself_shape_dotted_line">
+
+                    <ImageView
+                        android:id="@+id/iv_oneself_transfer_accounts_type_icon"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginLeft="6dp"
+                        android:src="@drawable/module_im_chat_transfer_accounts_type_alipay_icon" />
+
+                    <TextView
+                        android:id="@+id/tv_oneself_transfer_accounts_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="支付宝转账"
+                        android:textColor="#ffffff"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--IM聊天他人发送转账布局-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_others_send_transfer_accounts_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/tv_message_time">
+
+        <com.kikis.commnlibrary.view.RoundAngleImageView
+            android:id="@+id/niv_others_avatar"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/module_svg_user_default_avatar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:leftBottom="6dp"
+            app:leftTop="6dp"
+            app:rightBottom="6dp"
+            app:rightTop="6dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="80dp"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toRightOf="@+id/niv_others_avatar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_others_transfer_accounts_bg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:background="@mipmap/bg_im_chat_others_transfer_accounts_pay">
+
+                <ImageView
+                    android:id="@+id/iv_others_transfer_accounts_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/module_svg_im_chat_transfer_accounts_icon"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_others_rmb_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:text="¥"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toRightOf="@+id/iv_others_transfer_accounts_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_others_amount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="0"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_others_rmb_icon" />
+
+                <TextView
+                    android:id="@+id/status_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginTop="0dp"
+                    android:text="待收款"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    app:layout_constraintLeft_toLeftOf="@+id/tv_others_rmb_icon"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_others_amount" />
+
+                <View
+                    android:id="@+id/others_shape_dotted_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:background="@drawable/module_shape_dotted_line"
+                    android:layerType="software"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/status_tv" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/others_shape_dotted_line">
+
+                    <ImageView
+                        android:id="@+id/iv_others_transfer_accounts_type_icon"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginLeft="6dp"
+                        android:src="@drawable/module_im_chat_transfer_accounts_type_alipay_icon" />
+
+                    <TextView
+                        android:id="@+id/tv_others_transfer_accounts_type_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="支付宝"
+                        android:textColor="#ffffff"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.3" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

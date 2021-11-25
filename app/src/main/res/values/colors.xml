@@ -7,7 +7,22 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
+
+    <!--    密码输入框颜色-->
+    <color name="pass_view_rect_input">#3DA3FF</color>
+    <color name="regi_line_color">#c8c8c8</color>
+
     <color name="main_tone">#599252</color>
+    <color name="blue_dark_tone">#16750A</color>
     <color name="divide_color">#F6F6F6</color>
+    <color name="button_color">#EEF0FA</color>
+    <color name="main_text_color">#8A97CE</color>
+    <color name="divider_line_color">#EEF0FA</color>
+
+
+    <color name="gray_a9">#A9A9A9</color>
+    <color name="gray_2e">#2E2E2E</color>
+    <color name="gray_ac">#ACACAC</color>
+    <color name="blue_text">#74A0EC</color>
+    <color name="msg_dot_red">#D10505</color>
 </resources>

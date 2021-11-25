@@ -8,9 +8,10 @@ package com.gxdingo.sg.http;
 public class Api {
 
     public static String URL;
+
     //uat服务器开关
     public static final boolean isUat = true;
-    
+
     public static final String SM = ":";
 
     public static final String L = "/";
@@ -24,13 +25,21 @@ public class Api {
     //测试oss上传路径
     public static final String TEST_OSS_UPLOAD_URL = "192.168.110.248:8080/";
     //正式oss上传路径
-    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/app/";
+    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/exuser/";
 
     //uat oss上传路径
     public static final String UAT_OSS_UPLOAD_URL = "uat.gxdingo.com/public/";
 
     //im聊天url
-    public static  String IM_URL = HTTP + "192.168.110.248:8080/";
+    public static String IM_URL = HTTP + "192.168.110.248:8080/";
+
+    //im uat
+    public static String IM_UAT_URL = "uat.gxdingo.com/exmsg/";
+    //im 测试
+    public static final String IM_TEST_URL = "192.168.110.236:8083/";
+    //im 正式
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsgr/";
+
 
     //oss路径
     public static String OSS_URL = "192.168.110.248:8080/";
@@ -60,6 +69,16 @@ public class Api {
      */
     public static final String PAYMENT_ALIPAY_AUTHINFO = HIERARCHY + "payment/alipay/auth";
 
+
+    /**
+     * 一键登录
+     */
+    public static final String ONE_CLICK_LOGIN = HIERARCHY + "user/login/click";
+
+    /**
+     * 获取调用阿里云手机号码一键登录认证key
+     */
+    public static final String GET_MOBILE_KEY = HIERARCHY + "public/ali/mobile/key";
 
     /**
      * 登录
@@ -100,19 +119,45 @@ public class Api {
      */
     public static final String MESSAGE_DETAILS = HIERARCHY + "mps/message/details";
     /**
+     * 获取聊天记录列表
+     */
+    public static final String GET_CHAT_HISTORY_LIST = HIERARCHY + "mps/message/list";
+
+    /**
      * 消息历史
      */
     public static final String MESSAGE_HISTORY = HIERARCHY + "mps/message/history";
 
     /**
+     * 获取未读消息数
+     */
+    public static final String SUM_UNREAD = HIERARCHY + "mps/message/sum/unread";
+
+
+    /**
      * 清除未读消息
      */
     public static final String MESSAGE_CLEAR_ALL = HIERARCHY + "mps/message/clearall";
+    /**
+     * 消息内容未读状态改成已读
+     */
+    public static final String MESSAGE_READ = HIERARCHY + "mps/message/read";
 
     /**
      * 获取2点距离
      */
     public static final String OTHER_DISTANCE = HIERARCHY + "other/distance";
-
+    /**
+     * 发起转账
+     */
+    public static final String TRANSFER = HIERARCHY + "transfer/accounts/send";
+    /**
+     * 领取转账
+     */
+    public static final String GET_TRANSFER = HIERARCHY + "transfer/accounts/receive";
+    /**
+     * 投诉
+     */
+    public static final String COMPLAINT_MSG = HIERARCHY + "complaint/msg";
 
 }

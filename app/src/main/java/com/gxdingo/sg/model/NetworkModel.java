@@ -12,38 +12,38 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
-//import com.gxdingo.sg.activity.BindingPhoneActivity;
+import com.gxdingo.sg.activity.BindingPhoneActivity;
+import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
-import com.gxdingo.sg.bean.MessageDetails;
-import com.gxdingo.sg.bean.MessageSubsBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.http.HttpClient;
-import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
-import com.zhouyou.http.request.PostRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,22 +54,20 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
-import static com.gxdingo.sg.http.Api.IM_URL;
-import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
-import static com.gxdingo.sg.http.Api.MESSAGE_DETAILS;
-import static com.gxdingo.sg.http.Api.MESSAGE_HISTORY;
-import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
+import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SEND_SMS;
 import static com.gxdingo.sg.http.Api.USER_LOGIN;
 import static com.gxdingo.sg.http.Api.USER_LOGOFF;
 import static com.gxdingo.sg.http.Api.USER_LOGOUT;
-import static com.gxdingo.sg.http.Api.USER_MOBILE_BIND;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
+import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -77,8 +75,11 @@ import static com.kikis.commnlibrary.utils.CommonUtils.oneDecimal;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
+
+//import com.gxdingo.sg.activity.BindingPhoneActivity;
 
 /**
  * @author: Kikis
@@ -206,7 +207,12 @@ public class NetworkModel {
     //获取一次定位方法
     public void location(Context context, AMapLocationListener mLocationListener) {
         //初始化定位
-        mLocationClient = new AMapLocationClient(context);
+        try {
+            mLocationClient = new AMapLocationClient(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            BaseLogUtils.e("AMapLocationClient == " + e);
+        }
 
         mLocationClient.setLocationListener(mLocationListener);
         mLocationOption = new AMapLocationClientOption();
@@ -259,7 +265,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -316,7 +322,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -378,7 +384,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -433,7 +439,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -451,6 +457,74 @@ public class NetworkModel {
 
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 一键登录
+     *
+     * @param context
+     * @param
+     * @param
+     */
+    public void oneClickLogin(Context context, String accessToken, boolean isUse) {
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("accessToken", accessToken);
+
+        Observable<UserBean> observable = HttpClient.post(ONE_CLICK_LOGIN, map)
+                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+                OneKeyModel.hideLoginLoading();
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
+
+                UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onMessage(gets(R.string.login_succeed));
+                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+
+                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登录状态
+
+                    if (!isUse) {
+                      //商家
+                        if (StoreActivity.getInstance() == null)
+                            goToPage(context, StoreActivity.class, null);
+                    } else {
+                        //商家
+                        if (ClientActivity.getInstance() == null)
+                            goToPage(context, ClientActivity.class, null);
+                    }
+                }
+                OneKeyModel.quitLoginPage();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
     }
 
     /**
@@ -487,7 +561,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -497,7 +571,7 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-
+                OneKeyModel.quitLoginPage();
                 UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
 
                 if (netWorkListener != null)
@@ -530,7 +604,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -585,7 +659,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -595,7 +669,7 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-
+                OneKeyModel.quitLoginPage();
                 if (netWorkListener == null)
                     return;
                 netWorkListener.onAfters();
@@ -604,7 +678,7 @@ public class NetworkModel {
 
                     netWorkListener.onMessage(gets(R.string.please_bind_phone));
                     netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
-//                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
+                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
@@ -648,7 +722,7 @@ public class NetworkModel {
         map.put(LocalConstant.APPNAME, appname);
         map.put(Constant.OPENID, openid);
 
-        Observable<UserBean> observable = HttpClient.post(USER_MOBILE_BIND, map)
+        Observable<UserBean> observable = HttpClient.post(USER_LOGIN, map)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
                 }.getType()) {
                 });
@@ -657,7 +731,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -708,7 +782,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -723,8 +797,11 @@ public class NetworkModel {
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
-                WebSocketModel.getInstance(context).setUnReadMessageNum(0);
-                UserInfoUtils.getInstance().goToLoginPage(context, "");
+
+      /*          new OneKeyModel().getKey(context, netWorkListener, (CustomResultListener<OneKeyLoginEvent>) event -> {
+                    new NetworkModel(netWorkListener).oneClickLogin(context, event.code, event.isUser);
+                });*/
+                UserInfoUtils.getInstance().goToOauthPage(context);
 
             }
         };
@@ -754,7 +831,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -769,8 +846,7 @@ public class NetworkModel {
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
-                WebSocketModel.getInstance(context).setUnReadMessageNum(0);
-                UserInfoUtils.getInstance().goToLoginPage(context, "");
+                UserInfoUtils.getInstance().goToOauthPage(context);
 
             }
         };
@@ -806,7 +882,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
@@ -893,7 +969,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(e.getMessage());
@@ -927,31 +1003,35 @@ public class NetworkModel {
      * @param list
      */
     public void aMapdistanceSearch(Context context, double longitude, double latitude, List<CommonlyUsedStoreBean> list, DistanceSearch.OnDistanceSearchListener distanceSearchListener) {
+        try {
+            DistanceSearch distanceSearch = new DistanceSearch(context);
 
-        DistanceSearch distanceSearch = new DistanceSearch(context);
+            distanceSearch.setDistanceSearchListener(distanceSearchListener);
 
-        distanceSearch.setDistanceSearchListener(distanceSearchListener);
+            DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
 
-        DistanceSearch.DistanceQuery distanceQuery = new DistanceSearch.DistanceQuery();
+            LatLonPoint dest = new LatLonPoint(latitude, longitude);
 
-        LatLonPoint dest = new LatLonPoint(latitude, longitude);
+            List<LatLonPoint> latLonPoints = new ArrayList<LatLonPoint>();
 
-        List<LatLonPoint> latLonPoints = new ArrayList<LatLonPoint>();
+            for (CommonlyUsedStoreBean commonlyUsedStoreBean : list) {
+                LatLonPoint start = new LatLonPoint(commonlyUsedStoreBean.getLatitude(), commonlyUsedStoreBean.getLongitude());
+                latLonPoints.add(start);
+            }
 
-        for (CommonlyUsedStoreBean commonlyUsedStoreBean : list) {
-            LatLonPoint start = new LatLonPoint(commonlyUsedStoreBean.getLatitude(), commonlyUsedStoreBean.getLongitude());
-            latLonPoints.add(start);
+            //设置各个店铺为起点
+            distanceQuery.setOrigins(latLonPoints);
+            //设置当前位置为终点
+            distanceQuery.setDestination(dest);
+
+            //设置测量方式，支持直线和驾车
+            distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
+
+            distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
+        } catch (Exception e) {
+            BaseLogUtils.e(e);
         }
 
-        //设置各个店铺为起点
-        distanceQuery.setOrigins(latLonPoints);
-        //设置当前位置为终点
-        distanceQuery.setDestination(dest);
-
-        //设置测量方式，支持直线和驾车
-        distanceQuery.setType(DistanceSearch.TYPE_DISTANCE);
-
-        distanceSearch.calculateRouteDistanceAsyn(distanceQuery);
     }
 
     /**
@@ -1005,7 +1085,7 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
+                BaseLogUtils.e(e);
 
             }
 
@@ -1025,290 +1105,37 @@ public class NetworkModel {
 
 
     /**
-     * 获取消息订阅列表
+     * 投诉
      *
      * @param context
+     * @param reason
+     * @param content
+     * @param list
+     * @param sendIdentifier
+     * @param role
+     * @param shareUuid
      */
-    public void getMessageSubscribesList(Context context, CustomResultListener customResultListener) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
+    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier, int role, String shareUuid) {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(Constant.PAGE, String.valueOf(getPage()));
 
-        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
+        map.put(LocalConstant.REASON, reason);
+        map.put("content", content);
 
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        if (list.size() > 0)
+            map.put("images", GsonUtil.gsonToStr(list));
 
-        Observable<MessageSubsBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<MessageSubsBean>, MessageSubsBean>(new TypeToken<MessageSubsBean>() {
-                }.getType()) {
-                });
+        if (!isEmpty(sendIdentifier))
+            map.put("sendIdentifier", sendIdentifier);
 
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<MessageSubsBean>(context) {
-            @Override
-            public void onError(ApiException e) {
-                super.onError(e);
-                LogUtils.e(e);
+        if (role > 0)
+            map.put("role", String.valueOf(role));
 
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                }
-            }
+        if (!isEmpty(shareUuid))
+            map.put("shareUuid", String.valueOf(shareUuid));
 
-            @Override
-            public void onNext(MessageSubsBean messageSubsBean) {
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    customResultListener.onResult(messageSubsBean.getSubscribes());
-                }
-            }
-        };
-
-        observable.subscribe(subscriber);
-        if (netWorkListener != null)
-            netWorkListener.onDisposable(subscriber);
-    }
-
-    /**
-     * 刷新消息订阅列表
-     *
-     * @param context
-     */
-    public void refreshMessageList(Context context) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
-
-        Map<String, String> map = getJsonMap();
-
-        map.put(Constant.PAGE, String.valueOf(0));
-        map.put(Constant.LIMIT, String.valueOf(getPage() * 10));
-
-        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
-
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        Observable<MessageSubsBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<MessageSubsBean>, MessageSubsBean>(new TypeToken<MessageSubsBean>() {
-                }.getType()) {
-                });
-
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<MessageSubsBean>(context) {
-            @Override
-            public void onError(ApiException e) {
-                super.onError(e);
-                LogUtils.e(e);
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onMessage(e.getMessage());
-                }
-            }
-
-            @Override
-            public void onNext(MessageSubsBean messageSubsBean) {
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onData(true, messageSubsBean.getSubscribes());
-                }
-            }
-        };
-
-        observable.subscribe(subscriber);
-        if (netWorkListener != null)
-            netWorkListener.onDisposable(subscriber);
-    }
-
-    /**
-     * 获取消息订阅列表
-     *
-     * @param context
-     */
-    public void getMessageSubscribesList(Context context, boolean refresh) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
-        if (refresh)
-            resetPage();
-
-        Map<String, String> map = getJsonMap();
-
-        map.put(Constant.PAGE, String.valueOf(getPage()));
-
-        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_SUBSCRIBES, map);
-
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        Observable<MessageSubsBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<MessageSubsBean>, MessageSubsBean>(new TypeToken<MessageSubsBean>() {
-                }.getType()) {
-                });
-
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<MessageSubsBean>(context) {
-            @Override
-            public void onError(ApiException e) {
-                super.onError(e);
-                LogUtils.e(e);
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onMessage(e.getMessage());
-                    resetPage();
-                }
-            }
-
-            @Override
-            public void onNext(MessageSubsBean messageSubsBean) {
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onData(refresh, messageSubsBean.getSubscribes());
-                    pageNext(refresh, messageSubsBean.getSubscribes().getList().size());
-                }
-            }
-        };
-
-        observable.subscribe(subscriber);
-        if (netWorkListener != null)
-            netWorkListener.onDisposable(subscriber);
-    }
-
-    /**
-     * 消息订阅详情
-     *
-     * @param context
-     * @param mSubscribeIde
-     */
-    public void getMessageDetails(Context context, int mSubscribeIde, CustomResultListener listener) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
-
-        resetPage();
-
-        Map<String, String> map = getJsonMap();
-
-        map.put(LocalConstant.SUBSCRIBEID, String.valueOf(mSubscribeIde));
-
-        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_DETAILS, map);
-
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        Observable<MessageDetails> observable = request
-                .execute(new CallClazzProxy<ApiResult<MessageDetails>, MessageDetails>(new TypeToken<MessageDetails>() {
-                }.getType()) {
-                });
-
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<MessageDetails>(context) {
-            @Override
-            public void onError(ApiException e) {
-                super.onError(e);
-                LogUtils.e(e);
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    resetPage();
-                }
-            }
-
-            @Override
-            public void onNext(MessageDetails messageDetails) {
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    listener.onResult(messageDetails);
-
-                    pageNext(true, messageDetails.getMessages().getList().size());
-                }
-            }
-        };
-
-        observable.subscribe(subscriber);
-        if (netWorkListener != null)
-            netWorkListener.onDisposable(subscriber);
-
-    }
-
-
-    /**
-     * 消息记录翻页
-     *
-     * @param context
-     * @param mSubscribeIde
-     */
-    public void getMessageHistory(Context context, int mSubscribeIde, String lasttime, CustomResultListener listener) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
-        Map<String, String> map = getJsonMap();
-
-        map.put(LocalConstant.SUBSCRIBEID, String.valueOf(mSubscribeIde));
-
-        map.put(LocalConstant.LASTMSGTIME, lasttime);
-
-
-        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_HISTORY, map);
-
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        Observable<MessageDetails.MessagesBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<MessageDetails.MessagesBean>, MessageDetails.MessagesBean>(new TypeToken<MessageDetails.MessagesBean>() {
-                }.getType()) {
-                });
-
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<MessageDetails.MessagesBean>(context) {
-            @Override
-            public void onError(ApiException e) {
-                super.onError(e);
-                LogUtils.e(e);
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    resetPage();
-                }
-            }
-
-            @Override
-            public void onNext(MessageDetails.MessagesBean messagesBean) {
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    listener.onResult(messagesBean.getList());
-                    pageNext(false, messagesBean.getList().size());
-                }
-            }
-        };
-
-        observable.subscribe(subscriber);
-        if (netWorkListener != null)
-            netWorkListener.onDisposable(subscriber);
-
-    }
-
-
-    /**
-     * 清除未读消息数
-     */
-    public void clearUnreadMessageNumber(Context context) {
-
-        if (netWorkListener != null)
-            netWorkListener.onStarts();
-
-        PostRequest request = HttpClient.imPost(IM_URL +MESSAGE_CLEAR_ALL, new HashMap<>());
-
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-
-        Observable<NormalBean> observable = request
+        Observable<NormalBean> observable = HttpClient.post(COMPLAINT_MSG, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1317,22 +1144,18 @@ public class NetworkModel {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
-                LogUtils.e(e);
-
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
                     netWorkListener.onMessage(e.getMessage());
-                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
+                if (netWorkListener != null)
+                    netWorkListener.onMessage("投诉成功");
 
-                if (netWorkListener != null) {
-                    WebSocketModel.getInstance(context).setUnReadMessageNum(0);
-                    netWorkListener.onAfters();
-                    netWorkListener.onSucceed(ClientLocalConstant.CLEAR_UNREAD_SUCCEED);
-                }
+                EventBus.getDefault().post(COMPLAINT_SUCCEED);
+
             }
         };
 
@@ -1340,4 +1163,5 @@ public class NetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
 }

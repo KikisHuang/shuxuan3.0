@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/hint_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginHorizontal="35dp"
+        android:gravity="center"
+        android:text="为确认身份，我们已发送验证码到手机号： 137****5566进行验证。"
+        android:textSize="16sp"
+        android:textColor="#2E2E2E"/>
+
+    <com.gxdingo.sg.view.PasswordLayout
+        android:id="@+id/password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        app:box_draw_type="rect"
+        app:draw_txt_size="16sp"
+        app:input_line_color="@color/gray_33"
+        app:interval_width="10dp"
+        app:item_height="50dp"
+        app:item_width="50dp"
+        app:pass_inputed_type="circle"
+        app:pass_leng="six"
+        app:text_input_color="@color/gray_33"/>
+
+    <TextView
+        android:id="@+id/pay_pwd_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="#A9A9A9"
+        android:visibility="gone"
+        android:text="支付密码不能是重复、连续的数字"
+        android:layout_gravity="center"/>
+
+    <com.gxdingo.sg.view.CountdownView
+        android:id="@+id/pay_psw_cdv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重新发送"
+        android:textColor="@color/main_tone"
+        android:layout_marginTop="25dp"/>
+
+
+    <Button
+        android:id="@+id/btn_next_or_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:text="next"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/module_bg_main_color_round6"
+        android:enabled="false"/>
+
+</LinearLayout>

@@ -3,11 +3,20 @@ package com.gxdingo.sg.activity;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.amap.api.location.AMapLocationClient;
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.biz.LoginContract;
+import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.lxj.xpopup.XPopup;
 
 import butterknife.OnClick;
+
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
@@ -82,7 +91,31 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
 
     @Override
     protected void init() {
+        if (SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true)) {
+            new XPopup.Builder(reference.get())
+                    .isDestroyOnDismiss(true)
+                    .isDarkTheme(false)
+                    .autoDismiss(false)
+                    .dismissOnBackPressed(false)
+                    .dismissOnTouchOutside(false)
+                    .asCustom(new ProtocolPopupView(reference.get(), o -> {
+                        int type = (int) o;
+                        if (type != 0) {
+                            AMapLocationClient.updatePrivacyShow(this, true, true);
+                            AMapLocationClient.updatePrivacyAgree(this, true);
+                            goToPage(reference.get(), WelcomeActivity.class, null);
+                        }
+                        finish();
+                    })).show();
+        } else {
+            AMapLocationClient.updatePrivacyShow(this, true, true);
+            AMapLocationClient.updatePrivacyAgree(this, true);
 
+            boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+            Class clas = isUser ? ClientActivity.class : StoreActivity.class;
+            goToPage(reference.get(), clas, null);
+            finish();
+        }
     }
 
     @Override

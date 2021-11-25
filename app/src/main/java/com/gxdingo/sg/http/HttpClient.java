@@ -7,6 +7,7 @@ import com.gxdingo.sg.biz.ProgressListener;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.body.UIProgressResponseCallBack;
@@ -74,10 +75,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, GLOBAL_SIGN, SignatureUtils.SignType.MD5);
 
-        if (isDebug) {
-            LogUtils.d(" SIGN === " + sign);
-            LogUtils.d(" timeStamp === " + timeStamp);
-        }
+            BaseLogUtils.d(" SIGN === " + sign);
+            BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -85,16 +84,14 @@ public class HttpClient {
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
 
-            if (isDebug) {
-                LogUtils.d(" USERIDENTIFIER === " + timeStamp);
-            }
+            BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 
@@ -121,10 +118,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
 
-        if (isDebug) {
-            LogUtils.d(" SIGN === " + sign);
-            LogUtils.d(" timeStamp === " + timeStamp);
-        }
+            BaseLogUtils.d(" SIGN === " + sign);
+            BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -132,16 +127,14 @@ public class HttpClient {
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
 
-            if (isDebug) {
-                LogUtils.d(" USERIDENTIFIER === " + timeStamp);
-            }
+            BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 
@@ -180,7 +173,7 @@ public class HttpClient {
             try {
                 request.params(entry.getKey(), entry.getValue());
             } catch (Exception e) {
-                LogUtils.e("http error === " + e);
+                BaseLogUtils.e("http error === " + e);
             }
         }
 
@@ -251,17 +244,18 @@ public class HttpClient {
         //全局url初始化
         if (isUser) {
             //客户端
-            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
-            Api.OSS_URL = isUat ? HTTPS + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+            Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
 
-            //客户端
+            //客户端 key
             LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         } else {
             //商家端
             Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-            Api.OSS_URL = isUat ? HTTPS + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-            //商家端
+
+            Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+            //商家端 key
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
 
@@ -270,8 +264,6 @@ public class HttpClient {
         EasyHttp.getInstance()
                 //可以全局统一设置全局URL
                 .setBaseUrl(Api.URL);//设置全局URL  url只能是域名 或者域名+端口号
-
-        SPUtils.getInstance().put(LOGIN_WAY, isUser);
 
     }
 

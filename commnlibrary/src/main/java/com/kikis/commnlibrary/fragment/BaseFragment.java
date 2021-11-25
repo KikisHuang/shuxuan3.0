@@ -17,6 +17,7 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.PreloadListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.MaterialHeader;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -30,9 +31,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,7 +44,6 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.Constant.CLOSE_ALL_ACTIVITY;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
 
@@ -92,7 +89,8 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     //点击时间间隔
     private int clickInterval = 300;
 
-
+    //首次加载
+    protected boolean isFirstLoad = true;
 
     /**
      * 创建fragment的静态方法，方便传递参数
@@ -137,6 +135,22 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         eventBusInit();
         initData();
         return view;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //增加了Fragment是否可见的判断
+        if (!isHidden())
+            lazyInit();
+    }
+
+    /**
+     * Android x版本 懒加载 ，需要自行重写(fragment不销毁)
+     */
+    protected void lazyInit() {
+
     }
 
     /**
@@ -252,6 +266,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         unbinder.unbind();
         EventBus.getDefault().unregister(this);
         clearDisposable();
+
     }
 
     public RxPermissions getRxPermissions() {
@@ -265,7 +280,6 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
         return rxPermissions;
     }
-
 
 
     /**
@@ -308,7 +322,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
      */
     protected void hideSkeletonScreen() {
 
-        if (mSkeletonScreen != null){
+        if (mSkeletonScreen != null) {
             mSkeletonScreen.hide();
             mSkeletonScreen = null;
         }
@@ -454,7 +468,7 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
 
         MaterialHeader materialHeader = new MaterialHeader(reference.get());
-        materialHeader.setColorSchemeColors(getc(R.color.pink_dominant_tone));
+        materialHeader.setColorSchemeColors(getc(R.color.green_dominant_tone));
         refreshLayout.setRefreshHeader(materialHeader);
         refreshLayout.setRefreshFooter(new ClassicsFooter(reference.get()));
 
@@ -506,6 +520,9 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
     public void onRequestComplete() {
         onAfters();
         hideSkeletonScreen();
+
+        if (refreshLayout != null && refreshLayout.isRefreshing())
+            refreshLayout.finishRefresh();
     }
 
     @Override
@@ -515,17 +532,19 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
 
     @Override
     public void onMessage(String msg) {
+        if (refreshLayout != null && refreshLayout.isRefreshing())
+            refreshLayout.finishRefresh();
+
         try {
             customToast(msg);
         } catch (Exception e) {
-            LogUtils.e(e);
+            BaseLogUtils.e(e);
         }
     }
 
 
     @Override
     public void onStarts() {
-        LogUtils.w("dialog test onStarts");
         if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).onStarts();
     }

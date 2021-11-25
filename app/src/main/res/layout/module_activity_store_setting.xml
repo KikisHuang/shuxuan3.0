@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/change_avatar_stv"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        app:sLeftIconHeight="45dp"
+        app:sLeftIconWidth="45dp"
+        app:sLeftIconMarginLeft="20dp"
+        app:sLeftIconRes="@drawable/module_svg_client_default_avatar"
+        app:sRightTextString="修改头像"
+        app:sRightTextColor="@color/gray_a9"
+        app:sRightTextSize="14sp"
+        app:sRightViewMarginRight="0dp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/change_nickname_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        app:sLeftTextString="金源便利店"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_2e"
+        app:sRightTextString="修改名称"
+        app:sRightTextColor="@color/gray_a9"
+        app:sRightTextSize="14sp"
+        app:sRightViewMarginRight="0dp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/change_address_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="店铺地址"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="金源CBD现代城·B座"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="14sp" />
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/change_mobile_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="联系电话"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="137***9999"
+        app:sRightViewMarginRight="0dp"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="14sp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/business_time_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="营业时间"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="08:00-22:00"
+        app:sRightViewMarginRight="0dp"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="14sp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+    <com.allen.library.SuperTextView
+        android:id="@+id/business_scope_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="配送范围"
+        app:sLeftViewMarginLeft="20dp"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="2公里"
+        app:sRightViewMarginRight="0dp"
+        app:sRightTextColor="@color/gray_2e"
+        app:sRightTextSize="14sp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+
+</LinearLayout>

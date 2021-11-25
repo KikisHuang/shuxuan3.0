@@ -15,7 +15,6 @@ import androidx.multidex.MultiDex;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.http.Api;
@@ -24,7 +23,10 @@ import com.gxdingo.sg.http.StoreApi;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
+import com.gxdingo.sg.view.NineGridGlideImageLoader;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.KikisUitls;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lzy.ninegrid.NineGridView;
 import com.tencent.bugly.Bugly;
@@ -36,15 +38,12 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
 import com.zhouyou.http.cache.model.CacheMode;
 import com.zhouyou.http.cookie.CookieManger;
 import com.zhouyou.http.model.HttpHeaders;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +54,9 @@ import static cc.shinichi.library.tool.file.FileUtil.createOrExistsDir;
 import static com.blankj.utilcode.util.AppUtils.getAppName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.gxdingo.sg.http.Api.HTTP;
-import static com.gxdingo.sg.http.Api.HTTPS;
+import static com.gxdingo.sg.http.Api.IM_OFFICIAL_URL;
+import static com.gxdingo.sg.http.Api.IM_TEST_URL;
+import static com.gxdingo.sg.http.Api.IM_UAT_URL;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.OFFICIAL_OSS_UPLOAD_URL;
 import static com.gxdingo.sg.http.Api.SM;
@@ -74,6 +75,8 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.OSS_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
@@ -86,6 +89,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.BUGLYAPPID;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * Created by Kikis on 2021/3/16.
@@ -106,27 +110,25 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         instance = this;
         //自用lib的初始化
         KikisUitls.Init(this);
         okHttpInit();
         keyInt();
-    }
+        ScreenUtils.init(this);
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onApplicationEvent(Integer type){
-        if (type == LocalConstant.CONSENT_AGREEMENT){
-            initGreenDao();
-            xPopupInit();
-            nineGridInit();
-            rxInit();
-            umengInit();
-            buglyInit();
-            tntX5Init();
-            initCloudChannel(this);
-            svgaCacheInit();
-        }
+        ZXingLibrary.initDisplayOpinion(this);
+
+        initGreenDao();
+        xPopupInit();
+        rxInit();
+        umengInit();
+        buglyInit();
+        tntX5Init();
+        initCloudChannel(this);
+        svgaCacheInit();
+        nineGridLayout();
     }
 
     /**
@@ -144,15 +146,6 @@ public class MyApplication extends Application {
     }
 
 
-    /**
-     * 九宫格控件初始化
-     */
-    private void nineGridInit() {
-
-//        NineGridView.setImageLoader(new NineGridGlideImageLoader());
-    }
-
-
     private void xPopupInit() {
         XPopup.setPrimaryColor(getc(R.color.pink_dominant_tone));
     }
@@ -163,7 +156,6 @@ public class MyApplication extends Application {
     private void keyInt() {
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-
         //全局url初始化
         if (isUser) {
             //客户端
@@ -172,19 +164,26 @@ public class MyApplication extends Application {
             //商家端
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
+        Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
 
-        Log.i("key", "keyInt: "+ LocalConstant.GLOBAL_SIGN);
-//
-//        if (isUser) {
-//            //客户端
-//            LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_UAT_HTTP_KEY : TEST_HTTP_KEY;
-//        } else {
-//            //商家端
-//            LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_UAT_HTTP_KEY : TEST_HTTP_KEY;
-//        }
-        LocalConstant.IM_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
+        LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
 
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
+
+
+    /*    //正式环境路径测试
+        if (isUser) {
+            //客户端
+            LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
+        } else {
+            //商家端
+            LocalConstant.GLOBAL_SIGN = STORE_OFFICIAL_HTTP_KEY;
+        }
+
+        LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
+
+        LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
+
 
     }
 
@@ -199,12 +198,12 @@ public class MyApplication extends Application {
             @Override
             public void onViewInitFinished(boolean arg0) {
                 //x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                LogUtils.d("开启TBS===X5加速成功");
+                BaseLogUtils.d("开启TBS===X5加速成功");
             }
 
             @Override
             public void onCoreInitFinished() {
-                LogUtils.d("开启TBS===X5加速失败");
+                BaseLogUtils.d("开启TBS===X5加速失败");
 
             }
         };
@@ -248,7 +247,6 @@ public class MyApplication extends Application {
      * Bugly异常统计初始化
      */
     private void buglyInit() {
-
         //使用异常上报功能的初始化。
 //        CrashReport.initCrashReport(getApplicationContext(), BUGLYAPPID, !isDebug);
 //        CrashReport.setAppChannel(this,AnalyticsConfig.getChannel(this));
@@ -337,7 +335,7 @@ public class MyApplication extends Application {
     private void rxInit() {
         if (!isDebug) {
             RxJavaPlugins.setErrorHandler(throwable -> {
-                LogUtils.e("RxJava Error === " + throwable);
+                BaseLogUtils.e("RxJava Error === " + throwable);
                 CrashReport.postCatchedException(throwable);
             });
         }
@@ -350,32 +348,37 @@ public class MyApplication extends Application {
     private void okHttpInit() {
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-
         //全局url初始化
         if (isUser) {
             //客户端
-            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-//            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
-            Api.OSS_URL = isUat ? HTTPS + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-//            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
+            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+            Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
         } else {
             //商家端
-            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-            Api.OSS_URL = isUat ? HTTPS + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTP + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
+            Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTP + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
+
         }
-
-//        if (isUat)
-//            Api.IM_URL = HTTP + UAT_URL;
-        Api.IM_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-
+        Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTP + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
         //H5客服
         ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? OFFICIAL_WEB_URL : TEST_WEB_URL;
 
-        EasyHttp.init(this);//默认初始化
+/*
+        //正式环境测试
+        if (isUser) {
+            //客户端
+            Api.URL = HTTP + ClientApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
+        } else {
+            //商家端
+            Api.URL = HTTP + StoreApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTP + OFFICIAL_OSS_UPLOAD_URL;
+        }
+        Api.IM_URL = HTTP + IM_OFFICIAL_URL;
+        ClientApi.WEB_URL = OFFICIAL_WEB_URL;
+*/
 
-        // 打开该调试开关并设置TAG,不需要就不要加入该行
-        // 最后的true表示是否打印内部异常，一般打开方便调试错误
-        EasyHttp.getInstance();
+        EasyHttp.init(this);//默认初始化
 
         //全局设置请求头
         HttpHeaders headers = new HttpHeaders();
@@ -421,12 +424,13 @@ public class MyApplication extends Application {
                 .setCacheVersion(1)//缓存版本为1
                 //.setHttpCache(new Cache())//设置Okhttp缓存，在缓存模式为DEFAULT才起作用
                 //可以设置https的证书,以下几种方案根据需要自己设置
-                .setCertificates()                                  //方法一：信任所有证书,不安全有风险
-                //.setCertificates(new SafeTrustManager())            //方法二：自定义信任规则，校验服务端证书
-                //配置https的域名匹配规则，不需要就不要加入，使用不当会导致https握手失败
-                //.setHostnameVerifier(new SafeHostnameVerifier())
-                //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
-                ;//设置全局公共头
+                .setCertificates()//方法一：信任所有证书,不安全有风险
+                .addCommonHeaders(headers)
+        //.setCertificates(new SafeTrustManager())            //方法二：自定义信任规则，校验服务端证书
+        //配置https的域名匹配规则，不需要就不要加入，使用不当会导致https握手失败
+        //.setHostnameVerifier(new SafeHostnameVerifier())
+        //.addConverterFactory(GsonConverterFactory.create(gson))//本框架没有采用Retrofit的Gson转化，所以不用配置
+        ;//设置全局公共头
 //                .addCommonParams(params)//设置全局公共参数
         //.addNetworkInterceptor(new NoCacheInterceptor())//设置网络拦截器
         //.setCallFactory()//局设置Retrofit对象Factory
@@ -461,21 +465,21 @@ public class MyApplication extends Application {
             pushService.register(applicationContext, new CommonCallback() {
                 @Override
                 public void onSuccess(String response) {
-//                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-//                    LogUtils.w("init cloudchannel success deviceId ==== " + deviceId);
+                    String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
+                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 
                 @Override
                 public void onFailed(String errorCode, String errorMessage) {
-                    LogUtils.w("init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
                 }
             });
 
             auxiliaryChannelInit();
 
         } catch (Exception e) {
-            LogUtils.e("initCloudChannel error  == " + e);
+            BaseLogUtils.e("initCloudChannel error  == " + e);
         }
     }
 
@@ -487,6 +491,12 @@ public class MyApplication extends Application {
         //8.0及其以上的设配设置NotificaitonChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        /*    NotificationChannel channel = mNotificationManager.getNotificationChannel("1");//CHANNEL_ID是自己定义的渠道ID
+            if (channel.getImportance() == NotificationManager.IMPORTANCE_DEFAULT) {//未开启
+                // 跳转到设置页面
+                BaseLogUtils.i("未开启 横幅通知");
+            }*/
+
             // 通知渠道的id
             String id = "1";//这个是与后台约定好的，要不收不到，该方法主要是适配Android 8.0以上，避免接收不到通知
             // 用户可以看到的通知渠道的名字.
@@ -495,6 +505,7 @@ public class MyApplication extends Application {
             String description = "通知";
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel mChannel = new NotificationChannel(id, name, importance);
+
             // 配置通知渠道的属性
             mChannel.setDescription(description);
             // 设置通知出现时的闪灯（如果 android 设备支持的话）
@@ -502,11 +513,11 @@ public class MyApplication extends Application {
             mChannel.setLightColor(Color.RED);
 
             //取消震动
-            mChannel.enableVibration(false);
-            mChannel.setVibrationPattern(new long[]{0});
+//            mChannel.enableVibration(false);
+//            mChannel.setVibrationPattern(new long[]{0});
             // 设置通知出现时的震动（如果 android 设备支持的话）
-//            mChannel.enableVibration(true);
-//            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             //最后在notificationmanager中创建该通知渠道
             mNotificationManager.createNotificationChannel(mChannel);
         }
@@ -523,6 +534,14 @@ public class MyApplication extends Application {
         HuaWeiRegister.register(this);
         // OPPO辅助通道注册
         OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取*/
+
+    }
+
+    /**
+     * 九宫格
+     */
+    private void nineGridLayout() {
+        NineGridView.setImageLoader(new NineGridGlideImageLoader());
 
     }
 

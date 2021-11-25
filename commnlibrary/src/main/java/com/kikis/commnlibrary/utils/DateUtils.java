@@ -444,7 +444,6 @@ public class DateUtils {
         else if (days > month)
             return month + "月前";
 
-
         return DateUtils.getDateText(new Date(start), DateUtils.CMD);
     }
 
@@ -477,6 +476,40 @@ public class DateUtils {
             return day + "\n/\n" + month + "月";
 
         return DateUtils.getDateText(new Date(start), DateUtils.CMD);
+    }
+
+
+    /**
+     * 计算时间差值以某种约定形式显示
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public static String getCustomDate(Long start, Long end) {
+
+        long diff = (end - start);
+        if (diff < 0)
+            return "今天";
+
+        int days = (int) ((diff) / (CAL_DAYS));
+
+        long wee = getWeeOfToday();
+
+        int year = Integer.valueOf(getDateText(new Date(start), "y"));
+
+        //这个时间戳月份的天数
+        int month = getMonthLastDay(year, Integer.valueOf(getDateText(new Date(start), "M")));
+
+        if (start >= wee) {
+            //今天
+            return "今天";
+        } else if (start >= wee - TimeConstants.DAY) {
+            return "昨天";
+        } else
+            return days + "天前";
+
+//        return DateUtils.getDateText(new Date(start), DateUtils.CMD);
     }
 
     /**
@@ -766,4 +799,47 @@ public class DateUtils {
         return String.valueOf(seconds);
     }
 
+    /**
+     * 将T（yyyy-MM-dd'T'HH:mm:SS）的时间格式转换成yyyy-MM-dd HH:mm
+     *
+     * @param time
+     * @return
+     */
+    public static String convertTheTimeFormatOfT(String time) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try {
+            Date date = sdf.parse(time);
+            String t = sdf.format(date);
+            return t.replace("T", " ");
+        } catch (ParseException e) {
+
+        }
+        return "";
+    }
+
+    /**
+     * 获取时间戳
+     *
+     * @param time
+     * @return
+     */
+    public static long getTimeStamp(SimpleDateFormat simpleDateFormat, String time) {
+        long mTimeStamp = 0;
+        if (time != null && time.length() > 0) {
+            Date date;
+            String times = null;
+            try {
+                date = simpleDateFormat.parse(time);
+                long l = date.getTime();
+                String stf = String.valueOf(l);
+                times = stf.substring(0, 10);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            mTimeStamp = Long.parseLong(times);
+        }
+        return mTimeStamp;
+    }
 }

@@ -6,6 +6,12 @@ apply plugin: 'bugly'
 //    id 'com.android.application'
 //}
 
+bugly {
+    appId = "9c912b9d6d"
+    appKey = "c7497641-b621-4366-9e6f-c0d00a3a0518"
+    debug = false
+}
+
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
@@ -24,7 +30,7 @@ android {
         ndk {
             // 设置支持的SO库架构
 //            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a',"x86"
+            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a', "x86"
         }
     }
 
@@ -34,7 +40,7 @@ android {
         VIVO {}
         MI {}
         YingYongBao {}
-
+        Official {}
         //遍历productFlavors
         productFlavors.all {
                 //动态设置UMENG_CHANNEL_VALUE对应的值
@@ -43,7 +49,7 @@ android {
     }
 
     signingConfigs {
-        debug{
+        debug {
             v1SigningEnabled true
             v2SigningEnabled true
         }
@@ -84,6 +90,10 @@ dependencies {
     implementation rootProject.ext.dependencies.multidex
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
+    implementation(name: 'auth_number_product-2.12.3-log-online-standard-release', ext: 'aar')
+    implementation(name: 'crashshield-2.1.2-release', ext: 'aar')
+    implementation(name: 'logger-2.1.2-release', ext: 'aar')
+    implementation(name: 'main-2.1.2-release', ext: 'aar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -119,18 +129,29 @@ dependencies {
     implementation rootProject.ext.dependencies.umengsharewechat
     implementation rootProject.ext.dependencies.wechatopensdk
 
+    //二维码生成
+//    implementation rootProject.ext.dependencies.zxingcore
 
-    //九宫格
-    implementation rootProject.ext.dependencies.ninegridview
+//    implementation rootProject.ext.dependencies.zxing
+
+    //二维码扫描
+    api 'cn.yipianfengye.android:zxing-library:2.2'
+
     //banner
     implementation rootProject.ext.dependencies.banner
     //websocket
     implementation rootProject.ext.dependencies.websocket
 
     //高德3D地图so及jar
-    implementation 'com.amap.api:3dmap:latest.integration'
+    implementation 'com.amap.api:3dmap:8.1.0'
     //高德定位功能
-    implementation 'com.amap.api:location:latest.integration'
-    implementation 'com.amap.api:search:latest.integration'
+    implementation 'com.amap.api:location:5.6.0'
+    implementation 'com.amap.api:search:8.1.0'
 
+    //自定义进度BGAProgressBar
+    implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
+
+    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
+    api project(':ninegridview')
 }

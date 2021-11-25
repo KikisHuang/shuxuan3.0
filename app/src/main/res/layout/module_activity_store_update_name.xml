@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/divide_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/module_shape_bg_white_round6">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="店铺名称修改需审核通过才可使用"
+            android:textSize="18sp"
+            android:textColor="@color/gray_2e"/>
+
+        <TextView
+            android:id="@+id/store_name_rule_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:text="《店铺名称规则》"
+            android:textColor="#74A0EC"/>
+
+        <com.gxdingo.sg.view.RegexEditText
+            android:id="@+id/store_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="50dp"
+            android:paddingVertical="@dimen/dp15"
+            android:background="@null"
+            android:text="金源便利店"
+            android:textSize="18sp"
+            android:textColor="@color/gray_2e"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:background="@color/divide_color"
+            android:layout_marginBottom="70dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="@dimen/dp_10"
+        android:gravity="center"
+        android:text="提交审核"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/module_shape_bg_68aa50_6r"/>
+
+</LinearLayout>

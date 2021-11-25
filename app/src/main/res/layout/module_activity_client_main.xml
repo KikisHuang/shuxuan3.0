@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clipChildren="false">
 
     <FrameLayout
         android:id="@+id/main_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/menu_layout"/>
+        android:layout_above="@+id/menu_layout" />
 
     <LinearLayout
         android:id="@+id/menu_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:gravity="bottom"
+        android:background="#EDEDED"
         android:clipChildren="false"
-        android:orientation="horizontal"
-        android:background="#EDEDED">
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
         <com.gxdingo.sg.view.CircularRevealButton
             android:id="@+id/home_page_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginVertical="5dp"
+            android:layout_weight="1"
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_main_menu_client_home_unselected"
@@ -35,52 +36,97 @@
             app:is_selected="true"
             app:text="@string/home_page" />
 
-        <com.gxdingo.sg.view.CircularRevealButton
-            android:id="@+id/message_layout"
+        <FrameLayout
+            android:id="@+id/msg_fl"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginVertical="5dp"
-            app:anim_show="false"
-            app:defocus_color="@color/gray202"
-            app:defocus_icon="@drawable/module_svg_main_menu_client_message_unselected"
-            app:focus_color="@color/main_tone"
-            app:focus_icon="@drawable/module_svg_main_menu_client_message_selected"
-            app:is_selected="false"
-            app:text="@string/message" />
+            android:layout_weight="1">
+
+            <com.gxdingo.sg.view.CircularRevealButton
+                android:id="@+id/message_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                app:anim_show="false"
+                app:defocus_color="@color/gray202"
+
+                app:defocus_icon="@drawable/module_svg_main_menu_client_message_unselected"
+                app:focus_color="@color/main_tone"
+                app:focus_icon="@drawable/module_svg_main_menu_client_message_selected"
+                app:is_selected="false"
+                app:text="@string/message" />
+
+            <TextView
+                android:id="@+id/tv_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="20dp"
+
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:visibility="gone"
+                tools:text="1" />
+        </FrameLayout>
+
 
         <com.gxdingo.sg.view.CircularRevealButton
             android:id="@+id/settle_in"
             android:layout_width="0dp"
             android:layout_height="58dp"
+            android:layout_marginVertical="10dp"
             android:layout_weight="1"
-            android:layout_marginVertical="5dp"
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_main_menu_client_settle_in"
+            app:focus_color="@color/gray202"
+            app:focus_icon="@drawable/module_svg_main_menu_client_settle_in"
             app:is_selected="false"
             app:text="@string/settle_in" />
 
-        <com.gxdingo.sg.view.CircularRevealButton
-            android:id="@+id/business_layout"
+        <FrameLayout
+            android:id="@+id/business_fl"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginVertical="5dp"
-            app:anim_show="false"
-            app:defocus_color="@color/gray202"
-            app:defocus_icon="@drawable/module_svg_main_menu_client_business_district_unselected"
-            app:focus_color="@color/main_tone"
-            app:focus_icon="@drawable/module_svg_main_menu_client_business_district_selected"
-            app:is_selected="false"
-            app:text="@string/business_district" />
+            android:layout_weight="1">
+
+            <com.gxdingo.sg.view.CircularRevealButton
+                android:id="@+id/business_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginVertical="5dp"
+                app:anim_show="false"
+                app:defocus_color="@color/gray202"
+                app:defocus_icon="@drawable/module_svg_main_menu_client_business_district_unselected"
+                app:focus_color="@color/main_tone"
+                app:focus_icon="@drawable/module_svg_main_menu_client_business_district_selected"
+                app:is_selected="false"
+                app:text="@string/business_district" />
+
+            <TextView
+                android:id="@+id/tv_business_unread_msg_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="right"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/module_unread_im_msg_red_bg"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                tools:text="1" />
+        </FrameLayout>
 
         <com.gxdingo.sg.view.CircularRevealButton
             android:id="@+id/mine_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_marginVertical="5dp"
+            android:layout_weight="1"
             app:anim_show="false"
             app:defocus_color="@color/gray202"
             app:defocus_icon="@drawable/module_svg_main_menu_client_mine_unselected"

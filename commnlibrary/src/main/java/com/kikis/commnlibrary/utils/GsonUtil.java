@@ -89,14 +89,14 @@ public class GsonUtil {
     }
 
 
-    /**
+/*    *//**
      * 转成list
      * 泛型在编译期类型被擦除导致报错
      *
      * @param gsonString
      * @param cls
      * @return
-     */
+     *//*
     public static <T> List<T> GsonToList(String gsonString, Class<T> cls) {
         List<T> list = null;
         if (gson != null) {
@@ -104,7 +104,7 @@ public class GsonUtil {
             }.getType());
         }
         return list;
-    }
+    }*/
 
 
     /**

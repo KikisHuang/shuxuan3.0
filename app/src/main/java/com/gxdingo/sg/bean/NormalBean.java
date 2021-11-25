@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+
 public class NormalBean {
 
     /**
@@ -20,10 +22,14 @@ public class NormalBean {
     public int state;
     public int status;
     public int msg_id;
-    public int count;
+    public int code=-1;
+    public int unread;
+    public long id;
     public String coin;
+    public ReceiveIMMessageBean data;
     public String singleAmount;
     public String mobile;
+    public String key;
     public String auth;
 
     /**

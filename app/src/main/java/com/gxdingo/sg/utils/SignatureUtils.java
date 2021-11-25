@@ -6,6 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -121,10 +122,10 @@ public class SignatureUtils {
 
         try {
             if (!isMatch("^[0-9a-zA-Z]{6,18}$", str)) {
-                LogUtils.e("字符格式不正确");
+                BaseLogUtils.e("字符格式不正确");
             }
         } catch (Exception e) {
-            LogUtils.e("Decode Error == " + e);
+            BaseLogUtils.e("Decode Error == " + e);
             return 0l;
         }
  /*       String[] strArray = str.split("");
@@ -166,12 +167,12 @@ public class SignatureUtils {
             int r = (keyLength - rand + Long.toString(number).length()) % keyLength;
 
             if (!verify.equals(keyArray[r])) {
-                LogUtils.e("给定字符校验错误，无法解析");
+                BaseLogUtils.e("给定字符校验错误，无法解析");
                 return 0l;
             }
             return Math.subtractExact(number, numberFixValue);
         } catch (Exception e) {
-            LogUtils.e("Decode Error == " + e);
+            BaseLogUtils.e("Decode Error == " + e);
         }
         return 0l;
     }

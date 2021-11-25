@@ -1,5 +1,6 @@
 package com.kikis.commnlibrary.activitiy;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,7 +23,9 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.NewMessage;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.BaseMessageLayout;
 import com.lxj.xpopup.XPopup;
@@ -59,6 +62,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.Constant.CLOSE_ALL_ACTIVITY;
+import static com.kikis.commnlibrary.utils.Constant.UserInfo;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 import static com.kikis.commnlibrary.utils.SoftKeyboardUtils.isShouldHideInput;
 
@@ -439,12 +443,10 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         //关闭越界拖动
         refreshLayout.setEnableOverScrollDrag(false);
 
-
         MaterialHeader materialHeader = new MaterialHeader(this);
-        materialHeader.setColorSchemeResources(R.color.blue_dominant_tone, R.color.red_dominant_tone, R.color.yellow_dominant_tone);
+        materialHeader.setColorSchemeResources(R.color.green_dominant_tone);
         refreshLayout.setRefreshHeader(materialHeader);
         refreshLayout.setRefreshFooter(new ClassicsFooter(this));
-
 
         //这里是自定义刷新头部，高优先级，会覆盖xml里面的设置，如果不需要注释代码即可，
 //        refreshLayout.setRefreshHeader(new CustomRefreshHeader(reference.get()));
@@ -539,7 +541,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
      *
      * @param unReadMessage 消息测试数据
      */
-    protected synchronized void showNewMessageDialog(final NewMessage unReadMessage) {
+    protected synchronized void showNewMessageDialog(final ReceiveIMMessageBean unReadMessage) {
 
 
         RxUtil.observe(Schedulers.newThread(), Flowable.create(new FlowableOnSubscribe<Object>() {
@@ -552,16 +554,16 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         }, BackpressureStrategy.ERROR), BaseActivity.this).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) {
-                LogUtils.i("fmlayout count === " + fmlayout.getChildCount());
+                BaseLogUtils.i("fmlayout count === " + fmlayout.getChildCount());
 
-                final NewMessage messageInfoBean = (NewMessage) o;
+                final ReceiveIMMessageBean messageInfoBean = (ReceiveIMMessageBean) o;
                 final BaseMessageLayout baseMessageLayout = new BaseMessageLayout(reference.get());
                 fmlayout.addView(baseMessageLayout);
 
                 baseMessageLayout
-                        .setTitle(messageInfoBean.getFromName())
-                        .setContent(messageInfoBean.getContent())
-                        .setAvatar(messageInfoBean.getFromAvatar())
+                        .setTitle(messageInfoBean.getSubscribeListVO().getSendNickname())
+                        .setContent(messageInfoBean.getSubscribeListVO().getLastMsg())
+                        .setAvatar(messageInfoBean.getSubscribeListVO().getSendAvatar())
                         .setHandler(new Handler() {
                             @Override
                             public void handleMessage(@NonNull Message msg) {
@@ -577,7 +579,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
                         .setClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                sendEvent(new GoNoticePageEvent(messageInfoBean.getOrder() != null ? messageInfoBean.getOrder().getId() : 0, messageInfoBean.getSubscribeId(), messageInfoBean.getFromType()));
+                                if (messageInfoBean.getSubscribeListVO() != null)
+                                    sendEvent(new GoNoticePageEvent(messageInfoBean.getSubscribeListVO().getShareUuid(), messageInfoBean.getSubscribeListVO().getSendUserRole()));
+
                                 fmlayout.removeViewInLayout(baseMessageLayout);
                             }
                         }).show();
@@ -668,13 +672,16 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
      * @param object
      */
     protected void onBaseEvent(Object object) {
+
+        Activity activity = this;
+
         //重新登录全局事件
         if (object instanceof ReLoginBean)
             finish();
 
         //全局新消息布局
-        if (!isAcBackground && object instanceof NewMessage)
-            showNewMessageDialog((NewMessage) object);
+        if (!isAcBackground && object instanceof ReceiveIMMessageBean)
+            showNewMessageDialog((ReceiveIMMessageBean) object);
     }
 
     /**
@@ -709,7 +716,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         try {
             customToast(msg);
         } catch (Exception e) {
-            LogUtils.e(e);
+            BaseLogUtils.e(e);
         }
 
     }
@@ -733,8 +740,12 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
     @Override
     public void onAfters() {
-        if (loadingPopup != null && loadingPopup.isShow())
+        if (loadingPopup != null && loadingPopup.isShow()){
             loadingPopup.dismiss();
+            loadingPopup.onDestroy();
+            loadingPopup = null;
+        }
+
     }
 
     @Override
@@ -812,14 +823,9 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
     protected void statusBarInit() {
 
         if (ImmersionBar()) {
-            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true);
-            mImmersionBar.statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
+            mImmersionBar = ImmersionBar.with(reference.get()).fitsSystemWindows(true).statusBarDarkFont(true, 0.2f).statusBarColor(StatusBarColors() == 0 ? R.color.grayf1 : StatusBarColors());
         } else
             mImmersionBar = ImmersionBar.with(reference.get());
-
-
-        if (NavigationBarColor() != 0)
-            mImmersionBar.navigationBarColor(NavigationBarColor()).autoNavigationBarDarkModeEnable(true, 0.2f);
 
         mImmersionBar.init();
     }
@@ -850,6 +856,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
         loadingPopup = new XPopup.Builder(reference.get())
                 .hasShadowBg(false)
+                .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                 .popupAnimation(PopupAnimation.NoAnimation)
                 .asLoading();
 //                .asLoading("", R.layout.module_dialog_custom);

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?><!--语音录制布局-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_voice_recording_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:background="@color/black5"
+    android:visibility="gone"
+    android:layout_weight="1">
+
+    <!--取消录音区域-->
+    <RelativeLayout
+        android:id="@+id/rl_cancel_recording_area"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/module_create_voice_head_background"
+        app:layout_constraintBottom_toTopOf="@+id/btn_long_press_to_speak">
+
+        <ImageView
+            android:id="@+id/recorded_voice_scrolling"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/module_im_recorded_voice_scrolling"
+            android:layout_marginTop="30dp" />
+
+        <ImageView
+            android:id="@+id/iv_voice_recording_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30dp"
+            android:src="@drawable/module_svg_im_voice_recording_status_open" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/btn_long_press_to_speak"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="#599252"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="松开发送"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

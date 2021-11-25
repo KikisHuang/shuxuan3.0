@@ -1,0 +1,10 @@
+<resources>
+    <string name="store_have_read_agreement1">我已阅读并同意</string>
+    <string name="store_have_read_agreement2">《服务协议》与《隐私协议》</string>
+    <string name="del_business_license_image">确定删除营业执照图片？</string>
+    <string name="store_home_page">首页</string>
+    <string name="store_wallet">钱包</string>
+    <string name="store_business_district">商圈</string>
+    <string name="store_mine">我的</string>
+
+</resources>

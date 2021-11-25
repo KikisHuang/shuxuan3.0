@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.gxdingo.sg.view.CustomLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grayf5"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/grayf5">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="75dp"
+                    android:overScrollMode="never"
+                    android:scrollbars="none" />
+
+                <TextView
+                    android:id="@+id/unread_count_tv"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="right|bottom"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/module_shape_red_msg_dot"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:visibility="gone"></TextView>
+
+                <include layout="@layout/module_include_im_head_address" />
+            </FrameLayout>
+
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_emotionview_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.gxdingo.sg.view.CustomLinearLayout>
+
+    <include layout="@layout/module_include_voice_laoyut" />
+
+
+</FrameLayout>

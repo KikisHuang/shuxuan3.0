@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="44dp"
+    android:id="@+id/title_layout"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingBottom="6dp"
+    android:alpha="0"
+    android:background="@color/main_tone">
+    <TextView
+        android:id="@+id/location_tt_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="获取当前定位"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_toEndOf="@+id/location_tt_tv"
+        android:layout_alignTop="@+id/location_tt_tv"
+        android:layout_alignBottom="@+id/location_tt_tv"
+        android:src="@drawable/module_svg_right_arrow_white"/>
+
+    <ImageView
+        android:id="@+id/btn_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/module_svg_search_white"/>
+
+</RelativeLayout>

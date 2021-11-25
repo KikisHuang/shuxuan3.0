@@ -3,27 +3,27 @@ package com.gxdingo.sg.utils;
 public class ClientLocalConstant {
 
     //sp final
-    public static final String USER_INFO_KEY = "shugou_user_info_key";
-    public static final String USER_TOKEN_KEY = "shugou_user_token_key";
-    public static final String USER_ID_KEY = "shugou_user_id_key";
-    public static final String USER_AVATAR_KEY = "shugou_user_avatar_key";
-    public static final String USER_PHONE_KEY = "shugou_user_phone_key";
-    public static final String USER_NICKNAME_KEY = "shugou_user_nickname_key";
-    public static final String USER_OPENID_KEY = "shugou_user_openid_key";
-    public static final String USER_WALLPAGER_KEY = "shugou_user_wallpager_key";
-    public static final String USER_IDENTIFIER = "shugou_user_identifier_key";
+    public static final String USER_INFO_KEY = "shuxuan_user_info_key";
+    public static final String USER_TOKEN_KEY = "shuxuan_user_token_key";
+    public static final String USER_ID_KEY = "shuxuan_user_id_key";
+    public static final String USER_AVATAR_KEY = "shuxuan_user_avatar_key";
+    public static final String USER_PHONE_KEY = "shuxuan_user_phone_key";
+    public static final String USER_NICKNAME_KEY = "shuxuan_user_nickname_key";
+    public static final String USER_OPENID_KEY = "shuxuan_user_openid_key";
+    public static final String USER_WALLPAGER_KEY = "shuxuan_user_wallpager_key";
+    public static final String USER_IDENTIFIER = "shuxuan_user_identifier_key";
 
-    public static final String MESSAGE_NOTICE_KEY = "shugou_message_notice_key";
+    public static final String MESSAGE_NOTICE_KEY = "shuxuan_message_notice_key";
 
-    public static final String LOCATION_LATITUDE_KEY = "shugou_user_latitude_key";
-    public static final String LOCATION_LONGITUDE_KEY = "shugou_user_longitude_key";
+    public static final String LOCATION_LATITUDE_KEY = "shuxuan_user_latitude_key";
+    public static final String LOCATION_LONGITUDE_KEY = "shuxuan_user_longitude_key";
 
     //heads params
     public static final String APP = "APP";
     public static final String DEVICE = "device";
     public static final String YI_TARGET = "YI-Target";
     public static final String YI_VERSION = "YI-Version";
-    public static final String YI_VERSION_NUMBER = "1.0";
+    public static final String YI_VERSION_NUMBER = "2.0";
 
     //http params
     public static final String REGIONPATH = "regionPath";
@@ -66,6 +66,8 @@ public class ClientLocalConstant {
     public static final int GET_LOCATION_SUCCEED = 18;
     //录音成功
     public static final int RECORD_SUCCEED = 15;
+    //录音成功
+    public static final int MODIFY_PERSONAL_SUCCESS = 115;
 
     //清除未读消息成功
     public static final int CLEAR_UNREAD_SUCCEED = 28;
@@ -90,6 +92,9 @@ public class ClientLocalConstant {
     //login type
     public static final String WECHAT = "wechat";
     public static final String ALIPAY = "alipay";
+    public static final String BANK = "bank";
+
+    public static final int FILL_SUCCESS = 41354;
 
     public static final int COMMONLY_USED_STORE_HORIZONTAL = 1;
 
@@ -107,6 +112,17 @@ public class ClientLocalConstant {
     public static final int ITEMS1 = 7;
     public static final int ITEMS2 = 8;
     public static final int ITEMS3 = 9;
+
+    public static final String STATUS = "status";
+    public static final String DATE = "date";
+
+    public static final String WITHDRAWAL_PASSWORD = "withdrawalPassword";
+    public static final String AMOUNT = "amount";
+    public static final String BANK_CARD_ID = "bankCardId";
+
+    public static final String ACTIVE_CODE = "activeCode";
+
+    public static final String UPDATE_SUCCESS = "update_success";
 
 
 }

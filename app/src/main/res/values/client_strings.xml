@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="account_record">账户记录</string>
+    <string name="pay_password">支付密码</string>
+    <string name="binding_phone">绑定手机</string>
+    <string name="back_card">银行卡</string>
+    <string name="confirm_cash">确认提现</string>
+    <string name="balance_cash">余额提现</string>
+    <string name="setting_pay_pwd">设置支付密码</string>
+    <string name="update_pay_pwd">修改支付密码</string>
+    <string name="next">下一步</string>
+    <string name="receiving_address">收货地址</string>
+    <string name="add_address">新增地址</string>
+    <string name="house_number">门牌号：</string>
+    <string name="contacts">联系人</string>
+    <string name="hint_contacts">请填写收货人姓名</string>
+    <string name="phone_number_colon">手机号</string>
+    <string name="hint_mobile">请填写收货人手机号</string>
+    <string name="label">标签</string>
+    <string name="edit_receiving_address">编辑收货地址</string>
+    <string name="text_edit">编辑</string>
+    <string name="not_get_address_info">没有获取到地址信息</string>
+    <string name="contact_name_can_not_null">联系人名字不能为空</string>
+    <string name="address_detal_can_not_null">详细地址不能为空</string>
+    <string name="send_message">发消息</string>
+    <string name="phone_cantract">电话联系</string>
+    <string name="new_address">新增地址</string>
+    <string name="add_address_succeed">添加地址成功</string>
+    <string name="del_address_succeed">删除地址成功</string>
+    <string name="no_get_store_mobile_phone_number">商家未填写手机号</string>
+    <string name="common_year">年</string>
+    <string name="common_month">月</string>
+    <string name="please_select_cash_account">请选择提现账户</string>
+    <string name="please_input_valid_amount">请输入有效提现金额</string>
+    <string name="full_name">姓名</string>
+    <string name="idcard_number">身份证号</string>
+    <string name="bank_card_number">银行卡号</string>
+    <string name="mobile_phone_number">手机号码</string>
+    <string name="certify_code">验证码</string>
+    <string name="hint_full_name">请输入真实姓名</string>
+    <string name="hint_idcart_number">请输入身份证号</string>
+    <string name="hint_certify_code">请填写验证码</string>
+    <string name="add_success">添加成功！</string>
+    <string name="fill_invitation_code">填写邀请码</string>
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/ll_selected_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/date_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2021年9月"
+            android:textColor="#2E2E2E"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/module_svg_down_arrow_black"/>
+
+    </LinearLayout>
+
+    <com.donkingliang.labels.LabelsView
+        android:id="@+id/account_record_lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:labelBackground="@drawable/module_label_bg"
+        app:labelTextColor="@drawable/module_label_text_color"
+        app:labelTextSize="@dimen/sp_14"
+        app:labelTextPaddingBottom="2dp"
+        app:labelTextPaddingLeft="8dp"
+        app:labelTextPaddingRight="8dp"
+        app:labelTextPaddingTop="2dp"
+        app:wordMargin="30dp"
+        app:maxLines="1"
+        app:selectType="SINGLE"
+        app:layout_constraintStart_toEndOf="@+id/ll_selected_date"
+        app:layout_constraintTop_toTopOf="@+id/ll_selected_date"
+        app:layout_constraintBottom_toBottomOf="@id/ll_selected_date"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide_color"
+        app:layout_constraintTop_toBottomOf="@+id/ll_selected_date"/>
+
+
+    <include layout="@layout/module_include_refresh"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_selected_date"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

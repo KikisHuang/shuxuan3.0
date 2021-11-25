@@ -1,5 +1,7 @@
 package com.gxdingo.sg.biz;
 
+import android.app.Activity;
+
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -12,6 +14,8 @@ public class LoginContract {
 
     public interface LoginPresenter extends MvpPresenter<BasicsListener,LoginListener>{
 
+        void switchUrl(boolean isUserId);
+
         void getWechatAuth();
 
         void alipayAuth();
@@ -20,9 +24,19 @@ public class LoginContract {
 
         void getVerificationCodeTime();
 
+        void bindPhone(String mOpenId, String mAppName);
+
         void weChatLogin(String code);
 
         void login();
+
+        void oauth();
+
+        /**
+         * 一键登录页面微信登陆
+         * @param code
+         */
+        void oauthWeChatLogin(String code);
     }
 
     public interface LoginListener{
@@ -33,5 +47,7 @@ public class LoginContract {
         boolean isClient();
 
         void setVerificationCodeTime(int time);
+
+        void showIdButton();
     }
 }
