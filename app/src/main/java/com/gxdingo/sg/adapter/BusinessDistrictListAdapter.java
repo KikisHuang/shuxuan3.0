@@ -46,13 +46,14 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
     Context mContext;
     PullDividerItemDecoration mSpaceItemDecoration;
     StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
-    //消息评论总数
-    private int mTotal = 0;
+    //单张图片宽度
+    private int singleWidth = 0;
 
     public BusinessDistrictListAdapter(Context context
             , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
         super(R.layout.module_item_business_district_list);
         this.mContext = context;
+        singleWidth = (int) (getScreenWidth() * 1 / 2);
         mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
         mOnChildViewClickListener = onChildViewClickListener;
     }
@@ -69,7 +70,6 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         LinearLayout llCommentLayout = baseViewHolder.findView(R.id.ll_comment_layout);
         TextView tvOpenComment = baseViewHolder.findView(R.id.tv_open_comment);
         NineGridView picture_gridview = baseViewHolder.findView(R.id.picture_gridview);
-        ImageView single_img = baseViewHolder.findView(R.id.single_img);
 
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
@@ -148,66 +148,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
          * 图片列表
          */
 
-        if (data.getImages() != null && data.getImages().size() == 1) {
-            single_img.setVisibility(View.VISIBLE);
-            picture_gridview.setVisibility(View.GONE);
-//            Glide.with(mContext).load(data.getImages().get(0)).apply(GlideUtils.getInstance().getGlideRoundOptions(6).centerCrop()).into(single_img);
+        picture_gridview.setVisibility(data.getImages() != null && data.getImages().size() > 0 ? View.VISIBLE : View.GONE);
 
+        if (data.getImages() != null && data.getImages().size() > 0) {
 
-            single_img.setOnClickListener(v -> {
-                if (mOnChildViewClickListener != null && data.getImages() != null)
-                    mOnChildViewClickListener.item(single_img, baseViewHolder.getAdapterPosition(), 0, data.getImages());
-            });
-
-            Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
-                @Override
-                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
-                    try {
-                        String width = String.valueOf(resource.getIntrinsicWidth());
-
-                        String height = String.valueOf(resource.getIntrinsicHeight());
-
-//                    int newheight = getScreenWidth() * height / width;
-
-                        float ratio = Float.parseFloat(div(width, height, 5));
-
-                        int h = (int) (getScreenWidth() * 1 / 2);
-
-                        single_img.getLayoutParams().width = (int) (h * ratio);
-
-                        single_img.getLayoutParams().height = h;
-
-//                        single_img.setImageDrawable(resource);
-
-                        Glide.with(mContext).load(data.getImages().get(0)).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(single_img);
-
-                    } catch (Exception e) {
-                        BaseLogUtils.e("图片宽高计算异常 === " + e);
-                    }
-                }
-            });
-
-        } else {
-
-
-            picture_gridview.setVisibility(View.VISIBLE);
-            single_img.setVisibility(View.GONE);
-
-            if (getItemPosition(data) == 0)
-                picture_gridview.setVisibility(View.GONE);
-
-            //单张图片宽度
-            //picture_gridview.setSingleImageSize((int) (getScreenWidth() * 1.5 / 2));
-            //picture_gridview.setSingleImageRatio(0.5625f);
-
-     /*       ArrayList<ImageInfo> imageInfo = new ArrayList<>();
-
-            for (int i = 0; i < data.getImages().size(); i++) {
-                ImageInfo info = new ImageInfo();
-                info.setThumbnailUrl(data.getImages().get(i));
-                info.setBigImageUrl(data.getImages().get(i));
-                imageInfo.add(info);
-            }*/
             if (data.imageInfos != null && data.imageInfos.size() > 0) {
                 picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, baseViewHolder.getAdapterPosition(), new NineClickListener() {
                     @Override
@@ -218,8 +162,40 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                     }
                 }));
             }
-        }
 
+            if (data.getImages().size() == 1) {
+
+                Glide.with(mContext).load(data.getImages().get(0)).into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                        try {
+                            String width = String.valueOf(resource.getIntrinsicWidth());
+
+                            String height = String.valueOf(resource.getIntrinsicHeight());
+
+                            float ratio = Float.parseFloat(div(width, height, 5));
+
+                            //单张图片宽度
+                            picture_gridview.setSingleImageSize(singleWidth);
+                            //比例
+                            picture_gridview.setSingleImageRatio(ratio);
+
+                            if (picture_gridview.getImageViewsSize() > 0) {
+                                Glide.with(mContext).load(resource)//
+                                        .apply(GlideUtils.getInstance().getGlideRoundOptions(6).placeholder(R.drawable.load_faile_icon))
+                                        .into(picture_gridview.getImageView(0));
+                            }
+//                            notifyItemChanged(getItemPosition(data));
+
+                        } catch (Exception e) {
+                            BaseLogUtils.e("图片宽高计算异常 === " + e);
+                        }
+                    }
+                });
+            }
+
+
+        }
 
         if (data.getCommentList().size() < 10) {
             //小余10条不显示 展开、收起布局

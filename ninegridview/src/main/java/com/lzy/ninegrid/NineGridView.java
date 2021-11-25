@@ -73,12 +73,13 @@ public class NineGridView extends ViewGroup {
             if (mImageInfo.size() == 1) {
                 gridWidth = singleImageSize > totalWidth ? totalWidth : singleImageSize;
                 gridHeight = (int) (gridWidth / singleImageRatio);
+
                 //矫正图片显示区域大小，不允许超过最大显示范围
-                if (gridHeight > singleImageSize) {
+             /*   if (gridHeight > singleImageSize) {
                     float ratio = singleImageSize * 1.0f / gridHeight;
                     gridWidth = (int) (gridWidth * ratio);
                     gridHeight = singleImageSize;
-                }
+                }*/
             } else {
 //                gridWidth = gridHeight = (totalWidth - gridSpacing * (columnCount - 1)) / columnCount;
                 //这里无论是几张图片，宽高都按总宽度的 1/3
@@ -184,11 +185,11 @@ public class NineGridView extends ViewGroup {
         }
         mImageInfo = imageInfo;
         requestLayout();
-        loadImage();
+//        loadImage();
     }
 
     /** 获得 ImageView 保证了 ImageView 的重用 */
-    private ImageView getImageView(final int position) {
+    public ImageView getImageView(final int position) {
         ImageView imageView;
         if (position < imageViews.size()) {
             imageView = imageViews.get(position);
@@ -203,6 +204,10 @@ public class NineGridView extends ViewGroup {
             imageViews.add(imageView);
         }
         return imageView;
+    }
+
+    public int getImageViewsSize(){
+        return imageViews.size();
     }
 
     /** 设置宫格间距 */

@@ -80,9 +80,12 @@ public class GlideUtils {
      * @return
      */
     public RequestOptions getRoundedOptions(int dp) {
-
+/*
         RequestOptions options = getDefaultOptions().bitmapTransform(new MultiTransformation(
-                new RoundedCornersTransformation(dp, 0, RoundedCornersTransformation.CornerType.ALL)));
+                new RoundedCornersTransformation(dp, 0, RoundedCornersTransformation.CornerType.ALL)));*/
+
+        RequestOptions options = RequestOptions.bitmapTransform(new GlideRoundedCornersTransform(dp, GlideRoundedCornersTransform.CornerType.ALL));
+
 
         return options;
     }

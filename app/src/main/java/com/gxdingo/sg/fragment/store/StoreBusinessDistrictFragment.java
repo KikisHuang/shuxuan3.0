@@ -343,7 +343,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                             getP().deleteBusinessDistrictDynamics(businessDistrict.getId());
                         }))
                         .show();
-            } else if (view.getId() == R.id.picture_gridview || view.getId() == R.id.single_img) {
+            } else if (view.getId() == R.id.picture_gridview) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(),position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
                 if (isUser) {

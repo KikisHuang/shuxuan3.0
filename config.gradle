@@ -72,7 +72,8 @@ ext {
             glide                         : "com.github.bumptech.glide:glide:4.11.0",//glide
             glidecompiler                 : "com.github.bumptech.glide:compiler:4.11.0",//glidecompiler
             glideokhttp3                  : "com.github.bumptech.glide:okhttp3-integration:4.11.0",//glideokhttp3
-            glidetransformations          : "jp.wasabeef:glide-transformations:3.3.0",//glide transformations
+            glidetransformations          : "jp.wasabeef:glide-transformations:4.3.0",//glide transformations
+            gpuimage                      : "jp.co.cyberagent.android:gpuimage:2.1.0",//glide transformations
             gson                          : "com.google.code.gson:gson:2.8.5",//gson
             fastjson                      : "com.alibaba:fastjson:1.2.60",//fastjson
             buglycrashreport_upgrade      : "com.tencent.bugly:crashreport_upgrade:latest.release",//bugly异常上报
