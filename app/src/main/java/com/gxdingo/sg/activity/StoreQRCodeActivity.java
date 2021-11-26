@@ -5,8 +5,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.blankj.utilcode.util.StringUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.DistanceBean;
 import com.gxdingo.sg.bean.StoreDetailBean;
@@ -14,7 +19,9 @@ import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
 import com.gxdingo.sg.utils.QRCodeUtil;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.tencent.smtt.sdk.WebView;
 
@@ -126,7 +133,7 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
     }
 
     @OnClick(R.id.btn_copy)
-    public void OnClickView(){
+    public void OnClickView() {
 
         copyText(invitation_code_tv.getText().toString());
         onMessage("已复制到剪切板");
@@ -140,8 +147,16 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
     @Override
     public void onQRResult(StoreQRCodeBean qrCodeBean) {
         coupon_title_tv.setText(qrCodeBean.getStoreName());
-        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(qrCodeBean.getCouponIdIdentifier(), 200, 200);
-        qr_code_iv.setImageBitmap(qrCodeBitmap);
+        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(qrCodeBean.getCouponIdIdentifier(), 250, 250);
+
+        Glide.with(reference.get()).asBitmap().load(!isEmpty(UserInfoUtils.getInstance().getUserAvatar()) ? UserInfoUtils.getInstance().getUserAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                Bitmap LogoQrCodeBtmp = QRCodeUtil.addLogo(qrCodeBitmap, resource, 0.2f);
+                qr_code_iv.setImageBitmap(LogoQrCodeBtmp);
+            }
+        });
+
         invitation_code_tv.setText(qrCodeBean.getActiveCode());
         if (!isEmpty(qrCodeBean.getExplain()))
             webView.loadDataWithBaseURL(null, qrCodeBean.getExplain(), "text/html", "utf-8", null);

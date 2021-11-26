@@ -75,8 +75,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, GLOBAL_SIGN, SignatureUtils.SignType.MD5);
 
-            BaseLogUtils.d(" SIGN === " + sign);
-            BaseLogUtils.d(" timeStamp === " + timeStamp);
+        BaseLogUtils.d(" SIGN === " + sign);
+        BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -118,8 +118,8 @@ public class HttpClient {
 
         String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
 
-            BaseLogUtils.d(" SIGN === " + sign);
-            BaseLogUtils.d(" timeStamp === " + timeStamp);
+        BaseLogUtils.d(" SIGN === " + sign);
+        BaseLogUtils.d(" timeStamp === " + timeStamp);
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
@@ -258,7 +258,6 @@ public class HttpClient {
             //商家端 key
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
-
 
         //以下设置的所有参数是全局参数,同样的参数可以在请求的时候再设置一遍,那么对于该请求来讲,请求中的参数会覆盖全局参数
         EasyHttp.getInstance()
