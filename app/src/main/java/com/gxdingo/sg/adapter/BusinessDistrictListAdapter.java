@@ -53,7 +53,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
         super(R.layout.module_item_business_district_list);
         this.mContext = context;
-        singleWidth = (int) (getScreenWidth() * 1 / 2);
+        singleWidth = (int) (getScreenWidth() * 1 / 3);
         mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
         mOnChildViewClickListener = onChildViewClickListener;
     }
@@ -175,8 +175,12 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
                             float ratio = Float.parseFloat(div(width, height, 5));
 
-                            //单张图片宽度
-                            picture_gridview.setSingleImageSize(singleWidth);
+                            if (resource.getIntrinsicWidth() > resource.getIntrinsicHeight())
+                                //单张图片宽度
+                                picture_gridview.setSingleImageSize((int) (getScreenWidth() * 1.2 / 2));
+                            else
+                                picture_gridview.setSingleImageSize(singleWidth);
+
                             //比例
                             picture_gridview.setSingleImageRatio(ratio);
 

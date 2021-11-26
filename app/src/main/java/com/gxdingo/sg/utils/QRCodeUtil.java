@@ -120,7 +120,7 @@ public class QRCodeUtil {
      * @return
      */
     @Nullable
-    private static Bitmap addLogo(@Nullable Bitmap srcBitmap, @Nullable Bitmap logoBitmap, float logoPercent) {
+    public static Bitmap addLogo(@Nullable Bitmap srcBitmap, @Nullable Bitmap logoBitmap, float logoPercent) {
 
         /** 1. 参数合法性判断 */
         if (srcBitmap == null) {

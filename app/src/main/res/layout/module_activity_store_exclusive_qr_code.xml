@@ -27,9 +27,8 @@
 
         <ImageView
             android:id="@+id/qr_code_iv"
-            android:layout_width="215dp"
-            android:layout_height="215dp"
-            android:layout_margin="@dimen/dp_10"/>
+            android:layout_width="250dp"
+            android:layout_height="250dp"/>
 
 
         <LinearLayout
