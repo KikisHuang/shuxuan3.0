@@ -14,6 +14,8 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.ClientApi.STORE_NAMING_RULE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -112,7 +114,10 @@ public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContra
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.store_name_rule_tv:
-                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about_us"}));
+
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, STORE_NAMING_RULE}));
+
+//                goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, STORE_NAMING_RULE}));
                 break;
             case R.id.btn_submit:
                 String s = store_name_et.getText().toString();

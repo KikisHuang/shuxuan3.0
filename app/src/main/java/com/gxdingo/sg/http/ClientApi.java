@@ -24,6 +24,8 @@ public class ClientApi {
     public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
     //商家端服务协议文章
     public static final String STORE_SERVICE_AGREEMENT_KEY = "shangjiafuwuxieyi";
+    //店铺命名规则
+    public static final String STORE_NAMING_RULE = "mingmingguize";
     //树选用户及商家隐私协议
     public static final String PRIVACY_AGREEMENT_KEY = "azyhsjyhxy";
 
