@@ -46,6 +46,8 @@ import com.zhouyou.http.cache.model.CacheMode;
 import com.zhouyou.http.cookie.CookieManger;
 import com.zhouyou.http.model.HttpHeaders;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -76,6 +78,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
@@ -108,19 +111,16 @@ public class MyApplication extends Application {
         return instance;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-//        EventBus.getDefault().register(this);
-        instance = this;
-        //自用lib的初始化
-        KikisUitls.Init(this);
+    /**
+     * 初始化方法
+     */
+    public void init() {
+
         okHttpInit();
         keyInt();
         ScreenUtils.init(this);
 
         ZXingLibrary.initDisplayOpinion(this);
-
         initGreenDao();
         xPopupInit();
         rxInit();
@@ -130,7 +130,18 @@ public class MyApplication extends Application {
         initCloudChannel(this);
         svgaCacheInit();
         nineGridLayout();
+    }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+        //自用lib的初始化
+        KikisUitls.Init(this);
+
+        //首次登录延迟初始化
+        if (!SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true))
+            init();
     }
 
     /**

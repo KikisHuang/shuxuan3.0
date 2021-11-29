@@ -332,12 +332,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
 
     @Override
-    public void onBackPressed() {
-        //todo 无法调用
-        callJsBye();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (webView != null) {

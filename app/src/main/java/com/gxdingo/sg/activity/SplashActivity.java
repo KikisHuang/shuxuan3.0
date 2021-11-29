@@ -4,13 +4,17 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocationClient;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import butterknife.OnClick;
 
@@ -103,6 +107,7 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
                         if (type != 0) {
                             AMapLocationClient.updatePrivacyShow(this, true, true);
                             AMapLocationClient.updatePrivacyAgree(this, true);
+                            MyApplication.getInstance().init();
                             goToPage(reference.get(), WelcomeActivity.class, null);
                         }
                         finish();
@@ -114,9 +119,11 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
             boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
             Class clas = isUser ? ClientActivity.class : StoreActivity.class;
             goToPage(reference.get(), clas, null);
+
             finish();
         }
     }
+
 
     @Override
     protected void initData() {
@@ -136,7 +143,13 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         switch (v.getId()) {
 
         }
+    }
 
-
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof MyApplication) {
+            LogUtils.w(" ====== MyApplication ====== ");
+        }
     }
 }

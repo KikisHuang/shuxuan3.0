@@ -24,6 +24,7 @@ import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.view.PartTextClickSpan;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.KikisUitls;
 import com.lxj.xpopup.core.CenterPopupView;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.model.HttpHeaders;
