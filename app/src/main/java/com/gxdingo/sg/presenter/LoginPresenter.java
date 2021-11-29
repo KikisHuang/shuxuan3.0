@@ -147,9 +147,14 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     @Override
     public void getWechatAuth() {
+
         if (!isViewAttached() || mModdel == null)
             return;
         if (isWeixinAvilible(getContext())) {
+            if (getV().getCheckState() == false) {
+                onMessage(gets(R.string.please_agree_to_the_terms_of_service));
+                return;
+            }
             //普通登录无需过主页面登录逻辑
             LocalConstant.isLogin = false;
             mModdel.wxLogin();
@@ -161,6 +166,10 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     @Override
     public void alipayAuth() {
+        if (getV().getCheckState() == false) {
+            onMessage(gets(R.string.please_agree_to_the_terms_of_service));
+            return;
+        }
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
             auth((Activity) getContext(), (String) str, handler);
 //            simpleAuth((Activity) getContext(), (String) str, callback);
@@ -202,6 +211,17 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
 
     @Override
     public void login() {
+
+        if (isEmpty(getV().getMobile()) || isEmpty(getV().getCode())) {
+            onMessage(gets(R.string.phone_number_of_verification_code_cannot_null));
+            return;
+
+        }
+
+        if (getV().getCheckState() == false) {
+            onMessage(gets(R.string.please_agree_to_the_terms_of_service));
+            return;
+        }
         if (mNetworkModel != null && isViewAttached()) {
             mNetworkModel.login(getContext(), getV().getMobile(), getV().getCode(), getV().isClient());
         }
@@ -219,6 +239,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
         }
 
     }
+
 
     @Override
     public void oauthWeChatLogin(String code) {

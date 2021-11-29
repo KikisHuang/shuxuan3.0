@@ -15,6 +15,7 @@ import androidx.multidex.MultiDex;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.http.Api;
@@ -129,6 +130,7 @@ public class MyApplication extends Application {
         initCloudChannel(this);
         svgaCacheInit();
         nineGridLayout();
+
     }
 
     /**
@@ -466,13 +468,13 @@ public class MyApplication extends Application {
                 @Override
                 public void onSuccess(String response) {
                     String deviceId = PushServiceFactory.getCloudPushService().getDeviceId();
-                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel success deviceId ==== " + deviceId);
+                    BaseLogUtils.w(MyApplication.this.toString(), "init cloudchannel success deviceId ==== " + deviceId);
 
                 }
 
                 @Override
                 public void onFailed(String errorCode, String errorMessage) {
-                    BaseLogUtils.w(MyApplication.this.toString(),"init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+                    BaseLogUtils.w(MyApplication.this.toString(), "init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
                 }
             });
 

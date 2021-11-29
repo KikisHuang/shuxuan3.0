@@ -7,6 +7,7 @@ import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -91,6 +92,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @BindView(R.id.login_bt)
     public Button login_bt;
+
+    @BindView(R.id.login_check_bt)
+    public CheckBox login_check_bt;
 
 
     @Override
@@ -250,6 +254,11 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     public String getMobile() {
         return et_phone_number.getText().toString();
+    }
+
+    @Override
+    public boolean getCheckState() {
+        return login_check_bt.isChecked();
     }
 
     @Override

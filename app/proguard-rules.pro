@@ -395,10 +395,6 @@
 #实体类混淆
 -keep class com.github.mikephil.charting.**{*;}
 -keep class com.kikis.commnlibrary.bean.**{*;}
--keep class com.kikis.commnlibrary.utils.BaseLogUtils{*;}
--keep class com.gxdingo.sg.bean.**{*;}
--keep class com.gxdingo.sg.utils.ImMessageUtils{*;}
--keep class com.gxdingo.sg.utils.LocalConstant{*;}
 -keep class com.gxdingo.sg.bean.**{*;}
 -keep class com.gxdingo.sg.utils.ThirdPartyMapsGuide{*;}
 

@@ -426,7 +426,7 @@ public class OneKeyModel {
                                 if (isCheck)
                                     getAliAuthInfo(context);
                                 else
-                                    ToastUtils.showShort("请同意服务条款");
+                                    ToastUtils.showShort(R.string.please_agree_to_the_terms_of_service);
 //                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
                             }
                         });
@@ -447,7 +447,7 @@ public class OneKeyModel {
                                         ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
                                     }
                                 } else
-                                    ToastUtils.showShort("请同意服务条款");
+                                    ToastUtils.showShort(gets(R.string.please_agree_to_the_terms_of_service));
 //                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
                             }
                         });

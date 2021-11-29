@@ -12,7 +12,7 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
  */
 public class LoginContract {
 
-    public interface LoginPresenter extends MvpPresenter<BasicsListener,LoginListener>{
+    public interface LoginPresenter extends MvpPresenter<BasicsListener, LoginListener> {
 
         void switchUrl(boolean isUserId);
 
@@ -32,17 +32,27 @@ public class LoginContract {
 
         void oauth();
 
+
         /**
          * 一键登录页面微信登陆
+         *
          * @param code
          */
         void oauthWeChatLogin(String code);
     }
 
-    public interface LoginListener{
+    public interface LoginListener {
+
         String getCode();
 
         String getMobile();
+
+        /**
+         * 获取协议check状态
+         *
+         * @return
+         */
+        boolean getCheckState();
 
         boolean isClient();
 

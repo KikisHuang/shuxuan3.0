@@ -176,6 +176,11 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
     }
 
     @Override
+    public boolean getCheckState() {
+        return false;
+    }
+
+    @Override
     public boolean isClient() {
         return mIsUse;
     }
@@ -186,7 +191,6 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
         send_code.start();
     }
-
 
 
     @Override
