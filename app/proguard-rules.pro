@@ -523,7 +523,12 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
--keep public class [com.xk.sq].R$*{
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep public class [com.gxdingo.sg].R$*{
 public static final int *;
 }
 

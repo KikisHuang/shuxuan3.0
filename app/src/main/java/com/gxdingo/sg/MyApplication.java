@@ -4,9 +4,12 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.http.HttpResponseCache;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -73,6 +76,7 @@ import static com.gxdingo.sg.http.ClientApi.UAT_WEB_URL;
 import static com.gxdingo.sg.http.StoreApi.STORE_PORT;
 import static com.gxdingo.sg.utils.ClientLocalConstant.APP;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DEVICE;
+import static com.gxdingo.sg.utils.ClientLocalConstant.UMENG_APP_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_TARGET;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
@@ -116,8 +120,6 @@ public class MyApplication extends Application {
      */
     public void init() {
 
-        okHttpInit();
-        keyInt();
         ScreenUtils.init(this);
 
         ZXingLibrary.initDisplayOpinion(this);
@@ -138,6 +140,10 @@ public class MyApplication extends Application {
         instance = this;
         //自用lib的初始化
         KikisUitls.Init(this);
+        //umeng预初始化函数不会采集设备信息，也不会向友盟后台上报数据，同时preInit耗时极少，不会影响冷启动体验。所以务必在Applicaiton.onCreate函数中调用，否则统计日活是不准确的！
+        UMConfigure.preInit(this, UMENG_APP_KEY, getChannelName(this));
+        okHttpInit();
+        keyInt();
 
         //首次登录延迟初始化
         if (!SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true))
@@ -563,4 +569,31 @@ public class MyApplication extends Application {
         super.attachBaseContext(base);
         MultiDex.install(this);
     }
+
+    // 获取渠道工具函数
+    public static String getChannelName(Context ctx) {
+        if (ctx == null) {
+            return null;
+        }
+        String channelName = null;
+        try {
+            PackageManager packageManager = ctx.getPackageManager();
+            if (packageManager != null) {
+                //注意此处为ApplicationInfo 而不是 ActivityInfo,因为友盟设置的meta-data是在application标签中，而不是activity标签中，所以用ApplicationInfo
+                ApplicationInfo applicationInfo = packageManager.getApplicationInfo(ctx.getPackageName(), PackageManager.GET_META_DATA);
+                if (applicationInfo != null) {
+                    if (applicationInfo.metaData != null) {
+                        channelName = applicationInfo.metaData.get("UMENG_CHANNEL") + "";
+                    }
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (TextUtils.isEmpty(channelName)) {
+            channelName = "Unknown";
+        }
+        return channelName;
+    }
+
 }
