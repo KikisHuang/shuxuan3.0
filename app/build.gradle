@@ -46,6 +46,8 @@ android {
                 //动态设置UMENG_CHANNEL_VALUE对应的值
             flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
         }
+        android.applicationVariants.all { variant -> variant.outputs.all { outputFileName = "${variant.name}-${variant.versionName}.apk" } }
+
     }
 
     signingConfigs {
@@ -122,6 +124,7 @@ dependencies {
     //友盟统计
     implementation rootProject.ext.dependencies.umengcommon
     implementation rootProject.ext.dependencies.umengasms
+    implementation rootProject.ext.dependencies.umengapm
 
     //友盟分享
     implementation rootProject.ext.dependencies.umengshare

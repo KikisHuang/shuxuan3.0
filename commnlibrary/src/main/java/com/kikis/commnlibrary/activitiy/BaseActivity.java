@@ -80,6 +80,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
     private CompositeDisposable mCompositeDisposable;
 
     private View view;
+
     //标题布局
     protected View TitleLaouyt = null;
     //底部布局

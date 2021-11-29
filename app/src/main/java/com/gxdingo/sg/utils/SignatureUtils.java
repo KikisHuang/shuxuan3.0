@@ -64,7 +64,7 @@ public class SignatureUtils {
             sb.append("key=").append(key);
 
             if (SignType.MD5.equals(signType)) {
-                Log.i("signed", "generate: "+sb.toString());
+                Log.i("signed", "generate: " + sb.toString());
                 return MD5(sb.toString()).toUpperCase();
             } else if (SignType.HMACSHA256.equals(signType)) {
                 return HMACSHA256(sb.toString(), key);
@@ -227,7 +227,6 @@ public class SignatureUtils {
         String code = "";
 
         for (int i = 0; i < list.size(); i++) {
-
             if (list.get(i).contains(key))
                 code = list.get(i).substring(list.get(i).indexOf("=") + 1);
         }

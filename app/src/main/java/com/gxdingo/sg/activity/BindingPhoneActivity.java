@@ -147,6 +147,11 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
     }
 
     @Override
+    public boolean getCheckState() {
+        return false;
+    }
+
+    @Override
     public boolean isClient() {
         return false;
     }

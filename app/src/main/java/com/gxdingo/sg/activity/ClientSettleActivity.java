@@ -15,18 +15,10 @@ import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.view.TemplateTitle;
-import com.umeng.socialize.UMShareAPI;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN;
-import static com.umeng.socialize.bean.SHARE_MEDIA.WEIXIN_CIRCLE;
 
 /**
  * @author: Weaving

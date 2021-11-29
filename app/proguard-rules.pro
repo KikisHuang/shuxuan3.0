@@ -395,10 +395,6 @@
 #实体类混淆
 -keep class com.github.mikephil.charting.**{*;}
 -keep class com.kikis.commnlibrary.bean.**{*;}
--keep class com.kikis.commnlibrary.utils.BaseLogUtils{*;}
--keep class com.gxdingo.sg.bean.**{*;}
--keep class com.gxdingo.sg.utils.ImMessageUtils{*;}
--keep class com.gxdingo.sg.utils.LocalConstant{*;}
 -keep class com.gxdingo.sg.bean.**{*;}
 -keep class com.gxdingo.sg.utils.ThirdPartyMapsGuide{*;}
 
@@ -527,7 +523,12 @@
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
--keep public class [com.xk.sq].R$*{
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+-keep public class [com.gxdingo.sg].R$*{
 public static final int *;
 }
 

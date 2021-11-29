@@ -145,17 +145,34 @@
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@+id/ll_certify" />
 
-    <TextView
-        android:id="@+id/agreement_tv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/login_agreement"
         android:layout_marginTop="15dp"
-        android:paddingHorizontal="55dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
         app:layout_constraintLeft_toLeftOf="@+id/login_bt"
         app:layout_constraintRight_toRightOf="@+id/login_bt"
-        app:layout_constraintTop_toBottomOf="@+id/login_bt" />
+        app:layout_constraintTop_toBottomOf="@+id/login_bt">
 
+        <CheckBox
+            android:id="@+id/login_check_bt"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:button="@drawable/module_checkbox1_style" />
+
+        <TextView
+            android:id="@+id/agreement_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/login_agreement"
+            android:textColor="@color/gray_a9"
+            app:layout_constraintTop_toBottomOf="@+id/login_bt" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/switch_login_bt"

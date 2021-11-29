@@ -18,7 +18,6 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.tencent.bugly.beta.Beta;
-import com.tencent.mm.opensdk.modelmsg.SendAuth;
 
 import java.util.List;
 

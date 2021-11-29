@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.IntentUtils;
+import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
@@ -151,6 +153,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
         myWebChromeClient.setListener(this);
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true); // 设置支持js的弹窗
+        webView.getSettings().setAllowFileAccess(true); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
         webView.setWebViewClient(new WebViewClient());
 
@@ -164,7 +168,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
             webView.loadUrl(mUrl);
         }
-
     }
 
     @Override
@@ -249,11 +252,21 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             return;
         switch (v.getId()) {
 
-
         }
 
 
     }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    public void callJsBye() {
+        webView.evaluateJavascript("javascript:byeShuGou()", new ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String s) {
+                LogUtils.i("onReceiveValue === " + s);
+            }
+        });
+    }
+
 
     @Override
     protected void onStart() {
@@ -296,11 +309,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     public void loadWebUrl(WebBean webBean) {
-        if (!isEmpty(webBean.getContent())){
+        if (!isEmpty(webBean.getContent())) {
 //            webView.loadUrl(webBean.getContent());
             webView.loadDataWithBaseURL(null, webBean.getContent(), "text/html", "utf-8", null);
-        }
-        else {
+        } else {
             onMessage("没有获取当文章详情");
             finish();
         }
@@ -318,10 +330,12 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         UMShareAPI.get(reference.get()).onActivityResult(requestCode, resultCode, data);
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (webView != null) {
+            callJsBye();
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
             webView.clearCache(true);
             // 退出时调用此方法，移除绑定的服务，否则某些特定系统会报错
