@@ -17,7 +17,6 @@ public class MyWebChromeClient extends WebChromeClient {
     private WebViewLoadingListener listener;
 
 
-
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);

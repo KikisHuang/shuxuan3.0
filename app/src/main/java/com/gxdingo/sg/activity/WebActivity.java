@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,7 +157,26 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true); // 设置支持js的弹窗
         webView.getSettings().setAllowFileAccess(true); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
-        webView.setWebViewClient(new WebViewClient());
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                //修复正式版默认只能识别http和https, 连系统自带的tel://都无法识别的问题
+                try {
+                    if (!url.startsWith("http:") || !url.startsWith("https:")) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(url));
+                        startActivity(intent);
+                        return true;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+
+                webView.loadUrl(url);
+                return true;
+            }
+        });
 
 
         if (!mIsArticle) {
