@@ -1,7 +1,9 @@
 package com.gxdingo.sg.presenter;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,17 +17,29 @@ import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.model.ClientNetworkModel;
+import com.gxdingo.sg.utils.GlideEngine;
 import com.gxdingo.sg.utils.WechatUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.luck.picture.lib.PictureSelectionModel;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.smtt.sdk.ValueCallback;
 import com.zhouyou.http.subsciber.BaseSubscriber;
+
+import java.util.List;
 
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
+import static com.luck.picture.lib.config.PictureMimeType.ofImage;
+import static com.luck.picture.lib.config.PictureMimeType.ofVideo;
 
 /**
  * Created by Kikis on 2021/5/21
@@ -68,10 +82,10 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
     @Override
     public void onData(boolean refresh, Object o) {
 
-        if (isViewAttached()){
-            if (o instanceof ArticleListBean){
-                getV().onArticleListResult(((ArticleListBean)o).getList());
-            }else if(o instanceof WebBean) {
+        if (isViewAttached()) {
+            if (o instanceof ArticleListBean) {
+                getV().onArticleListResult(((ArticleListBean) o).getList());
+            } else if (o instanceof WebBean) {
                 WebBean webBean = (WebBean) o;
                 getV().loadWebUrl(webBean);
             }
@@ -199,6 +213,43 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
                 onAfters();
             }
         });
+
+    }
+
+    /**
+     * 打开相册 或 视频
+     *
+     * @param valueCallback
+     * @param mode          //fileChooserParams mode 1 相册 0 视频
+     */
+    @Override
+    public void openPhoto(ValueCallback<Uri[]> valueCallback, int mode) {
+
+
+        PictureSelector selector = PictureSelector.create((Activity) getContext());
+
+        PictureSelectionModel model = selector.openGallery(mode == 1 ? ofImage() : ofVideo());
+
+        model.selectionMode(PictureConfig.SINGLE).
+                loadImageEngine(GlideEngine.createGlideEngine())// 图片加载引擎 需要 implements ImageEngine接口
+                .enableCrop(false)//是否裁剪
+                .compress(true)//是否压缩
+                .minimumCompressSize(400)//小于1024kb不压缩
+                .synOrAsy(true)//开启同步or异步压缩
+                .forResult(new OnResultCallbackListener<LocalMedia>() {
+                    @Override
+                    public void onResult(List<LocalMedia> result) {
+                        if (isViewAttached()){
+                            String url = !isEmpty(result.get(0).getCompressPath()) ? result.get(0).getCompressPath() : result.get(0).getPath();
+                            getV().uploadImage(valueCallback,Uri.parse((String) url));
+                        }
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
 
     }
 }

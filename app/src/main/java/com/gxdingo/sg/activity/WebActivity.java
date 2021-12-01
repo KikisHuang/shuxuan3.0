@@ -1,6 +1,5 @@
 package com.gxdingo.sg.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -17,13 +16,11 @@ import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
-import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
-import com.kikis.commnlibrary.utils.IntentUtils;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
@@ -156,8 +153,9 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true); // 设置支持js的弹窗
         webView.getSettings().setAllowFileAccess(true); // 设置可以访问文件
+        webView.getSettings().setSupportMultipleWindows(false); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
-
+        webView.getSettings().setDomStorageEnabled(true);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String url) {
@@ -274,17 +272,12 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
         }
 
-
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+
+    @JavascriptInterface
     public void callJsBye() {
-        webView.evaluateJavascript("javascript:byeShuGou()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String s) {
-                LogUtils.i("onReceiveValue === " + s);
-            }
-        });
+        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.e("onReceiveValue ==== " + s));
     }
 
 
@@ -328,6 +321,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     }
 
     @Override
+    public void onShowFileChooser(ValueCallback<Uri[]> valueCallback, int mode) {
+        getP().openPhoto(valueCallback,mode);
+    }
+
+    @Override
     public void loadWebUrl(WebBean webBean) {
         if (!isEmpty(webBean.getContent())) {
 //            webView.loadUrl(webBean.getContent());
@@ -342,6 +340,18 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void onArticleListResult(List<WebBean> webBeans) {
 
+    }
+
+    @Override
+    public void uploadImage(ValueCallback<Uri[]> valueCallback, Uri uri) {
+        if (valueCallback != null) {
+            if(uri!=null){
+                valueCallback.onReceiveValue(new Uri[]{uri});
+            }else{
+                valueCallback.onReceiveValue(null);
+            }
+            valueCallback = null;
+        }
     }
 
     @Override

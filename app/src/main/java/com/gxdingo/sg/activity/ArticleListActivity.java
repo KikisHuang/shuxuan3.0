@@ -23,6 +23,7 @@ import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
+import com.tencent.smtt.sdk.ValueCallback;
 
 import java.util.List;
 
@@ -140,6 +141,11 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
     @Override
     public void onArticleListResult(List<WebBean> webBeans) {
         mAdapter.setList(webBeans);
+    }
+
+    @Override
+    public void uploadImage(ValueCallback<Uri[]> valueCallback, Uri parse) {
+
     }
 
     @Override
