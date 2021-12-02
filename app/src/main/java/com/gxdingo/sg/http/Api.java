@@ -9,8 +9,8 @@ public class Api {
 
     public static String URL;
 
-    //uat服务器开关
-    public static final boolean isUat = true;
+    //uat服务器开关 ，***打包上线正式服请关闭此开关***
+    public static final boolean isUat = false;
 
     public static final String SM = ":";
 

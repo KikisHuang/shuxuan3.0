@@ -239,15 +239,15 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
                 .forResult(new OnResultCallbackListener<LocalMedia>() {
                     @Override
                     public void onResult(List<LocalMedia> result) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             String url = !isEmpty(result.get(0).getCompressPath()) ? result.get(0).getCompressPath() : result.get(0).getPath();
-                            getV().uploadImage(valueCallback,Uri.parse((String) url));
+                            getV().uploadImage(valueCallback, Uri.parse((String) url));
                         }
                     }
 
                     @Override
                     public void onCancel() {
-
+                        getV().uploadImage(valueCallback, null);
                     }
                 });
 
