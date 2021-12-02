@@ -322,7 +322,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     public void onShowFileChooser(ValueCallback<Uri[]> valueCallback, int mode) {
-        getP().openPhoto(valueCallback,mode);
+        getP().openPhoto(valueCallback, mode);
     }
 
     @Override
@@ -345,11 +345,15 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void uploadImage(ValueCallback<Uri[]> valueCallback, Uri uri) {
         if (valueCallback != null) {
-            if(uri!=null){
-                valueCallback.onReceiveValue(new Uri[]{uri});
-            }else{
+            if (uri != null) {
+                if (uri != null) {
+                    valueCallback.onReceiveValue(new Uri[]{uri});
+                } else {
+                    valueCallback.onReceiveValue(null);
+                }
+            } else
                 valueCallback.onReceiveValue(null);
-            }
+
             valueCallback = null;
         }
     }
