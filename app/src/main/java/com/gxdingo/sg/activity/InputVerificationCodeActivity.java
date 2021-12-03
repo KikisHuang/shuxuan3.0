@@ -129,7 +129,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
         }
         title_layout.setTitleText(gets(R.string.please_input_verification_code));
 //        getP().getPhoneHint(mPhoneNumber);
-
+        verification_code_send_hint_tv.setText("验证码已发送至+86"+mPhoneNumber);
         getP().getVerificationCodeTime();
     }
 
