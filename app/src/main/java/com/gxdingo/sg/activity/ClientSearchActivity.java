@@ -21,6 +21,7 @@ import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.OnContentListener;
@@ -267,6 +268,11 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
+    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
+
+    }
+
+    @Override
     public void onHistoryResult(List<String> searchHistories) {
         history_lv.setLabels(searchHistories);
     }
@@ -304,7 +310,6 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
         switch (view.getId()){
             case R.id.store_avatar_iv:
-
                 goToPagePutSerializable(this, ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
                 break;
             case R.id.call_phone_iv:

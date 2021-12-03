@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import android.content.Context;
 
+import com.gxdingo.sg.bean.HomeBannerBean;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -52,6 +53,8 @@ public class ClientHomeContract {
         void onCategoryResult(List<CategoriesBean> categories);
 
         void onStoresResult(boolean refresh,boolean search, List<StoreListBean.StoreBean> storeBeans);
+
+        void onBannerResult(List<HomeBannerBean> bannerBeans);
 
         void onHistoryResult(List<String> searchHistories);
     }

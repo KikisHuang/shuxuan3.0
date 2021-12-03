@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class StoreListBean {
 
+    private List<HomeBannerBean> appHomeMiddle;
+
     private AddressBean userAddress;
 
     private List<StoreBean> list;
@@ -29,6 +31,14 @@ public class StoreListBean {
 
     public void setList(List<StoreBean> list) {
         this.list = list;
+    }
+
+    public List<HomeBannerBean> getAppHomeMiddle() {
+        return appHomeMiddle;
+    }
+
+    public void setAppHomeMiddle(List<HomeBannerBean> appHomeMiddle) {
+        this.appHomeMiddle = appHomeMiddle;
     }
 
     public static class StoreBean {

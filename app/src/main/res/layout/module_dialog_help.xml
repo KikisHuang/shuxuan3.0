@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/divide_color">
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textColor="#765C42"
+        android:layout_marginTop="36dp"
+        android:layout_marginHorizontal="@dimen/dp20"
+        tools:text="我在参与助力活动 快来助我一臂之力吧"/>
+
+    <ImageView
+        android:id="@+id/avatar_img"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="18dp"
+        android:src="@mipmap/ic_default_avatar"/>
+
+    <TextView
+        android:id="@+id/subTitle_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginHorizontal="@dimen/dp20"
+        android:textColor="#765C42"
+        tools:text="您也有机会获得iPhone13、AirPods、阿玛尼口号、美味零食"/>
+
+    <TextView
+        android:id="@+id/btn_help"
+        android:layout_width="252dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp20"
+        android:layout_marginBottom="30dp"
+        android:gravity="center"
+        android:text="帮忙助力"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/module_shape_bg_green_25round"/>
+</LinearLayout>

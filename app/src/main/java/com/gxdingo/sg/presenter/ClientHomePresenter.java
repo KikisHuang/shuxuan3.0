@@ -303,6 +303,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     }
                 } else {
                     getV().onStoresResult(refresh,searchModel,storeListBean.getList());
+                    if (storeListBean.getAppHomeMiddle()!=null)
+                        getV().onBannerResult(storeListBean.getAppHomeMiddle());
                 }
             }
 

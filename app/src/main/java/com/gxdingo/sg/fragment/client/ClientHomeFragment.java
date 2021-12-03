@@ -1,6 +1,7 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -22,8 +28,10 @@ import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
@@ -40,12 +48,18 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.youth.banner.Banner;
+import com.youth.banner.adapter.BannerImageAdapter;
+import com.youth.banner.holder.BannerImageHolder;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +69,16 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
 /**
@@ -88,6 +105,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @BindView(R.id.category_rv)
     public RecyclerView category_rv;
+
+    @BindView(R.id.home_banner)
+    public Banner home_banner;
 
     @BindView(R.id.store_rv)
     public RecyclerView store_rv;
@@ -375,6 +395,47 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     }
 
     @Override
+    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
+        if (bannerBeans.size()>0){
+            home_banner.setVisibility(View.VISIBLE);
+            home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {
+                @Override
+                public void onBindView(BannerImageHolder holder, HomeBannerBean data, int position, int size) {
+                    Glide.with(reference.get())
+                            .load(data.getImage())
+                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
+                            .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                            int width = resource.getIntrinsicWidth();
+                            int height = resource.getIntrinsicHeight();
+
+                            int newheight = getScreenWidth() * height / width;
+
+                            home_banner.getLayoutParams().height = newheight;
+
+
+                            holder.imageView.setImageDrawable(resource);
+                        }
+                    });
+
+                }
+            });
+            home_banner.setOnBannerListener((data, position) -> {
+                HomeBannerBean bannerBean = (HomeBannerBean) data;
+                if (bannerBean.getType()==2 && !isEmpty(bannerBean.getPage())){
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                }
+            });
+
+
+            home_banner.start();
+        }else {
+            home_banner.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onHistoryResult(List<String> searchHistories) {
 
     }
@@ -443,6 +504,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             fillCodePopupView.dismiss();
         }
 
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (home_banner!=null)
+            home_banner.stop();
     }
 
     private void showInvitationCodeDialog(){

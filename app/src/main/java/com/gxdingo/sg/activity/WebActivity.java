@@ -17,6 +17,7 @@ import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -27,6 +28,9 @@ import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.UmengTool;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
@@ -217,6 +221,33 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     public void goToPage(String type) {
 //        if (type.equals(ClientLocalConstant.COMPLAIN))
 //            IntentUtils.goToPage(reference.get(), ClientComplainActivity.class, null);
+    }
+
+    @JavascriptInterface
+    public void backToApp(int jumpType,int type,String helpCode,String url,String image,String title,String describe) {
+        if (jumpType == 30){
+            ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+
+                }
+            },url,title,describe,SHARE_MEDIA.WEIXIN);
+        }
     }
 
 
