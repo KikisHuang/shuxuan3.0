@@ -115,6 +115,8 @@ public class OneKeyModel {
 
     private TokenResultListener mTokenResultListener;
 
+    private NetWorkListener netWorkListener;
+
     //客户端还是商家端
     public boolean isUser;
     //协议是否勾选
@@ -124,6 +126,11 @@ public class OneKeyModel {
 
     public OneKeyModel() {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+    }
+
+    public OneKeyModel(NetWorkListener netWorkListener) {
+        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        this.netWorkListener = netWorkListener;
     }
 
     /**
@@ -276,6 +283,8 @@ public class OneKeyModel {
      * @param type
      */
     public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
+        if (netWorkListener!=null)
+            netWorkListener.onStarts();
 
         if (TextUtils.isEmpty(code)) {
             ToastUtils.showLong(gets(R.string.phone_number_can_not_null));
@@ -300,11 +309,15 @@ public class OneKeyModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
+                if (netWorkListener!=null)
+                    netWorkListener.onAfters();
             }
 
             @Override
             public void onNext(UserBean userBean) {
                 OneKeyModel.quitLoginPage();
+                if (netWorkListener!=null)
+                    netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
 

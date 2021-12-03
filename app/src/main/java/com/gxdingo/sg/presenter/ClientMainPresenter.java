@@ -57,7 +57,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     public ClientMainPresenter() {
         model = new ClientMainModel();
         networkModel = new NetworkModel(this);
-        oneKeyModel = new OneKeyModel();
+        oneKeyModel = new OneKeyModel(this);
         mWebSocketModel = new WebSocketModel(this);
         mModdel = new LoginModel();
         businessDistrictModel = new BusinessDistrictModel(this);

@@ -50,7 +50,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     private OneKeyModel oneKeyModel;
 
     public LoginPresenter() {
-        oneKeyModel = new OneKeyModel();
+        oneKeyModel = new OneKeyModel(this);
         mModdel = new LoginModel();
         mNetworkModel = new NetworkModel(this);
     }
