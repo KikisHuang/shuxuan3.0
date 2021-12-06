@@ -70,6 +70,7 @@ import io.reactivex.Observable;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
 import static com.gxdingo.sg.http.Api.HTTP;
+import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
@@ -115,15 +116,22 @@ public class OneKeyModel {
 
     private TokenResultListener mTokenResultListener;
 
+    private NetWorkListener netWorkListener;
+
     //客户端还是商家端
     public boolean isUser;
     //协议是否勾选
     private boolean isCheck;
 
-    private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+    private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+    }
+
+    public OneKeyModel(NetWorkListener netWorkListener) {
+        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+        this.netWorkListener = netWorkListener;
     }
 
     /**
@@ -142,7 +150,7 @@ public class OneKeyModel {
 
             map.put("os", "android");
 
-            String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+            String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
             if (netWorkListener != null)
                 netWorkListener.onStarts();
@@ -199,7 +207,7 @@ public class OneKeyModel {
 
         map.put("os", "android");
 
-        String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+        String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
         Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -276,6 +284,8 @@ public class OneKeyModel {
      * @param type
      */
     public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
+        if (netWorkListener!=null)
+            netWorkListener.onStarts();
 
         if (TextUtils.isEmpty(code)) {
             ToastUtils.showLong(gets(R.string.phone_number_can_not_null));
@@ -300,11 +310,15 @@ public class OneKeyModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
+                if (netWorkListener!=null)
+                    netWorkListener.onAfters();
             }
 
             @Override
             public void onNext(UserBean userBean) {
                 OneKeyModel.quitLoginPage();
+                if (netWorkListener!=null)
+                    netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
 
