@@ -3,7 +3,9 @@ package com.gxdingo.sg.fragment.store;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +33,7 @@ import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.view.CountdownView;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
 import com.lxj.xpopup.XPopup;
@@ -88,6 +91,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @BindView(R.id.nodata_layout)
     View nodataLayout;
 
+    @BindView(R.id.cl_visit_countdown)
+    public ConstraintLayout cl_visit_countdown;
+
+    @BindView(R.id.count_down_tv)
+    public TextView count_down_tv;
+
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
@@ -96,6 +105,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     private int mStoreId = 0;
 
     boolean isUser;
+
+    //活动浏览商圈
+    private boolean isBrowsing;
 
     /**
      * 商圈子视图点击监听接口
@@ -227,7 +239,34 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 getP().getBusinessDistrictList(true, mStoreId);
             }
 
+            if (isBrowsing){
+                cl_visit_countdown.setVisibility(View.VISIBLE);
+                startCountDown();
+            }else {
+                cl_visit_countdown.setVisibility(View.GONE);
+            }
+
         }
+    }
+
+    private void startCountDown(){
+       new CountDownTimer(30*1000,1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                String value = String.valueOf((int) (millisUntilFinished / 1000));
+                Log.d("business_circle========", "onStart: "+value);
+                count_down_tv.setText(value);
+            }
+
+            @Override
+            public void onFinish() {
+                Log.d("business_circle========", "onFinish: ");
+                cl_visit_countdown.setVisibility(View.GONE);
+                getP().complete();
+                isBrowsing =false;
+            }
+        }.start();
     }
 
     /**
@@ -244,6 +283,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈列表
             getP().getBusinessDistrictList(true, mStoreId);
 
+        }else if (type == LocalConstant.VISIT_CIRCLE){
+            isBrowsing = true;
         }
     }
 
@@ -403,6 +444,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      */
     @Override
     public void onBusinessDistrictData(boolean refresh, BusinessDistrictListBean bean) {
+        Log.d("TAG", "onBusinessDistrictData: ");
+
         if (bean != null && bean.getList() != null) {
             if (refresh) {
                 mAdapter.setList(bean.getList());

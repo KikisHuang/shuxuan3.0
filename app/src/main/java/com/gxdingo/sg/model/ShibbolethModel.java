@@ -7,6 +7,8 @@ import android.os.Handler;
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.biz.OnCodeListener;
+import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.utils.LocalConstant;
 
 
@@ -30,7 +32,7 @@ public class ShibbolethModel {
     /**
      * 检测口令
      */
-    public static void checkShibboleth(Context context) {
+    public static void checkShibboleth(OnCodeListener listener) {
 
         new Handler().postDelayed(() -> {
 
@@ -43,6 +45,9 @@ public class ShibbolethModel {
 
                 //是否口令
                 if (isShuXiangShibboleth(code)) {
+
+                    if (listener!=null)
+                        listener.onCode(code);
                     //获取活动类型
                     int mType = getAcType(numberDecode(code));
 
@@ -70,7 +75,7 @@ public class ShibbolethModel {
                             url = tempUrl + AC2URL + INVITATIONCODE + QT + code;
                             break;
                     }*/
-                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
+//                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
 
                     //清空剪贴板
                     copyText("");

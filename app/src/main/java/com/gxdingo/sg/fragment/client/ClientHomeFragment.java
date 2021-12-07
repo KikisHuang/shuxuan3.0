@@ -31,10 +31,12 @@ import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
+import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -208,7 +210,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void lazyInit() {
         super.lazyInit();
-
+        getP().checkHelpCode();
     }
 
     @Override
@@ -438,6 +440,15 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onHistoryResult(List<String> searchHistories) {
 
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+        new XPopup.Builder(reference.get())
+                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext()) ))
+                .isDarkTheme(false)
+                .asCustom(new HelpPopupView(getContext(), helpBean))
+                .show();
     }
 
     @Override

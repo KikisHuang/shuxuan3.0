@@ -13,15 +13,20 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
+
+import com.gxdingo.sg.bean.WheelResultBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
-import com.gxdingo.sg.utils.ClientLocalConstant;
+
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.IntentUtils;
 import com.tencent.smtt.sdk.ValueCallback;
@@ -31,6 +36,8 @@ import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.UmengTool;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -224,8 +231,33 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     }
 
     @JavascriptInterface
-    public void backToApp(int jumpType,int type,String helpCode,String url,String image,String title,String describe) {
-        if (jumpType == 30){
+    public void backToApp(String restultData) {
+        LogUtils.d("h5调用了"+restultData);
+        WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
+        if (wheelResultBean==null)return;
+        if (wheelResultBean.jumpType == 30){
+             ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+                    LogUtils.d("onStart:"+share_media);
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+                    LogUtils.d("onResult:"+share_media);
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                    LogUtils.d("onError:"+share_media);
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+                    LogUtils.d("onCancel:"+share_media);
+                }
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN_CIRCLE);
+        }else if (wheelResultBean.jumpType == 20){
             ShareUtils.UmShare(this, new UMShareListener() {
                 @Override
                 public void onStart(SHARE_MEDIA share_media) {
@@ -246,7 +278,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                 public void onCancel(SHARE_MEDIA share_media) {
 
                 }
-            },url,title,describe,SHARE_MEDIA.WEIXIN);
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN);
+
+        }else if (wheelResultBean.jumpType == 10){
+            sendEvent(LocalConstant.VISIT_CIRCLE);
+            finish();
         }
     }
 
@@ -377,4 +413,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             webView.destroy();
         }
     }
+
+
 }

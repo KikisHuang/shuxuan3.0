@@ -6,10 +6,13 @@ import android.text.TextUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
+import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -37,6 +40,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.blankj.utilcode.util.StringUtils.null2Length0;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -207,6 +211,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
+    public void checkHelpCode() {
+        ShibbolethModel.checkShibboleth(code -> {
+            if (clientNetworkModel!=null)
+                clientNetworkModel.inviteHelp(getContext(),code);
+        });
+    }
+
+    @Override
     public void search(AddressBean addressBean, String content) {
         lon = addressBean.getLongitude();
         lat = addressBean.getLatitude();
@@ -306,6 +318,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     if (storeListBean.getAppHomeMiddle()!=null)
                         getV().onBannerResult(storeListBean.getAppHomeMiddle());
                 }
+            }else if (o instanceof HelpBean){
+                getV().onHelpDataResult((HelpBean) o);
             }
 
 

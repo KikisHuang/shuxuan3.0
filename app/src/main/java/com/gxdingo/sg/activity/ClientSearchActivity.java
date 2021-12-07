@@ -21,6 +21,7 @@ import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
@@ -275,6 +276,11 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     public void onHistoryResult(List<String> searchHistories) {
         history_lv.setLabels(searchHistories);
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+
     }
 
     @Override

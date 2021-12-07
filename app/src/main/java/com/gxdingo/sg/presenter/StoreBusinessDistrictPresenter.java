@@ -9,6 +9,7 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.model.BusinessDistrictModel;
+import com.gxdingo.sg.model.ClientNetworkModel;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
@@ -35,11 +36,14 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, StoreBusinessDistrictContract.StoreBusinessDistrictListener>
         implements StoreBusinessDistrictContract.StoreBusinessDistrictPresenter, NetWorkListener, MultiParameterCallbackListener {
 
+    private ClientNetworkModel clientNetworkModel;
 
     private BusinessDistrictModel businessDistrictModel;
 
     public StoreBusinessDistrictPresenter() {
         businessDistrictModel = new BusinessDistrictModel(this);
+
+        clientNetworkModel = new ClientNetworkModel(this);
     }
 
     @Override
@@ -244,6 +248,12 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     @Override
     public void PhotoViewer(ArrayList<String> images, int position) {
         getImagePreviewInstance((Activity) getContext(), NetworkAuto, position, true).setImageList(images).start();
+    }
+
+    @Override
+    public void complete() {
+        if (clientNetworkModel!=null)
+            clientNetworkModel.completeTask(getContext(),10);
     }
 
     /**
