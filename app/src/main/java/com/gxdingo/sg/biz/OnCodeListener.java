@@ -7,5 +7,5 @@ package com.gxdingo.sg.biz;
  */
 public interface OnCodeListener {
 
-    void onCode(String code);
+    void onCode(int type,String code);
 }

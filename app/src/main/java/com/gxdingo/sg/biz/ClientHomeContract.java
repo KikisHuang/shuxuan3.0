@@ -47,6 +47,8 @@ public class ClientHomeContract {
         void oauth(Context context);
 
         void checkHelpCode();
+
+        void help();
     }
 
     public interface ClientHomeListener{

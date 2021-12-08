@@ -14,11 +14,23 @@ public class HelpBean {
      * lotteryCount : 1
      */
 
+    //0 助力 1助力成功
+    private int type ;
     private String buttonToUrl;
+    private String userAvatar;
     private String image;
     private String title;
     private String subtitle;
     private Integer lotteryCount;
+
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getButtonToUrl() {
         return buttonToUrl;
@@ -26,6 +38,14 @@ public class HelpBean {
 
     public void setButtonToUrl(String buttonToUrl) {
         this.buttonToUrl = buttonToUrl;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public String getImage() {

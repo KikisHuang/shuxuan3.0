@@ -67,6 +67,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private boolean searchModel;
 
+    private String helpCode;
+
     public ClientHomePresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
 
@@ -212,10 +214,20 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void checkHelpCode() {
-        ShibbolethModel.checkShibboleth(code -> {
-            if (clientNetworkModel!=null)
-                clientNetworkModel.inviteHelp(getContext(),code);
+//        ShibbolethModel.checkShibboleth(code -> {
+//            if (clientNetworkModel!=null)
+//                clientNetworkModel.inviteHelp(getContext(),code);
+//        });
+        ShibbolethModel.checkShibboleth((type, code) -> {
+            helpCode = code;
+            clientNetworkModel.inviteHelp(getContext(),code);
         });
+    }
+
+    @Override
+    public void help() {
+        if (clientNetworkModel!=null)
+            clientNetworkModel.helpAfter(getContext(),helpCode);
     }
 
     @Override

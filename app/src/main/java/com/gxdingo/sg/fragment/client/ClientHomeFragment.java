@@ -33,6 +33,7 @@ import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
@@ -445,9 +446,14 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onHelpDataResult(HelpBean helpBean) {
         new XPopup.Builder(reference.get())
-                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext()) ))
+                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
                 .isDarkTheme(false)
-                .asCustom(new HelpPopupView(getContext(), helpBean))
+                .asCustom(new HelpPopupView(getContext(), helpBean, new HelpListener() {
+                    @Override
+                    public void help() {
+                        getP().help();
+                    }
+                }))
                 .show();
     }
 

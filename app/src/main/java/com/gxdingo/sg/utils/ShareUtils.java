@@ -42,7 +42,7 @@ public class ShareUtils {
                 .setPlatform(type[0])
                 .withMedia(web)
                 .setCallback(umShareListener)//回调监听器
-                .open();
+                .share();
     }
 
     /**

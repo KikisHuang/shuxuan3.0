@@ -5,6 +5,7 @@ import android.content.Context;
 import com.amap.api.services.core.LatLonPoint;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ArticleImage;
@@ -1576,6 +1577,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+
                 }
             }
 
@@ -1584,6 +1586,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    helpBean.setType(0);
                     netWorkListener.onData(true, helpBean);
 
                 }
@@ -1624,6 +1627,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 
@@ -1632,6 +1636,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    helpBean.setType(1);
                     netWorkListener.onData(true, helpBean);
 
                 }

@@ -109,6 +109,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     //活动浏览商圈
     private boolean isBrowsing;
 
+    private CountDownTimer countDownTimer;
+
     /**
      * 商圈子视图点击监听接口
      */
@@ -239,18 +241,29 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 getP().getBusinessDistrictList(true, mStoreId);
             }
 
-            if (isBrowsing){
-                cl_visit_countdown.setVisibility(View.VISIBLE);
-                startCountDown();
-            }else {
-                cl_visit_countdown.setVisibility(View.GONE);
-            }
+//            if (isBrowsing){
+//                cl_visit_countdown.setVisibility(View.VISIBLE);
+//                startCountDown();
+//            }else {
+//                cl_visit_countdown.setVisibility(View.GONE);
+//            }
 
         }
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d("businessScopeFragment", "onHiddenChanged: "+hidden);
+        if (cl_visit_countdown.getVisibility() == View.VISIBLE){
+            cl_visit_countdown.setVisibility(View.GONE);
+        }
+        if (isHidden() && countDownTimer!=null)
+            countDownTimer.cancel();
+    }
+
     private void startCountDown(){
-       new CountDownTimer(30*1000,1000) {
+        countDownTimer=new CountDownTimer(15*1000,1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -285,6 +298,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         }else if (type == LocalConstant.VISIT_CIRCLE){
             isBrowsing = true;
+            cl_visit_countdown.setVisibility(View.VISIBLE);
+            startCountDown();
         }
     }
 

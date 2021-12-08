@@ -39,17 +39,19 @@ public class ShibbolethModel {
             String copyContent = ClipboardUtils.getText().toString();
 
             //判断是否有这个内容
-            if (!isEmpty(copyContent) && copyContent.contains(" ") && !SPUtils.getInstance().getString(LocalConstant.SHARE_SHIBBOLETH).equals(copyContent)) {
+            if (!isEmpty(copyContent)) {
 
-                String code = copyContent.substring(0, copyContent.indexOf(" "));
+//                String code = copyContent.substring(0, copyContent.indexOf(" "));
 
                 //是否口令
-                if (isShuXiangShibboleth(code)) {
+                if (isShuXiangShibboleth(copyContent)) {
+
+
+                    //获取活动类型
+                    int mType = getAcType(numberDecode(copyContent));
 
                     if (listener!=null)
-                        listener.onCode(code);
-                    //获取活动类型
-                    int mType = getAcType(numberDecode(code));
+                        listener.onCode(mType,copyContent);
 
                     String url = "";
 
