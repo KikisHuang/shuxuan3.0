@@ -7,6 +7,8 @@ import android.os.Handler;
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.biz.OnCodeListener;
+import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.utils.LocalConstant;
 
 
@@ -30,21 +32,26 @@ public class ShibbolethModel {
     /**
      * 检测口令
      */
-    public static void checkShibboleth(Context context) {
+    public static void checkShibboleth(OnCodeListener listener) {
 
         new Handler().postDelayed(() -> {
 
             String copyContent = ClipboardUtils.getText().toString();
 
             //判断是否有这个内容
-            if (!isEmpty(copyContent) && copyContent.contains(" ") && !SPUtils.getInstance().getString(LocalConstant.SHARE_SHIBBOLETH).equals(copyContent)) {
+            if (!isEmpty(copyContent)) {
 
-                String code = copyContent.substring(0, copyContent.indexOf(" "));
+//                String code = copyContent.substring(0, copyContent.indexOf(" "));
 
                 //是否口令
-                if (isShuXiangShibboleth(code)) {
+                if (isShuXiangShibboleth(copyContent)) {
+
+
                     //获取活动类型
-                    int mType = getAcType(numberDecode(code));
+                    int mType = getAcType(numberDecode(copyContent));
+
+                    if (listener!=null)
+                        listener.onCode(mType,copyContent);
 
                     String url = "";
 
@@ -70,7 +77,7 @@ public class ShibbolethModel {
                             url = tempUrl + AC2URL + INVITATIONCODE + QT + code;
                             break;
                     }*/
-                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
+//                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
 
                     //清空剪贴板
                     copyText("");

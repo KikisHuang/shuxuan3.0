@@ -66,6 +66,9 @@ public class StoreBusinessDistrictContract {
         void deleteBusinessDistrictDynamics(long id);
 
         void PhotoViewer(ArrayList<String> images, int position);
+
+        //完成浏览商圈
+        void complete();
     }
 
     public interface StoreBusinessDistrictListener {

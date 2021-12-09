@@ -141,12 +141,12 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void initData() {
 
-        mine_banner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(Object data, int position) {
-                ToastUtils.showLong(position);
-            }
-        });
+//        mine_banner.setOnBannerListener(new OnBannerListener() {
+//            @Override
+//            public void OnBannerClick(Object data, int position) {
+//                ToastUtils.showLong(position);
+//            }
+//        });
     }
 
     @Override
@@ -261,7 +261,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             mine_banner.setAdapter(new BannerImageAdapter<ClientMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, ClientMineBean.AdsListBean data, int position, int size) {
-                    Glide.with(getContext())
+                    Glide.with(reference.get())
                             .load(data.getImage())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
                             .into(holder.imageView);

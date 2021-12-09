@@ -30,7 +30,7 @@ public class SignatureUtils {
      */
     private final static long numberFixValue = 1000000000000001L;
 
-    private final static String encodeKeyMap = "Ene60qBruXz1Jl9ohVLCdZwx3TgmfNb28QPKGMiHDWs4a7pjRAOkYvFtycU5S";
+    private final static String encodeKeyMap = "ZDSx1HpzYmdq2WfavLKRleNUkji764QPGsubEMC5cXT30tFVwrJBnyOho89gA";
 
     public enum SignType {
         MD5, HMACSHA256

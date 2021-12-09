@@ -260,6 +260,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == SOTRE_REVIEW_SUCCEED) {
             //用户认证成功，关闭客户端
             finish();
+        }else if (type == LocalConstant.VISIT_CIRCLE){
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            getP().checkTab(2);
         }
     }
 
