@@ -24,8 +24,6 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
-import com.gxdingo.sg.activity.ClientActivity;
-import com.gxdingo.sg.activity.IMChatActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
 import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
@@ -38,24 +36,18 @@ import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.trello.rxlifecycle3.LifecycleProvider;
 
-import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;

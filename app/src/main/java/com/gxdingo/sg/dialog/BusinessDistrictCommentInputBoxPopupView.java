@@ -27,18 +27,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.IMChatActivity;
-import com.gxdingo.sg.activity.IMComplaintActivity;
-import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
-import com.gxdingo.sg.adapter.IMSelectSendAddressAdapter;
 import com.gxdingo.sg.fragment.IMEmotionFragment;
 import com.gxdingo.sg.fragment.IMEmotionItemFragment;
-import com.gxdingo.sg.fragment.IMOtherFunctionsFragment;
 import com.kikis.commnlibrary.utils.BitmapUtils;
-import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.utils.SystemUtils;
 import com.lxj.xpopup.core.BottomPopupView;
 
