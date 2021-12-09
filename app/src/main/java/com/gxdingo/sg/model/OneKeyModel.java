@@ -284,7 +284,7 @@ public class OneKeyModel {
      * @param type
      */
     public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         if (TextUtils.isEmpty(code)) {
@@ -310,14 +310,14 @@ public class OneKeyModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
             }
 
             @Override
             public void onNext(UserBean userBean) {
                 OneKeyModel.quitLoginPage();
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
@@ -420,67 +420,61 @@ public class OneKeyModel {
                     public void onViewCreated(View view) {
                         settingButtnStatus(view);
 
-                        findViewById(R.id.switch_tv).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                isUser = !isUser;
-                                settingButtnStatus(view);
+                        findViewById(R.id.user_login_tv).setOnClickListener(v -> {
+                            isUser = !isUser;
+                            settingButtnStatus(view);
 
-                            }
                         });
-                        findViewById(R.id.tv_other).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                goToPage(context, LoginActivity.class, null);
-                            }
+                        findViewById(R.id.store_login_tv).setOnClickListener(v -> {
+                            isUser = !isUser;
+                            settingButtnStatus(view);
+
                         });
-                        findViewById(R.id.alipay_login).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (isCheck)
-                                    getAliAuthInfo(context);
-                                else
-                                    ToastUtils.showShort(R.string.please_agree_to_the_terms_of_service);
+
+                 /*       findViewById(R.id.switch_tv).setOnClickListener(v -> {
+                            isUser = !isUser;
+                            settingButtnStatus(view);
+
+                        });*/
+                        findViewById(R.id.tv_other).setOnClickListener(v -> goToPage(context, LoginActivity.class, null));
+                        findViewById(R.id.alipay_login).setOnClickListener(v -> {
+                            if (isCheck)
+                                getAliAuthInfo(context);
+                            else
+                                ToastUtils.showShort(R.string.please_agree_to_the_terms_of_service);
 //                                EventBus.getDefault().post(LocalConstant.ALIPAY_LOGIN_EVENT);
-                            }
                         });
-                        findViewById(R.id.wechat_login).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                        findViewById(R.id.wechat_login).setOnClickListener(v -> {
 
-                                if (isCheck) {
-                                    if (isWeixinAvilible(getContext())) {
+                            if (isCheck) {
+                                if (isWeixinAvilible(getContext())) {
 
-                                        final SendAuth.Req req = new SendAuth.Req();
+                                    final SendAuth.Req req = new SendAuth.Req();
 
-                                        req.scope = "snsapi_userinfo";
-                                        req.state = "wechat_sdk_demo";
+                                    req.scope = "snsapi_userinfo";
+                                    req.state = "wechat_sdk_demo";
 
-                                        WechatUtils.getInstance().getWxApi().sendReq(req);
-                                    } else {
-                                        ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
-                                    }
-                                } else
-                                    ToastUtils.showShort(gets(R.string.please_agree_to_the_terms_of_service));
+                                    WechatUtils.getInstance().getWxApi().sendReq(req);
+                                } else {
+                                    ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
+                                }
+                            } else
+                                ToastUtils.showShort(gets(R.string.please_agree_to_the_terms_of_service));
 //                                customResultListener.onResult(new OneKeyLoginEvent("",isUser,2));
-                            }
                         });
 
                     }
                 })
                 .build());
 
-        mAuthHelper.setUIClickListener(new AuthUIControlClickListener() {
-            @Override
-            public void onClick(String code, Context context, String jsonObj) {
-                if (isDebug)
-                    Log.e("xxxxxx", "OnUIControlClick:code=" + code + ", jsonObj=" + (jsonObj == null ? "" : jsonObj));
+        mAuthHelper.setUIClickListener((code, context1, jsonObj) -> {
+            if (isDebug)
+                Log.e("xxxxxx", "OnUIControlClick:code=" + code + ", jsonObj=" + (jsonObj == null ? "" : jsonObj));
 
 
-                if (code.equals(CODE_ERROR_USER_CHECKBOX))
-                    isCheck = GsonUtil.GsonToBean(jsonObj, OauthEventBean.class).isIsChecked();
+            if (code.equals(CODE_ERROR_USER_CHECKBOX))
+                isCheck = GsonUtil.GsonToBean(jsonObj, OauthEventBean.class).isIsChecked();
 
-            }
         });
 
         String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
@@ -523,7 +517,19 @@ public class OneKeyModel {
     }
 
     private void settingButtnStatus(View view) {
-        ((TextView) view.findViewById(R.id.switch_tv)).setText(isUser ? "商家身份登录" : "用户身份登录");
+        if (isUser) {
+            ((TextView) view.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.white));
+
+            ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.gray_a9));
+        } else {
+            ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.white));
+
+            ((TextView) view.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.gray_a9));
+        }
         ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isUser);
 

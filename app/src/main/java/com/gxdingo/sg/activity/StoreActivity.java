@@ -1,30 +1,25 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.Utils;
-import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
-import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
+import com.gxdingo.sg.fragment.store.StoreMessageFragment;
+import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -32,7 +27,6 @@ import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
-import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
@@ -48,10 +42,8 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
@@ -65,18 +57,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     private List<Fragment> mFragmentList;
 
 
-    @BindViews({R.id.crb_store_home_page_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
+    @BindViews({R.id.crb_store_home_page_layout, R.id.crb_store_message_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
     public List<CircularRevealButton> mMenuLayout;
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
     private static StoreActivity instance;
-
-    @BindView(R.id.msg_fl)
-    public FrameLayout msg_fl;
-
-    @BindView(R.id.business_fl)
-    public FrameLayout business_fl;
 
 
     @BindView(R.id.tv_unread_msg_count)
@@ -193,6 +179,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         mStoreBusinessDistrictFragment = new StoreBusinessDistrictFragment();
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new StoreHomeFragment());
+        mFragmentList.add(new StoreMessageFragment());
         mFragmentList.add(new StoreWalletFragment());
         mFragmentList.add(mStoreBusinessDistrictFragment);
         mFragmentList.add(new StoreMyFragment());
@@ -217,7 +204,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         mImmersionBar.statusBarDarkFont(true).init();
     }
 
-    @OnClick({R.id.crb_store_home_page_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
+    @OnClick({R.id.crb_store_home_page_layout,R.id.crb_store_message_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -225,14 +212,17 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             case R.id.crb_store_home_page_layout:
                 getP().checkTab(0);
                 break;
-            case R.id.crb_store_wallet:
+            case R.id.crb_store_message_layout:
                 getP().checkTab(1);
                 break;
-            case R.id.crb_store_business_district:
+            case R.id.crb_store_wallet:
                 getP().checkTab(2);
                 break;
-            case R.id.crb_store_my:
+            case R.id.crb_store_business_district:
                 getP().checkTab(3);
+                break;
+            case R.id.crb_store_my:
+                getP().checkTab(4);
                 break;
         }
     }

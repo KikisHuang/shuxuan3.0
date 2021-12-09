@@ -17,8 +17,8 @@ import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
  *
  * @author JM
  */
-public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHomeContract.StoreHomeListener>
-        implements StoreHomeContract.StoreHomePresenter, NetWorkListener {
+public class StoreHomePresenter extends BaseMvpPresenter<BasicsListener, StoreHomeContract.StoreMessageListener>
+        implements StoreHomeContract.StoreMessagePresenter, NetWorkListener {
 
     private NetworkModel networkModel;
 

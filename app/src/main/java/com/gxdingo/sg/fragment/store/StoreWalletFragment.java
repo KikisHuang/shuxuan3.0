@@ -53,7 +53,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 /**
  * 商家端钱包
  *
- * @author JM
+ * @author Kikis
  */
 public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.StoreWalletPresenter> implements StoreWalletContract.StoreWalletListener, OnItemClickListener {
 

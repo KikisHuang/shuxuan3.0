@@ -1,135 +1,138 @@
 package com.gxdingo.sg.fragment.store;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
+import android.graphics.drawable.Drawable;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
-import com.gxdingo.sg.activity.StoreActivity;
-import com.gxdingo.sg.activity.StoreHomeSearchActivity;
-import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
-import com.gxdingo.sg.bean.ExitChatEvent;
-import com.gxdingo.sg.utils.MessageCountUtils;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
-import com.gxdingo.sg.bean.UserBean;
-import com.gxdingo.sg.biz.StoreHomeContract;
-import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
-import com.gxdingo.sg.presenter.StoreHomePresenter;
-import com.gxdingo.sg.utils.StoreLocalConstant;
+import com.gxdingo.sg.activity.ClientAddressListActivity;
+import com.gxdingo.sg.activity.ClientSearchActivity;
+import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.adapter.ClientCategoryAdapter;
+import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.HelpBean;
+import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.biz.HelpListener;
+import com.gxdingo.sg.biz.OnContentListener;
+import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
+import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
+import com.gxdingo.sg.dialog.HelpPopupView;
+import com.gxdingo.sg.presenter.ClientHomePresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
+import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.kikis.commnlibrary.view.RoundImageView;
 import com.lxj.xpopup.XPopup;
-import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.youth.banner.Banner;
+import com.youth.banner.adapter.BannerImageAdapter;
+import com.youth.banner.holder.BannerImageHolder;
 
-
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
-import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.ADD;
-import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
+import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
+import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
 /**
- * 商家端主页
- *
- * @author: JM
+ * @author: Kikis
+ * @date: 2021/12/9
+ * @page:
  */
-public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHomePresenter> implements StoreHomeContract.StoreHomeListener {
-    Context mContext;
-    StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
-    @BindView(R.id.tv_status_bar)
-    LinearLayout tvStatusBar;
-    @BindView(R.id.ll_search_layout)
-    LinearLayout llSearchLayout;
-    @BindView(R.id.iv_more)
-    ImageView ivMore;
-    @BindView(R.id.iv_more2)
-    ImageView ivMore2;
-    @BindView(R.id.top_layout)
-    ConstraintLayout topLayout;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.app_bar)
-    AppBarLayout appBar;
-    @BindView(R.id.niv_store_avatar)
-    RoundImageView nivStoreAvatar;
-    @BindView(R.id.tv_store_name)
-    TextView tvStoreName;
-    @BindView(R.id.tv_business_status)
-    TextView tvBusinessStatus;
-    @BindView(R.id.tv_business_time)
-    TextView tvBusinessTime;
-    @BindView(R.id.ll_business_info_layout)
-    LinearLayout llBusinessInfoLayout;
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.hint_img)
-    ImageView hintImg;
-    @BindView(R.id.hint_tv)
-    TextView hintTv;
-    @BindView(R.id.function_bt)
-    TextView functionBt;
-    @BindView(R.id.classics_footer)
-    ClassicsFooter classicsFooter;
+public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, BaseRecyclerAdapter.OnItemClickListener, OnItemChildClickListener, OnItemClickListener {
+
+    @BindView(R.id.scrollView)
+    public NestedScrollView scrollView;
+
+    @BindView(R.id.title_layout)
+    public RelativeLayout title_layout;
+
     @BindView(R.id.smartrefreshlayout)
-    SmartRefreshLayout smartrefreshlayout;
-    @BindView(R.id.coordinator_layout)
-    CoordinatorLayout coordinatorLayout;
-    @BindView(R.id.cl_store_name_layout)
-    ConstraintLayout clStoreNameLayout;
-    @BindView(R.id.tv_search)
-    TextView tvSearch;
-    @BindView(R.id.iv_search2)
-    ImageView ivSearch2;
-    @BindView(R.id.ll_search_layout2)
-    LinearLayout llSearchLayout2;
-    @BindView(R.id.nodata_layout)
-    View nodataLayout;
+    public SmartRefreshLayout smartrefreshlayout;
+
+    @BindView(R.id.location_tv)
+    public TextView location_tv;
+
+    @BindView(R.id.location_tt_tv)
+    public TextView location_tt_tv;
+
+    @BindView(R.id.category_rv)
+    public RecyclerView category_rv;
+
+    @BindView(R.id.home_banner)
+    public Banner home_banner;
+
+    @BindView(R.id.store_rv)
+    public RecyclerView store_rv;
+
+    @BindView(R.id.noStores_layout)
+    public LinearLayout noStores_layout;
+
+    @BindView(R.id.noLocation_layout)
+    public LinearLayout noLocation_layout;
+
+    private ClientStoreAdapter mStoreAdapter;
+
+    private ClientCategoryAdapter mCategoryAdapter;
+
+    private List<CategoriesBean> mDefaultTypeData;
+
+    private List<CategoriesBean> mAllTypeData;
+
+    //是否获取定位
+    private boolean location = true;
+
+    private int categoryId = 0;
+
+    private int mTitleHeight = dp2px(80);
+
+    private BasePopupView fillCodePopupView;
+
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
-
-
-    @Override
-    protected StoreHomeContract.StoreHomePresenter createPresenter() {
-        return new StoreHomePresenter();
+    protected ClientHomeContract.ClientHomePresenter createPresenter() {
+        return new ClientHomePresenter();
     }
 
     @Override
@@ -149,7 +152,7 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
 
     @Override
     protected View noDataLayout() {
-        return nodataLayout;
+        return noStores_layout;
     }
 
     @Override
@@ -167,124 +170,114 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
         return true;
     }
 
-    /**
-     * 下拉刷新
-     */
+
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
-        if (UserInfoUtils.getInstance().isLogin())
-            //获取IM订阅信息
-            getP().getIMSubscribesList(true);
+        super.onRefresh(refreshLayout);
+        if (location)
+            getP().getNearbyStore(true, true, categoryId);
+        else {
+            getP().checkPermissions(getRxPermissions(), true);
+            smartrefreshlayout.finishRefresh();
+        }
+
     }
 
-
-    /**
-     * 上拉加载更多数据
-     */
-    @Override
-    public void onLoadMore(RefreshLayout refreshLayout) {
-        if (UserInfoUtils.getInstance().isLogin())
-            //获取IM订阅信息
-            getP().getIMSubscribesList(false);
-    }
-
-    @Override
-    protected void init() {
-        int statusBarHeight = ScreenUtils.getStatusHeight(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
-        tvStatusBar.setLayoutParams(params);
-        setAppBarLayoutListener();
-
-        mStoreHomeIMMessageAdapter = new StoreHomeIMMessageAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
-        mStoreHomeIMMessageAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-                SubscribesListBean.SubscribesMessage subscribesMessage = mStoreHomeIMMessageAdapter.getItem(position);
-                //跳转到IM聊天界面
-//                Map<String, String> intentMap = new HashMap<>();
-//                intentMap.put(IMChatActivity.EXTRA_SHARE_UUID, subscribesMessage.getShareUuid());
-//                goToPage(reference.get(), IMChatActivity.class, intentMap);
-
-                goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{subscribesMessage.getShareUuid(), subscribesMessage.getSendUserRole()}));
-                getP().clearUnreadMsg(subscribesMessage.getShareUuid());
-
-                if (StoreActivity.getInstance() != null)
-                    StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().reduceUnreadMessageNum(subscribesMessage.getUnreadNum()));
-
-            }
-        });
-        recyclerView.setAdapter(mStoreHomeIMMessageAdapter);
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        categoryId = 0;
+//        getP().getNearbyStore(true,categoryId);
+//    }
 
     @Override
-    protected void initData() {
-
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            categoryId = 0;
+            getP().getNearbyStore(true, true, categoryId);
+        }
     }
-
 
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        UserInfoUtils userInfo = UserInfoUtils.getInstance();
-        if (userInfo != null && userInfo.isLogin()) {
-            if (isFirstLoad) {
-                isFirstLoad = !isFirstLoad;
-                setStoreInfo(userInfo);
-                //获取IM订阅信息
-                getP().getIMSubscribesList(true);
-            } else {
-                getP().refreshList();
-                setStoreInfo(userInfo);
-            }
-        }
-    }
-
-    private void setStoreInfo(UserInfoUtils userInfo) {
-        UserBean userBean = userInfo.getUserInfo();
-        if (userBean != null) {
-            //显示头像、名称和营业状态信息
-            UserBean.StoreBean storeBean = userBean.getStore();
-            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
-            tvStoreName.setText(storeBean.getName());
-            setBusinessStatus(storeBean);
-        }
-    }
-
-
-    private void setAppBarLayoutListener() {
-        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-
-            @SuppressLint("ResourceType")
-            @Override
-            public void onOffsetChanged(AppBarLayout arg0, int arg1) {
-                if (Math.abs(arg1) >= arg0.getTotalScrollRange()) {
-                    llBusinessInfoLayout.setVisibility(View.INVISIBLE);
-                    llSearchLayout2.setVisibility(View.VISIBLE);
-                } else {
-                    llBusinessInfoLayout.setVisibility(View.VISIBLE);
-                    llSearchLayout2.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+        getP().checkHelpCode();
     }
 
     @Override
-    public void onBaseEvent(Object object) {
-        super.onBaseEvent(object);
-        //从IMMessageReceivingService接收到的IM消息
-        if (object instanceof ReceiveIMMessageBean) {
-            ReceiveIMMessageBean receiveIMMessageBean = (ReceiveIMMessageBean) object;
-            if (receiveIMMessageBean != null && !TextUtils.isEmpty(receiveIMMessageBean.getSendIdentifier())) {
-                //不用做处理，直接刷新IM订阅列表即可（消息发送者的那条订阅消息会显示在第一条）
-                getP().refreshList();
-
-            }
+    public void onLoadMore(RefreshLayout refreshLayout) {
+        super.onLoadMore(refreshLayout);
+        if (location)
+            getP().getNearbyStore(false, false, categoryId);
+        else {
+            getP().checkPermissions(getRxPermissions(), true);
+            smartrefreshlayout.finishLoadMore();
         }
-        //聊天页面退出事件，因为如果在当前聊天页面，未读消息数需要客户端手动清除？
-        if (object instanceof ExitChatEvent) {
-            ExitChatEvent exitChatEvent = (ExitChatEvent) object;
-            getP().clearUnreadMsg(exitChatEvent.id);
+
+    }
+
+    @Override
+    protected void init() {
+        scrollViewInit();
+        mStoreAdapter = new ClientStoreAdapter();
+        store_rv.setAdapter(mStoreAdapter);
+        store_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
+        mStoreAdapter.setOnItemChildClickListener(this);
+        mStoreAdapter.setOnItemClickListener(this);
+        mCategoryAdapter = new ClientCategoryAdapter();
+        category_rv.setAdapter(mCategoryAdapter);
+        category_rv.setLayoutManager(new GridLayoutManager(reference.get(), 5) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        mCategoryAdapter.setOnItemClickListener(this);
+    }
+
+    @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
+            case R.id.location_tt_tv:
+            case R.id.location_tv:
+                if (UserInfoUtils.getInstance().isLogin())
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{1}));
+                else
+                    getP().oauth(getContext());
+
+                break;
+            case R.id.btn_search:
+            case R.id.ll_search:
+                goToPage(getContext(), ClientSearchActivity.class, getIntentMap(new String[]{location_tv.getText().toString()}));
+                break;
+            case R.id.btn_empower:
+                getP().checkPermissions(getRxPermissions(), true);
+                break;
+            case R.id.btn_become_store:
+                if (UserInfoUtils.getInstance().isLogin())
+                    getP().convertStore();
+                else
+                    getP().oauth(getContext());
+                break;
+            case R.id.btn_invitation:
+                Intent textIntent = new Intent(Intent.ACTION_SEND);
+                textIntent.setType("text/plain");
+                textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");
+                startActivity(Intent.createChooser(textIntent, "分享"));
+                break;
+        }
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof AddressBean) {
+            AddressBean addressBean = (AddressBean) object;
+            if (addressBean.selectType == 1) {
+                this.location = true;
+                getP().getNearbyStore((AddressBean) object, categoryId);
+            }
 
         }
     }
@@ -292,137 +285,255 @@ public class StoreHomeFragment extends BaseMvpFragment<StoreHomeContract.StoreHo
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        //店铺审核成功重新初始化数据
-        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
-
-            UserInfoUtils userInfo = UserInfoUtils.getInstance();
-            if (userInfo != null && userInfo.isLogin())
-                setStoreInfo(userInfo);
-            //获取IM订阅信息
-            getP().getIMSubscribesList(true);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.tv_search:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
-                break;
-            case R.id.iv_search2:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
-                break;
-            case R.id.iv_more:
-                showSelectBusinessStatusDialog();
-                break;
-            case R.id.iv_more2:
-                showSelectBusinessStatusDialog();
-                break;
-        }
-    }
-
-    private RequestOptions getRequestOptions() {
-        RequestOptions options = new RequestOptions();
-        options.placeholder(R.mipmap.ic_user_default_avatar);    //加载成功之前占位图
-        options.error(R.mipmap.ic_user_default_avatar);    //加载错误之后的错误图
-        return options;
-    }
-
-    /**
-     * 设置营业状态
-     */
-    private void setBusinessStatus(UserBean.StoreBean storeBean) {
-        tvBusinessStatus.setText(storeBean.getBusinessStatus() == 0 ? "暂停营业" : "正常营业");
-        if (!TextUtils.isEmpty(storeBean.getOpenTime()) && !TextUtils.isEmpty(storeBean.getCloseTime())) {
-            String openTime = getP().onInterceptionBusinessHours(storeBean.getOpenTime());
-            String closeTime = getP().onInterceptionBusinessHours(storeBean.getCloseTime());
-            tvBusinessTime.setText(openTime + "-" + closeTime);
-        }
-    }
-
-    /**
-     * 显示选择营业状态弹窗
-     */
-    private void showSelectBusinessStatusDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
-                    @Override
-                    public void onStatus(int code, String name) {
-
-                        getP().updateBusinessStatus(code);
-                    }
-                }).show());
-    }
-
-    /**
-     * 返回IM订阅信息列表(包含有请求web socket接入url)
-     */
-    @Override
-    public void onIMSubscribesInfo(boolean refresh, SubscribesListBean subscribesListBean) {
-        if (subscribesListBean != null && subscribesListBean.getList() != null) {
-            //取出本地存储的websocket url
-            String webSocketUrl = SPUtils.getInstance().getString(WEB_SOCKET_URL);
-            /*
-             * 本地保存的webSocketUrl是否服务器的一样，不一样可能url发生改变，
-             * 需要将BaseWebSocket设置null,重新连接（前提是IMMessageReceivingService在运行）
-             */
-            if (!webSocketUrl.equals(subscribesListBean.getWebsocketUrl())) {
-//                EventBus.getDefault().post(100999);//发送重置码
-                resetImService();
-            }
-
-            //保存web socket接入url
-            SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
-
-            //启动IM消息接收服务
-            startImService(reference.get());
-//            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
-
-            if (refresh) {
-                mStoreHomeIMMessageAdapter.setList(subscribesListBean.getList());
-            } else {
-                mStoreHomeIMMessageAdapter.addData(subscribesListBean.getList());
+        if (type == CLIENT_LOGIN_SUCCEED) {
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin()==1){
+                showInvitationCodeDialog();
             }
         }
     }
 
     @Override
-    public void changeBusinessStatus(int status) {
-        tvBusinessStatus.setText(status == 1 ? "正常营业" : "暂停营业");
+    protected void initData() {
+
+        mAllTypeData = new ArrayList<>();
+        mDefaultTypeData = new ArrayList<>();
+        getP().checkPermissions(getRxPermissions(), true);
+        getP().getCategory();
+
     }
 
-    @Override
-    public void clearMessageUnreadItem(String id) {
+    private void addData(List<CategoriesBean> categories) {
 
-        //清除item未读消息
+        mCategoryAdapter.clear();
+        mCategoryAdapter.notifyDataSetChanged();
+
         RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-            for (int i = 0; i < mStoreHomeIMMessageAdapter.getData().size(); i++) {
-                SubscribesListBean.SubscribesMessage data = mStoreHomeIMMessageAdapter.getData().get(i);
 
-                if (data.getShareUuid().equals(id)) {
-                    MessageCountUtils.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
-                    data.setUnreadNum(0);
-                    e.onNext(i);
-                }
+            mAllTypeData.addAll(categories);
+
+            for (int i = 0; i < categories.size(); i++) {
+                if (mDefaultTypeData.size() < 4)
+                    mDefaultTypeData.add(categories.get(i));
+
             }
+
+            e.onNext(mDefaultTypeData);
             e.onComplete();
-        }), (BaseActivity) reference.get()).subscribe(o -> {
-            int pos = (int) o;
-
-            if (StoreActivity.getInstance() != null)
-                StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
-
-            mStoreHomeIMMessageAdapter.notifyItemChanged(pos);
-        });
+        }), (BaseActivity) reference.get()).subscribe(o -> switchData(mDefaultTypeData));
 
     }
 
 
+    private void switchData(List<CategoriesBean> data) {
+        mCategoryAdapter.clear();
+
+        mCategoryAdapter.addDataAll(data);
+
+        if (mAllTypeData.size() > 4) {
+            CategoriesBean categoriesBean = new CategoriesBean();
+            mCategoryAdapter.addData(categoriesBean, mCategoryAdapter.getData().size());
+        }
+
+        mCategoryAdapter.notifyDataSetChanged();
+    }
+
+    private void scrollViewInit() {
+
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (mTitleHeight > scrollY)
+                    setTitleViewAlpha(0f);
+                else {
+                    setTitleViewAlpha(1);
+                }
+
+            }
+        });
+    }
+
+    @Override
+    public void onFailed() {
+        super.onFailed();
+        location = false;
+        if (noLocation_layout.getVisibility() == View.INVISIBLE || noLocation_layout.getVisibility() == View.GONE)
+            noLocation_layout.setVisibility(View.VISIBLE);
+    }
+
+    private void setTitleViewAlpha(float alpha) {
+        title_layout.setAlpha(alpha);
+        location_tt_tv.setAlpha(alpha);
+    }
+
+    @Override
+    public void setDistrict(String district) {
+        if (noLocation_layout.getVisibility() == View.VISIBLE)
+            noLocation_layout.setVisibility(View.GONE);
+        location_tv.setText(district);
+        location_tt_tv.setText(district);
+    }
+
+    @Override
+    public void onCategoryResult(List<CategoriesBean> categories) {
+        addData(categories);
+    }
+
+
+    @Override
+    public void onStoresResult(boolean refresh, boolean search, List<StoreListBean.StoreBean> storeBeans) {
+        if (refresh)
+            mStoreAdapter.setList(storeBeans);
+        else
+            mStoreAdapter.addData(storeBeans);
+    }
+
+    @Override
+    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
+        if (bannerBeans.size()>0){
+            home_banner.setVisibility(View.VISIBLE);
+            home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {
+                @Override
+                public void onBindView(BannerImageHolder holder, HomeBannerBean data, int position, int size) {
+                    Glide.with(reference.get())
+                            .load(data.getImage())
+                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
+                            .into(new SimpleTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                            int width = resource.getIntrinsicWidth();
+                            int height = resource.getIntrinsicHeight();
+
+                            int newheight = getScreenWidth() * height / width;
+
+                            home_banner.getLayoutParams().height = newheight;
+
+
+                            holder.imageView.setImageDrawable(resource);
+                        }
+                    });
+
+                }
+            });
+            home_banner.setOnBannerListener((data, position) -> {
+                HomeBannerBean bannerBean = (HomeBannerBean) data;
+                if (bannerBean.getType()==2 && !isEmpty(bannerBean.getPage())){
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                }
+            });
+
+
+            home_banner.start();
+        }else {
+            home_banner.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onHistoryResult(List<String> searchHistories) {
+
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+        new XPopup.Builder(reference.get())
+                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
+                .isDarkTheme(false)
+                .asCustom(new HelpPopupView(getContext(), helpBean, new HelpListener() {
+                    @Override
+                    public void help() {
+                        getP().help();
+                    }
+                }))
+                .show();
+    }
+
+    @Override
+    public void onItemClick(View itemView, int pos) {
+        if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
+
+            boolean expan = ((CategoriesBean) mCategoryAdapter.getData().get(pos)).isSelected;
+
+            switchData(expan ? mDefaultTypeData : mAllTypeData);
+
+            ((CategoriesBean) mCategoryAdapter.getData().get(mCategoryAdapter.getData().size() - 1)).isSelected = !expan;
+
+            mCategoryAdapter.notifyDataSetChanged();
+        } else {
+            CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
+            categoryId = categoriesBean.getId();
+            if (!location)
+                getP().checkPermissions(getRxPermissions(), true);
+            else
+                getP().getNearbyStore(true, true, categoryId);
+        }
+    }
+
+    @Override
+    public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+        StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+        switch (view.getId()) {
+            case R.id.store_avatar_iv:
+
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
+                break;
+            case R.id.call_phone_iv:
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new ClientCallPhoneDialog(reference.get(), item.getContactNumber(), new OnContentListener() {
+                            @Override
+                            public void onConfirm(BasePopupView popupView, String content) {
+                                getP().callStore(content);
+                            }
+                        }))
+                        .show();
+                break;
+        }
+
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
+        if (UserInfoUtils.getInstance().isLogin()) {
+            StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+        } else {
+            UserInfoUtils.getInstance().goToOauthPage(getContext());
+        }
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == ClientLocalConstant.FILL_SUCCESS){
+            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
+            fillCodePopupView.dismiss();
+        }
+
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (home_banner!=null)
+            home_banner.stop();
+    }
+
+    private void showInvitationCodeDialog(){
+        if (fillCodePopupView==null){
+            fillCodePopupView = new XPopup.Builder(reference.get())
+                    .maxWidth((int) (ScreenUtils.getScreenWidth(getContext()) ))
+                    .isDarkTheme(false)
+                    .asCustom(new FillInvitationCodePopupView(getContext(), new OnContentListener() {
+                        @Override
+                        public void onConfirm(BasePopupView popupView, String content) {
+                            getP().fllInvitationCode(content);
+                        }
+                    })).show();
+        }else {
+            fillCodePopupView.show();
+        }
+
+    }
 }

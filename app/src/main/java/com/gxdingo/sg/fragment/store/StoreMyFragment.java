@@ -48,7 +48,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 /**
  * 商家端我的
  *
- * @author JM
+ * @author Kikis
  */
 public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPresenter> implements StoreMyContract.StoreMyListener {
 

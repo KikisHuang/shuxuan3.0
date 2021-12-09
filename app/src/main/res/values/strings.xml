@@ -18,6 +18,8 @@
     <string name="im_chat_unknown_content_hint">系统提示：当前版本不支持该内容，请升级到最新版本!</string>
     <string name="store_id_login">商家身份登录</string>
     <string name="user_id_login">用户身份登录</string>
+    <string name="user_login">用户登录</string>
+    <string name="store_login">商家登录</string>
     <string name="binding_phone_number">绑定手机号</string>
     <string name="binding_phone_number_hint">首次登录需要绑定手机号</string>
     <string name="input_phone_number">输入手机号码</string>

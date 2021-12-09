@@ -11,7 +11,7 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
  */
 public class StoreHomeContract {
 
-    public interface StoreHomePresenter extends MvpPresenter<BasicsListener, StoreHomeListener> {
+    public interface StoreMessagePresenter extends MvpPresenter<BasicsListener, StoreMessageListener> {
 
         /**
          * 获取IM订阅信息列表
@@ -46,7 +46,7 @@ public class StoreHomeContract {
         void refreshList();
     }
 
-    public interface StoreHomeListener {
+    public interface StoreMessageListener {
         /**
          * 返回IM订阅信息列表(包含有请求web socket接入url)
          */
