@@ -126,11 +126,9 @@ public class OneKeyModel {
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
     }
 
     public OneKeyModel(NetWorkListener netWorkListener) {
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         this.netWorkListener = netWorkListener;
     }
 
@@ -350,6 +348,8 @@ public class OneKeyModel {
 
     public void sdkInit(Context context, CustomResultListener customResultListener) {
 
+        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+
         if (mAuthHelper != null) {
             LogUtils.i("已启动阿里一键登录页");
             return;
@@ -533,6 +533,7 @@ public class OneKeyModel {
         ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isUser);
 
+        SPUtils.getInstance().put(LOGIN_WAY, isUser);
     }
 
 

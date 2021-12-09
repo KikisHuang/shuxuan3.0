@@ -193,9 +193,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden) {
-            categoryId = 0;
-            getP().getNearbyStore(true, true, categoryId);
+        if (getP()!=null){
+            if (!hidden) {
+                categoryId = 0;
+                getP().getNearbyStore(true, true, categoryId);
+            }
         }
     }
 
