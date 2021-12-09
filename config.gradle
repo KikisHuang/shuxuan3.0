@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,//targetSdkVersion 调到28会导致TwinklingRefreshLayout的报错，如需升级版本（需要更换聊天页面的刷新控件）
-            versionCode            : 21,
-            versionName            : "2.0.1",
+            versionCode            : 25,
+            versionName            : "2.0.5",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]

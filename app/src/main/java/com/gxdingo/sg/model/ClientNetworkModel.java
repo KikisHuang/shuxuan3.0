@@ -51,6 +51,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
@@ -1678,6 +1679,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 

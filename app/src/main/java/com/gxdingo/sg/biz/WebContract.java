@@ -20,6 +20,8 @@ public class WebContract {
         void loadData(int articleId, String identifier);
 
         void sharePayment(String url, String title, String description, String thumb);
+
+        void completeTask();
     }
 
     public interface WebListener {

@@ -245,6 +245,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                 @Override
                 public void onResult(SHARE_MEDIA share_media) {
                     LogUtils.d("onResult:"+share_media);
+                    getP().completeTask();
                 }
 
                 @Override
