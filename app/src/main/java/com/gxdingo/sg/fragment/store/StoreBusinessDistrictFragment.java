@@ -209,7 +209,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             ivSendBusinessDistrict.setVisibility(View.GONE);
         } else {
             title_tv.setText("我的商圈");
-            LinearLayout.LayoutParams clp = (LinearLayout.LayoutParams) title_cl.getLayoutParams();
+            ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) title_cl.getLayoutParams();
             clp.topMargin = dp2px(40);
         }
 
