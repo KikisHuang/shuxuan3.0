@@ -209,7 +209,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             ivSendBusinessDistrict.setVisibility(View.GONE);
         } else {
             title_tv.setText("我的商圈");
-            LinearLayout.LayoutParams clp = (LinearLayout.LayoutParams) title_cl.getLayoutParams();
+            ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) title_cl.getLayoutParams();
             clp.topMargin = dp2px(40);
         }
 
@@ -255,7 +255,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         Log.d("businessScopeFragment", "onHiddenChanged: "+hidden);
-        if (cl_visit_countdown.getVisibility() == View.VISIBLE){
+        if (cl_visit_countdown!=null&&cl_visit_countdown.getVisibility() == View.VISIBLE){
             cl_visit_countdown.setVisibility(View.GONE);
         }
         if (isHidden() && countDownTimer!=null)

@@ -37,7 +37,10 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.ScreenUtils;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.callback.CallBack;
 import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
@@ -1688,7 +1691,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onMessage(normalBean.msg);
+                    netWorkListener.onMessage("完成任务！");
                 }
             }
         };

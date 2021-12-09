@@ -205,7 +205,7 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
     @Override
     public void completeTask() {
         if (mClientNetworkModel!=null)
-            mClientNetworkModel.completeTask(getContext(),10);
+            mClientNetworkModel.completeTask(getContext(),30);
     }
 }
 
