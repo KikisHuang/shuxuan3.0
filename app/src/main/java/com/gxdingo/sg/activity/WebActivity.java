@@ -13,9 +13,12 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
+import com.gxdingo.sg.bean.WheelResultBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -25,6 +28,8 @@ import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
@@ -199,70 +204,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     }
 
 
-    /**
-     * 分享支付
-     *
-     * @param url         分享路径
-     * @param title       标题
-     * @param description 描述
-     * @param thumb       缩略图
-     */
-    @JavascriptInterface
-    public void sharePayment(String url, String title, String description, String thumb) {
-        getP().sharePayment(url, title, description, thumb);
-    }
-
-    /**
-     * 跳转其他app
-     *
-     * @return
-     */
-    @JavascriptInterface
-    public void goToApp(String packname) {
-
-        if (isAppInstalled(packname))
-            launchApp(packname);
-        else
-            ToastUtils.showShort("未安装该应用");
-    }
-
-    /**
-     * 投诉
-     *
-     * @return
-     */
-    @JavascriptInterface
-    public void goToPage(String type) {
-//        if (type.equals(ClientLocalConstant.COMPLAIN))
-//            IntentUtils.goToPage(reference.get(), ClientComplainActivity.class, null);
-    }
-
-
-    /**
-     * 获取token
-     *
-     * @return
-     */
-    @JavascriptInterface
-    public String getSXYGLoginInfo20211021() {
-        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-
-        String userInfo = GsonUtil.gsonToStr(userBean);
-        if (userBean == null || isEmpty(userInfo)) {
-            UserInfoUtils.getInstance().goToOauthPage(reference.get());
-            finish();
-        }
-        return userInfo;
-    }
-
-
-    /**
-     * 关闭页面
-     */
-    @JavascriptInterface
-    public void goBack() {
-        finish();
-    }
 
     @OnClick({})
     public void onViewClicked(View v) {
@@ -273,13 +214,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         }
 
     }
-
-
-    @JavascriptInterface
-    public void callJsBye() {
-        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.e("onReceiveValue ==== " + s));
-    }
-
 
     @Override
     protected void onStart() {
@@ -380,4 +314,139 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             webView.destroy();
         }
     }
+
+    /**
+     * ########################### js调用Android方法 ###########################
+     */
+
+
+
+    /**
+     * 分享支付
+     *
+     * @param url         分享路径
+     * @param title       标题
+     * @param description 描述
+     * @param thumb       缩略图
+     */
+    @JavascriptInterface
+    public void sharePayment(String url, String title, String description, String thumb) {
+        getP().sharePayment(url, title, description, thumb);
+    }
+
+    /**
+     * 跳转其他app
+     *
+     * @return
+     */
+    @JavascriptInterface
+    public void goToApp(String packname) {
+
+        if (isAppInstalled(packname))
+            launchApp(packname);
+        else
+            ToastUtils.showShort("未安装该应用");
+    }
+
+    /**
+     * 投诉
+     *
+     * @return
+     */
+    @JavascriptInterface
+    public void goToPage(String type) {
+//        if (type.equals(ClientLocalConstant.COMPLAIN))
+//            IntentUtils.goToPage(reference.get(), ClientComplainActivity.class, null);
+    }
+
+
+    /**
+     * 获取token
+     *
+     * @return
+     */
+    @JavascriptInterface
+    public String getSXYGLoginInfo20211021() {
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+
+        String userInfo = GsonUtil.gsonToStr(userBean);
+        if (userBean == null || isEmpty(userInfo)) {
+            UserInfoUtils.getInstance().goToOauthPage(reference.get());
+            finish();
+        }
+        return userInfo;
+    }
+
+    @JavascriptInterface
+    public void backToApp(String restultData) {
+        LogUtils.d("h5调用了"+restultData);
+        WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
+        if (wheelResultBean==null)return;
+        if (wheelResultBean.jumpType == 30){
+            ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+                    LogUtils.d("onStart:"+share_media);
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+                    LogUtils.d("onResult:"+share_media);
+                    getP().completeTask();
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                    LogUtils.d("onError:"+share_media);
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+                    LogUtils.d("onCancel:"+share_media);
+                }
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN_CIRCLE);
+        }else if (wheelResultBean.jumpType == 20){
+            ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+
+                }
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN);
+
+        }else if (wheelResultBean.jumpType == 10){
+            sendEvent(LocalConstant.VISIT_CIRCLE);
+            finish();
+        }
+    }
+
+    /**
+     * 关闭页面
+     */
+    @JavascriptInterface
+    public void goBack() {
+        finish();
+    }
+
+
+
+    @JavascriptInterface
+    public void callJsBye() {
+        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.e("onReceiveValue ==== " + s));
+    }
+
 }
