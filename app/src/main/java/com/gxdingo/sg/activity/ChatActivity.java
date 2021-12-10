@@ -534,7 +534,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         if (object instanceof FunctionsItem) {
             FunctionsItem functionsItem = (FunctionsItem) object;
             /**
-             * 用户
+             * 用户端面板
              */
             if (functionsItem.type == TYPE_USER) {
                 //相册
@@ -572,8 +572,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                 }
             }
+            //todo 商家版面板可能要判断状态后显示
             /**
-             * 商家
+             * 商家面板
              */
             else if (functionsItem.type == TYPE_STORE) {
 
@@ -1252,37 +1253,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             mChatDatas.get(position).recipientRead = 1;
             mAdapter.notifyItemChanged(position);
         }
-
-
-    }
-
-    /**
-     * 判断触摸点是否在目标view上
-     * 前提是touchView与tarView在同一viewGroup中
-     *
-     * @param touView 响应触摸事件的view
-     * @param tarView 触摸点需要落在的目标view
-     * @param x       event.getX()
-     * @param y       event.getY()
-     * @return 是否落在tarView上
-     */
-    private boolean pointInView(View touView, View tarView, float x, float y) {
-        boolean xDir, yDir;
-        //x方向
-        if (tarView.getLeft() >= touView.getRight())//tarView在右边
-            xDir = (x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft());
-        else if (tarView.getRight() <= touView.getLeft()) //tarView在左边
-            xDir = (x <= tarView.getRight() - touView.getLeft() && x >= tarView.getLeft() - touView.getLeft());
-        else //tarView在重叠范围
-            xDir = x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft();
-        //y方向
-        if (tarView.getTop() >= touView.getBottom())//tarView在下边
-            yDir = (y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop());
-        else if (tarView.getBottom() <= touView.getTop()) //tarView在上边
-            yDir = (y <= tarView.getBottom() - touView.getTop() && y >= tarView.getTop() - touView.getTop());
-        else //tarView在重叠范围
-            yDir = y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop();
-        return xDir && yDir;
     }
 }
 

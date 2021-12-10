@@ -184,15 +184,15 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
             UserInfoUtils.getInstance().saveUserInfo(userBean);
         }
         StringBuilder stringBuilder = new StringBuilder();
-        if (mineBean.getCategoryList()!=null && mineBean.getCategoryList().size()>0){
-            for (int i=0;i<mineBean.getCategoryList().size();i++){
+        if (mineBean.getCategoryList() != null && mineBean.getCategoryList().size() > 0) {
+            for (int i = 0; i < mineBean.getCategoryList().size(); i++) {
                 stringBuilder.append(mineBean.getCategoryList().get(i).getName());
-                if (i!=mineBean.getCategoryList().size()-1)
+                if (i != mineBean.getCategoryList().size() - 1)
                     stringBuilder.append("、");
             }
         }
-        type_and_open_time_tv.setText(stringBuilder.toString()+" | "+dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
-        if (mineBean.getAdsList() != null) {
+        type_and_open_time_tv.setText(stringBuilder.toString() + " | " + dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
+        if (mineBean.getAdsList() != null && mineBean.getAdsList().size() > 0) {
             store_mine_banner.setAdapter(new BannerImageAdapter<StoreMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, StoreMineBean.AdsListBean data, int position, int size) {

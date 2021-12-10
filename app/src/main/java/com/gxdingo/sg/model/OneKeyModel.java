@@ -126,6 +126,7 @@ public class OneKeyModel {
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
+
     }
 
     public OneKeyModel(NetWorkListener netWorkListener) {
