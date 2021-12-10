@@ -70,6 +70,7 @@ import io.reactivex.Observable;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
 import static com.gxdingo.sg.http.Api.HTTP;
+import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
@@ -122,7 +123,7 @@ public class OneKeyModel {
     //协议是否勾选
     private boolean isCheck;
 
-    private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+    private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
@@ -149,7 +150,7 @@ public class OneKeyModel {
 
             map.put("os", "android");
 
-            String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+            String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
             if (netWorkListener != null)
                 netWorkListener.onStarts();
@@ -206,7 +207,7 @@ public class OneKeyModel {
 
         map.put("os", "android");
 
-        String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTP + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+        String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
         Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
