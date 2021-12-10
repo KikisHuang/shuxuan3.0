@@ -170,9 +170,15 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         }
     }
 
-    @OnClick({})
+    @OnClick({R.id.unread_iv,R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.unread_iv:
+                startActivity(new Intent(reference.get(), BusinessDistrictMessageActivity.class));
+                break;
+            case R.id.iv_send_business_district:
+                startActivity(new Intent(reference.get(), StoreBusinessDistrictReleaseActivity.class));
+                break;
         }
     }
 
