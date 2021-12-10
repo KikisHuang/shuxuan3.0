@@ -20,10 +20,12 @@ import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictMessageCommentListBean;
 import com.gxdingo.sg.biz.BusinessDistrictMessageContract;
+import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BusinessDistrictMessagePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -220,6 +222,24 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
      * @param parentId 回复谁的消息id
      */
     private void showCommentInputBoxDialog(String hint, long parentId) {
+
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constant.PARAMAS + 0, hint);
+
+        BusinessDistrictCommentInputBoxDialogFragment fragment = BusinessDistrictCommentInputBoxDialogFragment.newInstance(BusinessDistrictCommentInputBoxDialogFragment.class, bundle);
+        fragment.setOnCommentContentListener(object -> {
+            String content = (String) object;
+            if (TextUtils.isEmpty(content)) {
+                onMessage("请输入回复内容！");
+                return;
+            }
+            getP().submitCommentOrReply(parentId, content);
+            fragment.dismiss();
+        });
+        fragment.show(getSupportFragmentManager(), BusinessDistrictMessageActivity.class.toString());
+
+ /*
         mCommentInputBoxPopupView = new BusinessDistrictCommentInputBoxPopupView(this, hint, getSupportFragmentManager()
                 , new BusinessDistrictCommentInputBoxPopupView.OnCommentContentListener() {
             @Override
@@ -237,7 +257,7 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(mCommentInputBoxPopupView).show();
+                .asCustom(mCommentInputBoxPopupView).show();*/
     }
 
     /**

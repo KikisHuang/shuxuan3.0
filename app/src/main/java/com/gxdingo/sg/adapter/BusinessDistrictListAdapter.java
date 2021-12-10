@@ -49,13 +49,16 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
     //单张图片宽度
     private int singleWidth = 0;
 
+    private int mType;
+
     public BusinessDistrictListAdapter(Context context
-            , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener) {
+            , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener, int mType) {
         super(R.layout.module_item_business_district_list);
         this.mContext = context;
         singleWidth = (int) (getScreenWidth() * 1 / 3);
         mSpaceItemDecoration = new PullDividerItemDecoration(mContext, (int) mContext.getResources().getDimension(R.dimen.dp6), (int) mContext.getResources().getDimension(R.dimen.dp6));
         mOnChildViewClickListener = onChildViewClickListener;
+        this.mType = mType;
     }
 
     @Override
@@ -76,32 +79,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
         TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
 
-        //登录方式，true 用户，false 商家
-        boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-//        if (isUse) {
-//            /**
-//             * 如果是用户端则将时间控件移动到删除按钮的位置，并将删除按钮隐藏
-//             */
-//            ConstraintLayout.LayoutParams params = new ConstraintLayout
-//                    .LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-//            params.bottomToBottom = 0;
-//            params.topToTop = 0;
-//            params.setMargins(0, (int) mContext.getResources().getDimension(R.dimen.dp9), (int) mContext.getResources().getDimension(R.dimen.dp20), 0);
-//            tvTime.setLayoutParams(params);
-//            ivDelete.setVisibility(View.GONE);
-//            client_date_tv.setText();
-//        } else {
-//            /**
-//             * 商家端则给删除按钮点击事件
-//             */
-//            tvTime.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (mOnChildViewClickListener != null)
-//                        mOnChildViewClickListener.item(v, getItemPosition(data), -1, null);
-//                }
-//            });
-//        }
+/*        //登录方式，true 用户，false 商家
+        boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
 
 
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
@@ -114,7 +93,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());
         //用户端ui布局显示
-        if (isUse) {
+        if (mType != 2) {
             client_date_tv.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);

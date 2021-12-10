@@ -199,20 +199,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
     }
 
-    /**
-     * 重写findViewById(int)，让依附的Fragment中使用PopupView弹出窗口能添加使用Fragment
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public View findViewById(int id) {
-        if (id == R.id.rl_child_function_menu_layout && mStoreBusinessDistrictFragment != null) {
-            return mStoreBusinessDistrictFragment.getCommentInputBoxPopupView().findViewById(R.id.rl_child_function_menu_layout);
-        }
-        return super.findViewById(id);
-    }
-
 
     @Override
     protected void onBaseCreate() {

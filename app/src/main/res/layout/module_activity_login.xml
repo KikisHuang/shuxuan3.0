@@ -192,7 +192,7 @@
             android:background="@drawable/module_bg_enter_payment_password"
             android:gravity="center"
             android:text="@string/user_login"
-            android:textColor="@color/gray_a9" />
+            android:textColor="@color/green_dominant_tone" />
 
 
         <TextView

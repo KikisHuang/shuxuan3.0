@@ -15,6 +15,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreMessageFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
@@ -144,20 +145,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         return false;
     }
 
-    /**
-     * 重写findViewById(int)，让依附的Fragment中使用PopupView弹出窗口能添加使用Fragment
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public View findViewById(int id) {
-        if (id == R.id.rl_child_function_menu_layout && mStoreBusinessDistrictFragment != null) {
-            return mStoreBusinessDistrictFragment.getCommentInputBoxPopupView().findViewById(R.id.rl_child_function_menu_layout);
-        }
-        return super.findViewById(id);
-    }
-
 
     @Override
     protected void init() {
@@ -173,10 +160,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         screenListener.begin(this);
     }
 
-    StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
+    StoreBusinessDistrictParentFragment mStoreBusinessDistrictFragment;
 
     private void fragmentInit() {
-        mStoreBusinessDistrictFragment = new StoreBusinessDistrictFragment();
+        mStoreBusinessDistrictFragment = new StoreBusinessDistrictParentFragment();
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new StoreHomeFragment());
         mFragmentList.add(new StoreMessageFragment());
@@ -204,7 +191,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         mImmersionBar.statusBarDarkFont(true).init();
     }
 
-    @OnClick({R.id.crb_store_home_page_layout,R.id.crb_store_message_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
+    @OnClick({R.id.crb_store_home_page_layout, R.id.crb_store_message_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;

@@ -523,13 +523,13 @@ public class OneKeyModel {
             ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.white));
 
             ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.gray_a9));
+            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
         } else {
             ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
             ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.white));
 
             ((TextView) view.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.gray_a9));
+            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
         }
         ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isUser);

@@ -42,11 +42,11 @@
 
         <ImageView
             android:id="@+id/unread_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/module_svg_store_message_bell"
             app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="5dp"
             app:layout_constraintEnd_toStartOf="@+id/iv_send_business_district"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,13 +54,14 @@
             android:id="@+id/tv_unread_msg_count"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/module_unread_im_msg_red_bg"
             android:gravity="center"
             android:text="0"
+            android:visibility="gone"
             android:textColor="@color/white"
             android:textSize="10sp"
-            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/unread_iv"
             app:layout_constraintTop_toTopOf="@+id/unread_iv" />
 
@@ -92,12 +93,12 @@
 
         <ImageView
             android:id="@+id/iv_send_business_district"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/module_svg_store_add_button_icon_8607"
+            android:src="@drawable/module_svg_store_add_button_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -142,6 +143,5 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

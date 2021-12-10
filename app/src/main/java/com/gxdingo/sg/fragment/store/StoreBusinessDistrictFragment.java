@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.store;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
+import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
@@ -101,7 +103,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
-    BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
 
     //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3客户端浏览商家商圈
@@ -205,17 +206,17 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     protected void init() {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         if (args != null) {
-            //todo 下午写商家端fragment嵌套fragment
             mType = args.getInt(Constant.PARAMAS + 0, 0);
-            //客户端查询单独商家商圈所需id
+            //客户端查询单独商家商圈所需id, mType为3时才会有该值
             mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
-
         }
 
+        unread_iv.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
 
-        unread_iv.setVisibility(mStoreId <= 0 ? View.VISIBLE : View.GONE);
+        img_back.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
 
-        img_back.setVisibility(mStoreId > 0 ? View.VISIBLE : View.GONE);
+        title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
+
         if (isUser) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
@@ -225,7 +226,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             clp.topMargin = dp2px(40);
         }
 
-        mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
+        mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener, mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 
         //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
@@ -243,12 +244,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
-            //获取商圈评论未读数量
-            if (mStoreId <= 0)
+            //只有用户端商圈获取未读消息
+            if (mType == 0)
                 getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
+
+                //todo 商家端 type 1 2 接口可能要新增字段
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
             }
@@ -424,15 +427,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
 
     /**
-     * 获取商圈评论输入框弹出窗口View
-     *
-     * @return
-     */
-    public View getCommentInputBoxPopupView() {
-        return mCommentInputBoxPopupView.getView();
-    }
-
-    /**
      * 显示商圈评论弹窗
      *
      * @param businessDistrict 评论/回复的那条商圈信息
@@ -441,27 +435,20 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      * @param parentId         回复谁的消息id
      */
     private void showCommentInputBoxDialog(BusinessDistrictListBean.BusinessDistrict businessDistrict, String hint, long circleId, long parentId) {
-        mCommentInputBoxPopupView = new BusinessDistrictCommentInputBoxPopupView(mContext, hint, getFragmentManager()
-                , new BusinessDistrictCommentInputBoxPopupView.OnCommentContentListener() {
-            @Override
-            public void commentContent(Object object) {
-                String content = (String) object;
-                if (TextUtils.isEmpty(content)) {
-                    onMessage("请输入评论内容！");
-                    return;
-                }
-                getP().submitCommentOrReply(businessDistrict, circleId, parentId, content);
-                mCommentInputBoxPopupView.directlyDismiss();
-            }
-        });
+        Bundle bundle = new Bundle();
+        bundle.putString(Constant.PARAMAS + 0, hint);
 
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .dismissOnTouchOutside(true)
-                .autoDismiss(true)
-                .isDestroyOnDismiss(true)
-                .asCustom(mCommentInputBoxPopupView).show();
+        BusinessDistrictCommentInputBoxDialogFragment fragment = BusinessDistrictCommentInputBoxDialogFragment.newInstance(BusinessDistrictCommentInputBoxDialogFragment.class, bundle);
+        fragment.setOnCommentContentListener(object -> {
+            String content = (String) object;
+            if (TextUtils.isEmpty(content)) {
+                onMessage("请输入评论内容！");
+                return;
+            }
+            getP().submitCommentOrReply(businessDistrict, circleId, parentId, content);
+            fragment.dismiss();
+        });
+        fragment.show(getActivity().getSupportFragmentManager(), BusinessDistrictCommentInputBoxDialogFragment.class.toString());
     }
 
     /**

@@ -79,7 +79,7 @@ public class DateUtils {
         try {
             if (oldDateStr == null)
                 return getNowString();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
@@ -101,7 +101,7 @@ public class DateUtils {
         try {
             if (oldDateStr == null)
                 return getNowString();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
@@ -121,7 +121,7 @@ public class DateUtils {
      */
     public static String dealDateFormatHm(String oldDateStr) {
         try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
@@ -140,7 +140,7 @@ public class DateUtils {
      * @throws ParseException
      */
     public static String dealDateFormatReverse(String oldDateStr) throws ParseException {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date1 = df2.parse(oldDateStr);
         return df.format(date1);
