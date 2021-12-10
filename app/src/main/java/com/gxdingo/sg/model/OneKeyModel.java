@@ -315,7 +315,7 @@ public class OneKeyModel {
 
             @Override
             public void onNext(UserBean userBean) {
-                OneKeyModel.quitLoginPage();
+//                OneKeyModel.quitLoginPage();
                 if (netWorkListener!=null)
                     netWorkListener.onAfters();
                 //0未绑定手机
