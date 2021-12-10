@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -40,7 +41,7 @@
 
     <TextView
         android:id="@+id/tv_nickname"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="15dp"
@@ -50,9 +51,26 @@
         android:text="Siwuliu"
         android:textColor="#FF2E2E2E"
         android:textSize="16sp"
-        app:layout_constraintLeft_toRightOf="@+id/niv_avatar"
-        app:layout_constraintRight_toLeftOf="@+id/tv_time"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/niv_avatar"
+        app:layout_constraintEnd_toStartOf="@+id/store_tab_tv"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/store_tab_tv"
+        android:layout_width="28dp"
+        android:layout_height="16dp"
+        android:background="@drawable/module_border_green_round8"
+        android:text="客户"
+        android:textSize="10sp"
+        android:gravity="center"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/green_dominant_tone"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_nickname"
+        app:layout_constraintStart_toEndOf="@+id/tv_nickname"
+        app:layout_constraintTop_toTopOf="@+id/tv_nickname" />
+
 
     <TextView
         android:id="@+id/tv_content"
