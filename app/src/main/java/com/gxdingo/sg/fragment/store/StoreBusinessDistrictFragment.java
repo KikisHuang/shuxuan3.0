@@ -59,6 +59,7 @@ import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
  */
 public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
 
+
     @BindView(R.id.title_tv)
     public TextView title_tv;
     @BindView(R.id.tv_unread_msg_count)
@@ -102,7 +103,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
+
+    //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3客户端浏览商家商圈
+    private int mType = 0;
+
+    //客户端查询单独商家商圈所需id
     private int mStoreId = 0;
+
 
     boolean isUser;
 
@@ -197,8 +204,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void init() {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-        if (args != null)
+        if (args != null) {
+            //todo 下午写商家端fragment嵌套fragment
+            mType = args.getInt(Constant.PARAMAS + 0, 0);
+            //客户端查询单独商家商圈所需id
             mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
+
+        }
 
 
         unread_iv.setVisibility(mStoreId <= 0 ? View.VISIBLE : View.GONE);
@@ -254,21 +266,21 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        Log.d("businessScopeFragment", "onHiddenChanged: "+hidden);
-        if (cl_visit_countdown!=null&&cl_visit_countdown.getVisibility() == View.VISIBLE){
+        Log.d("businessScopeFragment", "onHiddenChanged: " + hidden);
+        if (cl_visit_countdown != null && cl_visit_countdown.getVisibility() == View.VISIBLE) {
             cl_visit_countdown.setVisibility(View.GONE);
         }
-        if (isHidden() && countDownTimer!=null)
+        if (isHidden() && countDownTimer != null)
             countDownTimer.cancel();
     }
 
-    private void startCountDown(){
-        countDownTimer=new CountDownTimer(15*1000,1000) {
+    private void startCountDown() {
+        countDownTimer = new CountDownTimer(15 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
                 String value = String.valueOf((int) (millisUntilFinished / 1000));
-                Log.d("business_circle========", "onStart: "+value);
+                Log.d("business_circle========", "onStart: " + value);
                 count_down_tv.setText(value);
             }
 
@@ -277,7 +289,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 Log.d("business_circle========", "onFinish: ");
                 cl_visit_countdown.setVisibility(View.GONE);
                 getP().complete();
-                isBrowsing =false;
+                isBrowsing = false;
             }
         }.start();
     }
@@ -296,7 +308,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈列表
             getP().getBusinessDistrictList(true, mStoreId);
 
-        }else if (type == LocalConstant.VISIT_CIRCLE){
+        } else if (type == LocalConstant.VISIT_CIRCLE) {
             isBrowsing = true;
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
@@ -400,7 +412,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         }))
                         .show();
             } else if (view.getId() == R.id.picture_gridview) {
-                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(),position);
+                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
                 if (isUser) {
                     int storeId = Integer.valueOf(String.valueOf(object));

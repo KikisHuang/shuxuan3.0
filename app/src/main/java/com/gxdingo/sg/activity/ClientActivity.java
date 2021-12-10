@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -32,12 +33,14 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.utils.emotion.EmotionMainFragment;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -260,7 +263,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == SOTRE_REVIEW_SUCCEED) {
             //用户认证成功，关闭客户端
             finish();
-        }else if (type == LocalConstant.VISIT_CIRCLE){
+        } else if (type == LocalConstant.VISIT_CIRCLE) {
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
             getP().checkTab(2);
         }
@@ -273,7 +276,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     }
 
     private void fragmentInit() {
-        mStoreBusinessDistrictFragment = new StoreBusinessDistrictFragment();
+
+        mStoreBusinessDistrictFragment = StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, null);
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());

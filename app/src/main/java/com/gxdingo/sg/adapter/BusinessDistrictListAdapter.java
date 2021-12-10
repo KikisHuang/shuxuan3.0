@@ -113,12 +113,14 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());
+        //用户端ui布局显示
         if (isUse) {
             client_date_tv.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);
             ivDelete.setVisibility(View.GONE);
         } else {
+            //商家端ui布局显示
             tvTime.setText(getCustomDate(string2Millis(createTime), getNowMills()));
             tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);

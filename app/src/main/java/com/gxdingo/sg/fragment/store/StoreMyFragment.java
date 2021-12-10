@@ -122,10 +122,13 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
             getP().getInfo();
     }
 
-    @OnClick({R.id.store_avatar_iv, R.id.btn_setting, R.id.btn_qr_code, R.id.account_security_stv, R.id.auth_info_stv
+    @OnClick({R.id.address_manage_stv, R.id.store_avatar_iv, R.id.btn_setting, R.id.btn_qr_code, R.id.account_security_stv, R.id.auth_info_stv
             , R.id.settle_protocol_stv, R.id.contract_server_stv, R.id.about_us_stv, R.id.logout_stv})
     public void OnClickViews(View v) {
         switch (v.getId()) {
+            case R.id.address_manage_stv:
+                //todo 商家地址列表
+                break;
             case R.id.store_avatar_iv:
             case R.id.btn_setting:
                 goToPage(getContext(), StoreSettingActivity.class, null);

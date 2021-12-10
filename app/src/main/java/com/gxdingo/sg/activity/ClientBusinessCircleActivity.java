@@ -132,6 +132,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
         Bundle bundle = new Bundle();
         bundle.putInt(Constant.SERIALIZABLE + 0, storeId);
+        bundle.putInt(Constant.PARAMAS + 0, 3);
 
         getSupportFragmentManager()
                 .beginTransaction()
