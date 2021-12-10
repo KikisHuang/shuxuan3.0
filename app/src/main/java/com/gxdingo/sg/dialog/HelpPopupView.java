@@ -90,7 +90,7 @@ public class HelpPopupView extends CenterPopupView {
         ButterKnife.bind(this, this);
 
         if (helpBean!=null){
-            title_tv.setText(helpBean.getTitle());
+            title_tv.setText(helpBean.getTitle().replace("\\n", "\n"));
             if (helpBean.getType() == 0){
                 help_type_title_tv.setText("为好友助力");
                 subTitle_tv.setText(helpBean.getSubtitle());
