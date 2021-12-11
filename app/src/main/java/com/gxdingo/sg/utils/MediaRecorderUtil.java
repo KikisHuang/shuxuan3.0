@@ -2,6 +2,7 @@ package com.gxdingo.sg.utils;
 
 import android.media.MediaRecorder;
 
+import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.biz.AudioModelListener;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
@@ -28,6 +29,8 @@ public class MediaRecorderUtil {
     public static MediaRecorder recorder;
 
     private static Disposable mDisposable;
+
+    private static String AUDIO_CACHE = "audio_cache_key";
 
     private static int mCountDownTime;
 

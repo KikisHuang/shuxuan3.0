@@ -366,7 +366,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         emotionMainFragment.setonTouchListener((v, event) -> {
 
-            boolean locationPermiss = isGranted(RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE);
+            boolean locationPermiss = isGranted(RECORD_AUDIO);
             //没有权限拦截事件
             if (!locationPermiss) {
                 getP().checkRecordPermissions(getRxPermissions());

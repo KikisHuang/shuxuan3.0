@@ -526,8 +526,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void checkRecordPermissions(RxPermissions rxPermissions) {
         if (commonModel != null){
-            //todo 有问题，第一次申请录音权限，MediaPlayer无法播放
-            commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, new PermissionsListener() {
+            //todo WRITE_EXTERNAL_STORAGE 有问题，第一次申请录音权限，MediaPlayer无法播放
+            commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
 
@@ -660,5 +660,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
             getV().onAddressResult(commonModel.getCacheDefaultAddress());
 
     }
+
 
 }
