@@ -63,6 +63,7 @@ public class EmotionMainFragment extends BaseFragment {
 
     public static final String CHAT_ID = "chat_id";
     public static final String ROLE = "role";
+    public static final String TYPE = "type";
 
     protected Bundle args;
 
@@ -127,6 +128,7 @@ public class EmotionMainFragment extends BaseFragment {
     private String chatId = "";
     //对方角色。10=联系用户 11=联系商家 12=联系客服
     private int role = 10;
+
 
     private View.OnTouchListener onTouchListener;
 
@@ -203,7 +205,7 @@ public class EmotionMainFragment extends BaseFragment {
     }
 
     private void initFuncationLayout() {
-        mIMOtherFunctionsAdapter = new IMOtherFunctionsAdapter(reference.get(), role == 12 ? role : UserInfoUtils.getInstance().getUserInfo().getRole());
+        mIMOtherFunctionsAdapter = new IMOtherFunctionsAdapter(reference.get(), role);
         prvOtherFunctions.addItemDecoration(new PullDividerItemDecoration(reference.get(), (int) getResources().getDimension(R.dimen.dp20), 0));
         prvOtherFunctions.setLayoutManager(new PullGridLayoutManager(reference.get(), 4));
         prvOtherFunctions.setPullAdapter(mIMOtherFunctionsAdapter);

@@ -217,14 +217,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
 
-        if (isUser) {
+        if (mType != 2) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
-        } else {
+        }/* else {
             title_tv.setText("我的商圈");
             ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) title_cl.getLayoutParams();
             clp.topMargin = dp2px(40);
-        }
+        }*/
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener, mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
@@ -250,8 +250,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
-
-                //todo 商家端 type 1 2 接口可能要新增字段
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
             }

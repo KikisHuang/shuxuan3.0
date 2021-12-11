@@ -38,7 +38,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 /**
  * @author: Weaving
  * @date: 2021/10/15
- * @page:
+ * @page:地址列表页
  */
 public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.AddressPresenter> implements AddressContract.AddressListener, OnItemChildClickListener, OnItemClickListener {
 
@@ -140,7 +140,6 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
-
     }
 
     @Override
@@ -150,17 +149,17 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-        goToPagePutSerializable(this, ClientNewAddressActivity.class, getIntentEntityMap(new Object[]{false, mAdapter.getData().get(position)}));
+        goToPagePutSerializable(reference.get(), ClientNewAddressActivity.class, getIntentEntityMap(new Object[]{false, mAdapter.getData().get(position)}));
     }
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         if (selectType != 0) {
             AddressBean item = (AddressBean) adapter.getItem(position);
-            if (selectType==1){
+
+            if (selectType == 1)
                 getP().cacheAddress(item);
 
-            }
             item.selectType = selectType;
             sendEvent(item);
             finish();

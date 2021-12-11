@@ -1,5 +1,6 @@
 package com.gxdingo.sg.presenter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import com.blankj.utilcode.util.LogUtils;
@@ -45,9 +46,11 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.blankj.utilcode.util.PermissionUtils.permissionGroup;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
@@ -519,9 +522,11 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      *
      * @param rxPermissions
      */
+    @SuppressLint("WrongConstant")
     @Override
     public void checkRecordPermissions(RxPermissions rxPermissions) {
-        if (commonModel != null)
+        if (commonModel != null){
+            //todo 有问题，第一次申请录音权限，MediaPlayer无法播放
             commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
@@ -543,6 +548,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
                 }
             });
+        }
+
     }
 
     /**
@@ -553,7 +560,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void playVoice(String content) {
         if (mAudioModel != null) {
-            mAudioModel.audioPlayer(content, new AudioModelListener() {
+            mAudioModel.audioPlayer(getContext(), content, new AudioModelListener() {
                 @Override
                 public void onAudioMessage(String msg) {
                     if (isBViewAttached())
@@ -624,6 +631,13 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
             });
 
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+        if (mAudioModel != null)
+            mAudioModel.delAudioFile();
     }
 
     /**

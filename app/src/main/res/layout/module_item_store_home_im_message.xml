@@ -63,7 +63,7 @@
         android:layout_height="16dp"
         android:background="@drawable/module_border_green_round8"
         android:text="客户"
-        android:textSize="10sp"
+        android:textSize="9sp"
         android:gravity="center"
         android:layout_marginStart="5dp"
         android:textColor="@color/green_dominant_tone"

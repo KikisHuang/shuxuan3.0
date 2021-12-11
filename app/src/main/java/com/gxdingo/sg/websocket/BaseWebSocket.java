@@ -1,5 +1,6 @@
 package com.gxdingo.sg.websocket;
 
+import android.os.Build;
 import android.util.Log;
 
 import org.java_websocket.client.WebSocketClient;
@@ -12,6 +13,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.net.ssl.SSLParameters;
 
 public class BaseWebSocket extends WebSocketClient {
 
@@ -45,6 +48,17 @@ public class BaseWebSocket extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         Log.e(TAG, "onMessage()");
+    }
+
+    @Override
+    protected void onSetSSLParameters(SSLParameters sslParameters) {
+        //某些机型的兼容性问题解决办法
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                super.onSetSSLParameters(sslParameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

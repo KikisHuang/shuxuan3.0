@@ -422,12 +422,12 @@ public class OneKeyModel {
                         settingButtnStatus(view);
 
                         findViewById(R.id.user_login_tv).setOnClickListener(v -> {
-                            isUser = !isUser;
+                            isUser = true;
                             settingButtnStatus(view);
 
                         });
                         findViewById(R.id.store_login_tv).setOnClickListener(v -> {
-                            isUser = !isUser;
+                            isUser = false;
                             settingButtnStatus(view);
 
                         });

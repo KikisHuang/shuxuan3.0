@@ -21,7 +21,7 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
 /**
  * @author: Kikis
  * @date: 2021/5/8
- * @page:
+ * @page:音频录制类
  */
 public class MediaRecorderUtil {
 
@@ -117,10 +117,6 @@ public class MediaRecorderUtil {
     public static void stopRecordering() {
         dispose();
         if (recorder != null) {
-
-            recorder.setOnErrorListener(null);
-            recorder.setOnInfoListener(null);
-            recorder.setPreviewDisplay(null);
             try {
                 recorder.stop();
                 recorder.release();

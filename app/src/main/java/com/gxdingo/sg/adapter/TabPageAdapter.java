@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.List;
@@ -41,6 +42,12 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
         switch (FLAG) {
             case STORE_BUSINESS_DISTRICT_TAB: {
                 args.putInt(Constant.PARAMAS + 0, position + 1);
+                if (position == 1) {
+                    //我的商圈，传店铺id
+                    if (UserInfoUtils.getInstance().getUserInfo().getStore() != null && UserInfoUtils.getInstance().getUserInfo().getStore().getId() > 0)
+                        args.putInt(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getStore().getId());
+                }
+
                 return StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, args);
             }
 

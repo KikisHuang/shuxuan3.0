@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
+import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
@@ -127,7 +128,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.address_manage_stv:
-                //todo 商家地址列表
+                goToPage(getContext(), ClientAddressListActivity.class,null);
                 break;
             case R.id.store_avatar_iv:
             case R.id.btn_setting:

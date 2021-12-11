@@ -16,6 +16,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOtherFunctionsAdapter.ViewHolder> {
+
+
+    //对方角色。10=联系用户 11=联系商家 12=联系客服
     public static final int TYPE_USER = 10;
     public static final int TYPE_STORE = 11;
     public static final int TYPE_ROLE = 12;
@@ -23,13 +26,15 @@ public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOthe
     private Context mContext;
     private int[] mIconItems;
     private String[] mTitleItems;
+
+
     private int mType;//用户类型，10用户，11商家 12 客服
 
     public IMOtherFunctionsAdapter(Context context, int type) {
         mContext = context;
         mType = type;
 
-        if (mType == TYPE_USER) {
+        if (mType == TYPE_STORE) {
             mIconItems = new int[]{R.drawable.module_svg_im_other_functions_photo_album
                     , R.drawable.module_svg_im_other_functions_camera
                     , R.drawable.module_svg_im_other_functions_address
@@ -38,7 +43,7 @@ public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOthe
                     , R.drawable.module_svg_im_other_functions_complaint
             };
             mTitleItems = new String[]{"相册", "拍照", "地址", "转账", "电话", "投诉"};
-        } else if (mType == TYPE_STORE) {
+        } else if (mType == TYPE_USER) {
             mIconItems = new int[]{R.drawable.module_svg_im_other_functions_photo_album
                     , R.drawable.module_svg_im_other_functions_camera
                     , R.drawable.module_svg_im_other_functions_phone

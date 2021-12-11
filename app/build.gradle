@@ -159,6 +159,7 @@ dependencies {
     implementation rootProject.ext.dependencies.magicindicator
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
+
     //九宫格控件
     api project(':ninegridview')
 }

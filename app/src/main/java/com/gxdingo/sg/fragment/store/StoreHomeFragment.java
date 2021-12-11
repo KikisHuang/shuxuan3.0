@@ -183,13 +183,6 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        categoryId = 0;
-//        getP().getNearbyStore(true,categoryId);
-//    }
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
@@ -392,6 +385,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     @Override
     public void onBannerResult(List<HomeBannerBean> bannerBeans) {
+
         if (bannerBeans.size()>0){
             home_banner.setVisibility(View.VISIBLE);
             home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {

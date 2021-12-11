@@ -114,7 +114,7 @@ public class UserInfoUtils {
      *
      * @param userId
      */
-    public void saveUserId(long userId) {
+    public void saveUserId(int userId) {
         BaseLogUtils.w("保存的 userId  === " + userId);
         SPUtils.getInstance().put(USER_ID_KEY, userId);
     }
@@ -255,7 +255,7 @@ public class UserInfoUtils {
      *
      * @return
      */
-    public long getUserId() {
+    public int getUserId() {
         return SPUtils.getInstance().getInt(USER_ID_KEY, 0);
     }
 
