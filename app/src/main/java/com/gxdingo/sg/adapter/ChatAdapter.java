@@ -39,6 +39,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
+import static android.view.Gravity.CENTER;
+import static android.view.Gravity.LEFT;
+import static android.view.Gravity.RIGHT;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;

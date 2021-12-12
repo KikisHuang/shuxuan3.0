@@ -21,6 +21,7 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MediaUtils;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.trello.rxlifecycle3.LifecycleProvider;
@@ -189,7 +190,8 @@ public class AudioModel {
     }
 
     public void delAudioFile() {
-        LogUtils.w("删除音频文件夹内的音频文件  === " + deleteAllInDir(getPath() + File.separator + "audio"));
+
+        BaseLogUtils.w("删除音频文件夹内的音频文件  === " + deleteAllInDir(getPath() + File.separator + "audio"));
     }
 
 

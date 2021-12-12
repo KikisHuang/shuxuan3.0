@@ -23,6 +23,7 @@ import static com.gxdingo.sg.utils.DateUtils.IsToday;
 import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
@@ -47,8 +48,23 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
-        //todo module_border_blue_round8 module_border_green_round8 module_border_yellow_round8 标签显示
 
+        if (subscribesMessage.getSendUserRole() == 10) {
+            //用户
+            store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_green_round8);
+            store_tab_tv.setText("客户");
+        } else if (subscribesMessage.getSendUserRole() == 11) {
+            //商家
+            store_tab_tv.setTextColor(getc(R.color.yellow_tag));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_yellow_round8);
+            store_tab_tv.setText("商家");
+        } else if (subscribesMessage.getSendUserRole() == 12) {
+            //商家
+            store_tab_tv.setTextColor(getc(R.color.blue_text));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_blue_round8);
+            store_tab_tv.setText("客服");
+        }
 
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(getRequestOptions()).into(nivAvatar);
 

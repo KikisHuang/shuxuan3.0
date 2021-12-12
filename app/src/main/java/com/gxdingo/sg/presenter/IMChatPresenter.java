@@ -87,12 +87,10 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void onSucceed(int type) {
         if (isBViewAttached()) {
-
             //语音录制结束
             if (type == RECORD_SUCCEED) {
                 stopRecorder();
             }
-
         }
     }
 
@@ -526,7 +524,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void checkRecordPermissions(RxPermissions rxPermissions) {
         if (commonModel != null){
-            //todo WRITE_EXTERNAL_STORAGE 有问题，第一次申请录音权限，MediaPlayer无法播放
+            // WRITE_EXTERNAL_STORAGE 有问题，第一次申请录音权限，MediaPlayer导致无法播放网络音频，不懂为何，更换将音频文件写入app应用cache目录，无需申请权限，也避免了这个bug
             commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {

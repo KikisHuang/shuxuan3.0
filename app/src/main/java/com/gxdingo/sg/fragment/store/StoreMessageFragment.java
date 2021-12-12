@@ -64,62 +64,80 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @author: Kikis
  */
 public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.StoreMessagePresenter> implements StoreHomeContract.StoreMessageListener {
-    Context mContext;
-    StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
-    @BindView(R.id.tv_status_bar)
-    LinearLayout tvStatusBar;
-    @BindView(R.id.ll_search_layout)
-    LinearLayout llSearchLayout;
-    @BindView(R.id.iv_more)
-    ImageView ivMore;
-    @BindView(R.id.iv_more2)
-    ImageView ivMore2;
-    @BindView(R.id.top_layout)
-    ConstraintLayout topLayout;
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.app_bar)
-    AppBarLayout appBar;
-    @BindView(R.id.niv_store_avatar)
-    RoundImageView nivStoreAvatar;
-    @BindView(R.id.tv_store_name)
-    TextView tvStoreName;
-    @BindView(R.id.tv_business_status)
-    TextView tvBusinessStatus;
-    @BindView(R.id.tv_business_time)
-    TextView tvBusinessTime;
-    @BindView(R.id.ll_business_info_layout)
-    LinearLayout llBusinessInfoLayout;
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-    @BindView(R.id.hint_img)
-    ImageView hintImg;
-    @BindView(R.id.hint_tv)
-    TextView hintTv;
-    @BindView(R.id.function_bt)
-    TextView functionBt;
-    @BindView(R.id.classics_footer)
-    ClassicsFooter classicsFooter;
-    @BindView(R.id.smartrefreshlayout)
-    SmartRefreshLayout smartrefreshlayout;
-    @BindView(R.id.coordinator_layout)
-    CoordinatorLayout coordinatorLayout;
-    @BindView(R.id.cl_store_name_layout)
-    ConstraintLayout clStoreNameLayout;
-    @BindView(R.id.tv_search)
-    TextView tvSearch;
-    @BindView(R.id.iv_search2)
-    ImageView ivSearch2;
-    @BindView(R.id.ll_search_layout2)
-    LinearLayout llSearchLayout2;
-    @BindView(R.id.nodata_layout)
-    View nodataLayout;
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
+    public StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
+
+    @BindView(R.id.tv_status_bar)
+    public LinearLayout tvStatusBar;
+
+    @BindView(R.id.ll_search_layout)
+    public LinearLayout llSearchLayout;
+
+    @BindView(R.id.iv_more)
+    public  ImageView ivMore;
+
+    @BindView(R.id.iv_more2)
+    public  ImageView ivMore2;
+
+    @BindView(R.id.top_layout)
+    public ConstraintLayout topLayout;
+
+    @BindView(R.id.collapsing_toolbar)
+    public CollapsingToolbarLayout collapsingToolbar;
+
+    @BindView(R.id.app_bar)
+    public AppBarLayout appBar;
+
+    @BindView(R.id.niv_store_avatar)
+    public RoundImageView nivStoreAvatar;
+
+    @BindView(R.id.tv_store_name)
+    public TextView tvStoreName;
+
+    @BindView(R.id.tv_business_status)
+    public TextView tvBusinessStatus;
+
+    @BindView(R.id.tv_business_time)
+    public TextView tvBusinessTime;
+
+    @BindView(R.id.ll_business_info_layout)
+    public LinearLayout llBusinessInfoLayout;
+
+    @BindView(R.id.recyclerView)
+    public RecyclerView recyclerView;
+
+    @BindView(R.id.hint_img)
+    public ImageView hintImg;
+
+    @BindView(R.id.hint_tv)
+    public TextView hintTv;
+
+    @BindView(R.id.function_bt)
+    public TextView functionBt;
+
+    @BindView(R.id.classics_footer)
+    public ClassicsFooter classicsFooter;
+
+    @BindView(R.id.smartrefreshlayout)
+    public SmartRefreshLayout smartrefreshlayout;
+
+    @BindView(R.id.coordinator_layout)
+    public CoordinatorLayout coordinatorLayout;
+
+    @BindView(R.id.cl_store_name_layout)
+    public ConstraintLayout clStoreNameLayout;
+
+    @BindView(R.id.tv_search)
+    public TextView tvSearch;
+
+    @BindView(R.id.iv_search2)
+    public ImageView ivSearch2;
+
+    @BindView(R.id.ll_search_layout2)
+    public LinearLayout llSearchLayout2;
+
+    @BindView(R.id.nodata_layout)
+    public View nodataLayout;
 
 
     @Override
@@ -240,7 +258,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
         if (userBean != null) {
             //显示头像、名称和营业状态信息
             UserBean.StoreBean storeBean = userBean.getStore();
-            Glide.with(mContext).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
+            Glide.with(reference.get()).load(storeBean.getAvatar()).apply(getRequestOptions()).into(nivStoreAvatar);
             tvStoreName.setText(storeBean.getName());
             setBusinessStatus(storeBean);
         }
@@ -307,10 +325,10 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_search:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                startActivity(new Intent(reference.get(), StoreHomeSearchActivity.class));
                 break;
             case R.id.iv_search2:
-                startActivity(new Intent(mContext, StoreHomeSearchActivity.class));
+                startActivity(new Intent(reference.get(), StoreHomeSearchActivity.class));
                 break;
             case R.id.iv_more:
                 showSelectBusinessStatusDialog();
@@ -347,7 +365,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(new StoreSelectBusinessStatusPopupView(mContext, new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
+                .asCustom(new StoreSelectBusinessStatusPopupView(reference.get(), new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
                     @Override
                     public void onStatus(int code, String name) {
 
