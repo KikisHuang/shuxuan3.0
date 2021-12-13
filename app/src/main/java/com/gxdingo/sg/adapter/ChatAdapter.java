@@ -402,7 +402,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         //头像
         ImageView avatar_img = holder.getImageView(R.id.avatar_img);
 
-        avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, data.getId()));
+        avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, mOtherAvatarInfo.getId()));
 
         String avatarUrl = "";
         if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer) {

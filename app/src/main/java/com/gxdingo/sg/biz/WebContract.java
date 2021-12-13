@@ -1,9 +1,12 @@
 package com.gxdingo.sg.biz;
 
 
+import android.net.Uri;
+
 import com.gxdingo.sg.bean.WebBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.tencent.smtt.sdk.ValueCallback;
 
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class WebContract {
 
         void sharePayment(String url, String title, String description, String thumb);
 
-        void completeTask();
+        void openPhoto(ValueCallback<Uri[]> valueCallback, int mode);
     }
 
     public interface WebListener {
@@ -29,6 +32,8 @@ public class WebContract {
         void loadWebUrl(WebBean webBean);
 
         void onArticleListResult(List<WebBean> webBeans);
+
+        void uploadImage(ValueCallback<Uri[]> valueCallback, Uri parse);
     }
 
 }

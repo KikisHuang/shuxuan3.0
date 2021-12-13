@@ -1,7 +1,7 @@
 package com.gxdingo.sg.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,31 +13,18 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
-
-import com.gxdingo.sg.bean.WheelResultBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
-
-import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
-import com.kikis.commnlibrary.utils.IntentUtils;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
-import com.umeng.socialize.UMShareListener;
-import com.umeng.socialize.UmengTool;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -166,8 +153,28 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true); // 设置支持js的弹窗
         webView.getSettings().setAllowFileAccess(true); // 设置可以访问文件
+        webView.getSettings().setSupportMultipleWindows(false); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
-        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String url) {
+                //修复正式版默认只能识别http和https, 连系统自带的tel://都无法识别的问题
+                try {
+                    if (!url.startsWith("http:") || !url.startsWith("https:")) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(url));
+                        startActivity(intent);
+                        return true;
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+
+                webView.loadUrl(url);
+                return true;
+            }
+        });
 
 
         if (!mIsArticle) {
@@ -230,63 +237,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 //            IntentUtils.goToPage(reference.get(), ClientComplainActivity.class, null);
     }
 
-    @JavascriptInterface
-    public void backToApp(String restultData) {
-        LogUtils.d("h5调用了"+restultData);
-        WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
-        if (wheelResultBean==null)return;
-        if (wheelResultBean.jumpType == 30){
-             ShareUtils.UmShare(this, new UMShareListener() {
-                @Override
-                public void onStart(SHARE_MEDIA share_media) {
-                    LogUtils.d("onStart:"+share_media);
-                }
-
-                @Override
-                public void onResult(SHARE_MEDIA share_media) {
-                    LogUtils.d("onResult:"+share_media);
-                    getP().completeTask();
-                }
-
-                @Override
-                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-                    LogUtils.d("onError:"+share_media);
-                }
-
-                @Override
-                public void onCancel(SHARE_MEDIA share_media) {
-                    LogUtils.d("onCancel:"+share_media);
-                }
-            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN_CIRCLE);
-        }else if (wheelResultBean.jumpType == 20){
-            ShareUtils.UmShare(this, new UMShareListener() {
-                @Override
-                public void onStart(SHARE_MEDIA share_media) {
-
-                }
-
-                @Override
-                public void onResult(SHARE_MEDIA share_media) {
-
-                }
-
-                @Override
-                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-
-                }
-
-                @Override
-                public void onCancel(SHARE_MEDIA share_media) {
-
-                }
-            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN);
-
-        }else if (wheelResultBean.jumpType == 10){
-            sendEvent(LocalConstant.VISIT_CIRCLE);
-            finish();
-        }
-    }
-
 
     /**
      * 获取token
@@ -322,17 +272,12 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
         }
 
-
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+
+    @JavascriptInterface
     public void callJsBye() {
-        webView.evaluateJavascript("javascript:byeShuGou()", new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String s) {
-                LogUtils.i("onReceiveValue === " + s);
-            }
-        });
+        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.e("onReceiveValue ==== " + s));
     }
 
 
@@ -376,6 +321,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     }
 
     @Override
+    public void onShowFileChooser(ValueCallback<Uri[]> valueCallback, int mode) {
+        getP().openPhoto(valueCallback, mode);
+    }
+
+    @Override
     public void loadWebUrl(WebBean webBean) {
         if (!isEmpty(webBean.getContent())) {
 //            webView.loadUrl(webBean.getContent());
@@ -390,6 +340,22 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void onArticleListResult(List<WebBean> webBeans) {
 
+    }
+
+    @Override
+    public void uploadImage(ValueCallback<Uri[]> valueCallback, Uri uri) {
+        if (valueCallback != null) {
+            if (uri != null) {
+                if (uri != null) {
+                    valueCallback.onReceiveValue(new Uri[]{uri});
+                } else {
+                    valueCallback.onReceiveValue(null);
+                }
+            } else
+                valueCallback.onReceiveValue(null);
+
+            valueCallback = null;
+        }
     }
 
     @Override
@@ -414,6 +380,4 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             webView.destroy();
         }
     }
-
-
 }

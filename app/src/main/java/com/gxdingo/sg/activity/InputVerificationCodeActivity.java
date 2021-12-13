@@ -21,6 +21,7 @@ import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -129,7 +130,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
         }
         title_layout.setTitleText(gets(R.string.please_input_verification_code));
 //        getP().getPhoneHint(mPhoneNumber);
-
+        verification_code_send_hint_tv.setText("验证码已发送至+86"+getUserPhone(mPhoneNumber));
         getP().getVerificationCodeTime();
     }
 
