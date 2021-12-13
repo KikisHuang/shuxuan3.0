@@ -139,25 +139,25 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
             commonModel.checkPermission(getV().getRxPermissions(), new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
-                    if (!value)
+                    if (!value){
                         getBV().onFailed();
-                    else
+                    } else{
                         model.location(getContext(), aMapLocation -> {
                             lat = aMapLocation.getLatitude();
                             lon=aMapLocation.getLongitude();
-                        });
-                    if (clientNetworkModel!=null){
-                        clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lon, lat, new CustomResultListener() {
-                            @Override
-                            public void onResult(Object o) {
-                                StoreDetail storeDetail=(StoreDetail) o;
-                                mStoreDetail = storeDetail;
-                                mapInit(storeDetail.getLatitude(),storeDetail.getLongitude());
-                                getV().onStoreDetailResult(storeDetail);
+                            if (clientNetworkModel!=null){
+                                clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lon, lat, new CustomResultListener() {
+                                    @Override
+                                    public void onResult(Object o) {
+                                        StoreDetail storeDetail=(StoreDetail) o;
+                                        mStoreDetail = storeDetail;
+                                        mapInit(storeDetail.getLatitude(),storeDetail.getLongitude());
+                                        getV().onStoreDetailResult(storeDetail);
+                                    }
+                                });
                             }
                         });
                     }
-
                 }
 
                 @Override

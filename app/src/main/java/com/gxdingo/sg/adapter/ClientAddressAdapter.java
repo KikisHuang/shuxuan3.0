@@ -40,16 +40,16 @@ public class ClientAddressAdapter extends BaseQuickAdapter<AddressBean, BaseView
 
         tv_label.setText(!isEmpty(addressBean.getTag()) ? addressBean.getTag() : "");
 
-        switch (addressBean.getTag()) {
-            case "公司":
-                tv_label.setBackground(getd(R.drawable.module_shape_address_label_black));
-                break;
-            case "家":
-                tv_label.setBackground(getd(R.drawable.module_shape_address_label_green));
-                break;
-            case "学校":
-                tv_label.setBackground(getd(R.drawable.module_shape_address_label_blue));
-                break;
-        }
+//        switch (addressBean.getTag()) {
+//            case "公司":
+//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_black));
+//                break;
+//            case "家":
+//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_green));
+//                break;
+//            case "学校":
+//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_blue));
+//                break;
+//        }
     }
 }
