@@ -212,7 +212,7 @@ public class EmotionMainFragment extends BaseFragment {
         prvOtherFunctions.setOnItemClickListener(new PullRecyclerView.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                EventBus.getDefault().post(new FunctionsItem(UserInfoUtils.getInstance().getUserInfo().getRole(), position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
+                EventBus.getDefault().post(new FunctionsItem(role, position, mIMOtherFunctionsAdapter.getTitleItems()[position]));
             }
         });
     }

@@ -436,9 +436,6 @@ public class WebSocketModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 BaseLogUtils.e(e);
-                if (customResultListener != null) {
-                    customResultListener.onResult(null);
-                }
             }
 
             @Override

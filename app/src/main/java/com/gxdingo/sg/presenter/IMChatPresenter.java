@@ -230,7 +230,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
         mWebSocketModel.refreshChatHistoryList(getContext(), shareUuid, otherId, otherRole, (CustomResultListener<IMChatHistoryListBean>) imChatHistoryListBean -> {
 
-            if (isViewAttached()) {
+            if (isViewAttached() && imChatHistoryListBean != null && imChatHistoryListBean.getList() != null) {
 
                 RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
                     //判断是否有新消息,有的话重新计数翻页，设置新数据
@@ -523,7 +523,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @SuppressLint("WrongConstant")
     @Override
     public void checkRecordPermissions(RxPermissions rxPermissions) {
-        if (commonModel != null){
+        if (commonModel != null) {
             // WRITE_EXTERNAL_STORAGE 有问题，第一次申请录音权限，MediaPlayer导致无法播放网络音频，不懂为何，更换将音频文件写入app应用cache目录，无需申请权限，也避免了这个bug
             commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO}, new PermissionsListener() {
                 @Override

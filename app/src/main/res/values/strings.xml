@@ -79,4 +79,5 @@
     <string name="filter_bank_num">0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP</string>
     <string name="please_agree_to_the_terms_of_service">请同意服务条款</string>
     <string name="phone_number_of_verification_code_cannot_null">手机号或验证码不能为空</string>
+    <string name="go_navigation">去导航</string>
 </resources>
