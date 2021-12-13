@@ -98,7 +98,7 @@ ext {
             bottombar                     : 'com.roughike:bottom-bar:2.3.1',//bottombar
             barlibrary                    : "com.gyf.immersionbar:immersionbar:3.0.0",///沉侵状态栏
             pickerview                    : "com.contrarywind:Android-PickerView:4.1.9",///地址选择器
-            websocket                     : "org.java-websocket:Java-WebSocket:1.5.1",//websocket
+            websocket                     : "org.java-websocket:Java-WebSocket:1.5.2",//websocket
             xpopup                        : "com.lxj:xpopup:2.2.14",//全局通用xpopup
             smartRefreshLayout            : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.2",//refresh layout
             smartRefreshHeader            : "com.scwang.smartrefresh:SmartRefreshHeader:1.1.2",//refresh layout head lib
