@@ -157,6 +157,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.ll_navigation)
     public LinearLayout ll_navigation;
 
+    @BindView(R.id.store_ll)
+    public FrameLayout store_ll;
+
+    @BindView(R.id.ll_location)
+    public ImageView ll_location;
+
     @BindView(R.id.iv_voice_recording_status)
     public ImageView ivVoiceRecordingStatus;
 
@@ -417,10 +423,26 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 break;
             case R.id.cl_other_side_address_layout:
 
-                //联系商家跳转选择地址列表
-                if (otherRole == 11)
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
-                else if (otherRole == 10) {
+
+                if (otherRole == 11) {
+                    if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+                        //用户联系商家跳转选择地址列表
+                        goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
+                    else{
+                        //商家联系商家显示选择弹窗
+                    //todo
+
+                     /*   new XPopup.Builder(reference.get())
+                                .isDarkTheme(false)
+                                .isDestroyOnDismiss(true)
+                                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
+                                    getP().photoItemClick(mType, pos, isCrop);
+                                })).show();*/
+                    }
+
+
+
+                } else if (otherRole == 10) {
                     //联系用户导航
                     new XPopup.Builder(reference.get())
                             .isDestroyOnDismiss(true)
@@ -1130,9 +1152,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 clNoAddressLayout.setVisibility(imChatHistoryListBean.getAddress() == null ? View.VISIBLE : View.GONE);
 
                 //联系用户才显示
-                ll_navigation.setVisibility(otherRole == 10 ? View.VISIBLE : View.GONE);
-                //联系商家才显示
-                right_arrow.setVisibility(otherRole == 11 ? View.GONE : View.VISIBLE);
+                store_ll.setVisibility(otherRole == 10 ? View.VISIBLE : View.GONE);
+
+                //如果自己是商家、并且联系人也是商家
+                ll_location.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 11 ? View.VISIBLE : View.GONE);
+
+                //如果自己是商家、并且联系人是用户显示导航
+                ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 10 ? View.VISIBLE : View.GONE);
+
+                //用户联系商家
+                right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 && otherRole == 11 ? View.GONE : View.VISIBLE);
 
                 mAddress = imChatHistoryListBean.getAddress();
 
