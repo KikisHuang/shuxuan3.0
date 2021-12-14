@@ -146,6 +146,10 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     protected void init() {
         storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+        if (storeId<=0){
+            onMessage("未获取到店铺信息！");
+            finish();
+        }
         title_layout.setTitleText("金源便利店");
         title_layout.setMoreText("资质");
         if (mapView != null)
