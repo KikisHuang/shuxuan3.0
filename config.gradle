@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,//targetSdkVersion 调到28会导致TwinklingRefreshLayout的报错，如需升级版本（需要更换聊天页面的刷新控件）
-            versionCode            : 25,
-            versionName            : "2.0.5",
+            versionCode            : 28,
+            versionName            : "2.2.0",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]
@@ -98,7 +98,7 @@ ext {
             bottombar                     : 'com.roughike:bottom-bar:2.3.1',//bottombar
             barlibrary                    : "com.gyf.immersionbar:immersionbar:3.0.0",///沉侵状态栏
             pickerview                    : "com.contrarywind:Android-PickerView:4.1.9",///地址选择器
-            websocket                     : "org.java-websocket:Java-WebSocket:1.5.1",//websocket
+            websocket                     : "org.java-websocket:Java-WebSocket:1.5.2",//websocket
             xpopup                        : "com.lxj:xpopup:2.2.14",//全局通用xpopup
             smartRefreshLayout            : "com.scwang.smartrefresh:SmartRefreshLayout:1.1.2",//refresh layout
             smartRefreshHeader            : "com.scwang.smartrefresh:SmartRefreshHeader:1.1.2",//refresh layout head lib

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
+import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.StoreActivity;
@@ -105,17 +106,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     int mDelPosition = -1;//要删除商圈的索引位置
 
-    //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3客户端浏览商家商圈
+    //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
     private int mType = 0;
 
     //客户端查询单独商家商圈所需id
     private int mStoreId = 0;
-
-
-    boolean isUser;
-
-    //活动浏览商圈
-    private boolean isBrowsing;
 
     private CountDownTimer countDownTimer;
 
@@ -204,7 +199,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void init() {
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         if (args != null) {
             mType = args.getInt(Constant.PARAMAS + 0, 0);
             //客户端查询单独商家商圈所需id, mType为3时才会有该值
@@ -290,7 +284,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 Log.d("business_circle========", "onFinish: ");
                 cl_visit_countdown.setVisibility(View.GONE);
                 getP().complete();
-                isBrowsing = false;
             }
         }.start();
     }
@@ -310,7 +303,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             getP().getBusinessDistrictList(true, mStoreId);
 
         } else if (type == LocalConstant.VISIT_CIRCLE) {
-            isBrowsing = true;
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
         }
@@ -415,10 +407,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             } else if (view.getId() == R.id.picture_gridview) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
-                if (isUser) {
+                if (mType == 3)
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, (int) mAdapter.getData().get(parentPosition).getStoreId()}));
+                else {
                     int storeId = Integer.valueOf(String.valueOf(object));
                     goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
                 }
+
             }
         }
     };

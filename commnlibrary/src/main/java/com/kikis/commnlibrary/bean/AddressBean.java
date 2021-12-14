@@ -26,6 +26,7 @@ public class AddressBean implements Serializable {
     public int selectType;
     private String regionPath;
     private String regionPathStr;
+    public String identifier;
     private String street;
 
     public String getDoorplate() {
