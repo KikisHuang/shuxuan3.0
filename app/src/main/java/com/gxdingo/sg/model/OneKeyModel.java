@@ -122,7 +122,7 @@ public class OneKeyModel {
     public boolean isUser;
     //协议是否勾选
     private boolean isCheck;
-
+    //协议路径
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     public OneKeyModel() {
@@ -284,7 +284,7 @@ public class OneKeyModel {
      * @param type
      */
     public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         if (TextUtils.isEmpty(code)) {
@@ -310,14 +310,14 @@ public class OneKeyModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
             }
 
             @Override
             public void onNext(UserBean userBean) {
                 OneKeyModel.quitLoginPage();
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
