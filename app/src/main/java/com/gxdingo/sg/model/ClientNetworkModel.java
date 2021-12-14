@@ -5,10 +5,13 @@ import android.content.Context;
 import com.amap.api.services.core.LatLonPoint;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ArticleImage;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.http.Api;
+import com.gxdingo.sg.http.ClientApi;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
@@ -34,7 +37,10 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.ScreenUtils;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.callback.CallBack;
 import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
@@ -48,6 +54,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
@@ -63,9 +70,11 @@ import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
 import static com.gxdingo.sg.http.ClientApi.COUPON_LIST;
 import static com.gxdingo.sg.http.ClientApi.COUPON_RECEIVE;
 import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
+import static com.gxdingo.sg.http.ClientApi.HELP_AFTER;
 import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
 import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
+import static com.gxdingo.sg.http.ClientApi.TASK_COMPLETE;
 import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
 import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
 import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
@@ -1543,6 +1552,156 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
+
+    /**
+     * 邀请好友助力页面详情
+     *
+     * @param context
+     * @param helpCode
+     */
+    public void inviteHelp(Context context, String helpCode) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        map.put("helpCode", helpCode);
+
+        Observable<HelpBean> observable = HttpClient.post(ClientApi.INVITE_HELP, map)
+                .execute(new CallClazzProxy<ApiResult<HelpBean>, HelpBean>(new TypeToken<HelpBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<HelpBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+
+                }
+            }
+
+            @Override
+            public void onNext(HelpBean helpBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    helpBean.setType(0);
+                    netWorkListener.onData(true, helpBean);
+
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 邀请好友助力页面详情
+     *
+     * @param context
+     * @param helpCode
+     */
+    public void helpAfter(Context context, String helpCode) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+        map.put("helpCode", helpCode);
+
+        Observable<HelpBean> observable = HttpClient.post(HELP_AFTER, map)
+                .execute(new CallClazzProxy<ApiResult<HelpBean>, HelpBean>(new TypeToken<HelpBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<HelpBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(HelpBean helpBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    helpBean.setType(1);
+                    netWorkListener.onData(true, helpBean);
+
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 完成用户大转盘抽奖任务
+     *
+     * @param context
+     * @param completeType
+     */
+    public void completeTask(Context context, int completeType) {
+        Map<String, String> map = getJsonMap();
+
+        if (netWorkListener != null) {
+            netWorkListener.onStarts();
+        }
+
+//        map.put(Constant.CODE, code);
+        map.put("completeType", String.valueOf(completeType));
+
+        Observable<NormalBean> observable = HttpClient.post(TASK_COMPLETE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage("完成任务！");
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
 
 
 }

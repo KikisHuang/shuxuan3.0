@@ -13,18 +13,25 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
+import com.gxdingo.sg.bean.WheelResultBean;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.biz.WebViewLoadingListener;
 import com.gxdingo.sg.presenter.WebPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyWebChromeClient;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
@@ -156,7 +163,16 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setSupportMultipleWindows(false); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
         webView.getSettings().setDomStorageEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedSslError(WebView webView, SslErrorHandler handler, SslError error) {
+                //证书信任
+                handler.proceed();
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView webView, String url) {
                 //修复正式版默认只能识别http和https, 连系统自带的tel://都无法识别的问题
@@ -237,6 +253,62 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 //            IntentUtils.goToPage(reference.get(), ClientComplainActivity.class, null);
     }
 
+    @JavascriptInterface
+    public void backToApp(String restultData) {
+        LogUtils.d("h5调用了"+restultData);
+        WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
+        if (wheelResultBean==null)return;
+        if (wheelResultBean.jumpType == 30){
+            ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+                    LogUtils.d("onStart:"+share_media);
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+                    LogUtils.d("onResult:"+share_media);
+                    getP().completeTask();
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+                    LogUtils.d("onError:"+share_media);
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+                    LogUtils.d("onCancel:"+share_media);
+                }
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN_CIRCLE);
+        }else if (wheelResultBean.jumpType == 20){
+            ShareUtils.UmShare(this, new UMShareListener() {
+                @Override
+                public void onStart(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onResult(SHARE_MEDIA share_media) {
+
+                }
+
+                @Override
+                public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+                }
+
+                @Override
+                public void onCancel(SHARE_MEDIA share_media) {
+
+                }
+            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN);
+
+        }else if (wheelResultBean.jumpType == 10){
+            sendEvent(LocalConstant.VISIT_CIRCLE);
+            finish();
+        }
+    }
 
     /**
      * 获取token

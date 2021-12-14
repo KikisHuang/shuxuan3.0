@@ -29,6 +29,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
@@ -42,6 +43,7 @@ import com.tencent.smtt.sdk.QbSdk;
 import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.commonsdk.UMConfigure;
+import com.umeng.socialize.PlatformConfig;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.cache.converter.SerializableDiskConverter;
@@ -251,7 +253,7 @@ public class MyApplication extends Application {
 
         UMConfigure.init(getContext(), ClientLocalConstant.UMENG_APP_KEY, AnalyticsConfig.getChannel(getContext()), UMConfigure.DEVICE_TYPE_PHONE, null);
         //友盟相关平台配置。注意友盟官方新文档中没有这项配置，但是如果不配置会吊不起来相关平台的授权界面
-//        PlatformConfig.setWeixin(Constant.WECHAT_APPID, Constant.WECHAT_APP_SECRET);//微信APPID和AppSecret
+        PlatformConfig.setWeixin(Constant.WECHAT_APPID, Constant.WECHAT_APP_SECRET);//微信APPID和AppSecret
 //        PlatformConfig.setAlipay(Constant.ALI_APPID);//ALIAPPID
 
 

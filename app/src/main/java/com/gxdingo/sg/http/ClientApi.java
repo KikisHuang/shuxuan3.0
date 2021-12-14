@@ -268,4 +268,19 @@ public class ClientApi {
      * 商圈评论/回复
      */
     public static final String BUSINESS_DISTRICT_COMMENT_OR_ADD = HIERARCHY + "circle/comment/add";
+
+    /**
+     * 邀请好友助力页面详情
+     */
+    public static final String INVITE_HELP = HIERARCHY + "activity/turntable/help/detail";
+
+    /**
+     * 邀请好友助力页面详情
+     */
+    public static final String HELP_AFTER = HIERARCHY + "activity/turntable/help";
+
+    /**
+     * 完成用户大转盘抽奖任务
+     */
+    public static final String TASK_COMPLETE = HIERARCHY + "activity/task/completed";
 }

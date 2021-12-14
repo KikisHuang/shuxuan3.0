@@ -38,7 +38,8 @@ public class ShareUtils {
         }
         web.setDescription(description);//描述
         new ShareAction((Activity) context)
-                .setDisplayList(type)//传入平台
+//                .setDisplayList(type)//传入平台
+                .setPlatform(type[0])
                 .withMedia(web)
                 .setCallback(umShareListener)//回调监听器
                 .share();

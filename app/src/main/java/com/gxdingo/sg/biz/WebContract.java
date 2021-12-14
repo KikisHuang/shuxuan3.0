@@ -25,6 +25,8 @@ public class WebContract {
         void sharePayment(String url, String title, String description, String thumb);
 
         void openPhoto(ValueCallback<Uri[]> valueCallback, int mode);
+
+        void completeTask();
     }
 
     public interface WebListener {

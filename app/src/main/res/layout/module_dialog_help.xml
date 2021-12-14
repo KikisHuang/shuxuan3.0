@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/dp_10"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_10"
+        android:layout_marginTop="8dp"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="@+id/help_title_iv">
+
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp20"
+            android:layout_marginTop="65dp"
+            android:gravity="center"
+            android:textColor="#765C42"
+            android:textSize="24sp"
+            tools:text="我在参与助力活动 快来助我一臂之力吧" />
+
+        <ImageView
+            android:id="@+id/avatar_img"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/ic_default_avatar" />
+
+        <TextView
+            android:id="@+id/subTitle_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp20"
+            android:layout_marginTop="@dimen/dp_10"
+            android:gravity="center"
+            android:textColor="#765C42"
+            tools:text="您也有机会获得iPhone13、AirPods、阿玛尼口号、美味零食" />
+
+        <TextView
+            android:id="@+id/btn_help"
+            android:layout_width="252dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="37dp"
+            android:background="@drawable/module_shape_gradient_red_25r"
+            android:gravity="center"
+            android:text="帮忙助力"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/module_svg_border_circle_close_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/help_title_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/module_svg_help_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/help_type_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="为好友助力"
+        android:textSize="21sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@+id/help_title_iv"
+        app:layout_constraintBottom_toBottomOf="@+id/help_title_iv"
+        app:layout_constraintStart_toStartOf="@+id/help_title_iv"
+        app:layout_constraintEnd_toEndOf="@+id/help_title_iv"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
