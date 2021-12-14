@@ -42,6 +42,7 @@ import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
@@ -186,7 +187,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (getP()!=null){
+        if (getP() != null) {
             if (!hidden) {
                 categoryId = 0;
                 getP().getNearbyStore(true, true, categoryId);
@@ -281,10 +282,13 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == CLIENT_LOGIN_SUCCEED) {
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin()==1){
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1) {
                 showInvitationCodeDialog();
             }
         }
+        //店铺审核成功重新初始化数据
+        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED)
+            initData();
     }
 
     @Override
@@ -303,15 +307,12 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         mCategoryAdapter.notifyDataSetChanged();
 
         RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-
             mAllTypeData.addAll(categories);
-
             for (int i = 0; i < categories.size(); i++) {
                 if (mDefaultTypeData.size() < 4)
                     mDefaultTypeData.add(categories.get(i));
 
             }
-
             e.onNext(mDefaultTypeData);
             e.onComplete();
         }), (BaseActivity) reference.get()).subscribe(o -> switchData(mDefaultTypeData));
@@ -386,7 +387,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onBannerResult(List<HomeBannerBean> bannerBeans) {
 
-        if (bannerBeans.size()>0){
+        if (bannerBeans.size() > 0) {
             home_banner.setVisibility(View.VISIBLE);
             home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {
                 @Override
@@ -395,32 +396,32 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                             .load(data.getImage())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
                             .into(new SimpleTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
-                            int width = resource.getIntrinsicWidth();
-                            int height = resource.getIntrinsicHeight();
+                                @Override
+                                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                                    int width = resource.getIntrinsicWidth();
+                                    int height = resource.getIntrinsicHeight();
 
-                            int newheight = getScreenWidth() * height / width;
+                                    int newheight = getScreenWidth() * height / width;
 
-                            home_banner.getLayoutParams().height = newheight;
+                                    home_banner.getLayoutParams().height = newheight;
 
 
-                            holder.imageView.setImageDrawable(resource);
-                        }
-                    });
+                                    holder.imageView.setImageDrawable(resource);
+                                }
+                            });
 
                 }
             });
             home_banner.setOnBannerListener((data, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) data;
-                if (bannerBean.getType()==2 && !isEmpty(bannerBean.getPage())){
+                if (bannerBean.getType() == 2 && !isEmpty(bannerBean.getPage())) {
                     goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
                 }
             });
 
 
             home_banner.start();
-        }else {
+        } else {
             home_banner.setVisibility(View.GONE);
         }
     }
@@ -503,23 +504,24 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
-        if (type == ClientLocalConstant.FILL_SUCCESS){
+        if (type == ClientLocalConstant.FILL_SUCCESS) {
             SPUtils.getInstance().put(FIRST_INTER_KEY, false);
             fillCodePopupView.dismiss();
         }
 
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (home_banner!=null)
+        if (home_banner != null)
             home_banner.stop();
     }
 
-    private void showInvitationCodeDialog(){
-        if (fillCodePopupView==null){
+    private void showInvitationCodeDialog() {
+        if (fillCodePopupView == null) {
             fillCodePopupView = new XPopup.Builder(reference.get())
-                    .maxWidth((int) (ScreenUtils.getScreenWidth(getContext()) ))
+                    .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
                     .isDarkTheme(false)
                     .asCustom(new FillInvitationCodePopupView(getContext(), new OnContentListener() {
                         @Override
@@ -527,7 +529,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                             getP().fllInvitationCode(content);
                         }
                     })).show();
-        }else {
+        } else {
             fillCodePopupView.show();
         }
 

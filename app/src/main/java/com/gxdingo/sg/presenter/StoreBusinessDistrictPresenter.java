@@ -215,8 +215,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                 }
                 //合并数据
                 commentList.addAll(unfoldCommentList);
-                //根据ID排序，最早的在前面
-                Collections.sort(commentList);
+            /*    //根据ID排序，最早的在前面
+                Collections.sort(commentList);*/
             }
             e.onNext(0);
             e.onComplete();
@@ -252,8 +252,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void complete() {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.completeTask(getContext(),10);
+        if (clientNetworkModel != null)
+            clientNetworkModel.completeTask(getContext(), 10);
     }
 
     /**
@@ -273,8 +273,12 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                     //得到该商圈评论集合
                     ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
                     if (commentList != null) {
+
                         //将提交返回的评论/回复添加到集合中，并在UI刷新适配器显示
-                        commentList.add((BusinessDistrictCommentOrReplyBean) objects[0]);
+                        if (commentList.size() > 0)
+                            commentList.add(0, (BusinessDistrictCommentOrReplyBean) objects[0]);
+                        else
+                            commentList.add((BusinessDistrictCommentOrReplyBean) objects[0]);
                         //更新评论数
                         businessDistrict.setComments(businessDistrict.getComments() + 1);
                     }
