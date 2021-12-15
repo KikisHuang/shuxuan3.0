@@ -110,6 +110,8 @@ public class ImMessageUtils {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
 
+                    ToastUtils.showShort("onOpen：连接成功 ");
+
                     BaseLogUtils.i(TAG, "onOpen：连接成功");
                     if (mBaseWebSocket.isOpen()) {
                         String info = getWebSocketPassParameters(LocalConstant.PING);
@@ -127,8 +129,7 @@ public class ImMessageUtils {
                 @Override
                 public void onError(Exception ex) {
                     super.onError(ex);
-
-
+                    ToastUtils.showShort("onError：连接异常 "+ex);
                     BaseLogUtils.i(TAG, "onError：" + ex);
 
                     if (mBaseWebSocket != null && !mBaseWebSocket.isOpen()) {
@@ -198,6 +199,9 @@ public class ImMessageUtils {
         }
 
         String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
+
+        ToastUtils.showShort("IM_SIGN === " + IM_SIGN);
+
 
         String loginParameter = "";
         if (exec == LocalConstant.LOGIN) {

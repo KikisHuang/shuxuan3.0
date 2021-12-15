@@ -165,7 +165,6 @@ public class LocalConstant {
     //websocket 开发环境key
     public static String WEB_SOCKET_TEST_KEY = "d4a02249b24eeb795ac47b1c09b3b810";
 
-    //d4a02249b24eeb795ac47b1c09b3b810
     public static String WEB_SOCKET_KEY = "6669ec3d6f724252b32d773adc1a2fca";
 
     public static String WEB_SOCKET_UAT_KEY = "f0438ff6a8792aada17a04e0541db8b3";

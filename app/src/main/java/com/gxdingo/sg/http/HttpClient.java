@@ -259,6 +259,24 @@ public class HttpClient {
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
 
+/*
+
+        //正式环境测试
+        if (isUser) {
+            //客户端
+            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
+                //客户端
+                LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
+        } else {
+            //商家端
+            Api.URL = HTTPS + StoreApi.OFFICIAL_URL;
+            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
+                //商家端
+                LocalConstant.GLOBAL_SIGN = STORE_OFFICIAL_HTTP_KEY;
+        }
+*/
+
         //以下设置的所有参数是全局参数,同样的参数可以在请求的时候再设置一遍,那么对于该请求来讲,请求中的参数会覆盖全局参数
         EasyHttp.getInstance()
                 //可以全局统一设置全局URL

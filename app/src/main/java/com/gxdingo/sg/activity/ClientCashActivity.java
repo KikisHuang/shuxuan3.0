@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
@@ -143,6 +144,9 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         et_cash_amount.addTextChangedListener(textWatcher);
         amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
         et_cash_amount.setHint("可转出到卡" + amount + "元");
+        //todo 需要测试
+        et_cash_amount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+
     }
 
     @Override
