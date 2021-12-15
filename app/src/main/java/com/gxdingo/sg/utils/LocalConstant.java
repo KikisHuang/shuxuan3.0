@@ -81,6 +81,8 @@ public class LocalConstant {
     //sp final
     //登录方式 true 用户 false商家端
     public static final String LOGIN_WAY = "shugou_login_way_key";
+    //通知栏管理
+    public static final String NOTIFICATION_MANAGER_KEY = "shugou_notification_manager_key";
     //默认地址缓存
     public static final String ADDRESS_CACHE = "address_cache_key";
 

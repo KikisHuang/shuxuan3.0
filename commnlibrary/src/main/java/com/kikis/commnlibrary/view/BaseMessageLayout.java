@@ -61,7 +61,7 @@ public class BaseMessageLayout extends FrameLayout {
 
 
         FrameLayout.LayoutParams lp = (LayoutParams) message_layout.getLayoutParams();
-
+        //todo 待优化判断是否有刘海
 //        lp.setMargins(0, getStatusBarHeight() + ConvertUtils.dp2px(5), 0, 0);
 
     }

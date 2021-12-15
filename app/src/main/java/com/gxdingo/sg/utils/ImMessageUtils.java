@@ -169,7 +169,9 @@ public class ImMessageUtils {
                 }
             };
             try {
-                sslInit();
+                if (!isEmpty(mUrl) && mUrl.contains("wss"))
+                    sslInit();
+                LogUtils.w(TAG, "afterTextChanged：" + mUrl);
                 mBaseWebSocket.connectBlocking();
                 startTimerTask();//启动定时器
             } catch (Exception e) {
