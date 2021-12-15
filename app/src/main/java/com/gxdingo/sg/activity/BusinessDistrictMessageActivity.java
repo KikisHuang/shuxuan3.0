@@ -21,7 +21,6 @@ import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictMessageCommentListBean;
 import com.gxdingo.sg.biz.BusinessDistrictMessageContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
-import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BusinessDistrictMessagePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -213,7 +212,6 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
         getP().getMessageCommentList(true);
     }
 
-    BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
 
     /**
      * 显示商圈评论弹窗
@@ -288,20 +286,5 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
         //获取消息评论列表
         getP().getMessageCommentList(true);
     }
-
-    /**
-     * 重写findViewById(int)，让mCommentInputBoxPopupView中能使用Fragment（表情Fragment）
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public View findViewById(int id) {
-        if (id == R.id.rl_child_function_menu_layout && mCommentInputBoxPopupView != null) {
-            return mCommentInputBoxPopupView.getView().findViewById(R.id.rl_child_function_menu_layout);
-        }
-        return super.findViewById(id);
-    }
-
 
 }

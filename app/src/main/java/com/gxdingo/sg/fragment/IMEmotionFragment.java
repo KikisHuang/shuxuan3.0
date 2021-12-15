@@ -25,11 +25,9 @@ import butterknife.ButterKnife;
 /**
  * IM表情Fragment
  *
- * @author  JM
+ * @author JM
  */
 public class IMEmotionFragment extends Fragment {
-    Activity mActivity;
-    Context mContext;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.indicator)
@@ -37,12 +35,12 @@ public class IMEmotionFragment extends Fragment {
     MyFragmentPagerAdapter adapter;
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        mActivity = (Activity) mContext;
+    public IMEmotionFragment() {
+        super();
     }
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,7 @@ public class IMEmotionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.module_fragment_im_emotion, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.module_fragment_im_emotion, null);
         ButterKnife.bind(this, view);
 
         adapter = new MyFragmentPagerAdapter(getChildFragmentManager());

@@ -138,7 +138,7 @@
             android:layout_height="wrap_content"
             app:ngv_gridSpacing="5dp"
             app:ngv_maxSize="9"
-            app:ngv_mode="fill"></com.lzy.ninegrid.NineGridView>
+            app:ngv_mode="grid"></com.lzy.ninegrid.NineGridView>
 
     </FrameLayout>
 

@@ -37,7 +37,6 @@ import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
-import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;

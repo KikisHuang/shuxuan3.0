@@ -1,7 +1,6 @@
 package com.gxdingo.sg.dialog;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,7 +36,6 @@ import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.SystemUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.jetbrains.annotations.NotNull;
@@ -45,10 +43,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 import static com.blankj.utilcode.util.KeyboardUtils.isSoftInputVisible;
 import static com.blankj.utilcode.util.KeyboardUtils.showSoftInput;
@@ -106,7 +102,7 @@ public class BusinessDistrictCommentInputBoxDialogFragment extends BaseFragmentD
 
     @Override
     public int initContentView() {
-        return R.layout.module_dialog_business_district_comment_input_box_popup;
+        return R.layout.module_dialog_business_district_comment_input_box_fm_dialog;
     }
 
     @Override

@@ -2,11 +2,8 @@ package com.gxdingo.sg.dialog;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.net.Uri;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -49,12 +46,12 @@ import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 /**
  * 商圈评论输入框弹出窗口
  *
- * @author JM
+ * @author JM (弃用)
  */
 public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
 
     Context mContext;
-//    IMSelectSendAddressAdapter mAdapter;
+    //    IMSelectSendAddressAdapter mAdapter;
     OnCommentContentListener mOnCommentContentListener;
     @BindView(R.id.et_content_input_box)
     EditText etContentInputBox;
@@ -97,7 +94,7 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
 
     @Override
     protected int getImplLayoutId() {
-        return R.layout.module_dialog_business_district_comment_input_box_popup;
+        return R.layout.module_dialog_business_district_comment_input_box_fm_dialog;
     }
 
 
@@ -141,8 +138,8 @@ public class BusinessDistrictCommentInputBoxPopupView extends BottomPopupView {
      */
     public void directlyDismiss() {
         mIsDirectlyClosed = true;
-        mFragmentManager =null;
-        mIMEmotionFragment =null;
+        mFragmentManager = null;
+        mIMEmotionFragment = null;
         super.dismiss();
     }
 

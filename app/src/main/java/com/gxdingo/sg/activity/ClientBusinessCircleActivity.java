@@ -23,7 +23,6 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.biz.StoreCertificationContract;
-import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.presenter.StoreCertificationPresenter;
