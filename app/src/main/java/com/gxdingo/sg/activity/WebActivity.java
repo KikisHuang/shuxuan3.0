@@ -255,33 +255,33 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @JavascriptInterface
     public void backToApp(String restultData) {
-        LogUtils.d("h5调用了"+restultData);
+        LogUtils.d("h5调用了" + restultData);
         WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
-        if (wheelResultBean==null)return;
-        if (wheelResultBean.jumpType == 30){
+        if (wheelResultBean == null) return;
+        if (wheelResultBean.jumpType == 30) {
             ShareUtils.UmShare(this, new UMShareListener() {
                 @Override
                 public void onStart(SHARE_MEDIA share_media) {
-                    LogUtils.d("onStart:"+share_media);
+                    LogUtils.d("onStart:" + share_media);
                 }
 
                 @Override
                 public void onResult(SHARE_MEDIA share_media) {
-                    LogUtils.d("onResult:"+share_media);
+                    LogUtils.d("onResult:" + share_media);
                     getP().completeTask();
                 }
 
                 @Override
                 public void onError(SHARE_MEDIA share_media, Throwable throwable) {
-                    LogUtils.d("onError:"+share_media);
+                    LogUtils.d("onError:" + share_media);
                 }
 
                 @Override
                 public void onCancel(SHARE_MEDIA share_media) {
-                    LogUtils.d("onCancel:"+share_media);
+                    LogUtils.d("onCancel:" + share_media);
                 }
-            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN_CIRCLE);
-        }else if (wheelResultBean.jumpType == 20){
+            }, wheelResultBean.url, wheelResultBean.title, wheelResultBean.describe, R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN_CIRCLE);
+        } else if (wheelResultBean.jumpType == 20) {
             ShareUtils.UmShare(this, new UMShareListener() {
                 @Override
                 public void onStart(SHARE_MEDIA share_media) {
@@ -302,9 +302,9 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                 public void onCancel(SHARE_MEDIA share_media) {
 
                 }
-            },wheelResultBean.url,wheelResultBean.title,wheelResultBean.describe,R.mipmap.ic_app_logo,SHARE_MEDIA.WEIXIN);
+            }, wheelResultBean.url, wheelResultBean.title, wheelResultBean.describe, R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
 
-        }else if (wheelResultBean.jumpType == 10){
+        } else if (wheelResultBean.jumpType == 10) {
             sendEvent(LocalConstant.VISIT_CIRCLE);
             finish();
         }
@@ -357,7 +357,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     protected void onStart() {
         super.onStart();
 
-
+        if (webView != null)
+            webView.reload();
     }
 
     @Override
