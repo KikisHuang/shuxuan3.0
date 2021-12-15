@@ -230,36 +230,36 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         mWebSocketModel.refreshChatHistoryList(getContext(), shareUuid, otherId, otherRole, (CustomResultListener<IMChatHistoryListBean>) imChatHistoryListBean -> {
 
             if (isViewAttached()) {
-
-                RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-                    //判断是否有新消息,有的话重新计数翻页，设置新数据
-                    for (ReceiveIMMessageBean ndata : imChatHistoryListBean.getList()) {
-                        boolean newMesssage = true;
-                        LinkedList<ReceiveIMMessageBean> oldData = getV().getNowChatHistoryList();
-                        for (int i = 0; i < getV().getNowChatHistoryList().size(); i++) {
-                            if (ndata.getId() == oldData.get(i).getId()) {
-                                newMesssage = false;
-                                continue;
+                if (isViewAttached() && imChatHistoryListBean != null && imChatHistoryListBean.getList() != null) {
+                    RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                        //判断是否有新消息,有的话重新计数翻页，设置新数据
+                        for (ReceiveIMMessageBean ndata : imChatHistoryListBean.getList()) {
+                            boolean newMesssage = true;
+                            LinkedList<ReceiveIMMessageBean> oldData = getV().getNowChatHistoryList();
+                            for (int i = 0; i < getV().getNowChatHistoryList().size(); i++) {
+                                if (ndata.getId() == oldData.get(i).getId()) {
+                                    newMesssage = false;
+                                    continue;
+                                }
+                            }
+                            if (newMesssage) {
+                                break;
                             }
                         }
-                        if (newMesssage) {
-                            break;
+                        e.onNext(imChatHistoryListBean.getList());
+                        e.onComplete();
+                    }), (BaseActivity) getContext()).subscribe(o -> {
+
+                        ArrayList<ReceiveIMMessageBean> newData = (ArrayList<ReceiveIMMessageBean>) o;
+
+                        if (isViewAttached() && newData.size() > 0) {
+                            BaseLogUtils.i("有新消息，添加到消息列表");
+
+                            getV().onAddNewChatHistoryList(newData);
                         }
-                    }
-                    e.onNext(imChatHistoryListBean.getList());
-                    e.onComplete();
-                }), (BaseActivity) getContext()).subscribe(o -> {
-
-                    ArrayList<ReceiveIMMessageBean> newData = (ArrayList<ReceiveIMMessageBean>) o;
-
-                    if (isViewAttached() && newData.size() > 0) {
-                        BaseLogUtils.i("有新消息，添加到消息列表");
-
-                        getV().onAddNewChatHistoryList(newData);
-                    }
-                });
+                    });
+                }
             }
-
         });
     }
 

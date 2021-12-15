@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.http.Api;
@@ -93,6 +94,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.WECHAT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
@@ -864,6 +866,7 @@ public class ClientNetworkModel {
         }
 
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
+
         map.put(ClientLocalConstant.AMOUNT, amount);
         if (type == 0 && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
@@ -879,6 +882,10 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
+
+                if (e.getCode() == 601)
+                    goToPage(context, ClientSettingPayPwd1Activity.class, null);
+
                 netWorkListener.onMessage(e.getMessage());
                 netWorkListener.onAfters();
 
@@ -1701,7 +1708,6 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
-
 
 
 }

@@ -21,7 +21,9 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.KeyboardUtils.isSoftInputVisible;
+import static com.blankj.utilcode.util.RegexUtils.isMatch;
 
 
 public class PasswordLayout extends LinearLayout {
@@ -96,7 +98,7 @@ public class PasswordLayout extends LinearLayout {
 
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
-        if (mShowSoftInput){
+        if (mShowSoftInput) {
             //设置点击时弹出输入法
             setOnClickListener(view -> {
                 setFocusable(true);
@@ -106,7 +108,7 @@ public class PasswordLayout extends LinearLayout {
                 imm.showSoftInput(PasswordLayout.this, InputMethodManager.SHOW_IMPLICIT);
             });
             this.setOnKeyListener(new MyKeyListener());//按键监听
-        }else {
+        } else {
             setFocusable(false);
             setFocusableInTouchMode(false);
         }
@@ -187,6 +189,21 @@ public class PasswordLayout extends LinearLayout {
                 pwdChangeListener.onChange(getPassString());
             } else {
                 pwdChangeListener.onFinished(getPassString());
+            }
+        }
+    }
+
+    /**
+     * 添加全部密码
+     *
+     * @param pwd 密码
+     */
+    public void addAllPwd(String pwd) {
+        if (!isEmpty(pwd) && pwd.length() == maxLength && mPassList.size() == 0) {
+            String strings[] = pwd.split("");
+            for (int i = 0; i < strings.length; i++) {
+                if (!isEmpty(strings[i]))
+                    addPwd(strings[i]);
             }
         }
     }
@@ -373,7 +390,7 @@ public class PasswordLayout extends LinearLayout {
                     return true;
                 }
 
-                if (isSoftInputVisible((BaseActivity)mContext)){
+                if (isSoftInputVisible((BaseActivity) mContext)) {
                     InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     return true;

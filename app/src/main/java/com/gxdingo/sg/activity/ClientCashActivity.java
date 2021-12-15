@@ -203,7 +203,12 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                     onMessage("请输入有效提现金额");
                     return;
                 }
-                showPayPswDialog();
+
+                if (mtype != -1)
+                    showPayPswDialog();
+                else
+                    onMessage("请选择提现方式");
+
                 break;
         }
     }
