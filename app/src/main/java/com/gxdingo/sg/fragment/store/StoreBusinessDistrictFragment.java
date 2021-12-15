@@ -254,21 +254,24 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        Log.d("businessScopeFragment", "onHiddenChanged: "+hidden);
-        if (cl_visit_countdown!=null&&cl_visit_countdown.getVisibility() == View.VISIBLE){
-            cl_visit_countdown.setVisibility(View.GONE);
+        Log.d("businessScopeFragment", "onHiddenChanged: " + hidden);
+        if (hidden) {
+            if (cl_visit_countdown != null && cl_visit_countdown.getVisibility() == View.VISIBLE) {
+                cl_visit_countdown.setVisibility(View.GONE);
+            }
         }
-        if (isHidden() && countDownTimer!=null)
+
+        if (isHidden() && countDownTimer != null)
             countDownTimer.cancel();
     }
 
-    private void startCountDown(){
-        countDownTimer=new CountDownTimer(15*1000,1000) {
+    private void startCountDown() {
+        countDownTimer = new CountDownTimer(16 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
                 String value = String.valueOf((int) (millisUntilFinished / 1000));
-                Log.d("business_circle========", "onStart: "+value);
+                Log.d("business_circle========", "onStart: " + value);
                 count_down_tv.setText(value);
             }
 
@@ -277,7 +280,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 Log.d("business_circle========", "onFinish: ");
                 cl_visit_countdown.setVisibility(View.GONE);
                 getP().complete();
-                isBrowsing =false;
+                isBrowsing = false;
             }
         }.start();
     }
@@ -296,7 +299,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈列表
             getP().getBusinessDistrictList(true, mStoreId);
 
-        }else if (type == LocalConstant.VISIT_CIRCLE){
+        } else if (type == LocalConstant.VISIT_CIRCLE) {
             isBrowsing = true;
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
@@ -400,7 +403,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                         }))
                         .show();
             } else if (view.getId() == R.id.picture_gridview) {
-                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(),position);
+                getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
                 if (isUser) {
                     int storeId = Integer.valueOf(String.valueOf(object));
