@@ -1255,15 +1255,18 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
-
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                netWorkListener.onSucceed(1);
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(1);
+                    netWorkListener.onAfters();
+                }
             }
         };
 
@@ -1705,7 +1708,6 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
-
 
 
 }
