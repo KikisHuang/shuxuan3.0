@@ -553,7 +553,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void playVoice(String content) {
         if (mAudioModel != null) {
-            mAudioModel.audioPlayer(content, new AudioModelListener() {
+            mAudioModel.audioPlayer(getContext(),content, new AudioModelListener() {
                 @Override
                 public void onAudioMessage(String msg) {
                     if (isBViewAttached())

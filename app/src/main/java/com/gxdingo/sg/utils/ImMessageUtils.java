@@ -34,15 +34,10 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.utils.LocalConstant.CHAT_IDENTIFIER;
-import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_SIGN;
-import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.isBackground;
+import static com.kikis.commnlibrary.utils.Constant.CHAT_IDENTIFIER;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 public class ImMessageUtils {
@@ -155,13 +150,16 @@ public class ImMessageUtils {
                         //消息接收
                         if (messageBean != null && messageBean.getId() > 0) {
 
-                            if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier()))
+                            //如果不是自己发送的消息，加入新消息未读
+                            if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier())) {
+                                playBeep();
                                 MessageCountUtils.getInstance().addNewMessage();
-                            else {
+                            } else {
+                                //自己发送的消息要手动调用服务端接口清除
                                 if (!isEmpty(LocalConstant.CHAT_UUID))
                                     EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));
                             }
-                            playBeep();
+
                             passMessage(messageBean);
                         }
                     }
