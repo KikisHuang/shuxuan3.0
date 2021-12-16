@@ -311,9 +311,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             while (m.find()) {
 
                 int start = m.start();
-
                 int end = m.end();
-
                 int finalI = i;
 
                 s.setSpan(new PartTextClickSpan(getc(R.color.deepskyblue), false, new View.OnClickListener() {
