@@ -424,7 +424,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
      */
     @Override
     public void showNotifyDialog() {
-        SgConfirm2ButtonPopupView sgConfirm2ButtonPopupView = new SgConfirm2ButtonPopupView(reference.get(), "检测到您为开启通知，消息无法准确推送到，是否去开启？", new MyConfirmListener() {
+        SgConfirm2ButtonPopupView sgConfirm2ButtonPopupView = new SgConfirm2ButtonPopupView(reference.get(), "检测到您未开启通知，消息无法准确推送到，是否去开启？", new MyConfirmListener() {
             @Override
             public void onConfirm() {
                 goNotifySetting(reference.get());

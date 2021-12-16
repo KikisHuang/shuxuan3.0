@@ -26,9 +26,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
-        android:text="确认取消订单？"
+        android:paddingHorizontal="30dp"
+        android:text="确认取消订单确认取消订单？"
         android:textColor="#202D3B"
         android:textSize="16sp" />
 
