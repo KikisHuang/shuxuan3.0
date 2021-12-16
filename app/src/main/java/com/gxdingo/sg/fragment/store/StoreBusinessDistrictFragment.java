@@ -37,6 +37,7 @@ import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -303,6 +305,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         } else if (type == LocalConstant.VISIT_CIRCLE) {
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
+        } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
+            //返回顶部
+            RecycleViewUtils.smoothMoveToPosition(recyclerView, 0);
         }
     }
 

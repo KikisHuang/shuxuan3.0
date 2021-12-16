@@ -89,7 +89,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 else {
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
-                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定解绑支付宝？", new MyConfirmListener() {
+                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "提现账号解绑后一个月之内不能再次绑定，确认解绑支付宝吗？", new MyConfirmListener() {
                                 @Override
                                 public void onConfirm() {
                                     getP().unbind(0);
@@ -105,7 +105,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 else {
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
-                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定解绑微信？", new MyConfirmListener() {
+                            .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "提现账号解绑后一个月之内不能再次绑定，确认解绑微信吗？", new MyConfirmListener() {
                                 @Override
                                 public void onConfirm() {
                                     getP().unbind(1);

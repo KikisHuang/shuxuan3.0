@@ -225,7 +225,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
         }
 
-
         if (object instanceof ReLoginBean)
             getP().logout();
 
@@ -313,6 +312,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
      */
     @Override
     public void onSeleted(int checkTab, int oldTab) {
+
 
         mMenuLayout.get(checkTab).setonSelected(true);
 

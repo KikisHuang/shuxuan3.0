@@ -1481,6 +1481,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 
@@ -1497,6 +1498,7 @@ public class ClientNetworkModel {
         };
 
         observable.subscribe(subscriber);
+
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
@@ -1509,6 +1511,7 @@ public class ClientNetworkModel {
      * @param type
      */
     public void unbindThirdParty(Context context, int type) {
+
         Map<String, String> map = getJsonMap();
 
         if (netWorkListener != null) {
@@ -1534,6 +1537,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 
@@ -1581,7 +1585,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 

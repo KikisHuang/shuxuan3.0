@@ -15,6 +15,7 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.StoreMainModel;
 import com.gxdingo.sg.model.WebSocketModel;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -23,9 +24,12 @@ import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 
 import static com.gxdingo.sg.biz.StoreMainContract.StoreMainListener;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 
 
@@ -81,6 +85,10 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     public void checkTab(int tab) {
 
         if (model != null) {
+
+            if (tab == 3 && model.getOldTab() == 3)
+                EventBus.getDefault().post(BACK_TOP_BUSINESS_DISTRICT);
+
             if (isViewAttached() && tab != model.getOldTab())
                 getV().onSeleted(tab, model.getOldTab());
 
@@ -148,7 +156,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
                     getV().setUnreadMsgNum((Integer) data);
             });
         }
-        if (businessDistrictModel != null){
+        if (businessDistrictModel != null) {
             businessDistrictModel.getNumberUnreadComments(getContext(), objects -> {
                 if (objects[0] instanceof NumberUnreadCommentsBean) {
                     /**

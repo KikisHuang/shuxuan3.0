@@ -48,6 +48,8 @@ public class LocalConstant {
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     public static final int QUITLOGINPAGE = 404;
+
+    public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int STORE_LOGIN_SUCCEED = 21;
