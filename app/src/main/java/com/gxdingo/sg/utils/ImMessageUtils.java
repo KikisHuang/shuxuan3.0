@@ -4,6 +4,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.text.TextUtils;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.bean.ExitChatEvent;
@@ -21,10 +22,17 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.utils.LocalConstant.CHAT_IDENTIFIER;
@@ -110,7 +118,7 @@ public class ImMessageUtils {
                 @Override
                 public void onOpen(ServerHandshake handshakedata) {
 
-                    BaseLogUtils.i(TAG, "onOpen：连接成功");
+                    LogUtils.i(TAG, "onOpen：连接成功");
                     if (mBaseWebSocket.isOpen()) {
                         String info = getWebSocketPassParameters(LocalConstant.PING);
                         //连接成功后，发送登录信息
@@ -127,9 +135,7 @@ public class ImMessageUtils {
                 @Override
                 public void onError(Exception ex) {
                     super.onError(ex);
-
-
-                    BaseLogUtils.i(TAG, "onError：" + ex);
+                    LogUtils.e(TAG, "onError：" + ex);
 
                     if (mBaseWebSocket != null && !mBaseWebSocket.isOpen()) {
                         mBaseWebSocket.close();
@@ -163,15 +169,41 @@ public class ImMessageUtils {
                 }
             };
             try {
+                if (!isEmpty(mUrl) && mUrl.contains("wss"))
+                    sslInit();
+                LogUtils.w(TAG, "afterTextChanged：" + mUrl);
                 mBaseWebSocket.connectBlocking();
                 startTimerTask();//启动定时器
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                LogUtils.e(TAG, "onError：" + e);
             }
 
         } else {
             mBaseWebSocket = null;
         }
+    }
+
+    private void sslInit() throws Exception {
+
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs,
+                                           String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs,
+                                           String authType) {
+            }
+        }};
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCerts, new SecureRandom());
+        SSLSocketFactory factory = sslContext.getSocketFactory();
+        mBaseWebSocket.setSocketFactory(factory);
     }
 
 
@@ -198,6 +230,7 @@ public class ImMessageUtils {
         }
 
         String sign = SignatureUtils.generate(signMap, IM_SIGN, SignatureUtils.SignType.MD5);
+
 
         String loginParameter = "";
         if (exec == LocalConstant.LOGIN) {

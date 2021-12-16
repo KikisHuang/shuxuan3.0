@@ -21,9 +21,11 @@ public class SgConfirm2ButtonPopupView extends CenterPopupView implements View.O
 
     private MyConfirmListener confirmListener;
 
-    private TextView tvTitle,tvContent,btnCancel,btnConfirm;
+    private OnClickListener cancelCilcikListener;
 
-    private CharSequence mTitle,mContent;
+    private TextView tvTitle, tvContent, btnCancel, btnConfirm;
+
+    private CharSequence mTitle, mContent;
 
     public SgConfirm2ButtonPopupView(@NonNull Context context, MyConfirmListener confirmListener) {
         super(context);
@@ -48,21 +50,25 @@ public class SgConfirm2ButtonPopupView extends CenterPopupView implements View.O
 
     @Override
     protected int getImplLayoutId() {
-        return  R.layout.module_dialog_base_sg_xpopup_2button_confirm;
+        return R.layout.module_dialog_base_sg_xpopup_2button_confirm;
+    }
+
+    public void setCancelCilcikListener(OnClickListener cancelCilcikListener) {
+        this.cancelCilcikListener = cancelCilcikListener;
     }
 
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        tvTitle=findViewById(R.id.tv_title);
-        tvContent=findViewById(R.id.tv_content);
-        btnCancel=findViewById(R.id.btn_cancel);
-        btnConfirm=findViewById(R.id.btn_confirm);
+        tvTitle = findViewById(R.id.tv_title);
+        tvContent = findViewById(R.id.tv_content);
+        btnCancel = findViewById(R.id.btn_cancel);
+        btnConfirm = findViewById(R.id.btn_confirm);
 
         if (!isEmpty(mTitle))
             tvTitle.setText(mTitle);
 
-        if (!isEmpty(mContent)){
+        if (!isEmpty(mContent)) {
             tvContent.setVisibility(VISIBLE);
             tvContent.setText(mContent);
         }
@@ -74,12 +80,15 @@ public class SgConfirm2ButtonPopupView extends CenterPopupView implements View.O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_cancel:
+                if (cancelCilcikListener != null)
+                    cancelCilcikListener.onClick(v);
+
                 dismiss();
                 break;
             case R.id.btn_confirm:
-                if (confirmListener!=null){
+                if (confirmListener != null) {
                     confirmListener.onConfirm();
                     dismiss();
                 }

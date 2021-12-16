@@ -16,6 +16,9 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.lxj.xpopup.core.CenterPopupView;
 
+import static com.blankj.utilcode.util.ClipboardUtils.getText;
+import static com.blankj.utilcode.util.RegexUtils.isMatch;
+import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -31,8 +34,7 @@ public class PayPasswordPopupView extends CenterPopupView implements View.OnClic
 
     private TextView btnForget;
 
-    private  PayPasswordListener mPayPasswordListener;
-
+    private PayPasswordListener mPayPasswordListener;
 
 
     public PayPasswordPopupView(@NonNull Context context) {
@@ -42,7 +44,7 @@ public class PayPasswordPopupView extends CenterPopupView implements View.OnClic
 
     public PayPasswordPopupView(@NonNull Context context, PayPasswordListener payPasswordListener) {
         super(context);
-        this.mPayPasswordListener=payPasswordListener;
+        this.mPayPasswordListener = payPasswordListener;
         addInnerContent();
     }
 
@@ -54,10 +56,22 @@ public class PayPasswordPopupView extends CenterPopupView implements View.OnClic
     @Override
     protected void initPopupContent() {
         passwordLayout = findViewById(R.id.password_layout);
-        btnClose=findViewById(R.id.iv_btn_close);
+        btnClose = findViewById(R.id.iv_btn_close);
         btnForget = findViewById(R.id.btn_forget_password);
         btnClose.setOnClickListener(this);
         btnForget.setOnClickListener(this);
+        passwordLayout.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                //获取剪贴板的内容,如果是验证码，自动粘贴过去
+                String content = getText().toString();
+                if (!isEmpty(content) && content.length() == 6 && isMatch("[0-9]*", content))
+                    passwordLayout.addAllPwd(content);
+
+                return false;
+            }
+        });
+
         passwordLayout.setPwdChangeListener(new PasswordLayout.pwdChangeListener() {
             @Override
             public void onChange(String pwd) {
@@ -71,24 +85,24 @@ public class PayPasswordPopupView extends CenterPopupView implements View.OnClic
 
             @Override
             public void onFinished(String pwd) {
-                if (mPayPasswordListener!=null)
-                    mPayPasswordListener.finished(PayPasswordPopupView.this,passwordLayout,pwd);
+                if (mPayPasswordListener != null)
+                    mPayPasswordListener.finished(PayPasswordPopupView.this, passwordLayout, pwd);
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_btn_close:
                 dismiss();
                 break;
             case R.id.btn_forget_password:
                 UserBean userInfo = UserInfoUtils.getInstance().getUserInfo();
                 if (userInfo.getIsSetPassword())
-                    goToPage(getContext(), ClientUpdatePayPwdActivity.class,null);
+                    goToPage(getContext(), ClientUpdatePayPwdActivity.class, null);
                 else
-                    goToPage(getContext(), ClientSettingPayPwd1Activity.class,null);
+                    goToPage(getContext(), ClientSettingPayPwd1Activity.class, null);
                 break;
         }
     }

@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 
 import androidx.fragment.app.FragmentTransaction;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -15,6 +16,7 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.StoreMainModel;
 import com.gxdingo.sg.model.WebSocketModel;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -27,6 +29,7 @@ import java.io.IOException;
 
 import static com.gxdingo.sg.biz.StoreMainContract.StoreMainListener;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
+import static com.kikis.commnlibrary.utils.CommonUtils.isNotificationEnabled;
 
 
 public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMainListener> implements StoreMainContract.StoreMainPresenter, NetWorkListener {
@@ -148,7 +151,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
                     getV().setUnreadMsgNum((Integer) data);
             });
         }
-        if (businessDistrictModel != null){
+        if (businessDistrictModel != null) {
             businessDistrictModel.getNumberUnreadComments(getContext(), objects -> {
                 if (objects[0] instanceof NumberUnreadCommentsBean) {
                     /**
@@ -160,6 +163,17 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
                 }
             });
         }
+
+    }
+
+    /**
+     * 监测通知栏是否开启
+     */
+    @Override
+    public void checkNotifications() {
+
+        if (SPUtils.getInstance().getBoolean(LocalConstant.NOTIFICATION_MANAGER_KEY, true) && !isNotificationEnabled(getContext()))
+            getV().showNotifyDialog();
 
     }
 

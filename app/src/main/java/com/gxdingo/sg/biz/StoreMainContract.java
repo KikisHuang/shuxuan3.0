@@ -32,6 +32,8 @@ public class StoreMainContract {
         void getAliKey();
 
         void getUnreadMessageNum();
+
+        void checkNotifications();
     }
 
     public interface StoreMainListener {
@@ -61,6 +63,8 @@ public class StoreMainContract {
          * @param num
          */
         void setBusinessUnreadMsgNum(int num);
+
+        void showNotifyDialog();
     }
 
     public interface StoreMainModelListener {

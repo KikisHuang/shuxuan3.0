@@ -81,6 +81,8 @@ public class LocalConstant {
     //sp final
     //登录方式 true 用户 false商家端
     public static final String LOGIN_WAY = "shugou_login_way_key";
+    //通知栏管理
+    public static final String NOTIFICATION_MANAGER_KEY = "shugou_notification_manager_key";
     //默认地址缓存
     public static final String ADDRESS_CACHE = "address_cache_key";
 
@@ -165,7 +167,6 @@ public class LocalConstant {
     //websocket 开发环境key
     public static String WEB_SOCKET_TEST_KEY = "d4a02249b24eeb795ac47b1c09b3b810";
 
-    //d4a02249b24eeb795ac47b1c09b3b810
     public static String WEB_SOCKET_KEY = "6669ec3d6f724252b32d773adc1a2fca";
 
     public static String WEB_SOCKET_UAT_KEY = "f0438ff6a8792aada17a04e0541db8b3";

@@ -27,6 +27,7 @@ import com.gxdingo.sg.http.StoreApi;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
+import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
@@ -95,6 +96,7 @@ import static com.gxdingo.sg.utils.LocalConstant.STORE_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_OSS_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.UAT_OSS_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.BUGLYAPPID;
@@ -189,6 +191,7 @@ public class MyApplication extends Application {
         Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
 
         LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
+
 
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
 
@@ -475,10 +478,9 @@ public class MyApplication extends Application {
     private void initCloudChannel(MyApplication applicationContext) {
 
         try {
-
             createNotificationChannel();
-
             PushServiceFactory.init(applicationContext);
+
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
 
             if (pushService == null)

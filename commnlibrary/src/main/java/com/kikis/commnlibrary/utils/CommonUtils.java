@@ -830,7 +830,7 @@ public class CommonUtils {
     }
 
     /**
-     * 判断通知权限是否开启
+     * 判断通知是否开启
      *
      * @param context
      * @return
@@ -846,6 +846,9 @@ public class CommonUtils {
         return isOpened;
 
     }
+
+
+
 
     /**
      * 去应用通知设置页面
@@ -884,7 +887,6 @@ public class CommonUtils {
         String regex = ".*[a-zA-Z].*[0-9]|.*[0-9].*[a-zA-Z]";
         return str.matches(regex);
     }
-
 
 
 }

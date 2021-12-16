@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
@@ -143,6 +144,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         et_cash_amount.addTextChangedListener(textWatcher);
         amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
         et_cash_amount.setHint("可转出到卡" + amount + "元");
+        et_cash_amount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+
     }
 
     @Override
@@ -203,7 +206,12 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                     onMessage("请输入有效提现金额");
                     return;
                 }
-                showPayPswDialog();
+
+                if (mtype != -1)
+                    showPayPswDialog();
+                else
+                    onMessage("请选择提现方式");
+
                 break;
         }
     }
@@ -313,9 +321,18 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (!isEmpty(s.toString()))
-                if (BigDecimalUtils.compare(s.toString(), amount))
-                    et_cash_amount.setText(amount);
+
+            int posDot = et_cash_amount.getText().toString().indexOf(".");
+            if (posDot < 0) {
+                return;
+            } else if (posDot == 0) {
+                //首位是点，去掉点
+                s.delete(posDot, posDot + 1);
+                if (!isEmpty(s.toString())){
+                    if (BigDecimalUtils.compare(s.toString(), amount))
+                        et_cash_amount.setText(amount);
+                }
+            }
         }
     };
 

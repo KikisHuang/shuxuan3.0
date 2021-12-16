@@ -13,12 +13,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMainContract;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
@@ -38,6 +41,7 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,8 @@ import butterknife.OnClick;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
+import static com.kikis.commnlibrary.utils.CommonUtils.isNotificationEnabled;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -185,6 +191,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         registerAppStatusChangedListener(this);
         screenListener = new ScreenListener(reference.get());
         screenListener.begin(this);
+        getP().checkNotifications();
     }
 
     StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
@@ -410,6 +417,26 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     public void setBusinessUnreadMsgNum(int data) {
         tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
         tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
+    }
+
+    /**
+     * 显示提示用户未开启通知栏弹窗
+     */
+    @Override
+    public void showNotifyDialog() {
+        SgConfirm2ButtonPopupView sgConfirm2ButtonPopupView = new SgConfirm2ButtonPopupView(reference.get(), "检测到您未开启通知，消息无法准确推送到，是否去开启？", new MyConfirmListener() {
+            @Override
+            public void onConfirm() {
+                goNotifySetting(reference.get());
+                SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+            }
+        });
+        sgConfirm2ButtonPopupView.setCancelCilcikListener(v -> {
+            SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+        });
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .asCustom(sgConfirm2ButtonPopupView).show();
     }
 
 
