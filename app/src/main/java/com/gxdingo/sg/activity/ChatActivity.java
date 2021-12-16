@@ -682,7 +682,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 .asCustom(new IMSelectTransferAccountsWayPopupView(this, new IMSelectTransferAccountsWayPopupView.OnTransferAccountsWayListener() {
                     @Override
                     public void way(int type) {
-                        goToPagePutSerializable(reference.get(), IMTransferAccountsPayActivity.class, getIntentEntityMap(new Object[]{mShareUuid, type, mMessageDetails.getOtherAvatarInfo()}));
+                        if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
+                            goToPagePutSerializable(reference.get(), IMTransferAccountsPayActivity.class, getIntentEntityMap(new Object[]{mShareUuid, type, mMessageDetails.getOtherAvatarInfo()}));
                     }
                 }).show());
     }
@@ -1134,7 +1135,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     @Override
     public void onAvatarClickListener(int position, long id) {
-        if (otherRole==10)
+        if (otherRole == 10)
             return;
 
         if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
