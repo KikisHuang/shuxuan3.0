@@ -52,7 +52,7 @@ public class ClientCashSelectDialog extends BottomPopupView {
 
     private int bankCardId;
 
-    public ClientCashSelectDialog(@NonNull Context context,ClientCashInfoBean cashInfoBean,OnAccountSelectListener listener) {
+    public ClientCashSelectDialog(@NonNull Context context, ClientCashInfoBean cashInfoBean, OnAccountSelectListener listener) {
         super(context);
         this.cashInfoBean = cashInfoBean;
         this.listener = listener;
@@ -69,32 +69,32 @@ public class ClientCashSelectDialog extends BottomPopupView {
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, bottomPopupContainer);
 
-        if (cashInfoBean.getIsShowAlipay()==0)
+        if (cashInfoBean.getIsShowAlipay() == 0)
             alipay_stv.setVisibility(GONE);
         else {
-            if (!isEmpty(cashInfoBean.getAlipay())){
+            if (!isEmpty(cashInfoBean.getAlipay())) {
                 alipay_stv.getCenterTextView().setVisibility(GONE);
                 alipay_stv.getRightTextView().setVisibility(GONE);
                 alipay_stv.getRightIconIV().setVisibility(GONE);
             }
         }
 
-        if (cashInfoBean.getIsShowWechat()==0)
+        if (cashInfoBean.getIsShowWechat() == 0)
             wechaty_stv.setVisibility(GONE);
         else {
-            if (!isEmpty(cashInfoBean.getWechat())){
+            if (!isEmpty(cashInfoBean.getWechat())) {
                 wechaty_stv.getCenterTextView().setVisibility(GONE);
                 wechaty_stv.getRightTextView().setVisibility(GONE);
                 wechaty_stv.getRightIconIV().setVisibility(GONE);
             }
         }
-        if (cashInfoBean.getIsShowBank()==0)
+        if (cashInfoBean.getIsShowBank() == 0)
             bankcard_stv.setVisibility(GONE);
         else {
-            if (cashInfoBean.getBankList()!=null&&cashInfoBean.getBankList().size()>0){
+            if (cashInfoBean.getBankList() != null && cashInfoBean.getBankList().size() > 0) {
                 BankcardBean bankcardBean = cashInfoBean.getBankList().get(0);
                 bankCardId = bankcardBean.getId();
-                bankcard_stv.setCenterString(bankcardBean.getName()+bankcardBean.getNumber());
+                bankcard_stv.setCenterString(bankcardBean.getName() + bankcardBean.getNumber());
                 bankcard_stv.getCenterTextView().setBackground(getd(R.drawable.module_shape_bg_top_white));
                 bankcard_stv.setCenterTextColor(getc(R.color.gray_a9));
                 bankcard_stv.setRightString("切换");
@@ -103,25 +103,25 @@ public class ClientCashSelectDialog extends BottomPopupView {
         bankcard_stv.setRightTextGroupClickListener(new SuperTextView.OnRightTextGroupClickListener() {
             @Override
             public void onClickListener(View view) {
-                goToPagePutSerializable(getContext(),BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
+                goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true}));
             }
         });
     }
 
-    @OnClick({R.id.alipay_stv,R.id.wechaty_stv,R.id.bankcard_stv,R.id.btn_cancel})
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.alipay_stv, R.id.wechaty_stv, R.id.bankcard_stv, R.id.btn_cancel})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.alipay_stv:
-                if (listener!=null)
-                    listener.onSelected(this,cashInfoBean.getAlipay(),0,-1);
+                if (listener != null)
+                    listener.onSelected(this, cashInfoBean.getAlipay(), 0, -1);
                 break;
             case R.id.wechaty_stv:
-                if (listener!=null)
-                    listener.onSelected(this,cashInfoBean.getWechat(),1,-1);
+                if (listener != null)
+                    listener.onSelected(this, cashInfoBean.getWechat(), 1, -1);
                 break;
             case R.id.bankcard_stv:
-                if (listener!=null && bankCardId>0)
-                    listener.onSelected(this,"",2,bankCardId);
+                if (listener != null && bankCardId > 0)
+                    listener.onSelected(this, "", 2, bankCardId);
                 break;
             case R.id.btn_cancel:
                 this.dismiss();
@@ -130,27 +130,30 @@ public class ClientCashSelectDialog extends BottomPopupView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBIndEvent(Object object){
-        if (object instanceof ThirdPartyBean){
-            ThirdPartyBean thirdPartyBean =(ThirdPartyBean) object;
-            if (thirdPartyBean.type == 0 && !isEmpty(thirdPartyBean.getNickname())){
+    public void onBIndEvent(Object object) {
+        if (object instanceof ThirdPartyBean) {
+            ThirdPartyBean thirdPartyBean = (ThirdPartyBean) object;
+            if (thirdPartyBean.type == 0 && !isEmpty(thirdPartyBean.getNickname())) {
                 cashInfoBean.setAlipay(thirdPartyBean.getNickname());
                 alipay_stv.getCenterTextView().setVisibility(GONE);
                 alipay_stv.getRightTextView().setVisibility(GONE);
                 alipay_stv.getRightIconIV().setVisibility(GONE);
-            }else if (thirdPartyBean.type == 1 && !isEmpty(thirdPartyBean.getNickname())){
+            } else if (thirdPartyBean.type == 1 && !isEmpty(thirdPartyBean.getNickname())) {
                 cashInfoBean.setWechat(thirdPartyBean.getNickname());
                 wechaty_stv.getCenterTextView().setVisibility(GONE);
                 wechaty_stv.getRightTextView().setVisibility(GONE);
                 wechaty_stv.getRightIconIV().setVisibility(GONE);
             }
-        }else if (object instanceof BankcardBean){
-            BankcardBean bankcardBean = (BankcardBean)object;
-            bankCardId=bankcardBean.getId();
-            bankcard_stv.setCenterString(bankcardBean.getName()+bankcardBean.getNumber());
-            bankcard_stv.getCenterTextView().setBackground(getd(R.drawable.module_shape_bg_top_white));
-            bankcard_stv.setCenterTextColor(getc(R.color.gray_a9));
-            bankcard_stv.setRightString("切换");
+        } else if (object instanceof BankcardBean) {
+            BankcardBean bankcardBean = (BankcardBean) object;
+            if (!bankcardBean.getType().equals("10")) {
+                bankCardId = bankcardBean.getId();
+                bankcard_stv.setCenterString(bankcardBean.getName() + bankcardBean.getNumber());
+                bankcard_stv.getCenterTextView().setBackground(getd(R.drawable.module_shape_bg_top_white));
+                bankcard_stv.setCenterTextColor(getc(R.color.gray_a9));
+                bankcard_stv.setRightString("切换");
+            }
+
         }
 
     }

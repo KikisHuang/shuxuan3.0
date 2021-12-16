@@ -129,7 +129,8 @@ public class IMComplaintActivity extends BaseMvpActivity<IMComplaintContract.IMC
         int roleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 0);
         String UUID = getIntent().getStringExtra(Constant.SERIALIZABLE + 2);
 
-        identifier = UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "shuxuanyonghutousu" : "shuxuanshangjiatousu";
+        //商家对商家文章使用：shuxuanshangjia，商家对用户文章使用：shuxuanyonghutousu，用户对商家shuxuanshangjiatousu
+        identifier = roleId == 11 && UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? "shuxuanshangjia" : UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "shuxuanyonghutousu" : "shuxuanshangjiatousu";
 
         titleLayout.setTitleText("投诉举报");
         mAdapter = new IMComplaintContentItemAdapter();
@@ -167,10 +168,11 @@ public class IMComplaintActivity extends BaseMvpActivity<IMComplaintContract.IMC
     public void onArticleListResult(List<WebBean> list) {
         mAdapter.setList(list);
     }
+
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type==COMPLAINT_SUCCEED)
+        if (type == COMPLAINT_SUCCEED)
             finish();
     }
 }

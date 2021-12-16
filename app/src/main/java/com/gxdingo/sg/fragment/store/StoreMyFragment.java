@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
+import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
@@ -48,7 +49,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 /**
  * 商家端我的
  *
- * @author JM
+ * @author Kikis
  */
 public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPresenter> implements StoreMyContract.StoreMyListener {
 
@@ -122,10 +123,13 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
             getP().getInfo();
     }
 
-    @OnClick({R.id.store_avatar_iv, R.id.btn_setting, R.id.btn_qr_code, R.id.account_security_stv, R.id.auth_info_stv
+    @OnClick({R.id.address_manage_stv, R.id.store_avatar_iv, R.id.btn_setting, R.id.btn_qr_code, R.id.account_security_stv, R.id.auth_info_stv
             , R.id.settle_protocol_stv, R.id.contract_server_stv, R.id.about_us_stv, R.id.logout_stv})
     public void OnClickViews(View v) {
         switch (v.getId()) {
+            case R.id.address_manage_stv:
+                goToPage(getContext(), ClientAddressListActivity.class,null);
+                break;
             case R.id.store_avatar_iv:
             case R.id.btn_setting:
                 goToPage(getContext(), StoreSettingActivity.class, null);
@@ -184,15 +188,15 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
             UserInfoUtils.getInstance().saveUserInfo(userBean);
         }
         StringBuilder stringBuilder = new StringBuilder();
-        if (mineBean.getCategoryList()!=null && mineBean.getCategoryList().size()>0){
-            for (int i=0;i<mineBean.getCategoryList().size();i++){
+        if (mineBean.getCategoryList() != null && mineBean.getCategoryList().size() > 0) {
+            for (int i = 0; i < mineBean.getCategoryList().size(); i++) {
                 stringBuilder.append(mineBean.getCategoryList().get(i).getName());
-                if (i!=mineBean.getCategoryList().size()-1)
+                if (i != mineBean.getCategoryList().size() - 1)
                     stringBuilder.append("、");
             }
         }
-        type_and_open_time_tv.setText(stringBuilder.toString()+" | "+dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
-        if (mineBean.getAdsList() != null) {
+        type_and_open_time_tv.setText(stringBuilder.toString() + " | " + dealDateFormat(mineBean.getOpenTime(), "HH:mm") + " - " + dealDateFormat(mineBean.getCloseTime(), "HH:mm"));
+        if (mineBean.getAdsList() != null && mineBean.getAdsList().size() > 0) {
             store_mine_banner.setAdapter(new BannerImageAdapter<StoreMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, StoreMineBean.AdsListBean data, int position, int size) {

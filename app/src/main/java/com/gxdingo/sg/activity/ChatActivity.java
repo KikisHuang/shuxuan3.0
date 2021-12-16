@@ -1,8 +1,6 @@
 
 package com.gxdingo.sg.activity;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -32,7 +30,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
@@ -72,18 +69,16 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.blankj.utilcode.util.KeyboardUtils.registerSoftInputChangedListener;
 import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedListener;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
@@ -154,6 +149,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @BindView(R.id.ll_navigation)
     public LinearLayout ll_navigation;
+
+    @BindView(R.id.store_ll)
+    public FrameLayout store_ll;
+
+    @BindView(R.id.ll_location)
+    public ImageView ll_location;
 
     @BindView(R.id.iv_voice_recording_status)
     public ImageView ivVoiceRecordingStatus;
@@ -273,7 +274,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         //用户首页进入时，没有ShareUuid，需要传入otherRole、otherId
-        otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 2);
+        otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 10);
         otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
 
         if (otherRole != 12)
@@ -283,12 +284,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) recycleView.getLayoutParams();
             flp.topMargin = 0;
         }
-
         initEmotionMainFragment();
 
         //软键盘弹出监听
         registerSoftInputChangedListener(this, this);
-
         recycleInit();
     }
 
@@ -366,7 +365,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         emotionMainFragment.setonTouchListener((v, event) -> {
 
-            boolean locationPermiss = isGranted(RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE);
+            boolean locationPermiss = isGranted(RECORD_AUDIO);
             //没有权限拦截事件
             if (!locationPermiss) {
                 getP().checkRecordPermissions(getRxPermissions());
@@ -411,23 +410,34 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         switch (v.getId()) {
 
             case R.id.cl_no_address_layout:
-                //客户端
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+                //联系商家跳转选择地址列表
+                if (otherRole == 11)
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
                 break;
             case R.id.cl_other_side_address_layout:
 
-                //客户端
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
-                else {
-                    new XPopup.Builder(reference.get())
-                            .isDestroyOnDismiss(true)
-                            .isDarkTheme(false)
-                            .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.gaode_map), gets(R.string.baidu_map), gets(R.string.tencent_map)).setItemClickListener((itemv, pos) -> {
-                                getP().goOutSideNavigation(pos, mAddress);
-                            })).show();
-                }
+
+                if (otherRole == 11) {
+                    if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+                        //用户联系商家跳转选择地址列表
+                        goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
+                    else {
+                        //商家联系商家显示选择弹窗
+                        new XPopup.Builder(reference.get())
+                                .isDarkTheme(false)
+                                .isDestroyOnDismiss(true)
+                                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.select_receiving_address), gets(R.string.go_navigation)).setItemClickListener((itemv, pos) -> {
+                                    if (pos == 0)
+                                        //选择地址
+                                        goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
+                                    else if (pos == 1)
+                                        showNavigationDialog();
+                                })).show();
+                    }
+
+
+                } else if (otherRole == 10)
+                    showNavigationDialog();
 
 
                 break;
@@ -441,13 +451,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 //客服没有右上角的更多功能
                 if (otherRole == 12)
                     return;
-
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
-                    //用户
+                //联系商家跳转商商家详情
+                if (otherRole == 11) {
                     if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
                         goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{(int) mMessageDetails.getOtherAvatarInfo().getId()}));
                 } else {
-                    //商家
+                    //跳转举报、投诉用户页面
                     if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
                         goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
                 }
@@ -460,6 +469,18 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 PhotoUtils.TakePhoto(reference.get(), this);
                 break;*/
         }
+    }
+
+    /**
+     * 第三方导航选择弹窗
+     */
+    private void showNavigationDialog() {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true)
+                .isDarkTheme(false)
+                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.gaode_map), gets(R.string.baidu_map), gets(R.string.tencent_map)).setItemClickListener((itemv, pos) -> {
+                    getP().goOutSideNavigation(pos, mAddress);
+                })).show();
     }
 
 
@@ -480,9 +501,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 map.put("id", addressBean.getId());
                 mAddress = addressBean;
                 getP().sendMessage(mShareUuid, 30, "", 0, map);
-
             }
-
         }
 
         //发送消息事件
@@ -534,9 +553,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         if (object instanceof FunctionsItem) {
             FunctionsItem functionsItem = (FunctionsItem) object;
             /**
-             * 用户
+             * 联系商家
              */
-            if (functionsItem.type == TYPE_USER) {
+            if (functionsItem.type == TYPE_STORE) {
                 //相册
                 if (functionsItem.position == 0) {
                     getP().photoSourceClick(0);
@@ -555,14 +574,19 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
                 //电话
                 else if (functionsItem.position == 4) {
-                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getMobile())) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + mMessageDetails.getOtherAvatarInfo().getMobile()));
-                        startActivity(intent);
-                    } else
-                        onMessage("没有获取到电话号码");
+                    String phone = "";
 
+                    //如果地址不为空
+                    if (mAddress != null && !isEmpty(mAddress.getMobile())) {
+                        //两个商家聊天的情况下如果地址是我的，属于购买方，打电话取对方电话，如果不是我的，我属于商家，取地址的电话
+                        if (mAddress.identifier.equals(UserInfoUtils.getInstance().getIdentifier()))
+                            phone = mMessageDetails.getOtherAvatarInfo().getMobile();
+                        else
+                            phone = mAddress.getMobile();
+                    } else
+                        phone = mMessageDetails.getOtherAvatarInfo().getMobile();
+
+                    callPhone(phone);
                 }
                 //投诉
                 else if (functionsItem.position == 5) {
@@ -573,9 +597,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 }
             }
             /**
-             * 商家
+             * 联系用户
              */
-            else if (functionsItem.type == TYPE_STORE) {
+            else if (functionsItem.type == TYPE_USER) {
 
                 if (functionsItem.position == 0) {
                     //相册
@@ -584,12 +608,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     //拍照
                     getP().photoSourceClick(1);
                 } else if (functionsItem.position == 2) {
-                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getMobile())) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + mMessageDetails.getOtherAvatarInfo().getMobile()));
-                        startActivity(intent);
-                    } else
+                    if (mAddress != null && !isEmpty(mAddress.getMobile()))
+                        callPhone(mAddress.getMobile());
+                    else
                         onMessage("没有获取到电话号码");
 
                 } else if (functionsItem.position == 3) {
@@ -597,6 +618,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     showSelectTransferAccountsWayDialog();
                 }
             } else if (functionsItem.type == TYPE_ROLE) {
+                /**
+                 * 联系客服
+                 */
                 if (functionsItem.position == 0) {
                     //相册
                     getP().photoSourceClick(0);
@@ -607,6 +631,21 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             }
         }
 
+    }
+
+    /**
+     * 打电话
+     *
+     * @param mobile
+     */
+    private void callPhone(String mobile) {
+        if (!isEmpty(mobile)) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + mobile));
+            startActivity(intent);
+        } else
+            onMessage("没有获取到电话号码");
     }
 
     /**
@@ -719,8 +758,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
 
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
+        //地址类型
         if (receiveIMMessageBean.getType() == 30)
-            setAddressInfo(mAddress);
+            setAddressInfo(receiveIMMessageBean.getMsgAddress());
 
         mChatDatas.add(receiveIMMessageBean);
         mAdapter.notifyDataSetChanged();
@@ -959,7 +999,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         unregisterSoftInputChangedListener(getWindow());
 
         //清除锁定id
-        LocalConstant.CHAT_IDENTIFIER = "";
+        Constant.CHAT_IDENTIFIER = "";
         LocalConstant.CHAT_UUID = "";
         if (mAdapter != null)
             mAdapter.cancel();
@@ -1054,10 +1094,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onAudioClick(String content, boolean isPlay, int pos) {
 
-        if (isPlay)
-            getP().playVoice(content);
-        else
-            getP().stopVoice();
+        recycleView.post(() -> {
+            if (isPlay)
+                getP().playVoice(content);
+            else
+                getP().stopVoice();
+        });
     }
 
 
@@ -1092,6 +1134,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     @Override
     public void onAvatarClickListener(int position, long id) {
+        if (otherRole==10)
+            return;
+
         if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
             goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
     }
@@ -1108,8 +1153,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             if (mAdapter == null) {
                 mChatDatas.clear();
                 mMessageDetails = imChatHistoryListBean;
-                //锁定聊天id
-                LocalConstant.CHAT_IDENTIFIER = mMessageDetails.getOtherAvatarInfo().getSendIdentifier();
+                //锁定自己的聊天id
+                Constant.CHAT_IDENTIFIER = mMessageDetails.getMyAvatarInfo().getSendIdentifier();
                 //记录聊天订阅id
                 LocalConstant.CHAT_UUID = mShareUuid;
 
@@ -1127,8 +1172,17 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 cl_other_side_address_layout.setVisibility(imChatHistoryListBean.getAddress() != null ? View.VISIBLE : View.GONE);
                 clNoAddressLayout.setVisibility(imChatHistoryListBean.getAddress() == null ? View.VISIBLE : View.GONE);
 
-                ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.VISIBLE : View.GONE);
-                right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.GONE : View.VISIBLE);
+                //联系商家才显示
+                store_ll.setVisibility(otherRole == 11 ? View.VISIBLE : View.GONE);
+
+                //如果自己是商家、并且联系人也是商家
+                ll_location.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 11 ? View.VISIBLE : View.GONE);
+
+                //如果自己是商家、并且联系人是用户显示导航
+                ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 10 ? View.VISIBLE : View.GONE);
+
+                //用户联系商家
+                right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 && otherRole == 11 ? View.VISIBLE : View.GONE);
 
                 mAddress = imChatHistoryListBean.getAddress();
 
@@ -1144,10 +1198,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         tv_other_side_nick_name.setText(imChatHistoryListBean.getAddress().getName());
 
                 } else {
-                    //商家
-                    if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11)
+                    //对方角色。10=联系用户 11=联系商家 12=联系客服
+                    //联系用户
+                    if (otherRole == 10)
                         tv_no_address.setText("对方还没有添加收货地址");
-                    else {
+                    else if (otherRole == 11) {
+                        //联系商家如果有默认地址信息就发送
                         if (mDefaultAddress == null)
                             tv_no_address.setText("没有收货地址去添加");
                         else {
@@ -1205,6 +1261,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     @Override
+    protected synchronized void showNewMessageDialog(ReceiveIMMessageBean unReadMessage) {
+        //聊天页面不弹消息弹窗
+//        super.showNewMessageDialog(unReadMessage);
+    }
+
+    @Override
     public String getShareUUID() {
         return mShareUuid;
     }
@@ -1252,37 +1314,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             mChatDatas.get(position).recipientRead = 1;
             mAdapter.notifyItemChanged(position);
         }
-
-
-    }
-
-    /**
-     * 判断触摸点是否在目标view上
-     * 前提是touchView与tarView在同一viewGroup中
-     *
-     * @param touView 响应触摸事件的view
-     * @param tarView 触摸点需要落在的目标view
-     * @param x       event.getX()
-     * @param y       event.getY()
-     * @return 是否落在tarView上
-     */
-    private boolean pointInView(View touView, View tarView, float x, float y) {
-        boolean xDir, yDir;
-        //x方向
-        if (tarView.getLeft() >= touView.getRight())//tarView在右边
-            xDir = (x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft());
-        else if (tarView.getRight() <= touView.getLeft()) //tarView在左边
-            xDir = (x <= tarView.getRight() - touView.getLeft() && x >= tarView.getLeft() - touView.getLeft());
-        else //tarView在重叠范围
-            xDir = x >= tarView.getLeft() - touView.getLeft() && x <= tarView.getRight() - touView.getLeft();
-        //y方向
-        if (tarView.getTop() >= touView.getBottom())//tarView在下边
-            yDir = (y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop());
-        else if (tarView.getBottom() <= touView.getTop()) //tarView在上边
-            yDir = (y <= tarView.getBottom() - touView.getTop() && y >= tarView.getTop() - touView.getTop());
-        else //tarView在重叠范围
-            yDir = y >= tarView.getTop() - touView.getTop() && y <= tarView.getBottom() - touView.getTop();
-        return xDir && yDir;
     }
 }
 

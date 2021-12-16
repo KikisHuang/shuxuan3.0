@@ -40,6 +40,7 @@ import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
 import static com.gxdingo.sg.http.StoreApi.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 public class BusinessDistrictModel {
 
@@ -139,7 +140,7 @@ public class BusinessDistrictModel {
         map.put(StoreLocalConstant.CURRENT, String.valueOf(mPage));
         map.put(StoreLocalConstant.SIZE, String.valueOf(mPageSize));
 
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.adCode))
             map.put("area", LocalConstant.adCode);
 
         if (storeId > 0)

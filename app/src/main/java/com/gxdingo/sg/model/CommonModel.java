@@ -28,6 +28,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.blankj.utilcode.util.PermissionUtils.permissionGroup;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.isToday;
@@ -59,6 +60,8 @@ public class CommonModel {
      * @param rxPermissions
      */
     public void checkPermission(RxPermissions rxPermissions, String[] permissions, PermissionsListener listener) {
+
+
         rxPermissions.request(permissions)
                 .subscribe(aBoolean -> {
                     if (listener != null)

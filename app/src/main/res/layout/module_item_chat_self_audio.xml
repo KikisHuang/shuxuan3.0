@@ -62,7 +62,6 @@
                         android:layout_width="14dp"
                         android:layout_height="14dp"
                         android:layout_gravity="right|center"
-                        android:layout_marginRight="10dp"
                         tools:src="@drawable/module_im_chat_oneself_voice_play_scrolling"
                          />
 

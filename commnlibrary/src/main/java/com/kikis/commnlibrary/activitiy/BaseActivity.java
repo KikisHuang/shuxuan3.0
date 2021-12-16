@@ -61,6 +61,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
+import static com.kikis.commnlibrary.utils.Constant.CHAT_IDENTIFIER;
 import static com.kikis.commnlibrary.utils.Constant.CLOSE_ALL_ACTIVITY;
 import static com.kikis.commnlibrary.utils.Constant.UserInfo;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
@@ -543,7 +544,8 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
      * @param unReadMessage 消息测试数据
      */
     protected synchronized void showNewMessageDialog(final ReceiveIMMessageBean unReadMessage) {
-
+        if (CHAT_IDENTIFIER.equals(unReadMessage.getSendIdentifier()))
+            return;
 
         RxUtil.observe(Schedulers.newThread(), Flowable.create(new FlowableOnSubscribe<Object>() {
             @Override
@@ -741,7 +743,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
     @Override
     public void onAfters() {
-        if (loadingPopup != null && loadingPopup.isShow()){
+        if (loadingPopup != null && loadingPopup.isShow()) {
             loadingPopup.dismiss();
             loadingPopup.onDestroy();
             loadingPopup = null;

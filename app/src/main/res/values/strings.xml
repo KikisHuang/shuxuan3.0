@@ -18,6 +18,8 @@
     <string name="im_chat_unknown_content_hint">系统提示：当前版本不支持该内容，请升级到最新版本!</string>
     <string name="store_id_login">商家身份登录</string>
     <string name="user_id_login">用户身份登录</string>
+    <string name="user_login">用户登录</string>
+    <string name="store_login">商家登录</string>
     <string name="binding_phone_number">绑定手机号</string>
     <string name="binding_phone_number_hint">首次登录需要绑定手机号</string>
     <string name="input_phone_number">输入手机号码</string>
@@ -77,4 +79,5 @@
     <string name="filter_bank_num">0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP</string>
     <string name="please_agree_to_the_terms_of_service">请同意服务条款</string>
     <string name="phone_number_of_verification_code_cannot_null">手机号或验证码不能为空</string>
+    <string name="go_navigation">去导航</string>
 </resources>

@@ -22,9 +22,11 @@ public class AddressBean implements Serializable {
     private String name;
     private int gender;
 
+    //自定义参数0不返回 1 首页 2聊天
     public int selectType;
     private String regionPath;
     private String regionPathStr;
+    public String identifier;
     private String street;
 
     public String getDoorplate() {

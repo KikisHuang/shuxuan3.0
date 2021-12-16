@@ -189,7 +189,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         getP().checkCompileInfo();
     }
 
-    @OnClick({R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
+    @OnClick({R.id.txt_more, R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -200,6 +200,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             case R.id.save_tv:
                 getP().compileOrAdd(isAdd);
                 break;
+            case R.id.txt_more:
             case R.id.title_back:
                 finish();
                 break;
@@ -299,7 +300,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     public void saveBtnEnable(boolean en) {
         save_tv.setEnabled(en);
         save_tv.setTextColor(en ? getc(R.color.white) : getc(R.color.gray));
-        save_tv.setBackground(en?getd(R.drawable.module_bg_main_color_round6):getd(R.drawable.module_shape_bg_gray_6r));
+        save_tv.setBackground(en ? getd(R.drawable.module_bg_main_color_round6) : getd(R.drawable.module_shape_bg_gray_6r));
         save_tv.setSelected(en);
     }
 

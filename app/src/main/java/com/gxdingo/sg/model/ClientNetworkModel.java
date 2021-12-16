@@ -1262,15 +1262,18 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
-
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                netWorkListener.onSucceed(1);
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(1);
+                    netWorkListener.onAfters();
+                }
             }
         };
 
@@ -1488,6 +1491,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 
@@ -1504,6 +1508,7 @@ public class ClientNetworkModel {
         };
 
         observable.subscribe(subscriber);
+
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
@@ -1516,6 +1521,7 @@ public class ClientNetworkModel {
      * @param type
      */
     public void unbindThirdParty(Context context, int type) {
+
         Map<String, String> map = getJsonMap();
 
         if (netWorkListener != null) {
@@ -1541,6 +1547,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 
@@ -1588,7 +1595,7 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 

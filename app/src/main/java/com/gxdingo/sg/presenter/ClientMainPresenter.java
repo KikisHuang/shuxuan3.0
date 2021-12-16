@@ -27,8 +27,11 @@ import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
@@ -179,8 +182,13 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void checkTab(int tab) {
         if (model != null) {
+
+            if (tab == 2 && model.getOldTab() == 2)
+                EventBus.getDefault().post(BACK_TOP_BUSINESS_DISTRICT);
+
             if (isViewAttached() && tab != model.getOldTab())
                 getV().onSeleted(tab, model.getOldTab());
+
 
             showFm(tab);
 

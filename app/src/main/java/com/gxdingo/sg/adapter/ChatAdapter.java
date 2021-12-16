@@ -39,6 +39,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
+import static android.view.Gravity.CENTER;
+import static android.view.Gravity.LEFT;
+import static android.view.Gravity.RIGHT;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
@@ -255,48 +258,53 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
 
             voice_ll.setOnClickListener(v -> {
-                AnimationDrawable anim = (AnimationDrawable) iv_voice_scrolling.getBackground();
 
-                if (mTagContent == "") {
-                    //未有语音在播放，播放语音
-                    mTagContent = data.getContent();
-                    mTime = System.currentTimeMillis();
-                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
-                    anim.start();
+                voice_ll.post(new Runnable() {
+                    @Override
+                    public void run() {
 
-                    if (chatClickListener != null) {
-                        chatClickListener.onAudioClick(data.getContent(), true, position);
-                        if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(position, data.getId());
+                        AnimationDrawable anim = (AnimationDrawable) iv_voice_scrolling.getBackground();
+
+                        if (mTagContent == "") {
+                            //未有语音在播放，播放语音
+                            mTagContent = data.getContent();
+                            mTime = System.currentTimeMillis();
+                            startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                            anim.start();
+
+                            if (chatClickListener != null) {
+                                chatClickListener.onAudioClick(data.getContent(), true, position);
+                                if (data.recipientRead == 0)
+                                    chatClickListener.clearUnread(position, data.getId());
+                            }
+
+                        } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
+                            //正在播放中,取消语音播放
+                            mTagContent = "";
+                            mTime = 0;
+                            stopAnima(anim);
+                            cancel();
+
+                            if (chatClickListener != null)
+                                chatClickListener.onAudioClick(data.getContent(), false, position);
+
+                        } else {
+                            //已经超时的播放，播放语音
+                            mTagContent = data.getContent();
+                            mTime = System.currentTimeMillis();
+                            startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                            anim.start();
+
+                            if (chatClickListener != null) {
+                                chatClickListener.onAudioClick(data.getContent(), true, position);
+
+                                if (data.recipientRead == 0)
+                                    chatClickListener.clearUnread(position, data.getId());
+                            }
+
+                        }
                     }
-
-                } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
-                    //正在播放中,取消语音播放
-                    mTagContent = "";
-                    mTime = 0;
-                    stopAnima(anim);
-                    cancel();
-
-                    if (chatClickListener != null)
-                        chatClickListener.onAudioClick(data.getContent(), false, position);
-
-                } else {
-                    //已经超时的播放，播放语音
-                    mTagContent = data.getContent();
-                    mTime = System.currentTimeMillis();
-                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
-                    anim.start();
-
-                    if (chatClickListener != null) {
-                        chatClickListener.onAudioClick(data.getContent(), true, position);
-
-                        if (data.recipientRead == 0)
-                            chatClickListener.clearUnread(position, data.getId());
-                    }
-
-                }
-
-
+                });
 
                    /*     if (anim.isRunning()) {
 //                            stopVoiceAnima(holder);
@@ -441,7 +449,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 }
             }
 
-            String t = dealDateFormat(temp != null ? temp.getCreateTime() : "2020-04-09 23:00:00");
+            String t = temp != null ? dealDateFormat(temp.getCreateTime()) : "2020-04-09 23:00:00";
 
             String d = dealDateFormat(data.getCreateTime());
 

@@ -57,6 +57,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -194,7 +195,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         switch (v.getId()){
             case R.id.avatar_cimg:
             case R.id.username_stv:
-                goToPage(getContext(), ClientPersonalDataActivity.class,null);
+                ShareAnimaStartPages(getContext(),avatar_cimg,"userAvatar" ,ClientPersonalDataActivity.class,null);
                 break;
             case R.id.check_bill_tv:
                 goToPage(getContext(), ClientAccountRecordActivity.class,null);

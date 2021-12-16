@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.store;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
+import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.StoreActivity;
@@ -27,15 +29,15 @@ import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
-import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxPopupView;
+import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.CountdownView;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -58,6 +61,7 @@ import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
  * @author JM
  */
 public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
+
 
     @BindView(R.id.title_tv)
     public TextView title_tv;
@@ -100,14 +104,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
     TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
-    BusinessDistrictCommentInputBoxPopupView mCommentInputBoxPopupView;
     int mDelPosition = -1;//要删除商圈的索引位置
+
+    //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
+    private int mType = 0;
+
+    //客户端查询单独商家商圈所需id
     private int mStoreId = 0;
-
-    boolean isUser;
-
-    //活动浏览商圈
-    private boolean isBrowsing;
 
     private CountDownTimer countDownTimer;
 
@@ -196,24 +199,28 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected void init() {
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-        if (args != null)
+        if (args != null) {
+            mType = args.getInt(Constant.PARAMAS + 0, 0);
+            //客户端查询单独商家商圈所需id, mType为3时才会有该值
             mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
+        }
 
+        unread_iv.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
 
-        unread_iv.setVisibility(mStoreId <= 0 ? View.VISIBLE : View.GONE);
+        img_back.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
 
-        img_back.setVisibility(mStoreId > 0 ? View.VISIBLE : View.GONE);
-        if (isUser) {
+        title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
+
+        if (mType != 2) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
-        } else {
+        }/* else {
             title_tv.setText("我的商圈");
             ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) title_cl.getLayoutParams();
             clp.topMargin = dp2px(40);
-        }
+        }*/
 
-        mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener);
+        mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener, mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 
         //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
@@ -231,8 +238,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
-            //获取商圈评论未读数量
-            if (mStoreId <= 0)
+            //只有用户端商圈获取未读消息
+            if (mType == 0)
                 getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
@@ -255,18 +262,15 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         Log.d("businessScopeFragment", "onHiddenChanged: " + hidden);
-        if (hidden) {
-            if (cl_visit_countdown != null && cl_visit_countdown.getVisibility() == View.VISIBLE) {
-                cl_visit_countdown.setVisibility(View.GONE);
-            }
+        if (cl_visit_countdown != null && cl_visit_countdown.getVisibility() == View.VISIBLE) {
+            cl_visit_countdown.setVisibility(View.GONE);
         }
-
         if (isHidden() && countDownTimer != null)
             countDownTimer.cancel();
     }
 
     private void startCountDown() {
-        countDownTimer = new CountDownTimer(16 * 1000, 1000) {
+        countDownTimer = new CountDownTimer(15 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
 
@@ -280,7 +284,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 Log.d("business_circle========", "onFinish: ");
                 cl_visit_countdown.setVisibility(View.GONE);
                 getP().complete();
-                isBrowsing = false;
             }
         }.start();
     }
@@ -300,9 +303,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             getP().getBusinessDistrictList(true, mStoreId);
 
         } else if (type == LocalConstant.VISIT_CIRCLE) {
-            isBrowsing = true;
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
+        } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
+            //返回顶部
+            RecycleViewUtils.smoothMoveToPosition(recyclerView, 0);
         }
     }
 
@@ -405,23 +410,17 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             } else if (view.getId() == R.id.picture_gridview) {
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
-                if (isUser) {
+                if (mType == 3)
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, (int) mAdapter.getData().get(parentPosition).getStoreId()}));
+                else {
                     int storeId = Integer.valueOf(String.valueOf(object));
                     goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
                 }
+
             }
         }
     };
 
-
-    /**
-     * 获取商圈评论输入框弹出窗口View
-     *
-     * @return
-     */
-    public View getCommentInputBoxPopupView() {
-        return mCommentInputBoxPopupView.getView();
-    }
 
     /**
      * 显示商圈评论弹窗
@@ -432,27 +431,20 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      * @param parentId         回复谁的消息id
      */
     private void showCommentInputBoxDialog(BusinessDistrictListBean.BusinessDistrict businessDistrict, String hint, long circleId, long parentId) {
-        mCommentInputBoxPopupView = new BusinessDistrictCommentInputBoxPopupView(mContext, hint, getFragmentManager()
-                , new BusinessDistrictCommentInputBoxPopupView.OnCommentContentListener() {
-            @Override
-            public void commentContent(Object object) {
-                String content = (String) object;
-                if (TextUtils.isEmpty(content)) {
-                    onMessage("请输入评论内容！");
-                    return;
-                }
-                getP().submitCommentOrReply(businessDistrict, circleId, parentId, content);
-                mCommentInputBoxPopupView.directlyDismiss();
-            }
-        });
+        Bundle bundle = new Bundle();
+        bundle.putString(Constant.PARAMAS + 0, hint);
 
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .dismissOnTouchOutside(true)
-                .autoDismiss(true)
-                .isDestroyOnDismiss(true)
-                .asCustom(mCommentInputBoxPopupView).show();
+        BusinessDistrictCommentInputBoxDialogFragment fragment = BusinessDistrictCommentInputBoxDialogFragment.newInstance(BusinessDistrictCommentInputBoxDialogFragment.class, bundle);
+        fragment.setOnCommentContentListener(object -> {
+            String content = (String) object;
+            if (TextUtils.isEmpty(content)) {
+                onMessage("请输入评论内容！");
+                return;
+            }
+            getP().submitCommentOrReply(businessDistrict, circleId, parentId, content);
+            fragment.dismiss();
+        });
+        fragment.show(getActivity().getSupportFragmentManager(), BusinessDistrictCommentInputBoxDialogFragment.class.toString());
     }
 
     /**

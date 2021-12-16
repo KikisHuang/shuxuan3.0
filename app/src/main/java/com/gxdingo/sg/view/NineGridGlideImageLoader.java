@@ -33,7 +33,6 @@ public class NineGridGlideImageLoader implements NineGridView.ImageLoader {
         Glide.with(context).load(url).apply(GlideUtils.getInstance().getDefaultOptions().placeholder(R.drawable.load_faile_icon))
                 .into(imageView);*/
 
-
         RequestOptions options = new RequestOptions().transform(new CenterCrop());
         Glide.with(context)
                 .asBitmap()

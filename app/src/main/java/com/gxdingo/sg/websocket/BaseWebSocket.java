@@ -50,6 +50,17 @@ public class BaseWebSocket extends WebSocketClient {
         Log.e(TAG, "onMessage()");
     }
 
+    @Override
+    protected void onSetSSLParameters(SSLParameters sslParameters) {
+        //某些机型的兼容性问题解决办法
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                super.onSetSSLParameters(sslParameters);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 连接断开时调用
      *

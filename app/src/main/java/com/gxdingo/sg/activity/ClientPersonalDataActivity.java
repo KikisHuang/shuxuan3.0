@@ -31,7 +31,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
  * @date: 2021/10/14
  * @page:
  */
-public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener{
+public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -117,6 +117,7 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
     protected void init() {
         avatar_stv.getLeftIconIV().setTransitionName(gets(R.string.my_catransition));
 
+        avatar_stv.getLeftIconIV().setTransitionName("userAvatar");
         String avatar = UserInfoUtils.getInstance().getUserAvatar();
         String nickname = UserInfoUtils.getInstance().getUserNickName();
 
@@ -135,7 +136,7 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
 
     }
 
-    @OnClick({R.id.title_back,R.id.avatar_stv, R.id.txt_more,R.id.save_tv})
+    @OnClick({R.id.title_back, R.id.avatar_stv, R.id.txt_more, R.id.save_tv})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
