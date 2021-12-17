@@ -1,5 +1,7 @@
 package com.gxdingo.sg.utils;
 
+import android.os.Build;
+
 import com.blankj.utilcode.util.LogUtils;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 
@@ -79,7 +81,14 @@ public class DateUtils {
         try {
             if (oldDateStr == null)
                 return getNowString();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+
+            String tempPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+            //适配6.0以下的时间格式
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
+                tempPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+            DateFormat df = new SimpleDateFormat(tempPattern);  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
@@ -101,7 +110,15 @@ public class DateUtils {
         try {
             if (oldDateStr == null)
                 return getNowString();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+
+
+            String tempPattern = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+            //适配6.0以下的时间格式
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
+                tempPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+            DateFormat df = new SimpleDateFormat(tempPattern);  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
@@ -113,6 +130,7 @@ public class DateUtils {
         }
     }
 
+
     /**
      * 日期格式转换yyyy-MM-dd'T'HH:mm:ss.SSSXXX  (yyyy-MM-dd'T'HH:mm:ss.SSSZ) TO  yyyy-MM-dd HH:mm:ss
      * 2020-04-09T23:00:00.000+08:00 TO 2020-04-09 23:00:00
@@ -121,7 +139,7 @@ public class DateUtils {
      */
     public static String dealDateFormatHm(String oldDateStr) {
         try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
