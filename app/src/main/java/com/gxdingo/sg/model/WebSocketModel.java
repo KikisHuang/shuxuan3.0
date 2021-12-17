@@ -523,6 +523,10 @@ public class WebSocketModel {
      * 发起转账
      */
     public void transfer(Context context, String shareuuid, int type, String pass, String amount) {
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
         Map<String, String> map = new HashMap<>();
 
         if (type == 30 && !isEmpty(pass))
@@ -546,17 +550,18 @@ public class WebSocketModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 BaseLogUtils.e(e);
-                if (e.getCode() == 601) {
-                    if (netWorkListener != null)
+                if (netWorkListener != null) {
+                    if (e.getCode() == 601)
                         netWorkListener.onSucceed(601);
-                }
-                if (netWorkListener != null)
                     netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(PayBean payBean) {
                 if (netWorkListener != null) {
+                    netWorkListener.onAfters();
                     netWorkListener.onData(true, payBean);
                 }
             }

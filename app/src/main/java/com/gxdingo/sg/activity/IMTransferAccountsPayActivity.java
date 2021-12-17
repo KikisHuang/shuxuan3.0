@@ -170,7 +170,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 tvPayeeName.setText(otherInfo.getSendNickname());
 
             if (!isEmpty(otherInfo.getSendAvatar()))
-            Glide.with(reference.get()).load(otherInfo.getSendAvatar()).apply(GlideUtils.getInstance().getCircleCrop()).into(nivAvatar);
+                Glide.with(reference.get()).load(otherInfo.getSendAvatar()).apply(GlideUtils.getInstance().getCircleCrop()).into(nivAvatar);
         }
 
 
@@ -325,21 +325,25 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 }
                 break;
             case R.id.tv_submit:
-                //余额支付密码弹窗
-                if (mPayType == 30) {
-                    new XPopup.Builder(reference.get())
-                            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                            .isDarkTheme(false)
-                            .dismissOnTouchOutside(false)
-                            .asCustom(new EnterPaymentPasswordPopupView(reference.get(), new EnterPaymentPasswordPopupView.OnCallbackPasswordListener() {
-                                @Override
-                                public void getPassword(String pass) {
-                                    getP().transfer(mShareUuid, mPayType, pass, etAmount.getText().toString());
-                                }
-                            })).show();
-                } else
-                    getP().transfer(mShareUuid, mPayType, "", etAmount.getText().toString());
-
+                //设置1秒点击间隔
+                if (clickInterval != 1000)
+                    clickInterval = 1000;
+                if (checkClickInterval(view.getId())) {
+                    //余额支付密码弹窗
+                    if (mPayType == 30) {
+                        new XPopup.Builder(reference.get())
+                                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                                .isDarkTheme(false)
+                                .dismissOnTouchOutside(false)
+                                .asCustom(new EnterPaymentPasswordPopupView(reference.get(), new EnterPaymentPasswordPopupView.OnCallbackPasswordListener() {
+                                    @Override
+                                    public void getPassword(String pass) {
+                                        getP().transfer(mShareUuid, mPayType, pass, etAmount.getText().toString());
+                                    }
+                                })).show();
+                    } else
+                        getP().transfer(mShareUuid, mPayType, "", etAmount.getText().toString());
+                }
                 break;
         }
     }
