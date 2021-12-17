@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.bean.PushBean;
+import com.gxdingo.sg.utils.BadgeUtil;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
@@ -36,6 +37,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
     public static final String TAG = "Shuxiang_User_Push";
 
 
+    private int count = 0;
     /**
      * 当通知准确到达用户的时候触发
      *
@@ -62,7 +64,8 @@ public class AliPushMessageReceiver extends MessageReceiver {
             if (!LocalConstant.isBackground)
                 PushServiceFactory.getCloudPushService().clearNotifications();
         }*/
-
+        count ++ ;
+        BadgeUtil.setBadge(count,context);
 
     }
 
