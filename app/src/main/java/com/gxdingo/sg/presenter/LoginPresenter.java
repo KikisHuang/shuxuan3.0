@@ -263,7 +263,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
                 case SDK_AUTH_FLAG:
                     AuthResult authResult = (AuthResult) msg.obj;
                     if (mNetworkModel != null) {
-                        if (!isEmpty(authResult.getAuthCode())) {
+                        if (!isEmpty(authResult.getAuthCode()) && isViewAttached()) {
                             mNetworkModel.thirdPartyLogin(getContext(), authResult.getAuthCode(), ClientLocalConstant.ALIPAY, getV().isClient());
                         } else
                             onMessage("没有获取到authCode");

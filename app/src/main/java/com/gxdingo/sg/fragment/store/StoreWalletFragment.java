@@ -46,6 +46,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
+import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -247,7 +248,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         mWalletBean = walletBean;
         if (refresh) {
             mAdapter.setList(walletBean.getTransactionList());
-            balance_tv.setText(String.valueOf(walletBean.getBalance()));
+            balance_tv.setText(double2Str(walletBean.getBalance()));
             if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
                 ll_account.setVisibility(View.GONE);
             } else {

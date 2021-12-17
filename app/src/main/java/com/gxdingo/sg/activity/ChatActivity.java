@@ -1177,14 +1177,15 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 //用户联系商家不显示布局
                 if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
                     store_ll.setVisibility(View.GONE);
-                 else
-                    store_ll.setVisibility(otherRole == 11 ? View.VISIBLE : View.GONE);
+                else
+                    store_ll.setVisibility(otherRole == 11 || otherRole == 10 ? View.VISIBLE : View.GONE);
 
                 //如果自己是商家、并且联系人也是商家
                 ll_location.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 11 ? View.VISIBLE : View.GONE);
 
                 //如果自己是商家、并且联系人是用户显示导航
                 ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 10 ? View.VISIBLE : View.GONE);
+
 
                 //用户联系商家
                 right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 && otherRole == 11 ? View.VISIBLE : View.GONE);
