@@ -79,7 +79,7 @@ public class DateUtils {
         try {
             if (oldDateStr == null)
                 return getNowString();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");  //yyyy-MM-dd'T'HH:mm:ss.SSSZ
             Date date = df.parse(oldDateStr);
             SimpleDateFormat df1 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
             Date date1 = df1.parse(date.toString());
