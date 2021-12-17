@@ -180,6 +180,7 @@ public class MyApplication extends Application {
     private void keyInt() {
 
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+
         //全局url初始化
         if (isUser) {
             //客户端
@@ -191,7 +192,6 @@ public class MyApplication extends Application {
         Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
 
         LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-
 
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
 

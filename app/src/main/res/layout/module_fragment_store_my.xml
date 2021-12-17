@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grayf6"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,7 +31,7 @@
             android:ellipsize="end"
             android:maxEms="12"
             android:singleLine="true"
-            android:text="金源便利店"
+            tools:text="金源便利店"
             android:textColor="#2E2E2E"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/store_avatar_iv"

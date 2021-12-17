@@ -6,11 +6,14 @@ import android.content.Intent;
 //import com.alibaba.sdk.android.push.CloudPushService;
 //import com.alibaba.sdk.android.push.CommonCallback;
 //import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import androidx.annotation.NonNull;
+
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.LoginActivity;
@@ -325,19 +328,20 @@ public class UserInfoUtils {
 
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
             if (pushService == null) {
-                BaseLogUtils.w("pushService is null ");
+                LogUtils.w("pushService is null ");
                 return;
             }
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    BaseLogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                    LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override
                 public void onFailed(String s, String s1) {
 
-                    BaseLogUtils.w("bind account onfailed ");
+                    LogUtils.w("bind account onfailed ");
+
                 }
             });
         }
@@ -354,12 +358,12 @@ public class UserInfoUtils {
         pushService.unbindAccount(new CommonCallback() {
             @Override
             public void onSuccess(String s) {
-                BaseLogUtils.d("unbind Account success ");
+                LogUtils.d("unbind Account success ");
             }
 
             @Override
             public void onFailed(String s, String s1) {
-                BaseLogUtils.d("unbind Account onfailed ");
+                LogUtils.d("unbind Account onfailed ");
             }
         });
     }

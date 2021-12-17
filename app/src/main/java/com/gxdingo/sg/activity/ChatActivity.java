@@ -1173,8 +1173,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 cl_other_side_address_layout.setVisibility(imChatHistoryListBean.getAddress() != null ? View.VISIBLE : View.GONE);
                 clNoAddressLayout.setVisibility(imChatHistoryListBean.getAddress() == null ? View.VISIBLE : View.GONE);
 
-                //联系商家才显示
-                store_ll.setVisibility(otherRole == 11 ? View.VISIBLE : View.GONE);
+
+                //用户联系商家不显示布局
+                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
+                    store_ll.setVisibility(View.GONE);
+                 else
+                    store_ll.setVisibility(otherRole == 11 ? View.VISIBLE : View.GONE);
 
                 //如果自己是商家、并且联系人也是商家
                 ll_location.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 11 ? View.VISIBLE : View.GONE);

@@ -2,6 +2,7 @@ package com.gxdingo.sg.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.text.InputFilter;
@@ -166,7 +167,11 @@ public class CommonModel {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phonenum));
-        context.startActivity(intent);
+
+        if (context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+            context.startActivity(intent);
+        }
+
     }
 
     /**
