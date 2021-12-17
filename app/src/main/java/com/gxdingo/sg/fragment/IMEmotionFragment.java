@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.MyFragmentPagerAdapter;
 import com.gxdingo.sg.utils.EmotionsUtils;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.page_indicator.CirclePageIndicator;
 
 import java.util.LinkedHashMap;
@@ -40,8 +41,6 @@ public class IMEmotionFragment extends Fragment {
     }
 
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,12 +56,22 @@ public class IMEmotionFragment extends Fragment {
         //表情Item一
         LinkedHashMap<String, Integer> emotion1 = getEmotionGroupByIndex(0, 30);
         emotion1.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
-        IMEmotionItemFragment mMessageFragment1 = new IMEmotionItemFragment(emotion1);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constant.SERIALIZABLE + 0, emotion1);
+
+        IMEmotionItemFragment mMessageFragment1 = new IMEmotionItemFragment();
+        mMessageFragment1.setArguments(bundle);
 
         //表情Item二
         LinkedHashMap<String, Integer> emotion2 = getEmotionGroupByIndex(31, EmotionsUtils.getCount() - 1);
         emotion2.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
-        IMEmotionItemFragment mMessageFragment2 = new IMEmotionItemFragment(emotion2);
+
+        Bundle bundle2 = new Bundle();
+        bundle2.putSerializable(Constant.SERIALIZABLE + 0, emotion2);
+
+        IMEmotionItemFragment mMessageFragment2 = new IMEmotionItemFragment();
+        mMessageFragment2.setArguments(bundle2);
 
 
         adapter.addFragment(mMessageFragment1, "");

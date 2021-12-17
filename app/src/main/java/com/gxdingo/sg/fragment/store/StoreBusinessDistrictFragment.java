@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
@@ -277,7 +278,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
                 String value = String.valueOf((int) (millisUntilFinished / 1000));
                 Log.d("business_circle========", "onStart: " + value);
-                count_down_tv.setText(value);
+
+                if (count_down_tv != null && !isEmpty(value))
+                    count_down_tv.setText(value);
             }
 
             @Override
@@ -438,7 +441,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         BusinessDistrictCommentInputBoxDialogFragment fragment = BusinessDistrictCommentInputBoxDialogFragment.newInstance(BusinessDistrictCommentInputBoxDialogFragment.class, bundle);
         fragment.setOnCommentContentListener(object -> {
             String content = (String) object;
-            if (TextUtils.isEmpty(content)) {
+            if (isEmpty(content)) {
                 onMessage("请输入评论内容！");
                 return;
             }
