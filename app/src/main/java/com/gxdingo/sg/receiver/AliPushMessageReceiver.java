@@ -51,7 +51,6 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
         String orderId = extraMap.get("orderId");
 
-
 /*
         if (!isEmpty(orderId))
             EventBus.getDefault().post(new OrderRefreshBean(Long.valueOf(orderId)));

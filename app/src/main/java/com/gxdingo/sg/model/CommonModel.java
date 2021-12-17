@@ -1,5 +1,6 @@
 package com.gxdingo.sg.model;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.kikis.commnlibrary.bean.AddressBean;
+import com.blankj.utilcode.util.ToastUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
@@ -167,9 +169,14 @@ public class CommonModel {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phonenum));
+        try {
 
-        if (context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
-            context.startActivity(intent);
+            if (context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                context.startActivity(intent);
+            }
+        } catch (ActivityNotFoundException ex) {
+            LogUtils.e("Error starting phone dialer intent." + ex);
+            ToastUtils.showShort("对不起，我们找不到任何可以打电话的应用程序!  ");
         }
 
     }

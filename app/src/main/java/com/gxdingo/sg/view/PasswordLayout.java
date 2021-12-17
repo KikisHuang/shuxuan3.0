@@ -460,13 +460,14 @@ public class PasswordLayout extends LinearLayout {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-
-            dest.writeList(saveString);
+            if (saveString != null)
+                dest.writeList(saveString);
         }
 
         private SavedState(Parcel in) {
             super(in);
-            in.readStringList(saveString);
+            if (saveString != null)
+                in.readStringList(saveString);
         }
 
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
