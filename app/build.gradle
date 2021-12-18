@@ -30,7 +30,7 @@ android {
         ndk {
             // 设置支持的SO库架构
 //            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a', "x86"
+            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
 
@@ -93,17 +93,22 @@ dependencies {
     implementation rootProject.ext.dependencies.multidex
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
+    //alipay 一键登录aar
     implementation(name: 'auth_number_product-2.12.3-log-online-standard-release', ext: 'aar')
     implementation(name: 'crashshield-2.1.2-release', ext: 'aar')
     implementation(name: 'logger-2.1.2-release', ext: 'aar')
     implementation(name: 'main-2.1.2-release', ext: 'aar')
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    api(name: 'nuisdk-release', ext: 'aar')
+    //阿里云语音识别
+//    api(name: 'nuisdk-release', ext: 'aar')
+
+    //自用工具包
     implementation project(path: ':commnlibrary')
-    //alipay
+    //alipay noutdid aar
     implementation(name: 'alipaysdk-noutdid-15.8.03.210428205839', ext: 'aar')
 
     //ButterKnife

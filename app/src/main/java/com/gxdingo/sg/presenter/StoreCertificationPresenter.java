@@ -3,6 +3,7 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 import android.content.Context;
 
+import com.blankj.utilcode.util.ClipboardUtils;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
@@ -52,8 +53,6 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     private CommonModel mCommonModel;
 
     private StoreNetworkModel storeNetworkModel;
-    //邀请口令
-    private String invitationCode;
 
     public StoreCertificationPresenter() {
         networkModel = new NetworkModel(this);
@@ -258,7 +257,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     @Override
     public void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory, String regionPath, String address, String businessLicence, String storeLicence, double longitude, double latitude) {
         if (storeNetworkModel != null) {
-            storeNetworkModel.settle(context, avatar, name, storeCategory, regionPath, address, businessLicence, storeLicence, invitationCode, longitude, latitude);
+            storeNetworkModel.settle(context, avatar, name, storeCategory, regionPath, address, businessLicence, storeLicence, longitude, latitude);
         }
     }
 
@@ -298,18 +297,31 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
             networkModel.logOut(getContext());
     }
 
+
     /**
-     * 检测口令方法
+     * 获取或存放邀请码至服务器
      */
     @Override
-    public void checkShibboleth() {
+    public void getInvitationCode() {
 
-        ShibbolethModel.checkShibboleth((type, code) -> {
-            //如果是被邀请过来的商家，显示布局
-            if (type == 30 && isViewAttached()) {
-                invitationCode = code;
-                getV().showActivityTypeLayout(type);
+        String copyContent = ClipboardUtils.getText().toString();
+
+        //判断剪贴板是否有这个内容
+        if (!isEmpty(copyContent)) {
+            ShibbolethModel.checkShibboleth((type, code) -> {
+                if (networkModel != null) {
+                    networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
+                        //如果是被邀请过来的商家，显示布局
+                        if (isViewAttached()) getV().showActivityTypeLayout(type);
+                    });
+                }
+            }, 50);
+        } else {
+            if (networkModel != null) {
+                networkModel.getInvitationCode(getContext(), "", result -> {
+                    if (isViewAttached()) getV().showActivityTypeLayout(30);
+                });
             }
-        },50);
+        }
     }
 }

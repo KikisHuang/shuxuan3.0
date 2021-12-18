@@ -243,13 +243,12 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         getP().getLoginInfoStatus();
 
     }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         //监测口令
         if (hasFocus)
-            getP().checkShibboleth();
+            getP().getInvitationCode();
     }
 
     @Override

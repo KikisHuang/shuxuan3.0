@@ -37,8 +37,7 @@ public class StoreCertificationContract {
         //退出登录
         void logout();
 
-        //检测口令
-        void checkShibboleth();
+        void getInvitationCode();
     }
 
     public interface StoreCertificationListener {

@@ -34,6 +34,7 @@ import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.OnContentListener;
@@ -190,7 +191,10 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         if (getP() != null) {
             if (!hidden) {
                 categoryId = 0;
-                getP().getNearbyStore(true, true, categoryId);
+                //填写了入驻信息才查询附近商家
+                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                    getP().getNearbyStore(true, true, categoryId);
             }
         }
     }
@@ -297,7 +301,12 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
         getP().checkPermissions(getRxPermissions(), true);
-        getP().getCategory();
+
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+
+        //成功入驻信息才查询分类
+        if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+            getP().getCategory();
 
     }
 

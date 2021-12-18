@@ -99,7 +99,15 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
                                     lat = aMapLocation.getLatitude();
                                     lon = aMapLocation.getLongitude();
-                                    getNearbyStore(true, search, 0);
+
+                                    UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                                    if (userBean.getRole() == 11) {
+                                        //商家端先监测是否填写入驻信息
+                                        if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                                            getNearbyStore(true, search, 0);
+                                    } else
+                                        getNearbyStore(true, search, 0);
+
                                 } else {
                                     getBV().onMessage(aMapLocation.getLocationDetail());
                                     getBV().onFailed();
@@ -223,7 +231,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     clientNetworkModel.inviteHelp(getContext(), code);
                 }
 
-            },1000);
+            }, 1000);
         }
 //        ShibbolethModel.checkShibboleth(code -> {
 //            if (clientNetworkModel!=null)

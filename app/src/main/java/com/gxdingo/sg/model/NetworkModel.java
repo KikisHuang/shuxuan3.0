@@ -55,6 +55,7 @@ import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
+import static com.gxdingo.sg.http.Api.INVITATIONCODE;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
@@ -70,6 +71,7 @@ import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
+import static com.gxdingo.sg.utils.StoreLocalConstant.INVITATION_CODE;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.oneDecimal;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -509,7 +511,7 @@ public class NetworkModel {
                     SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登录状态
 
                     if (!isUse) {
-                      //商家
+                        //商家
                         if (StoreActivity.getInstance() == null)
                             goToPage(context, StoreActivity.class, null);
                     } else {
@@ -1156,6 +1158,44 @@ public class NetworkModel {
 
                 EventBus.getDefault().post(COMPLAINT_SUCCEED);
 
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+
+    /**
+     * 获取或存放邀请码至服务器
+     *
+     * @param context
+     * @param invitationCode
+     */
+    public void getInvitationCode(Context context, String invitationCode, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        if (!isEmpty(invitationCode))
+            map.put(INVITATION_CODE, String.valueOf(invitationCode));
+
+        Observable<NormalBean> observable = HttpClient.post(INVITATIONCODE, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (!isEmpty(normalBean.invitationCode) && customResultListener != null)
+                    customResultListener.onResult("ok");
             }
         };
 
