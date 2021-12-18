@@ -245,5 +245,18 @@ public class FormatUtils {
         return content;
     }
 
+    /**
+     * 用DecimalFormat来格式化double结果，这样转换成字符串就不会采用科学计数法。
+     * @param d
+     * @return
+     */
+    public static String double2Str(Double d) {
+        if (d == null) {
+            return "";
+        }
+        DecimalFormat df = new DecimalFormat("#");
+        String s = df.format(d);
+        return (s);
+    }
 
 }

@@ -9,7 +9,7 @@ apply plugin: 'bugly'
 bugly {
     appId = "9c912b9d6d"
     appKey = "c7497641-b621-4366-9e6f-c0d00a3a0518"
-    debug = false
+    debug = true
 }
 
 android {
@@ -80,6 +80,7 @@ android {
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.config
+
         }
     }
     compileOptions {
@@ -154,7 +155,11 @@ dependencies {
     //自定义进度BGAProgressBar
     implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
 
+    //tab控件
+    implementation rootProject.ext.dependencies.magicindicator
+
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 
+    //九宫格控件
     api project(':ninegridview')
 }

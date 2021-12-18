@@ -44,6 +44,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.KeyboardUtils.showSoftInput;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -178,6 +179,14 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         keyword_et.setOnEditorActionListener(this);
         keyword_et.addTextChangedListener(textWatcher);
         history_lv.setOnLabelClickListener(this);
+
+        keyword_et.postDelayed(() -> {
+            keyword_et.setFocusable(true);
+            keyword_et.setFocusableInTouchMode(true);
+            keyword_et.requestFocus();
+            keyword_et.findFocus();
+            showSoftInput();
+        }, 100);
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

@@ -25,6 +25,9 @@ public class Constant {
     //是否debug环境
     public static boolean isDebug = false;
 
+    //聊天id
+    public static String CHAT_IDENTIFIER = "";
+
     /**
      * 分享类型
      */

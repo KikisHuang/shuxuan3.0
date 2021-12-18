@@ -6,11 +6,14 @@ import android.widget.TextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.biz.BankcardContract;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BankcardPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -40,8 +43,16 @@ public class UnbindBankcardActivity extends BaseMvpActivity<BankcardContract.Ban
     public void onClickViews(View v){
         switch (v.getId()){
             case R.id.btn_unbind:
-                if (mBankcardBean!=null)
-                    getP().delete(mBankcardBean.getId());
+                new XPopup.Builder(reference.get())
+                        .isDarkTheme(false)
+                        .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "提现银行卡解绑后一个月之内不能再次绑定该卡，确认解绑吗？", new MyConfirmListener() {
+                            @Override
+                            public void onConfirm() {
+                                if (mBankcardBean!=null)
+                                    getP().delete(mBankcardBean.getId());
+                            }
+                        })).show();
+
                 break;
         }
     }

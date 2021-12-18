@@ -74,6 +74,5 @@
             android:background="#ffffff"
             app:layout_constraintTop_toBottomOf="@+id/ll_main_function_menu" />
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

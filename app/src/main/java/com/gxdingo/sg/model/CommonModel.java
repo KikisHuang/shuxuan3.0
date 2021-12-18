@@ -1,7 +1,9 @@
 package com.gxdingo.sg.model;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.text.InputFilter;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 //import com.kikis.commnlibrary.bean.AddressBean;
+import com.blankj.utilcode.util.ToastUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
@@ -28,6 +31,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.blankj.utilcode.util.PermissionUtils.permissionGroup;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.isToday;
@@ -59,6 +63,8 @@ public class CommonModel {
      * @param rxPermissions
      */
     public void checkPermission(RxPermissions rxPermissions, String[] permissions, PermissionsListener listener) {
+
+
         rxPermissions.request(permissions)
                 .subscribe(aBoolean -> {
                     if (listener != null)
@@ -163,7 +169,16 @@ public class CommonModel {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phonenum));
-        context.startActivity(intent);
+        try {
+
+            if (context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+                context.startActivity(intent);
+            }
+        } catch (ActivityNotFoundException ex) {
+            LogUtils.e("Error starting phone dialer intent." + ex);
+            ToastUtils.showShort("对不起，我们找不到任何可以打电话的应用程序!  ");
+        }
+
     }
 
     /**

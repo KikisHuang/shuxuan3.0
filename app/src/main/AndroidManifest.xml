@@ -490,6 +490,24 @@
             android:screenOrientation="portrait" />
 
 
+
+        <!-- 微信登录回调页 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.pabei.farm"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+
+        <!--微信支付-->
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
     </application>
 
 </manifest>

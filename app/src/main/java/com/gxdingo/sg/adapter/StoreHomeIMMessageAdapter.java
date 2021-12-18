@@ -3,12 +3,14 @@ package com.gxdingo.sg.adapter;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.utils.DateUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.utils.TextViewUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
@@ -20,6 +22,8 @@ import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.IsToday;
 import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
@@ -29,8 +33,11 @@ import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
  */
 public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.SubscribesMessage, BaseViewHolder> {
 
+    private boolean isUser = false;
+
     public StoreHomeIMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
+        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
     }
 
     @Override
@@ -40,6 +47,24 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView tvNickname = baseViewHolder.findView(R.id.tv_nickname);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
+        TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
+
+        if (subscribesMessage.getSendUserRole() == 10) {
+            //用户
+            store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_green_round8);
+            store_tab_tv.setText("客户");
+        } else if (subscribesMessage.getSendUserRole() == 11) {
+            //商家
+            store_tab_tv.setTextColor(getc(R.color.yellow_tag));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_yellow_round8);
+            store_tab_tv.setText("商家");
+        } else if (subscribesMessage.getSendUserRole() == 12) {
+            //商家
+            store_tab_tv.setTextColor(getc(R.color.blue_text));
+            store_tab_tv.setBackgroundResource(R.drawable.module_border_blue_round8);
+            store_tab_tv.setText("客服");
+        }
 
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(getRequestOptions()).into(nivAvatar);
 

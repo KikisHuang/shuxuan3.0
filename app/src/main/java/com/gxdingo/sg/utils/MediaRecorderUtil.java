@@ -2,6 +2,7 @@ package com.gxdingo.sg.utils;
 
 import android.media.MediaRecorder;
 
+import com.blankj.utilcode.util.CacheMemoryUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.biz.AudioModelListener;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
@@ -21,13 +22,15 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
 /**
  * @author: Kikis
  * @date: 2021/5/8
- * @page:
+ * @page:音频录制类
  */
 public class MediaRecorderUtil {
 
     public static MediaRecorder recorder;
 
     private static Disposable mDisposable;
+
+    private static String AUDIO_CACHE = "audio_cache_key";
 
     private static int mCountDownTime;
 
@@ -117,10 +120,6 @@ public class MediaRecorderUtil {
     public static void stopRecordering() {
         dispose();
         if (recorder != null) {
-
-            recorder.setOnErrorListener(null);
-            recorder.setOnInfoListener(null);
-            recorder.setPreviewDisplay(null);
             try {
                 recorder.stop();
                 recorder.release();

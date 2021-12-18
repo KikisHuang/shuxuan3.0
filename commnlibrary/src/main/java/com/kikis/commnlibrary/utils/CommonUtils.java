@@ -84,10 +84,10 @@ public class CommonUtils {
          * 创建路径的时候一定要用[/],不能使用[\],但是创建文件夹加文件的时候可以使用[\].
          * [/]符号是Linux系统路径分隔符,而[\]是windows系统路径分隔符 Android内核是Linux.
          */
-        if (isHasSdcard())// 判断是否插入SD卡
+ /*       if (isHasSdcard())// 判断是否插入SD卡
             storePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "shugou"; // 保存到SD卡路径下
-        else
-            storePath = KikisUitls.getContext().getFilesDir().getAbsolutePath() + File.separator + "shugou"; // 保存到app的包名路径下
+        else*/
+            storePath = KikisUitls.getContext().getExternalCacheDir().getAbsolutePath() + File.separator + "shugou"; // 保存到app的包名路径下
 
         File appDir = new File(storePath);
         if (!appDir.exists()) {

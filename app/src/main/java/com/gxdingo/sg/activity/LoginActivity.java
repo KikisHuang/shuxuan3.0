@@ -69,8 +69,12 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @BindView(R.id.role_tv)
     public TextView role_tv;
 
-    @BindView(R.id.switch_login_bt)
-    public TextView switch_login_bt;
+
+    @BindView(R.id.user_login_tv)
+    public TextView user_login_tv;
+
+    @BindView(R.id.store_login_tv)
+    public TextView store_login_tv;
 
     @BindView(R.id.agreement_tv)
     public TextView agreement_tv;
@@ -168,21 +172,26 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 //        getP().switchPanel(false,true);
         isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
-        switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
+        setLoginWayState();
         setTextHighLightWithClick(agreement_tv.getText().toString(), new String[]{"《服务协议》", "《隐私政策》"});
     }
 
     @Override
     protected void initData() {
 
+
     }
 
-    @OnClick({R.id.switch_login_bt, R.id.alipay_login
+    @OnClick({R.id.user_login_tv, R.id.store_login_tv, R.id.alipay_login
             , R.id.wechat_login, R.id.send_verification_code_bt, R.id.login_bt})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.switch_login_bt:
-                isUserId = !isUserId;
+            case R.id.user_login_tv:
+                isUserId = true;
+                getP().switchUrl(isUserId);
+                break;
+            case R.id.store_login_tv:
+                isUserId = false;
                 getP().switchUrl(isUserId);
                 break;
             case R.id.alipay_login:
@@ -275,7 +284,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     public void showIdButton() {
         role_tv.setText(isUserId ? "树选客户端" : "树选商家端");
-        switch_login_bt.setText(isUserId ? gets(R.string.store_id_login) : gets(R.string.user_id_login));
+        setLoginWayState();
     }
 
     /**
@@ -302,9 +311,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             while (m.find()) {
 
                 int start = m.start();
-
                 int end = m.end();
-
                 int finalI = i;
 
                 s.setSpan(new PartTextClickSpan(getc(R.color.deepskyblue), false, new View.OnClickListener() {
@@ -319,6 +326,23 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             }
         }
         agreement_tv.setText(s);
+
+    }
+
+    private void setLoginWayState() {
+        if (isUserId) {
+            store_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            store_login_tv.setTextColor(getc(R.color.white));
+
+            user_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            user_login_tv.setTextColor(getc(R.color.green_dominant_tone));
+        } else {
+            user_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            user_login_tv.setTextColor(getc(R.color.white));
+
+            store_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            store_login_tv.setTextColor(getc(R.color.green_dominant_tone));
+        }
 
     }
 }

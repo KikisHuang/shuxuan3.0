@@ -25,9 +25,12 @@ import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.IOException;
 
 import static com.gxdingo.sg.biz.StoreMainContract.StoreMainListener;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.kikis.commnlibrary.utils.CommonUtils.getTAG;
 import static com.kikis.commnlibrary.utils.CommonUtils.isNotificationEnabled;
 
@@ -84,6 +87,10 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
     public void checkTab(int tab) {
 
         if (model != null) {
+
+            if (tab == 3 && model.getOldTab() == 3)
+                EventBus.getDefault().post(BACK_TOP_BUSINESS_DISTRICT);
+
             if (isViewAttached() && tab != model.getOldTab())
                 getV().onSeleted(tab, model.getOldTab());
 

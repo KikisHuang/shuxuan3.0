@@ -185,9 +185,9 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
 
         switch (pos) {
             case 0:
-                if (isAvilible(getContext(), PN_GAODE_MAP)) {
+                if (isAvilible(getContext(), PN_GAODE_MAP))
                     goToGaoDeMap(getContext(), mStoreDetail.getAddress(), mStoreDetail.getLongitude(), mStoreDetail.getLatitude());
-                } else
+                 else
                     getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
                 break;
             case 1:
@@ -195,12 +195,11 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                     goToBaiduActivity(getContext(), mStoreDetail.getAddress(), mStoreDetail.getLongitude(), mStoreDetail.getLatitude());
                 else
                     getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
-
                 break;
             case 2:
-                if (isAvilible(getContext(), PN_TENCENT_MAP)) {
+                if (isAvilible(getContext(), PN_TENCENT_MAP))
                     goToTencentMap(getContext(), mStoreDetail.getAddress(), mStoreDetail.getLongitude(), mStoreDetail.getLatitude());
-                } else
+                 else
                     getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
                 break;
 

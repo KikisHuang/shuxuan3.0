@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMEmotionItemAdapter;
 import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullGridLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
@@ -39,8 +40,8 @@ public class IMEmotionItemFragment extends Fragment {
     ArrayList<EmotionData> mEmotionDatas = new ArrayList<>();
     IMEmotionItemAdapter mIMEmotionItemAdapter;
 
-    public IMEmotionItemFragment(LinkedHashMap<String, Integer> emotionMap) {
-        mEmotionMap = emotionMap;
+
+    public IMEmotionItemFragment() {
     }
 
     @Override
@@ -53,6 +54,9 @@ public class IMEmotionItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null)
+            mEmotionMap = (LinkedHashMap<String, Integer>) args.getSerializable(Constant.SERIALIZABLE + 0);
     }
 
     @Override

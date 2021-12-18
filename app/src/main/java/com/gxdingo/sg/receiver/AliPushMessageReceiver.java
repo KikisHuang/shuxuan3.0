@@ -51,18 +51,17 @@ public class AliPushMessageReceiver extends MessageReceiver {
 
         String orderId = extraMap.get("orderId");
 
-
 /*
         if (!isEmpty(orderId))
             EventBus.getDefault().post(new OrderRefreshBean(Long.valueOf(orderId)));
 */
 
-        //非锁屏状态
+    /*    //非锁屏状态
         if (!isScreenLock()) {
             //应用不是后台状态，不显示通知栏
             if (!LocalConstant.isBackground)
                 PushServiceFactory.getCloudPushService().clearNotifications();
-        }
+        }*/
 
 
     }

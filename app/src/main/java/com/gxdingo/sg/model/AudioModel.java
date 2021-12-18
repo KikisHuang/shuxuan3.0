@@ -1,8 +1,10 @@
 package com.gxdingo.sg.model;
 
 import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
@@ -17,7 +19,9 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.AudioModelListener;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.MediaUtils;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.trello.rxlifecycle3.LifecycleProvider;
@@ -31,10 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 import static android.text.TextUtils.isEmpty;
+import static anetwork.channel.monitor.Monitor.stop;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.blankj.utilcode.util.FileUtils.deleteAllInDir;
@@ -42,6 +45,11 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.AAC;
 import static com.gxdingo.sg.utils.MediaRecorderUtil.startRecordering;
 import static com.gxdingo.sg.utils.MediaRecorderUtil.stopRecordering;
+import static com.gxdingo.sg.utils.MediaUtils.closeMedia;
+import static com.gxdingo.sg.utils.MediaUtils.createMedia;
+import static com.gxdingo.sg.utils.MediaUtils.isplay;
+import static com.gxdingo.sg.utils.MediaUtils.pause;
+import static com.gxdingo.sg.utils.MediaUtils.play;
 import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.PermissionUtils.TAG;
@@ -59,7 +67,7 @@ public class AudioModel {
     private String mRecordPath = "";
     //当前播放路径
     private String mPlayerPath = "";
-
+    //是否录音中
     private boolean mIsRecording = false;
 
     private HandlerThread mHanderThread;
@@ -86,48 +94,44 @@ public class AudioModel {
     /**
      * 音频播放
      *
+     * @param context
      * @param path
      */
-    public void audioPlayer(String path, AudioModelListener audioModelListener) {
-
-
+    public void audioPlayer(Context context, String path, AudioModelListener audioModelListener) {
 
         //如果再播放中，就取消播放
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null && isplay(mediaPlayer)) {
             destroy();
             //相同的播放路径，取消播放
             if (mPlayerPath.equals(path))
                 return;
         }
 
-        mediaPlayer = new MediaPlayer();
-
-        mPlayerPath = path;
         try {
-
             if (isEmpty(path)) {
                 if (audioModelListener != null)
                     audioModelListener.onAudioMessage(gets(R.string.not_get_voice_player_url));
                 return;
             }
 
-            mediaPlayer.setDataSource(path);//指定音频文件路径
-            mediaPlayer.setLooping(false);//循环播放
-//            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.prepare();//初始化播放器MediaPlayer
-//            mediaPlayer.start();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mediaPlayer.start();
-                }
-            });
-            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
+            mediaPlayer = createMedia(context, path);
+
+            if (mediaPlayer != null)
+                MediaUtils.stop(mediaPlayer);
+
+            mPlayerPath = path;
+
+            MediaUtils.prepareMedia(mediaPlayer, mp -> {
+                play(mediaPlayer);
+            }, (mp, what, extra) -> {
                 destroy();
                 return false;
+            }, mp -> {
+                destroy()
+                ;
             });
 
-            mediaPlayer.setOnCompletionListener(mp -> destroy());
+//            mediaPlayer.setLooping(false);//循环播放
 
         } catch (Exception e) {
             if (audioModelListener != null) {
@@ -144,7 +148,7 @@ public class AudioModel {
         if (mediaPlayer == null)
             return false;
 
-        return mediaPlayer.isPlaying();
+        return isplay(mediaPlayer);
     }
 
     /**
@@ -152,8 +156,8 @@ public class AudioModel {
      */
     public void audioPause() {
         //如果在播放中，立刻暂停。
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+        if (mediaPlayer != null && isplay(mediaPlayer)) {
+            pause(mediaPlayer);
             mediaPlayer.reset();
             stopRecordering();
         }
@@ -181,15 +185,13 @@ public class AudioModel {
      * 音频销毁
      */
     public void destroy() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
-        }
+        closeMedia(mediaPlayer);
+        mediaPlayer = null;
     }
 
     public void delAudioFile() {
-        LogUtils.w("删除音频文件夹内的音频文件  === " + deleteAllInDir(getPath() + File.separator + "audio"));
+
+        BaseLogUtils.w("删除音频文件夹内的音频文件  === " + deleteAllInDir(getPath() + File.separator + "audio"));
     }
 
 

@@ -156,6 +156,7 @@ public class SupportBankActivity extends BaseMvpActivity<BankcardContract.Bankca
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         BankcardBean item = (BankcardBean) adapter.getItem(position);
+        item.setType("10");
         sendEvent(item);
         finish();
     }

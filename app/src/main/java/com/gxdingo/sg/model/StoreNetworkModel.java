@@ -423,9 +423,10 @@ public class StoreNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
-
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
@@ -473,6 +474,7 @@ public class StoreNetworkModel {
 
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
                 }
             }
 

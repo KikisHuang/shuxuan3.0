@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.MyFragmentPagerAdapter;
 import com.gxdingo.sg.utils.EmotionsUtils;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.page_indicator.CirclePageIndicator;
 
 import java.util.LinkedHashMap;
@@ -25,11 +26,9 @@ import butterknife.ButterKnife;
 /**
  * IM表情Fragment
  *
- * @author  JM
+ * @author JM
  */
 public class IMEmotionFragment extends Fragment {
-    Activity mActivity;
-    Context mContext;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.indicator)
@@ -37,12 +36,10 @@ public class IMEmotionFragment extends Fragment {
     MyFragmentPagerAdapter adapter;
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-        mActivity = (Activity) mContext;
+    public IMEmotionFragment() {
+        super();
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,19 +49,29 @@ public class IMEmotionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.module_fragment_im_emotion, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.module_fragment_im_emotion, null);
         ButterKnife.bind(this, view);
 
         adapter = new MyFragmentPagerAdapter(getChildFragmentManager());
         //表情Item一
         LinkedHashMap<String, Integer> emotion1 = getEmotionGroupByIndex(0, 30);
         emotion1.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
-        IMEmotionItemFragment mMessageFragment1 = new IMEmotionItemFragment(emotion1);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constant.SERIALIZABLE + 0, emotion1);
+
+        IMEmotionItemFragment mMessageFragment1 = new IMEmotionItemFragment();
+        mMessageFragment1.setArguments(bundle);
 
         //表情Item二
         LinkedHashMap<String, Integer> emotion2 = getEmotionGroupByIndex(31, EmotionsUtils.getCount() - 1);
         emotion2.put("[Backspace]", R.drawable.compose_emotion_delete);//在最后追加删除退格键
-        IMEmotionItemFragment mMessageFragment2 = new IMEmotionItemFragment(emotion2);
+
+        Bundle bundle2 = new Bundle();
+        bundle2.putSerializable(Constant.SERIALIZABLE + 0, emotion2);
+
+        IMEmotionItemFragment mMessageFragment2 = new IMEmotionItemFragment();
+        mMessageFragment2.setArguments(bundle2);
 
 
         adapter.addFragment(mMessageFragment1, "");
