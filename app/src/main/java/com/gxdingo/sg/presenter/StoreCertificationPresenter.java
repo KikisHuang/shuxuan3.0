@@ -14,6 +14,7 @@ import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.gxdingo.sg.utils.MessageCountUtils;
@@ -51,11 +52,14 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     private CommonModel mCommonModel;
 
     private StoreNetworkModel storeNetworkModel;
+    //邀请口令
+    private String invitationCode;
 
     public StoreCertificationPresenter() {
         networkModel = new NetworkModel(this);
         mCommonModel = new CommonModel();
         storeNetworkModel = new StoreNetworkModel(this);
+
     }
 
     @Override
@@ -252,9 +256,9 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     }
 
     @Override
-    public void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory, String regionPath, String address, String businessLicence, double longitude, double latitude) {
+    public void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory, String regionPath, String address, String businessLicence, String storeLicence, double longitude, double latitude) {
         if (storeNetworkModel != null) {
-            storeNetworkModel.settle(context, avatar, name, storeCategory, regionPath, address, businessLicence, longitude, latitude);
+            storeNetworkModel.settle(context, avatar, name, storeCategory, regionPath, address, businessLicence, storeLicence, invitationCode, longitude, latitude);
         }
     }
 
@@ -292,5 +296,20 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     public void logout() {
         if (networkModel != null)
             networkModel.logOut(getContext());
+    }
+
+    /**
+     * 检测口令方法
+     */
+    @Override
+    public void checkShibboleth() {
+
+        ShibbolethModel.checkShibboleth((type, code) -> {
+            //如果是被邀请过来的商家，显示布局
+            if (type == 30 && isViewAttached()) {
+                invitationCode = code;
+                getV().showActivityTypeLayout(type);
+            }
+        },50);
     }
 }

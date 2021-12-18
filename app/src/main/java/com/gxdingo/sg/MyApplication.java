@@ -361,6 +361,7 @@ public class MyApplication extends Application {
         if (!isDebug) {
             RxJavaPlugins.setErrorHandler(throwable -> {
                 BaseLogUtils.e("RxJava Error === " + throwable);
+                //手动上传异常信息到bugly
                 CrashReport.postCatchedException(throwable);
             });
         }

@@ -69,56 +69,96 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
 
     @BindView(R.id.stv_avatar)
-    SuperTextView stvAvatar;
+    public SuperTextView stvAvatar;
+
     @BindView(R.id.et_store_name_rule)
-    TextView etStoreNameRule;
+    public TextView etStoreNameRule;
+
     @BindView(R.id.et_store_name)
-    RegexEditText etStoreName;
+    public RegexEditText etStoreName;
+
     @BindView(R.id.t_store_name_layout)
-    LinearLayout tStoreNameLayout;
+    public LinearLayout tStoreNameLayout;
+
     @BindView(R.id.stv_business_scope)
-    SuperTextView stvBusinessScope;
+    public SuperTextView stvBusinessScope;
+
     @BindView(R.id.stv_select_address)
-    SuperTextView stvSelectAddress;
+    public SuperTextView stvSelectAddress;
+
     @BindView(R.id.et_details_address)
-    RegexEditText etDetailsAddress;
+    public RegexEditText etDetailsAddress;
+
     @BindView(R.id.ll_details_address_layout)
-    LinearLayout llDetailsAddressLayout;
+    public LinearLayout llDetailsAddressLayout;
+
     @BindView(R.id.tv_upload_business_license)
-    TextView tvUploadBusinessLicense;
+    public TextView tvUploadBusinessLicense;
+
+
     @BindView(R.id.rl_business_license_layout)
-    RelativeLayout rlBusinessLicenseLayout;
+    public RelativeLayout rlBusinessLicenseLayout;
+
     @BindView(R.id.ll_business_license_layout)
-    RelativeLayout llBusinessLicenseLayout;
+    public RelativeLayout llBusinessLicenseLayout;
+
+    @BindView(R.id.branch_information_layout)
+    public RelativeLayout branch_information_layout;
+
+    @BindView(R.id.upload_branch_information_license)
+    public TextView upload_branch_information_license;
+
+    @BindView(R.id.branch_information_license_layout)
+    public RelativeLayout branch_information_license_layout;
+
+
+    @BindView(R.id.iv_branch_information_license)
+    public ImageView iv_branch_information_license;
+
+    @BindView(R.id.iv_del_branch_information_license)
+    public ImageView iv_del_branch_information_license;
+
     @BindView(R.id.cb_agreement)
-    CheckBox cbAgreement;
+    public CheckBox cbAgreement;
+
     @BindView(R.id.tv_have_read_agreement)
-    TextView tvHaveReadAgreement;
+    public TextView tvHaveReadAgreement;
+
     @BindView(R.id.btn_submit)
-    Button btnSubmit;
+    public Button btnSubmit;
+
     @BindView(R.id.iv_business_license)
-    ImageView ivBusinessLicense;
+    public ImageView ivBusinessLicense;
+
     @BindView(R.id.iv_del_business_license)
-    ImageView ivDelBusinessLicense;
+    public ImageView ivDelBusinessLicense;
+
     @BindView(R.id.title_layout)
-    TemplateTitle titleLayout;
+    public TemplateTitle titleLayout;
+
     @BindView(R.id.tv_right_button)
-    TextView tvRightButton;
+    public TextView tvRightButton;
+
     @BindView(R.id.business_layout)
-    ConstraintLayout businessLayout;
+    public ConstraintLayout businessLayout;
+
     @BindView(R.id.iv_result_status)
-    ImageView ivResultStatus;
+    public ImageView ivResultStatus;
+
     @BindView(R.id.tv_status)
-    TextView tvStatus;
+    public TextView tvStatus;
+
     @BindView(R.id.ll_certification_result_layout)
-    LinearLayout llCertificationResultLayout;
+    public LinearLayout llCertificationResultLayout;
+
     @BindView(R.id.btn_result_botton)
-    Button btnResultBotton;
+    public Button btnResultBotton;
 
 
     private int mType;//1上传头像，2上传营业执照
     private String mAvatar;//头像
     private String mBusinessLicense;//营业执照
+    private String mBranchInformationLicense;//门头照
     private BusinessScopeEvent mBusinessScope;//经营范围事件
     private PoiItem mPoiItem;//地图POI信息
 
@@ -201,6 +241,15 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     protected void initData() {
         //刷新登录信息
         getP().getLoginInfoStatus();
+
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        //监测口令
+        if (hasFocus)
+            getP().checkShibboleth();
     }
 
     @Override
@@ -229,7 +278,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 .show();
     }
 
-    @OnClick({R.id.et_store_name_rule, R.id.title_back, R.id.stv_avatar, R.id.stv_business_scope, R.id.stv_select_address, R.id.tv_upload_business_license, R.id.iv_del_business_license, R.id.btn_submit, R.id.btn_result_botton})
+    @OnClick({R.id.upload_branch_information_license, R.id.iv_del_branch_information_license, R.id.et_store_name_rule, R.id.title_back, R.id.stv_avatar, R.id.stv_business_scope, R.id.stv_select_address, R.id.tv_upload_business_license, R.id.iv_del_business_license, R.id.btn_submit, R.id.btn_result_botton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back://返回
@@ -251,21 +300,19 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
             case R.id.stv_select_address://选择店铺地址
                 goToPage(this, SelectAddressActivity.class, null);
                 break;
+            case R.id.upload_branch_information_license://门头照
+                mType = 3;
+                uploadImage(false);
+                break;
             case R.id.tv_upload_business_license://营业执照
                 mType = 2;
                 uploadImage(false);
                 break;
+            case R.id.iv_del_branch_information_license:
+                shwoDelPhotoImg(0);
+                break;
             case R.id.iv_del_business_license:
-                new XPopup.Builder(reference.get())
-                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                        .isDarkTheme(false)
-                        .dismissOnTouchOutside(false)
-                        .asCustom(new SgConfirmPopupView(reference.get(), gets(R.string.del_business_license_image), "", () -> {
-                            mBusinessLicense = "";
-                            rlBusinessLicenseLayout.setVisibility(View.GONE);
-                            tvUploadBusinessLicense.setVisibility(View.VISIBLE);
-                        }))
-                        .show();
+                shwoDelPhotoImg(1);
                 break;
             case R.id.btn_submit://提交审核
                 if (isEmpty(mAvatar)) {
@@ -290,7 +337,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                     return;
                 }
                 getP().submitCertification(this, mAvatar, etStoreName.getText().toString()
-                        , mBusinessScope.data, mPoiItem.getAdCode(), etDetailsAddress.getText().toString(), mBusinessLicense
+                        , mBusinessScope.data, mPoiItem.getAdCode(), etDetailsAddress.getText().toString(), mBusinessLicense, mBranchInformationLicense
                         , mPoiItem.getLatLonPoint().getLongitude(), mPoiItem.getLatLonPoint().getLatitude());
                 break;
             case R.id.btn_result_botton:
@@ -298,6 +345,28 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 getP().getLoginInfoStatus();
                 break;
         }
+    }
+
+    private void shwoDelPhotoImg(int type) {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .dismissOnTouchOutside(false)
+                .asCustom(new SgConfirmPopupView(reference.get(), type == 0 ? gets(R.string.del_store_license_image) : gets(R.string.del_business_license_image), "", () -> {
+
+                    if (type == 0) {
+                        mBranchInformationLicense = "";
+                        branch_information_license_layout.setVisibility(View.GONE);
+                        upload_branch_information_license.setVisibility(View.VISIBLE);
+
+                    } else {
+                        mBusinessLicense = "";
+                        rlBusinessLicenseLayout.setVisibility(View.GONE);
+                        tvUploadBusinessLicense.setVisibility(View.VISIBLE);
+                    }
+
+                }))
+                .show();
     }
 
     @Override
@@ -392,20 +461,24 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
      */
     @Override
     public void uploadImage(String url) {
+        if (isEmpty(url))
+            return;
         switch (mType) {
             case 1://头像图片
-                if (!isEmpty(url)) {
-                    mAvatar = url;
-                    Glide.with(reference.get()).load(isEmpty(url) ? R.drawable.module_svg_user_default_avatar : url).apply(GlideUtils.getInstance().getCircleCrop()).into(stvAvatar.getLeftIconIV());
-                }
+                mAvatar = url;
+                Glide.with(reference.get()).load(isEmpty(url) ? R.drawable.module_svg_user_default_avatar : url).apply(GlideUtils.getInstance().getCircleCrop()).into(stvAvatar.getLeftIconIV());
                 break;
             case 2://营业执照图片
-                if (!isEmpty(url)) {
-                    mBusinessLicense = url;
-                    Glide.with(reference.get()).load(url).into(ivBusinessLicense);
-                    rlBusinessLicenseLayout.setVisibility(View.VISIBLE);
-                    tvUploadBusinessLicense.setVisibility(View.GONE);
-                }
+                mBusinessLicense = url;
+                Glide.with(reference.get()).load(url).into(ivBusinessLicense);
+                rlBusinessLicenseLayout.setVisibility(View.VISIBLE);
+                tvUploadBusinessLicense.setVisibility(View.GONE);
+                break;
+            case 3://店铺门头照
+                mBranchInformationLicense = url;
+                Glide.with(reference.get()).load(url).into(iv_branch_information_license);
+                branch_information_license_layout.setVisibility(View.VISIBLE);
+                upload_branch_information_license.setVisibility(View.GONE);
                 break;
         }
     }
@@ -458,5 +531,17 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         titleLayout.setTitleText("认证信息");
         businessLayout.setVisibility(View.VISIBLE);
         llCertificationResultLayout.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示活动类型布局
+     *
+     * @param type
+     */
+    @Override
+    public void showActivityTypeLayout(int type) {
+
+        branch_information_layout.setVisibility(View.VISIBLE);
+
     }
 }

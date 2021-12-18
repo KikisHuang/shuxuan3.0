@@ -7,6 +7,7 @@ import com.gxdingo.sg.bean.WebBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tencent.smtt.sdk.ValueCallback;
+import com.tencent.smtt.sdk.WebView;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class WebContract {
         void openPhoto(ValueCallback<Uri[]> valueCallback, int mode);
 
         void completeTask();
+
+        void clearCache();
     }
 
     public interface WebListener {

@@ -184,6 +184,11 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     }
 
     @Override
+    public void showActivityTypeLayout(int type) {
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
         List<StoreBusinessScopeBean.ListBean> tempData = new ArrayList<>();

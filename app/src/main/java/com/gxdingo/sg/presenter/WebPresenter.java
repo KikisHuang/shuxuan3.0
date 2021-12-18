@@ -17,6 +17,7 @@ import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.WebContract;
 import com.gxdingo.sg.model.ClientNetworkModel;
+import com.gxdingo.sg.model.WebModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.gxdingo.sg.utils.WechatUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -29,6 +30,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.tencent.smtt.sdk.ValueCallback;
+import com.tencent.smtt.sdk.WebView;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.List;
@@ -50,12 +52,12 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
     private static final String TAG = getTAG(WebPresenter.class);
 
     private ClientNetworkModel mClientNetworkModel;
-
+    private WebModel mWebModel;
 
     public WebPresenter() {
 
         mClientNetworkModel = new ClientNetworkModel(this);
-
+        mWebModel = new WebModel();
     }
 
 
@@ -255,8 +257,18 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
 
     @Override
     public void completeTask() {
-        if (mClientNetworkModel!=null)
-            mClientNetworkModel.completeTask(getContext(),30);
+        if (mClientNetworkModel != null)
+            mClientNetworkModel.completeTask(getContext(), 30);
+    }
+
+    /**
+     * 清除缓存
+     */
+    @Override
+    public void clearCache() {
+        if (mWebModel != null && isViewAttached())
+            mWebModel.clearCache(getContext());
+
     }
 }
 

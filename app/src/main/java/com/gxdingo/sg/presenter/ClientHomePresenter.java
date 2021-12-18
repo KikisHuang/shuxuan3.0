@@ -215,12 +215,15 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void checkHelpCode() {
-        if (UserInfoUtils.getInstance().isLogin()){
+        if (UserInfoUtils.getInstance().isLogin()) {
             ShibbolethModel.checkShibboleth((type, code) -> {
-                helpCode = code;
-                clientNetworkModel.inviteHelp(getContext(), code);
+                //30口令类型为邀请商家活动
+                if (type != 30) {
+                    helpCode = code;
+                    clientNetworkModel.inviteHelp(getContext(), code);
+                }
 
-            });
+            },1000);
         }
 //        ShibbolethModel.checkShibboleth(code -> {
 //            if (clientNetworkModel!=null)

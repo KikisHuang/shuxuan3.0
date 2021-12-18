@@ -314,8 +314,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (webView != null) {
+
             callJsBye();
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
             webView.clearCache(true);
@@ -326,6 +326,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             webView.clearView();
             webView.destroy();
         }
+        getP().clearCache();
+        super.onDestroy();
     }
 
     /**
@@ -459,7 +461,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @JavascriptInterface
     public void callJsBye() {
-        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.e("onReceiveValue ==== " + s));
+        webView.evaluateJavascript("javascript:byeShuGou()", s -> LogUtils.i("onReceiveValue ==== " + s));
     }
 
 }
