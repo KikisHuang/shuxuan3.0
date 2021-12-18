@@ -101,15 +101,15 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof ArticleImage){
+        if (object instanceof ArticleImage) {
             ArticleImage articleImage = (ArticleImage) object;
             Glide.with(this).load(articleImage.getImage()).into(settle_in_iv);
         }
     }
 
-    @OnClick({R.id.btn_become_store,R.id.btn_invitation})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.btn_become_store, R.id.btn_invitation})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.btn_become_store:
                 if (UserInfoUtils.getInstance().isLogin())
                     getP().convertStore();
@@ -117,6 +117,7 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
                     getP().oauth(this);
                 break;
             case R.id.btn_invitation:
+                //todo 修改邀请商家的分享功能
                 Intent textIntent = new Intent(Intent.ACTION_SEND);
                 textIntent.setType("text/plain");
                 textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");

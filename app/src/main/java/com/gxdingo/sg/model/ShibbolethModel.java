@@ -46,14 +46,17 @@ public class ShibbolethModel {
                 //是否口令
                 if (isShuXiangShibboleth(copyContent)) {
 
-
                     //获取活动类型
                     int mType = getAcType(numberDecode(copyContent));
 
-                    if (listener!=null)
-                        listener.onCode(mType,copyContent);
+                    if (mType != 30) {
+                        if (listener != null)
+                            listener.onCode(mType, copyContent);
+                    }
+
 
                     String url = "";
+
 
         /*            String tempUrl = "";
 
