@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 
 import com.blankj.utilcode.util.ClipboardUtils;
 import com.gxdingo.sg.activity.StoreActivity;
@@ -303,9 +304,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
      */
     @Override
     public void getInvitationCode() {
-
         String copyContent = ClipboardUtils.getText().toString();
-
         //判断剪贴板是否有这个内容
         if (!isEmpty(copyContent)) {
             ShibbolethModel.checkShibboleth((type, code) -> {

@@ -164,6 +164,8 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     private boolean isUser = false;
 
+    private boolean isCheck = false;
+
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
         return new StoreCertificationPresenter();
@@ -243,12 +245,16 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         getP().getLoginInfoStatus();
 
     }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         //监测口令
-        if (hasFocus)
+        if (hasFocus && !isCheck) {
+            isCheck = true;
             getP().getInvitationCode();
+        }
+
     }
 
     @Override
