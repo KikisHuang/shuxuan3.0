@@ -1682,7 +1682,7 @@ public class ClientNetworkModel {
             netWorkListener.onStarts();
         }
 
-//        map.put(Constant.CODE, code);
+        //map.put(Constant.CODE, code);
         map.put("completeType", String.valueOf(completeType));
 
         Observable<NormalBean> observable = HttpClient.post(TASK_COMPLETE, map)
