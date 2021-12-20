@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -49,6 +50,8 @@ public class ClientHomeContract {
         void checkHelpCode();
 
         void help();
+
+        void getShareUrl();
     }
 
     public interface ClientHomeListener{
@@ -64,5 +67,7 @@ public class ClientHomeContract {
         void onHistoryResult(List<String> searchHistories);
 
         void onHelpDataResult(HelpBean helpBean);
+
+        void onShareUrlResult(ShareBean shareBean);
     }
 }

@@ -33,8 +33,10 @@ import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.OnContentListener;
@@ -278,7 +280,9 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 this.location = true;
                 getP().getNearbyStore((AddressBean) object, categoryId);
             }
-
+        } else if (object instanceof changeLocationEvent) {
+            changeLocationEvent event = (changeLocationEvent) object;
+            location_tv.setText(event.name);
         }
     }
 
@@ -452,6 +456,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                     }
                 }))
                 .show();
+    }
+
+    @Override
+    public void onShareUrlResult(ShareBean shareBean) {
+
     }
 
     @Override

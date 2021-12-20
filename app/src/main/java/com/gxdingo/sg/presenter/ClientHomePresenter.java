@@ -9,6 +9,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.model.NetworkModel;
@@ -95,15 +96,19 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
                                 if (aMapLocation.getErrorCode() == 0) {
 
-                                    getV().setDistrict(aMapLocation.getDistrict());
+                                    getV().setDistrict(aMapLocation.getPoiName());
 
                                     lat = aMapLocation.getLatitude();
                                     lon = aMapLocation.getLongitude();
 
-                                    UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-                                    if (userBean.getRole() == 11) {
-                                        //商家端先监测是否填写入驻信息
-                                        if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+
+                                    if (UserInfoUtils.getInstance().isLogin()) {
+                                        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                                        if (userBean.getRole() == 11) {
+                                            //商家端先监测是否填写入驻信息
+                                            if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                                                getNearbyStore(true, search, 0);
+                                        } else
                                             getNearbyStore(true, search, 0);
                                     } else
                                         getNearbyStore(true, search, 0);
@@ -244,6 +249,18 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void help() {
         if (clientNetworkModel != null)
             clientNetworkModel.helpAfter(getContext(), helpCode);
+    }
+
+    /**
+     * 获取分享连接
+     */
+    @Override
+    public void getShareUrl() {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getShareUrl(getContext(), o -> {
+                if (o instanceof ShareBean)
+                    getV().onShareUrlResult((ShareBean) o);
+            });
     }
 
     @Override

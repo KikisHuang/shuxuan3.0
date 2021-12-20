@@ -282,5 +282,10 @@ public class ClientApi {
     /**
      * 完成用户大转盘抽奖任务
      */
-    public static final String TASK_COMPLETE = HIERARCHY + "activity/task/completed";
+    public static final String TASK_COMPLETE = HIERARCHY + "activity/inviteSeller";
+
+    /**
+     * 邀请信息
+     */
+    public static final String INVITESELLER = HIERARCHY + "activity/inviteSeller";
 }

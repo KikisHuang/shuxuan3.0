@@ -95,6 +95,8 @@ public class LocalConstant {
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
 
+    public static  String locationSelected = "";
+
     public static final String REASON = "reason";
 
     public static final String STATUS = "status";

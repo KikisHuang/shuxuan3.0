@@ -23,6 +23,7 @@ import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.OnContentListener;
@@ -289,6 +290,11 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public void onHelpDataResult(HelpBean helpBean) {
+
+    }
+
+    @Override
+    public void onShareUrlResult(ShareBean shareBean) {
 
     }
 

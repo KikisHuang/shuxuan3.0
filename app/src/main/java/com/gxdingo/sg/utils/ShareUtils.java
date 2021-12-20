@@ -37,12 +37,14 @@ public class ShareUtils {
             web.setThumb(new UMImage(context, (Bitmap) thumb));  //缩略图
         }
         web.setDescription(description);//描述
-        new ShareAction((Activity) context)
+        ShareAction shareAction = new ShareAction((Activity) context);
+
 //                .setDisplayList(type)//传入平台
-                .setPlatform(type[0])
-                .withMedia(web)
-                .setCallback(umShareListener)//回调监听器
-                .share();
+        shareAction.setPlatform(type[0])
+                .withMedia(web);
+        if (umShareListener != null)
+            shareAction.setCallback(umShareListener);//回调监听器
+        shareAction.share();
     }
 
     /**
