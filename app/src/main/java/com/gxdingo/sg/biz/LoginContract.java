@@ -39,6 +39,8 @@ public class LoginContract {
          * @param code
          */
         void oauthWeChatLogin(String code);
+
+        void switchId(boolean isUser);
     }
 
     public interface LoginListener {

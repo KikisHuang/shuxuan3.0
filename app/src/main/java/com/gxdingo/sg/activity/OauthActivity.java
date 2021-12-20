@@ -6,6 +6,7 @@ import android.view.WindowManager;
 
 import com.amap.api.location.AMapLocationClient;
 import com.blankj.utilcode.util.SPUtils;
+import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.dialog.ProtocolPopupView;
@@ -131,6 +132,9 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!TextUtils.isEmpty(event.code))
                 getP().oauthWeChatLogin(event.code);
+        }else if (object instanceof IdSwitchEvent){
+            IdSwitchEvent event = (IdSwitchEvent) object;
+            getP().switchId(event.isUser);
         }
     }
 

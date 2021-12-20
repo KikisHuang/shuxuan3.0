@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 
@@ -19,7 +18,6 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
@@ -30,11 +28,9 @@ import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
-import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
-import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * @author: Weaving
@@ -247,6 +243,18 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
             oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, oneKeyModel.isUser);
 
     }
+
+    /**
+     * 切换一键登录按钮状态
+     *
+     * @param isUser
+     */
+    @Override
+    public void switchId(boolean isUser) {
+        if (oneKeyModel != null)
+            oneKeyModel.settingButtnStatus(isUser);
+    }
+
 
     @Override
     public void onMvpDestroy() {

@@ -2,7 +2,6 @@ package com.gxdingo.sg.model;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -12,12 +11,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.alibaba.fastjson.JSONObject;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -32,7 +28,6 @@ import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.OauthEventBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
-import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.ClientApi;
@@ -42,13 +37,11 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.WechatUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
-import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.mobile.auth.gatewayauth.AuthRegisterXmlConfig;
 import com.mobile.auth.gatewayauth.AuthUIConfig;
-import com.mobile.auth.gatewayauth.AuthUIControlClickListener;
 import com.mobile.auth.gatewayauth.PhoneNumberAuthHelper;
 import com.mobile.auth.gatewayauth.ResultCode;
 import com.mobile.auth.gatewayauth.TokenResultListener;
@@ -60,8 +53,6 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Map;
 
@@ -72,22 +63,18 @@ import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.L;
-import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SM;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.HTML;
 import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.UAT_URL;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
@@ -124,6 +111,8 @@ public class OneKeyModel {
     private boolean isCheck;
     //协议路径
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
+
+    private static View v;
 
     public OneKeyModel() {
 
@@ -419,16 +408,16 @@ public class OneKeyModel {
                 .setLayout(R.layout.module_activity_one_key_login, new AbstractPnsViewDelegate() {
                     @Override
                     public void onViewCreated(View view) {
-                        settingButtnStatus(view);
+                        v = view;
+                        settingButtnStatus(isUser);
 
                         findViewById(R.id.user_login_tv).setOnClickListener(v -> {
-                            isUser = true;
-                            settingButtnStatus(view);
+
+                            settingButtnStatus(true);
 
                         });
                         findViewById(R.id.store_login_tv).setOnClickListener(v -> {
-                            isUser = false;
-                            settingButtnStatus(view);
+                            settingButtnStatus(false);
 
                         });
 
@@ -437,7 +426,9 @@ public class OneKeyModel {
                             settingButtnStatus(view);
 
                         });*/
-                        findViewById(R.id.tv_other).setOnClickListener(v -> goToPage(context, LoginActivity.class, null));
+                        findViewById(R.id.tv_other).setOnClickListener(v -> {
+                            goToPage(context, LoginActivity.class, null);
+                        });
                         findViewById(R.id.alipay_login).setOnClickListener(v -> {
                             if (isCheck)
                                 getAliAuthInfo(context);
@@ -517,32 +508,35 @@ public class OneKeyModel {
         mAuthHelper.getLoginToken(context, 2000);
     }
 
-    private void settingButtnStatus(View view) {
-        if (isUser) {
-            ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.white));
+    public void settingButtnStatus(boolean isU) {
+        isUser = isU;
+        if (isU) {
+            ((TextView) v.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            ((TextView) v.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
 
-            ((TextView) view.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
+            ((TextView) v.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            ((TextView) v.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.white));
         } else {
-            ((TextView) view.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            ((TextView) view.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.white));
+            ((TextView) v.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            ((TextView) v.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
 
-            ((TextView) view.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) view.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
+            ((TextView) v.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            ((TextView) v.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.white));
         }
-        ((TextView) view.findViewById(R.id.role_tv)).setText(isUser ? "树选客户端" : "树选商家端");
-        switchGlobalUrl(isUser);
+        ((TextView) v.findViewById(R.id.role_tv)).setText(isU ? "树选客户端" : "树选商家端");
+        switchGlobalUrl(isU);
 
-        SPUtils.getInstance().put(LOGIN_WAY, isUser);
+        SPUtils.getInstance().put(LOGIN_WAY, this.isUser);
     }
 
 
     public static void quitLoginPage() {
         if (mAuthHelper != null) {
+            v = null;
             mAuthHelper.setAuthListener(null);
             mAuthHelper.quitLoginPage();
             mAuthHelper = null;
+
             EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
         }
     }

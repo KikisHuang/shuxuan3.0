@@ -59,7 +59,6 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         networkModel = new NetworkModel(this);
         mCommonModel = new CommonModel();
         storeNetworkModel = new StoreNetworkModel(this);
-
     }
 
     @Override
@@ -103,9 +102,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().onBusinessScopeResult(businessScopeBean.getList());
                     });
                 }
-
             }
-
         }
     }
 
