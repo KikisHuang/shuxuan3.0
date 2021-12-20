@@ -12,16 +12,13 @@ public class ImServiceUtils {
     /**
      * 启动im服务
      *
-     * @param context
      */
-    public static void startImService(Context context) {
+    public static void startImService() {
         if (!ImMessageUtils.getInstance().isRunning())
-            ImMessageUtils.getInstance().start();
-        else
+            new Thread(() -> ImMessageUtils.getInstance().start()).start();
+         else
             BaseLogUtils.i("Im 服务运行中，无需启动");
-
     }
-
 
     /**
      * 停止im服务
@@ -36,6 +33,6 @@ public class ImServiceUtils {
      */
     public static void resetImService() {
         if (ImMessageUtils.getInstance().isRunning())
-            ImMessageUtils.getInstance().reSet();
+            new Thread(() -> ImMessageUtils.getInstance().reSet()).start();
     }
 }

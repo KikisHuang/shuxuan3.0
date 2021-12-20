@@ -185,8 +185,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
-            //im服务启动检测
-            startImService(reference.get());
+           startImService();
         }
 
 

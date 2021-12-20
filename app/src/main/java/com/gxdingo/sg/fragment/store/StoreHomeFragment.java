@@ -179,7 +179,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (location)
-            getP().getNearbyStore(true, true, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishRefresh();
@@ -196,7 +196,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 //填写了入驻信息才查询附近商家
                 UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
                 if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
-                    getP().getNearbyStore(true, true, categoryId);
+                    getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
             }
         }
     }
@@ -211,12 +211,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (location)
-            getP().getNearbyStore(false, false, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(false, false, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishLoadMore();
         }
-
     }
 
     @Override

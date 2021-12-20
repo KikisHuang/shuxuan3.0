@@ -186,7 +186,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (location)
-            getP().getNearbyStore(true, true, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishRefresh();
@@ -206,7 +206,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         super.onHiddenChanged(hidden);
         if (!hidden) {
             categoryId = 0;
-            getP().getNearbyStore(true, true, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
+
         }
     }
 
@@ -220,7 +221,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (location)
-            getP().getNearbyStore(false, false, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(false, false, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishLoadMore();

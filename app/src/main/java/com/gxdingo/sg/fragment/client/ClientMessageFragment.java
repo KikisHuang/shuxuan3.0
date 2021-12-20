@@ -192,9 +192,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             //保存web socket接入url
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
 
-
-            //启动IM消息接收服务
-            startImService(reference.get());
+            startImService();
 //            getContext().startService(new Intent(getContext(), IMMessageReceivingService.class));
 
             if (refresh) {

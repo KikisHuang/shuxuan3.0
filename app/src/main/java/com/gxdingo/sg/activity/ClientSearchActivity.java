@@ -169,16 +169,26 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected void init() {
+
         location = getIntent().getStringExtra(Constant.PARAMAS+0);
+
         if (!isEmpty(location))
             location_tv.setText(location);
+
         mStoreAdapter = new ClientStoreAdapter();
+
         recyclerView.setAdapter(mStoreAdapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+
         mStoreAdapter.setOnItemClickListener(this);
+
         mStoreAdapter.setOnItemChildClickListener(this);
+
         keyword_et.setOnEditorActionListener(this);
+
         keyword_et.addTextChangedListener(textWatcher);
+
         history_lv.setOnLabelClickListener(this);
 
         keyword_et.postDelayed(() -> {

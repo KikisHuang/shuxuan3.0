@@ -272,6 +272,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     }
 
     private void startCountDown() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+
         countDownTimer = new CountDownTimer(15 * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {

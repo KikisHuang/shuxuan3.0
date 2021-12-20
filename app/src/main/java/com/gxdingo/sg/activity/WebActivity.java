@@ -393,6 +393,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @JavascriptInterface
     public void backToApp(String restultData) {
+
+        if (!checkClickInterval(100))
+            return;
+
         LogUtils.d("h5调用了" + restultData);
         WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
         if (wheelResultBean == null) return;
@@ -449,11 +453,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                 sendEvent(LocalConstant.VISIT_CIRCLE);
                 finish();
             }
-        } else if (wheelResultBean.type == 30){
+        } else if (wheelResultBean.type == 30) {
             IntentUtils.goToPage(reference.get(), ClientSettleActivity.class, null);
             finish();
         }
-
 
 
     }

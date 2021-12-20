@@ -263,8 +263,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         super.onStart();
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
-            //im服务启动检测
-            startImService(reference.get());
+            startImService();
         }
 
     }

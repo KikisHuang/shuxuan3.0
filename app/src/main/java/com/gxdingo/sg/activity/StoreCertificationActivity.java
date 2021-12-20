@@ -95,7 +95,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     @BindView(R.id.tv_upload_business_license)
     public TextView tvUploadBusinessLicense;
 
-
     @BindView(R.id.rl_business_license_layout)
     public RelativeLayout rlBusinessLicenseLayout;
 
@@ -110,7 +109,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     @BindView(R.id.branch_information_license_layout)
     public RelativeLayout branch_information_license_layout;
-
 
     @BindView(R.id.iv_branch_information_license)
     public ImageView iv_branch_information_license;
@@ -154,12 +152,16 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     @BindView(R.id.btn_result_botton)
     public Button btnResultBotton;
 
-
     private int mType;//1上传头像，2上传营业执照
+
     private String mAvatar;//头像
+
     private String mBusinessLicense;//营业执照
+
     private String mBranchInformationLicense;//门头照
+
     private BusinessScopeEvent mBusinessScope;//经营范围事件
+
     private PoiItem mPoiItem;//地图POI信息
 
     private boolean isUser = false;

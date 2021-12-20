@@ -395,7 +395,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
             SPUtils.getInstance().put(WEB_SOCKET_URL, subscribesListBean.getWebsocketUrl());
 
             //启动IM消息接收服务
-            startImService(reference.get());
+            startImService();
 //            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
             if (refresh) {
