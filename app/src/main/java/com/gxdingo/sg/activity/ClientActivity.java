@@ -26,7 +26,9 @@ import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.receiver.AliPushMessageReceiver;
 import com.gxdingo.sg.service.IMMessageReceivingService;
+import com.gxdingo.sg.utils.BadgeUtil;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -182,6 +184,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
 //        }
+        if (AliPushMessageReceiver.count>0){
+            AliPushMessageReceiver.count = 0;
+            BadgeUtil.setBadge(0,this);
+        }
 
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();

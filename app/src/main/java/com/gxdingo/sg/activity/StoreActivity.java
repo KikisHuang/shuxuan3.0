@@ -24,6 +24,8 @@ import com.gxdingo.sg.fragment.store.StoreMessageFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
+import com.gxdingo.sg.receiver.AliPushMessageReceiver;
+import com.gxdingo.sg.utils.BadgeUtil;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -256,6 +258,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     public void onStarts() {
         super.onStarts();
+        if (AliPushMessageReceiver.count>0){
+            AliPushMessageReceiver.count = 0;
+            BadgeUtil.setBadge(0,this);
+        }
     }
 
     @Override

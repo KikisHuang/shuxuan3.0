@@ -36,7 +36,9 @@ public class BadgeUtil {
     // 华为
     public static final String PHONE_HUAWEI1 = "Huawei";
     // 华为
-    public static final String PHONE_HUAWEI2 = "HONOR";
+    public static final String PHONE_HUAWEI2 = "HUAWEI";
+    // 华为
+    public static final String PHONE_HUAWEI3 = "HONOR";
     // VIVO
     public static final String PHONE_VIVO = "vivo";
     // OPPO
@@ -69,6 +71,7 @@ public class BadgeUtil {
                 break;
             case PHONE_HUAWEI1:
             case PHONE_HUAWEI2:
+            case PHONE_HUAWEI3:
                 setHuaweiBadge(count,context);
                 break;
             case PHONE_VIVO:

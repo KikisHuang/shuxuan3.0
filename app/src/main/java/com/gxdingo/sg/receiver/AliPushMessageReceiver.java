@@ -37,7 +37,7 @@ public class AliPushMessageReceiver extends MessageReceiver {
     public static final String TAG = "Shuxiang_User_Push";
 
 
-    private int count = 0;
+    public static int count = 0;
     /**
      * 当通知准确到达用户的时候触发
      *
