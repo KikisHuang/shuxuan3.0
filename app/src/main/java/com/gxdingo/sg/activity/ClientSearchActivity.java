@@ -150,6 +150,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
+
         if (searchModel)
             getP().search(true, searchModel, keyword_et.getText().toString());
         else {

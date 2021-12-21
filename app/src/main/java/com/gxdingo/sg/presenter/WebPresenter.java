@@ -293,7 +293,6 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
      */
     @Override
     public String getUserLocationInfo() {
-
         return  LocalConstant.AdCode;
     }
 }
