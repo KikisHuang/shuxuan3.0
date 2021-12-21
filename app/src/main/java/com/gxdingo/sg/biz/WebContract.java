@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.gxdingo.sg.bean.WebBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebView;
 
@@ -30,6 +31,9 @@ public class WebContract {
         void completeTask();
 
         void clearCache();
+
+        String getUserLocationInfo();
+
     }
 
     public interface WebListener {

@@ -289,7 +289,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                                             mClientCommonModel.clearCacheDefaultAddress();
 
                                         LocalConstant.locationSelected = aMapLocation.getPoiName();
-                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName()));
+                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(),aMapLocation.getLongitude(),aMapLocation.getLatitude()));
 
                                         if (isBViewAttached())
                                             getBV().onSucceed(0);

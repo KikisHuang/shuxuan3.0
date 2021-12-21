@@ -288,11 +288,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             AddressBean addressBean = (AddressBean) object;
             if (addressBean.selectType == 1) {
                 this.location = true;
-                getP().getNearbyStore((AddressBean) object, categoryId);
+                getP().getNearbyStore( object, categoryId);
             }
         } else if (object instanceof changeLocationEvent) {
+            this.location = true;
             changeLocationEvent event = (changeLocationEvent) object;
-            location_tv.setText(event.name);
+            getP().getNearbyStore(event, categoryId);
         }
     }
 

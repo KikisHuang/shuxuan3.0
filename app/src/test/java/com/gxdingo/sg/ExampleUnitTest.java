@@ -17,6 +17,8 @@ import java.util.Map;
 
 import static com.blankj.utilcode.util.RegexUtils.isMobileExact;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -32,7 +34,7 @@ public class ExampleUnitTest {
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
 
-        System.out.println(dealDateFormat("2021-11-22T06:00:14.000+00:00"));
+        System.out.println(div(String.valueOf(37),String.valueOf(1000), 2));
     }
 
 

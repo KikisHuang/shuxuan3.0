@@ -5,7 +5,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -28,7 +26,6 @@ import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
-import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.ClearEditText;
@@ -153,24 +150,24 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (searchModel)
-            getP().search(true,searchModel,keyword_et.getText().toString());
+            getP().search(true, searchModel, keyword_et.getText().toString());
         else
-            getP().getNearbyStore(true,searchModel,0);
+            getP().getNearbyStore(true, searchModel, 0);
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (searchModel)
-            getP().search(false,searchModel,keyword_et.getText().toString());
+            getP().search(false, searchModel, keyword_et.getText().toString());
         else
-            getP().getNearbyStore(false,searchModel,0);
+            getP().getNearbyStore(false, searchModel, 0);
     }
 
     @Override
     protected void init() {
 
-        location = getIntent().getStringExtra(Constant.PARAMAS+0);
+        location = getIntent().getStringExtra(Constant.PARAMAS + 0);
 
         if (!isEmpty(location))
             location_tv.setText(location);
@@ -213,10 +210,10 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (s.toString().length() == 0 && history_lv.getVisibility() == View.GONE){
+            if (s.toString().length() == 0 && history_lv.getVisibility() == View.GONE) {
                 history_lv.setVisibility(View.VISIBLE);
                 mStoreAdapter.setList(null);
-                getP().getNearbyStore(true,false,0);
+                getP().getNearbyStore(true, false, 0);
             }
         }
     };
@@ -224,32 +221,32 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof AddressBean){
+        if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
-            if (addressBean.selectType==1){
-                getP().search((AddressBean) object,keyword_et.getText().toString());
-            }
+            if (addressBean.selectType == 1) {
+                getP().search((AddressBean) object, keyword_et.getText().toString());
 
+            }
         }
     }
 
     @Override
     protected void initData() {
         getP().getSearchHistory();
-        getP().checkPermissions(getRxPermissions(),false);
+        getP().checkPermissions(getRxPermissions(), false);
     }
 
-    @OnClick({R.id.btn_cancel,R.id.location_tv})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.btn_cancel, R.id.location_tv})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.btn_cancel:
                 finish();
                 break;
             case R.id.location_tv:
                 if (UserInfoUtils.getInstance().isLogin())
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class,getIntentEntityMap(new Object[]{1}));
+                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{1}));
                 else
-                   getP().oauth(this);
+                    getP().oauth(this);
                 break;
         }
     }
@@ -265,27 +262,27 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    public void onStoresResult(boolean refresh, boolean searchModel,List<StoreListBean.StoreBean> storeBeans) {
-        if (searchModel){
+    public void onStoresResult(boolean refresh, boolean searchModel, List<StoreListBean.StoreBean> storeBeans) {
+        if (searchModel) {
             if (history_lv.getVisibility() == View.VISIBLE)
                 history_lv.setVisibility(View.GONE);
             if (refresh)
                 mStoreAdapter.setList(storeBeans);
             else
                 mStoreAdapter.addData(storeBeans);
-            if (storeBeans.size()<15){
+
+            if (storeBeans.size() < 15) {
+                //搜索列表结束，加载附近商家列表
                 this.searchModel = false;
-                getP().getNearbyStore(true,false,0);
+                getP().resetPage();
+                getP().getNearbyStore(false, false, 0);
             }
-        }else {
-            mStoreAdapter.addData(storeBeans);
+        } else {
+            if (refresh)
+                mStoreAdapter.setList(storeBeans);
+            else
+                mStoreAdapter.addData(storeBeans);
         }
-//        if (history_lv.getVisibility() == View.VISIBLE)
-//            history_lv.setVisibility(View.GONE);
-//        if (refresh)
-//            mStoreAdapter.setList(storeBeans);
-//        else
-//            mStoreAdapter.addData(storeBeans);
     }
 
     @Override
@@ -310,9 +307,9 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_SEARCH){
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
             searchModel = true;
-            getP().search(true,true,keyword_et.getText().toString());
+            getP().search(true, true, keyword_et.getText().toString());
         }
         return true;
     }
@@ -322,16 +319,16 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         LogUtils.d("search =============" + data.toString());
         searchModel = true;
         keyword_et.setText(data.toString());
-        getP().search(true,true,data.toString());
+        getP().search(true, true, data.toString());
     }
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        if (UserInfoUtils.getInstance().isLogin()){
+        if (UserInfoUtils.getInstance().isLogin()) {
             StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,item.getId()}));
-        }else {
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+        } else {
             UserInfoUtils.getInstance().goToOauthPage(this);
         }
     }
@@ -339,9 +336,9 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.store_avatar_iv:
-                goToPagePutSerializable(this, ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(this, ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())

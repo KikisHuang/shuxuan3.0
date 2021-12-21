@@ -183,8 +183,6 @@ public class ClientNetworkModel {
                 nextPage();
                 netWorkListener.haveData();
             }
-
-
             netWorkListener.finishLoadmore(true);
         }
         netWorkListener.onRequestComplete();
@@ -330,7 +328,7 @@ public class ClientNetworkModel {
     }
 
     /**
-     * 商家列表\附近商家
+     * 商家列表 \ 附近商家 \ 搜索附近商家
      *
      * @param context
      * @param lon
@@ -339,6 +337,7 @@ public class ClientNetworkModel {
     public void getStoreList(Context context, boolean refresh, double lon, double lat, int categoryId, String key) {
 
         netWorkListener.onStarts();
+
         if (refresh)
             resetPage();
 
@@ -385,12 +384,11 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     if (storeListBean != null && storeListBean.getList() != null) {
+                        pageNext(refresh, storeListBean.getList().size());
                         netWorkListener.onData(refresh, storeListBean);
                         netWorkListener.onAfters();
-                        pageNext(refresh, storeListBean.getList().size());
                     }
                 }
-
                 netWorkListener.onAfters();
 
             }

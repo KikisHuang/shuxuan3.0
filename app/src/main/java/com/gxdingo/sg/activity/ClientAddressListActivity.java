@@ -129,12 +129,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
                 getP().getLocationInfo(getRxPermissions(), true);
                 break;
             case R.id.location_name_tv:
-                if (isEmpty(LocalConstant.locationSelected))
-                    getP().getLocationInfo(getRxPermissions(), true);
-                else{
-                    sendEvent(new changeLocationEvent(LocalConstant.locationSelected));
-                    finish();
-                }
+                getP().getLocationInfo(getRxPermissions(), true);
                 break;
         }
     }

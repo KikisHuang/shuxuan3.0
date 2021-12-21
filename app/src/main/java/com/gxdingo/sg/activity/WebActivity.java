@@ -39,12 +39,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.blankj.utilcode.util.AppUtils.isAppInstalled;
 import static com.blankj.utilcode.util.AppUtils.launchApp;
+import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 
 /**
@@ -315,7 +317,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     protected void onDestroy() {
         if (webView != null) {
-
             callJsBye();
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
             webView.clearCache(true);
@@ -391,6 +392,16 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         return userInfo;
     }
 
+    /**
+     * 获取app用户定位信息
+     *
+     * @return
+     */
+    @JavascriptInterface
+    public String getRegionCode() {
+        return getP().getUserLocationInfo();
+    }
+
     @JavascriptInterface
     public void backToApp(String restultData) {
 
@@ -432,17 +443,14 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                     public void onStart(SHARE_MEDIA share_media) {
 
                     }
-
                     @Override
                     public void onResult(SHARE_MEDIA share_media) {
 
                     }
-
                     @Override
                     public void onError(SHARE_MEDIA share_media, Throwable throwable) {
 
                     }
-
                     @Override
                     public void onCancel(SHARE_MEDIA share_media) {
 

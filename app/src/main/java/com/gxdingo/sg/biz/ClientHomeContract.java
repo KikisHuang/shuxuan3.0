@@ -29,7 +29,7 @@ public class ClientHomeContract {
 
         void getNearbyStore(boolean refresh,boolean search,int categoryId);
 
-        void getNearbyStore(AddressBean addressBean,int categoryId);
+        void getNearbyStore(Object addressBean,int categoryId);
 
         void fllInvitationCode(String code);
 
@@ -52,6 +52,8 @@ public class ClientHomeContract {
         void help();
 
         void getShareUrl();
+
+        void resetPage();
     }
 
     public interface ClientHomeListener{
