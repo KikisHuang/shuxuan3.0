@@ -15,11 +15,13 @@ import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.AddressBean;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -46,7 +48,7 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+        return new ClientHomePresenter(false);
     }
 
     @Override
@@ -116,6 +118,7 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
             ArticleImage articleImage = (ArticleImage) object;
             Glide.with(this).load(articleImage.getImage()).into(settle_in_iv);
         }
+
     }
 
     @OnClick({R.id.btn_become_store, R.id.btn_invitation})

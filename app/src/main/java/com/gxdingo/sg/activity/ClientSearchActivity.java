@@ -23,6 +23,7 @@ import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
@@ -83,7 +84,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+        return new ClientHomePresenter(false);
     }
 
     @Override
@@ -224,9 +225,12 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
             if (addressBean.selectType == 1) {
-                getP().search((AddressBean) object, keyword_et.getText().toString());
-
+                keyword_et.setText("");
+                getP().getNearbyStore(addressBean, 0);
             }
+        } else if (object instanceof changeLocationEvent) {
+            changeLocationEvent event = (changeLocationEvent) object;
+            getP().getNearbyStore(event, 0);
         }
     }
 
@@ -253,6 +257,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public void setDistrict(String district) {
+
         location_tv.setText(district);
     }
 

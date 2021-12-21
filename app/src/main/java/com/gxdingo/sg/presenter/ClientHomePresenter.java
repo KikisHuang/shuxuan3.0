@@ -80,8 +80,12 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private List<StoreListBean.StoreBean> mHistoryList;
 
+    //是否首页
+    private boolean isHome = false;
 
-    public ClientHomePresenter() {
+
+    public ClientHomePresenter(boolean home) {
+        isHome = home;
         clientNetworkModel = new ClientNetworkModel(this);
 
         storeNetworkModel = new StoreNetworkModel(this);
@@ -106,8 +110,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                             model.location(getContext(), aMapLocation -> {
 
                                 if (aMapLocation.getErrorCode() == 0) {
-
-                                    getV().setDistrict(aMapLocation.getPoiName());
+                                    if (search)
+                                        getV().setDistrict(aMapLocation.getPoiName());
 
                                     lat = aMapLocation.getLatitude();
                                     lon = aMapLocation.getLongitude();
@@ -389,45 +393,53 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 getV().onCategoryResult(((CategoryListBean) o).getCategories());
             else if (o instanceof StoreListBean) {
                 StoreListBean storeListBean = (StoreListBean) o;
-                if (refresh)
-                    mHistoryList.clear();
 
-                if (storeListBean.getList() != null && storeListBean.getList().size() > 0)
-                    mHistoryList.addAll(storeListBean.getList());
+                //是否首页
+                if (!isHome) {
+                    if (refresh)
+                        mHistoryList.clear();
+                    //搜索页面历史记录
+                    if (storeListBean.getList() != null && storeListBean.getList().size() > 0)
+                        mHistoryList.addAll(storeListBean.getList());
+                    if (!searchModel) {
+                        //ClientSearchAcvtiity 附近商家列表返回
+                        if (isViewAttached()) {
+                            RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                                //判断是否第一次添加附近商家列表,如果是添加一个头部标识符
+                                boolean isExist = false;
 
-                if (!searchModel) {
-                    //ClientSearchAcvtiity 附近商家列表返回
-                    if (isViewAttached()) {
-                        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-                            //判断是否第一次添加附近商家列表,如果是添加一个头部标识符
-                            boolean isExist = false;
-
-                            for (StoreListBean.StoreBean sb : mHistoryList) {
-                                if (sb.isShowTop() == true) {
-                                    isExist = true;
-                                    break;
+                                for (StoreListBean.StoreBean sb : mHistoryList) {
+                                    if (sb.isShowTop() == true) {
+                                        isExist = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            e.onNext(isExist);
-                            e.onComplete();
-                        }), (BaseActivity) getContext()).subscribe(data -> {
+                                e.onNext(isExist);
+                                e.onComplete();
+                            }), (BaseActivity) getContext()).subscribe(data -> {
 
-                            boolean flag = (boolean) data;
-                            if (storeListBean.getList() != null && storeListBean.getList().size() > 0) {
-                                if (!flag)
-                                    storeListBean.getList().get(0).setShowTop(true);
-                                getV().onStoresResult(refresh, searchModel, storeListBean.getList());
-                            }
-                        });
+                                boolean flag = (boolean) data;
+                                if (storeListBean.getList() != null && storeListBean.getList().size() > 0) {
+                                    if (!flag)
+                                        storeListBean.getList().get(0).setShowTop(true);
+                                    getV().onStoresResult(refresh, searchModel, storeListBean.getList());
+                                }
+                            });
+                        }
+                    } else {
+                        //ClientSearchAcvtiity 搜索列表返回
+                        getV().onStoresResult(refresh, searchModel, storeListBean.getList());
                     }
+
                 } else {
-                    //ClientSearchAcvtiity 搜索列表返回
+                    //Home首页 数据返回
                     getV().onStoresResult(refresh, searchModel, storeListBean.getList());
 
                     //首页banner
                     if (storeListBean.getAppHomeMiddle() != null)
                         getV().onBannerResult(storeListBean.getAppHomeMiddle());
                 }
+
             } else if (o instanceof HelpBean) {
                 getV().onHelpDataResult((HelpBean) o);
             }

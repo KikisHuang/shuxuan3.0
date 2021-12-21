@@ -136,7 +136,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+        return new ClientHomePresenter(true);
     }
 
     @Override

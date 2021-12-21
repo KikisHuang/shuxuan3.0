@@ -443,14 +443,17 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                     public void onStart(SHARE_MEDIA share_media) {
 
                     }
+
                     @Override
                     public void onResult(SHARE_MEDIA share_media) {
 
                     }
+
                     @Override
                     public void onError(SHARE_MEDIA share_media, Throwable throwable) {
 
                     }
+
                     @Override
                     public void onCancel(SHARE_MEDIA share_media) {
 
