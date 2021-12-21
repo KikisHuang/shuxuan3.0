@@ -152,8 +152,14 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         super.onRefresh(refreshLayout);
         if (searchModel)
             getP().search(true, searchModel, keyword_et.getText().toString());
-        else
-            getP().getNearbyStore(true, searchModel, 0);
+        else {
+            if (!isEmpty(keyword_et.getText().toString())) {
+                searchModel = true;
+                getP().search(true, searchModel, keyword_et.getText().toString());
+            } else
+                getP().getNearbyStore(true, searchModel, 0);
+        }
+
     }
 
     @Override

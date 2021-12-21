@@ -184,7 +184,10 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 getV().setDistrict(changeLocationEvent.name);
         }
         getNearbyStore(true, true, categoryId);
+        if (!isHome)
+            searchModel = false;
     }
+
 
     @Override
     public void fllInvitationCode(String code) {
@@ -401,6 +404,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     //搜索页面历史记录
                     if (storeListBean.getList() != null && storeListBean.getList().size() > 0)
                         mHistoryList.addAll(storeListBean.getList());
+
                     if (!searchModel) {
                         //ClientSearchAcvtiity 附近商家列表返回
                         if (isViewAttached()) {

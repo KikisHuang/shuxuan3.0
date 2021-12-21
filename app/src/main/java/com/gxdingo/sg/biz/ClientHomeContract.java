@@ -54,6 +54,7 @@ public class ClientHomeContract {
         void getShareUrl();
 
         void resetPage();
+
     }
 
     public interface ClientHomeListener{
