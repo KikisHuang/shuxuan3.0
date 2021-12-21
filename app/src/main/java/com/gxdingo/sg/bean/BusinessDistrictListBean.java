@@ -1,7 +1,6 @@
 package com.gxdingo.sg.bean;
 
 
-
 import com.lzy.ninegrid.ImageInfo;
 
 import java.io.Serializable;
@@ -49,7 +48,6 @@ public class BusinessDistrictListBean implements Serializable {
         public ArrayList<ImageInfo> imageInfos = new ArrayList<>();
         private ArrayList<Comment> commentList = new ArrayList<>();//**注意**：当comments < 10时返回，否则返回空数组 []
         private int commentOpen;//展开评论状态 0 表示初始化没有点过，1 表示打开，2 表示关闭（辅助字段，非接口字段）
-
 
         public int getCurrentPage() {
             return currentPage;

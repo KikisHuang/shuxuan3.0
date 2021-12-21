@@ -74,10 +74,10 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
     public LinearLayout llSearchLayout;
 
     @BindView(R.id.iv_more)
-    public  ImageView ivMore;
+    public ImageView ivMore;
 
     @BindView(R.id.iv_more2)
-    public  ImageView ivMore2;
+    public ImageView ivMore2;
 
     @BindView(R.id.top_layout)
     public ConstraintLayout topLayout;
@@ -396,13 +396,13 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
 
             //启动IM消息接收服务
             startImService();
-//            mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
+            //mContext.startService(new Intent(mContext, IMMessageReceivingService.class));
 
-            if (refresh) {
+            if (refresh)
                 mStoreHomeIMMessageAdapter.setList(subscribesListBean.getList());
-            } else {
+            else
                 mStoreHomeIMMessageAdapter.addData(subscribesListBean.getList());
-            }
+
         }
     }
 

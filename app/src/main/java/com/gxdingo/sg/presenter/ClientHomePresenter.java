@@ -101,7 +101,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                     lat = aMapLocation.getLatitude();
                                     lon = aMapLocation.getLongitude();
 
-
                                     if (UserInfoUtils.getInstance().isLogin()) {
                                         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
                                         if (userBean.getRole() == 11) {

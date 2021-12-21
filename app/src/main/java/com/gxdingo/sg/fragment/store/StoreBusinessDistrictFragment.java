@@ -104,7 +104,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
-    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
+//    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     int mDelPosition = -1;//要删除商圈的索引位置
 
     //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
@@ -399,8 +399,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //点击评论数量（评论数量大于等于10）或者展开更多/收起布局（标题显示展开更多）
             else if (view.getId() == R.id.tv_comment_count || view.getId() == R.id.ll_comment_unfold_put_away_layout) {
                 //tvCommentUnfoldText引用R.id.tv_comment_unfold_put_away_text，方便根据请求展开评论接口的时候根据是否还有数据做响应操作
-                tvCommentUnfoldText = null;
-                tvCommentUnfoldText = (TextView) object;
                 BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
                 getP().getUnfoldCommentList(businessDistrict, businessDistrict.getId(), businessDistrict.getCurrentPage(), businessDistrict.getPageSize());
             }
@@ -525,22 +523,22 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         //根据总数判断是否还有数据  if (commentList.size() >= commentListBean.getTotal()
 
         if (commentList.size() >= total) {
-            //没有下一页
+      /*      //没有下一页
             if (tvCommentUnfoldText != null) {
                 tvCommentUnfoldText.setText("收起");
                 //替换向上图标
                 changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_put_away);
                 tvCommentUnfoldText = null;
-            }
+            }*/
         } else {
             //有下一页页面累加1
             businessDistrict.setCurrentPage(businessDistrict.getCurrentPage() + 1);
-            if (tvCommentUnfoldText != null) {
+       /*     if (tvCommentUnfoldText != null) {
                 tvCommentUnfoldText.setText("展开更多");
                 //替换向下图标
                 changeDrawable(tvCommentUnfoldText, R.drawable.module_svg_business_district_comment_unfold);
                 tvCommentUnfoldText = null;
-            }
+            }*/
         }
         mAdapter.notifyDataSetChanged();
     }
