@@ -165,9 +165,13 @@ dependencies {
     //九宫格控件
     api project(':ninegridview')
 
-    //小米辅助推通道
+    //小米辅助通道
     implementation 'com.aliyun.ams:alicloud-android-third-push-xiaomi:3.7.2'
     implementation 'com.aliyun.ams:alicloud-android-third-push:3.7.2'
-
-
+    //华为辅助通道
+//    implementation 'com.aliyun.ams:alicloud-android-third-push-huawei:3.7.2'
+    //oppo辅助通道
+    implementation 'com.aliyun.ams:alicloud-android-third-push-oppo:3.7.2'
+    //vivo辅助通道
+    implementation 'com.aliyun.ams:alicloud-android-third-push-vivo:3.7.2'
 }

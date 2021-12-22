@@ -650,7 +650,6 @@ public static final int *;
 -dontwarn anetwork.channel.**
 -dontwarn org.android.**
 -dontwarn org.apache.thrift.**
--dontwarn com.xiaomi.**
 -dontwarn com.huawei.**
 
 
@@ -658,7 +657,6 @@ public static final int *;
 -keep class org.android.** {*;}
 -keep class anet.channel.** {*;}
 -keep class com.umeng.** {*;}
--keep class com.xiaomi.** {*;}
 -keep class com.huawei.** {*;}
 -keep class org.apache.thrift.** {*;}
 

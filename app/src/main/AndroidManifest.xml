@@ -90,6 +90,19 @@
 
         <meta-data android:name="UMENG_CHANNEL" android:value="${UMENG_CHANNEL_VALUE}"/>
 
+        <!-- 华为推送 -->
+        <meta-data
+            android:name="com.huawei.hms.client.appid"
+            android:value="appid=104550853" />
+
+        <!-- vivo推送 -->
+        <meta-data
+            android:name="com.vivo.push.api_key"
+            android:value="3d0aaef517725bd0ddd047ec9270e175" />
+        <meta-data
+            android:name="com.vivo.push.app_id"
+            android:value="105498075" />
+
         <!--适配华为（huawei）刘海屏-->
         <meta-data
             android:name="android.notch_support"
