@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 
 /**
  * @author: Weaving
@@ -44,7 +45,7 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
         baseViewHolder.setText(R.id.store_name_tv, storeBean.getName());
 
-        baseViewHolder.setText(R.id.distance_tv, "距离" + (div(String.valueOf(53), String.valueOf(1000), 2) + "km"));
+        baseViewHolder.setText(R.id.distance_tv, "距离" + (div(double2Str(storeBean.getDistance()), String.valueOf(1000), 2) + "km"));
 
         LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
 

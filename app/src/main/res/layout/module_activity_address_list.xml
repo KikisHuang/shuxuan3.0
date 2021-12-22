@@ -49,7 +49,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/module_include_refresh" />
+    <include layout="@layout/module_include_nodata_recycle"></include>
 
 
 </LinearLayout>

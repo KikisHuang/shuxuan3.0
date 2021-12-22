@@ -26,6 +26,7 @@ public class BadgerManger {
             BadgerUtils.setVivoBadge(context, MessageCountManager.count);
 
         } else if (RomUtils.isXiaomi() || RomUtils.isOppo()) {
+
             BadgerUtils.setNotificationBadge(context, MessageCountManager.count);
 
         } else if (RomUtils.isSamsung()) {
