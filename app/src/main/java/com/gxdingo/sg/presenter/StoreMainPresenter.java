@@ -168,7 +168,7 @@ public class StoreMainPresenter extends BaseMvpPresenter<BasicsListener, StoreMa
                      */
                     NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
                     if (isViewAttached())
-                        getV().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                        getV().setBusinessUnreadMsgNum(unreadCommentsBean);
                 }
             });
         }

@@ -104,7 +104,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
-//    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
+    //    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     int mDelPosition = -1;//要删除商圈的索引位置
 
     //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
@@ -231,7 +231,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void initData() {
 
-
     }
 
     @Override
@@ -327,6 +326,15 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void onRefresh(RefreshLayout refreshLayout) {
         //获取商圈列表
         getP().getBusinessDistrictList(true, mStoreId);
+
+        //清除菜单未读消息
+        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+            if (ClientActivity.getInstance() != null)
+                ClientActivity.getInstance().setBusinessUnreadMsgNum(null);
+        } else {
+            if (StoreActivity.getInstance() != null)
+                StoreActivity.getInstance().setBusinessUnreadMsgNum(null);
+        }
     }
 
     /**
@@ -510,10 +518,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
             if (ClientActivity.getInstance() != null)
-                ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         } else {
             if (StoreActivity.getInstance() != null)
-                StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         }
 
     }

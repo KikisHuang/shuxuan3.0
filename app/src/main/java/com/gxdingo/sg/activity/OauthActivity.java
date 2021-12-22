@@ -13,6 +13,7 @@ import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.lxj.xpopup.XPopup;
 
@@ -24,6 +25,7 @@ import butterknife.OnClick;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
+import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
@@ -129,9 +131,12 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onBaseEvent(object);
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
-            WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!TextUtils.isEmpty(event.code))
-                getP().oauthWeChatLogin(event.code);
+            if (weChatLoginType==0){
+                WeChatLoginEvent event = (WeChatLoginEvent) object;
+                if (!TextUtils.isEmpty(event.code))
+                    getP().oauthWeChatLogin(event.code);
+            }
+
         }else if (object instanceof IdSwitchEvent){
             IdSwitchEvent event = (IdSwitchEvent) object;
             getP().switchId(event.isUser);

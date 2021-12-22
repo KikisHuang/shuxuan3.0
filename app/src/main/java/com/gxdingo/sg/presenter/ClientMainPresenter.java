@@ -297,7 +297,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
                      */
                     NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
                     if (isViewAttached())
-                        getV().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                        getV().setBusinessUnreadMsgNum(unreadCommentsBean);
                 }
             });
         }

@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMainContract;
@@ -35,6 +37,7 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
@@ -46,12 +49,14 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 
 /**
  * Created by Kikis on 2021/4/6
@@ -265,6 +270,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
             startImService();
+            RxUtil.intervals(businessDistrictRefreshTime, number -> {
+
+                    getP().getUnreadMessageNum();
+            }, this);
         }
 
     }
@@ -330,7 +339,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         super.onTypeEvent(type);
         if (type == LOGOUT) {
             setUnreadMsgNum(0);
-            setBusinessUnreadMsgNum(0);
+            setBusinessUnreadMsgNum(null);
             finish();
         } else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
             finish();
@@ -389,9 +398,20 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     }
 
     @Override
-    public void setBusinessUnreadMsgNum(int data) {
-        tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
-        tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
+    public void setBusinessUnreadMsgNum(NumberUnreadCommentsBean data) {
+
+        if (data == null) {
+            tv_business_unread_msg_count.setVisibility(View.GONE);
+            return;
+        }
+        if (data.getUnread() > 0) {
+            tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data);
+            tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
+        } else {
+            tv_business_unread_msg_count.setText("");
+            tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
+        }
+
     }
 
 
@@ -411,6 +431,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onStop() {
         super.onStop();
+        cancel();
         resetBadger(reference.get());
     }
 

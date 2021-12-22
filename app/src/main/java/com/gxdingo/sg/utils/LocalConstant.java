@@ -5,6 +5,9 @@ public class LocalConstant {
     //聊天订阅id
     public static String CHAT_UUID = "";
 
+    //刷新商圈未读消息时间
+    public static final int businessDistrictRefreshTime = 15000;
+
     //聊天常量
     //自己发送的文本类型
     public static final int SelfText = 7776;

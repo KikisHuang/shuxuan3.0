@@ -52,7 +52,7 @@ public class LoginModel {
         req.scope = "snsapi_userinfo";
         req.state = "wechat_sdk_demo";
 
-        WechatUtils.getInstance().getWxApi().sendReq(req);
+        WechatUtils.getInstance().getWxApi(1).sendReq(req);
     }
 
     /**

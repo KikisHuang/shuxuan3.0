@@ -442,11 +442,9 @@ public class OneKeyModel {
                                 if (isWeixinAvilible(getContext())) {
 
                                     final SendAuth.Req req = new SendAuth.Req();
-
                                     req.scope = "snsapi_userinfo";
                                     req.state = "wechat_sdk_demo";
-
-                                    WechatUtils.getInstance().getWxApi().sendReq(req);
+                                    WechatUtils.getInstance().getWxApi(0).sendReq(req);
                                 } else {
                                     ToastUtils.showLong(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
                                 }
