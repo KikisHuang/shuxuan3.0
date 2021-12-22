@@ -172,7 +172,10 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
             view = inflater.inflate(R.layout.module_activity_init, container, false);
             LinearLayout layout = view.findViewById(R.id.init_layout);
             layout.addView(TitleLaouyt);
-            layout.addView(LayoutInflater.from(getActivity()).inflate(initContentView(), null));
+
+            View bodyLayout = LayoutInflater.from(getActivity()).inflate(initContentView(), null);
+
+            layout.addView(bodyLayout, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f));
         } else
             view = inflater.inflate(initContentView(), null);
 

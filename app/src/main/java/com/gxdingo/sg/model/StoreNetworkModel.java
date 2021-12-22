@@ -252,7 +252,8 @@ public class StoreNetworkModel {
      * @param
      */
     public void settle(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
-            , String regionPath, String address, String businessLicence, double longitude, double latitude) {
+            , String regionPath, String address, String businessLicence, String storeLicence,double longitude, double latitude) {
+
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -263,6 +264,10 @@ public class StoreNetworkModel {
         map.put(StoreLocalConstant.REGION_PATH, regionPath);
         map.put(StoreLocalConstant.ADDRESS, address);
         map.put(StoreLocalConstant.BUSINESS_LICENCE, businessLicence);
+
+        if (!isEmpty(storeLicence))
+            map.put(StoreLocalConstant.STOREDOOR_PHOTO, storeLicence);
+
         map.put(StoreLocalConstant.LONGITUDE, String.valueOf(longitude));
         map.put(StoreLocalConstant.LATITUDE, String.valueOf(latitude));
 

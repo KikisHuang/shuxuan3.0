@@ -10,11 +10,22 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ArticleImage;
+import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.HelpBean;
+import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
+import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.AddressBean;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,7 +36,7 @@ import butterknife.OnClick;
  * @date: 2021/11/15
  * @page:
  */
-public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> {
+public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener {
 
 //    @BindView(R.id.title_layout)
 //    public TemplateTitle title_layout;
@@ -33,9 +44,11 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @BindView(R.id.settle_in_iv)
     public ImageView settle_in_iv;
 
+    private ShareBean shareBean;
+
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+        return new ClientHomePresenter(false);
     }
 
     @Override
@@ -101,15 +114,16 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof ArticleImage){
+        if (object instanceof ArticleImage) {
             ArticleImage articleImage = (ArticleImage) object;
             Glide.with(this).load(articleImage.getImage()).into(settle_in_iv);
         }
+
     }
 
-    @OnClick({R.id.btn_become_store,R.id.btn_invitation})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.btn_become_store, R.id.btn_invitation})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.btn_become_store:
                 if (UserInfoUtils.getInstance().isLogin())
                     getP().convertStore();
@@ -117,10 +131,11 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
                     getP().oauth(this);
                 break;
             case R.id.btn_invitation:
-                Intent textIntent = new Intent(Intent.ACTION_SEND);
-                textIntent.setType("text/plain");
-                textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");
-                startActivity(Intent.createChooser(textIntent, "分享"));
+                if (shareBean != null)
+                    ShareUtils.UmShare(reference.get(), null, shareBean.getUrl(), shareBean.getTitle(), shareBean.getDescribe(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
+                 else
+                    onMessage("没有获取到分享连接");
+
                 break;
         }
     }
@@ -133,6 +148,42 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected void initData() {
         getP().getSettleImage();
+        getP().getShareUrl();
     }
 
+    @Override
+    public void setDistrict(String district) {
+
+    }
+
+    @Override
+    public void onCategoryResult(List<CategoriesBean> categories) {
+
+    }
+
+    @Override
+    public void onStoresResult(boolean refresh, boolean search, List<StoreListBean.StoreBean> storeBeans) {
+
+    }
+
+    @Override
+    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
+
+    }
+
+    @Override
+    public void onHistoryResult(List<String> searchHistories) {
+
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+
+    }
+
+    @Override
+    public void onShareUrlResult(ShareBean sb) {
+
+        shareBean = sb;
+    }
 }

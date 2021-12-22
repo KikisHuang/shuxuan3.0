@@ -9,14 +9,18 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoryListBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -30,12 +34,16 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.GsonUtil;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -70,7 +78,14 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private String helpCode;
 
-    public ClientHomePresenter() {
+    private List<StoreListBean.StoreBean> mHistoryList;
+
+    //是否首页
+    private boolean isHome = false;
+
+
+    public ClientHomePresenter(boolean home) {
+        isHome = home;
         clientNetworkModel = new ClientNetworkModel(this);
 
         storeNetworkModel = new StoreNetworkModel(this);
@@ -79,6 +94,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
         model = new ClientHomeModel();
 
+        mHistoryList = new ArrayList<>();
     }
 
     @Override
@@ -94,12 +110,25 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                             model.location(getContext(), aMapLocation -> {
 
                                 if (aMapLocation.getErrorCode() == 0) {
-
-                                    getV().setDistrict(aMapLocation.getDistrict());
+                                    if (search)
+                                        getV().setDistrict(aMapLocation.getPoiName());
 
                                     lat = aMapLocation.getLatitude();
                                     lon = aMapLocation.getLongitude();
-                                    getNearbyStore(true, search, 0);
+
+                                    LocalConstant.AdCode = aMapLocation.getAdCode();
+
+                                    if (UserInfoUtils.getInstance().isLogin()) {
+                                        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                                        if (userBean.getRole() == 11) {
+                                            //商家端先监测是否填写入驻信息
+                                            if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                                                getNearbyStore(true, search, 0);
+                                        } else
+                                            getNearbyStore(true, search, 0);
+                                    } else
+                                        getNearbyStore(true, search, 0);
+
                                 } else {
                                     getBV().onMessage(aMapLocation.getLocationDetail());
                                     getBV().onFailed();
@@ -138,13 +167,27 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void getNearbyStore(AddressBean addressBean, int categoryId) {
-        lon = addressBean.getLongitude();
-        lat = addressBean.getLatitude();
-        if (isViewAttached())
-            getV().setDistrict(addressBean.getStreet());
+    public void getNearbyStore(Object object, int categoryId) {
+
+        if (object instanceof AddressBean) {
+            AddressBean addressBean = (AddressBean) object;
+            lon = addressBean.getLongitude();
+            lat = addressBean.getLatitude();
+            if (isViewAttached())
+                getV().setDistrict(addressBean.getStreet());
+        } else if (object instanceof changeLocationEvent) {
+            changeLocationEvent changeLocationEvent = (com.gxdingo.sg.bean.changeLocationEvent) object;
+
+            lon = changeLocationEvent.longitude;
+            lat = changeLocationEvent.latitude;
+            if (isViewAttached())
+                getV().setDistrict(changeLocationEvent.name);
+        }
         getNearbyStore(true, true, categoryId);
+        if (!isHome)
+            searchModel = false;
     }
+
 
     @Override
     public void fllInvitationCode(String code) {
@@ -215,12 +258,15 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void checkHelpCode() {
-        if (UserInfoUtils.getInstance().isLogin()){
+        if (UserInfoUtils.getInstance().isLogin()) {
             ShibbolethModel.checkShibboleth((type, code) -> {
-                helpCode = code;
-                clientNetworkModel.inviteHelp(getContext(), code);
+                //30口令类型为邀请商家活动
+                if (type != 30) {
+                    helpCode = code;
+                    clientNetworkModel.inviteHelp(getContext(), code);
+                }
 
-            });
+            }, 1000);
         }
 //        ShibbolethModel.checkShibboleth(code -> {
 //            if (clientNetworkModel!=null)
@@ -233,6 +279,31 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void help() {
         if (clientNetworkModel != null)
             clientNetworkModel.helpAfter(getContext(), helpCode);
+    }
+
+    /**
+     * 获取分享连接
+     */
+    @Override
+    public void getShareUrl() {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getShareUrl(getContext(), o -> {
+                if (o instanceof ShareBean)
+                    getV().onShareUrlResult((ShareBean) o);
+            });
+    }
+
+    /**
+     * 重置页码 （搜索的数据已经没有了，重置页码继续加载推荐的附近商家列表数据）
+     */
+    @Override
+    public void resetPage() {
+        if (clientNetworkModel != null) {
+            clientNetworkModel.resetPage();
+            if (isBViewAttached())
+                getBV().resetNoMoreData();
+        }
+
     }
 
     @Override
@@ -325,16 +396,54 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 getV().onCategoryResult(((CategoryListBean) o).getCategories());
             else if (o instanceof StoreListBean) {
                 StoreListBean storeListBean = (StoreListBean) o;
-                if (refresh && !searchModel) {
-                    if (storeListBean.getList() != null && storeListBean.getList().size() > 0) {
-                        storeListBean.getList().get(0).setShowTop(true);
-                        getV().onStoresResult(true, searchModel, storeListBean.getList());
+
+                //是否首页
+                if (!isHome) {
+                    if (refresh)
+                        mHistoryList.clear();
+                    //搜索页面历史记录
+                    if (storeListBean.getList() != null && storeListBean.getList().size() > 0)
+                        mHistoryList.addAll(storeListBean.getList());
+
+                    if (!searchModel) {
+                        //ClientSearchAcvtiity 附近商家列表返回
+                        if (isViewAttached()) {
+                            RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                                //判断是否第一次添加附近商家列表,如果是添加一个头部标识符
+                                boolean isExist = false;
+
+                                for (StoreListBean.StoreBean sb : mHistoryList) {
+                                    if (sb.isShowTop() == true) {
+                                        isExist = true;
+                                        break;
+                                    }
+                                }
+                                e.onNext(isExist);
+                                e.onComplete();
+                            }), (BaseActivity) getContext()).subscribe(data -> {
+
+                                boolean flag = (boolean) data;
+                                if (storeListBean.getList() != null && storeListBean.getList().size() > 0) {
+                                    if (!flag)
+                                        storeListBean.getList().get(0).setShowTop(true);
+                                    getV().onStoresResult(refresh, searchModel, storeListBean.getList());
+                                }
+                            });
+                        }
+                    } else {
+                        //ClientSearchAcvtiity 搜索列表返回
+                        getV().onStoresResult(refresh, searchModel, storeListBean.getList());
                     }
+
                 } else {
+                    //Home首页 数据返回
                     getV().onStoresResult(refresh, searchModel, storeListBean.getList());
+
+                    //首页banner
                     if (storeListBean.getAppHomeMiddle() != null)
                         getV().onBannerResult(storeListBean.getAppHomeMiddle());
                 }
+
             } else if (o instanceof HelpBean) {
                 getV().onHelpDataResult((HelpBean) o);
             }

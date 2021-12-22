@@ -185,8 +185,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
-            //im服务启动检测
-            startImService(reference.get());
+           startImService();
         }
 
 
@@ -293,8 +292,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 getP().checkTab(1);
                 break;
             case R.id.settle_in:
-//                getP().checkTab(2);
-//                ToastUtils.showLong("hi!索嗨，来入驻");
                 goToPage(this, ClientSettleActivity.class, null);
                 break;
             case R.id.business_layout:

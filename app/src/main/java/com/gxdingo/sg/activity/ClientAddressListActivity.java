@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,12 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amap.api.maps.AMap;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientAddressAdapter;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
@@ -34,6 +35,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
@@ -50,6 +52,12 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @BindView(R.id.recyclerView)
     public RecyclerView mRecyclerView;
+
+    @BindView(R.id.location_name_tv)
+    public TextView location_name_tv;
+
+    @BindView(R.id.current_location_tv)
+    public TextView current_location_tv;
 
     private ClientAddressAdapter mAdapter;
 
@@ -108,14 +116,20 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_activity_address_list;
     }
 
-    @OnClick(R.id.txt_more)
+    @OnClick({R.id.txt_more, R.id.current_location_tv, R.id.location_name_tv})
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.txt_more:
                 goToPage(this, ClientNewAddressActivity.class, null);
+                break;
+            case R.id.current_location_tv:
+                getP().getLocationInfo(getRxPermissions(), true);
+                break;
+            case R.id.location_name_tv:
+                getP().getLocationInfo(getRxPermissions(), true);
                 break;
         }
     }
@@ -144,7 +158,13 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     protected void initData() {
+
         getP().getAddressList(true);
+
+        if (isEmpty(LocalConstant.locationSelected))
+            getP().getLocationInfo(getRxPermissions(), false);
+        else
+            location_name_tv.setText(LocalConstant.locationSelected);
     }
 
     @Override
@@ -249,7 +269,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
 
     @Override
     public void setCityName(String cityName) {
-
+        location_name_tv.setText(cityName);
     }
 
     @Override
@@ -260,5 +280,19 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     @Override
     public AMap getAMap() {
         return null;
+    }
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == 0)
+            finish();
+    }
+
+    @Override
+    public void onFailed() {
+        super.onFailed();
+        location_name_tv.setText("定位失败");
+        current_location_tv.setText("重新定位");
     }
 }

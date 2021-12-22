@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -28,7 +29,7 @@ public class ClientHomeContract {
 
         void getNearbyStore(boolean refresh,boolean search,int categoryId);
 
-        void getNearbyStore(AddressBean addressBean,int categoryId);
+        void getNearbyStore(Object addressBean,int categoryId);
 
         void fllInvitationCode(String code);
 
@@ -49,6 +50,11 @@ public class ClientHomeContract {
         void checkHelpCode();
 
         void help();
+
+        void getShareUrl();
+
+        void resetPage();
+
     }
 
     public interface ClientHomeListener{
@@ -64,5 +70,7 @@ public class ClientHomeContract {
         void onHistoryResult(List<String> searchHistories);
 
         void onHelpDataResult(HelpBean helpBean);
+
+        void onShareUrlResult(ShareBean shareBean);
     }
 }

@@ -182,10 +182,12 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         }
 
+
+
         if (data.getCommentList().size() < 10) {
             //小余10条不显示 展开、收起布局
             llCommentUnfoldPutAwayLayout.setVisibility(View.GONE);
-        } else if (data.getCommentList().size() == 10 && data.getCommentList().size() != data.getComments()) {
+        } else if (data.getCommentList().size() >=10 && data.getCommentList().size() != data.getComments()) {
 
             llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
             tvCommentUnfoldPutAwayText.setText("展开更多");

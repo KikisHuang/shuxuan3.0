@@ -9,10 +9,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
-import com.alibaba.idst.nui.CommonUtils;
-import com.alibaba.idst.nui.Constants;
-import com.alibaba.idst.nui.INativeFileTransCallback;
-import com.alibaba.idst.nui.NativeNui;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;

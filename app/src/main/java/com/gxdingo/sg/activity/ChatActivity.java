@@ -329,7 +329,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         if (UserInfoUtils.getInstance().isLogin())
             //im服务启动检测
-            startImService(reference.get());
+            startImService();
 
 
     }

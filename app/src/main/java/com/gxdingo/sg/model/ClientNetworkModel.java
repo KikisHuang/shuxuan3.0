@@ -11,6 +11,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.ClientApi;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -72,6 +73,7 @@ import static com.gxdingo.sg.http.ClientApi.COUPON_LIST;
 import static com.gxdingo.sg.http.ClientApi.COUPON_RECEIVE;
 import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
 import static com.gxdingo.sg.http.ClientApi.HELP_AFTER;
+import static com.gxdingo.sg.http.ClientApi.INVITESELLER;
 import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
 import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
 import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
@@ -181,8 +183,6 @@ public class ClientNetworkModel {
                 nextPage();
                 netWorkListener.haveData();
             }
-
-
             netWorkListener.finishLoadmore(true);
         }
         netWorkListener.onRequestComplete();
@@ -328,7 +328,7 @@ public class ClientNetworkModel {
     }
 
     /**
-     * 商家列表\附近商家
+     * 商家列表 \ 附近商家 \ 搜索附近商家
      *
      * @param context
      * @param lon
@@ -337,6 +337,7 @@ public class ClientNetworkModel {
     public void getStoreList(Context context, boolean refresh, double lon, double lat, int categoryId, String key) {
 
         netWorkListener.onStarts();
+
         if (refresh)
             resetPage();
 
@@ -383,12 +384,11 @@ public class ClientNetworkModel {
 
                 if (netWorkListener != null) {
                     if (storeListBean != null && storeListBean.getList() != null) {
+                        pageNext(refresh, storeListBean.getList().size());
                         netWorkListener.onData(refresh, storeListBean);
                         netWorkListener.onAfters();
-                        pageNext(refresh, storeListBean.getList().size());
                     }
                 }
-
                 netWorkListener.onAfters();
 
             }
@@ -1680,7 +1680,7 @@ public class ClientNetworkModel {
             netWorkListener.onStarts();
         }
 
-//        map.put(Constant.CODE, code);
+        //map.put(Constant.CODE, code);
         map.put("completeType", String.valueOf(completeType));
 
         Observable<NormalBean> observable = HttpClient.post(TASK_COMPLETE, map)
@@ -1716,5 +1716,48 @@ public class ClientNetworkModel {
 
     }
 
+    /**
+     * 获取分享链接
+     *
+     * @param context
+     * @param customResultListener
+     */
+    public void getShareUrl(Context context, CustomResultListener customResultListener) {
+        Map<String, String> map = getJsonMap();
 
+//        map.put("identifier", String.valueOf());
+
+        Observable<ShareBean> observable = HttpClient.post(INVITESELLER, map)
+                .execute(new CallClazzProxy<ApiResult<ShareBean>, ShareBean>(new TypeToken<ShareBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ShareBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(ShareBean normalBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+
+                    if (customResultListener != null)
+                        customResultListener.onResult(normalBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
 }

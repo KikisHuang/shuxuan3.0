@@ -167,13 +167,70 @@
 
                 <ImageView
                     android:id="@+id/iv_business_license"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_centerInParent="true"
-                    android:src="#552365" />
+                    android:scaleType="centerCrop"
+                    tools:src="#552365" />
 
                 <ImageView
                     android:id="@+id/iv_del_business_license"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/btn_delete_8616" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/branch_information_layout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/ll_business_license_layout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:text="上传店铺门头照"
+                android:textColor="@color/graye2e2e2" />
+
+            <TextView
+                android:id="@+id/upload_branch_information_license"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:paddingLeft="26dp"
+                android:paddingRight="26dp"
+                android:text="立即上传"
+                android:textColor="#FF74A0EC"
+                android:textSize="14sp" />
+
+            <RelativeLayout
+                android:id="@+id/branch_information_license_layout"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:layout_marginRight="15dp">
+
+                <ImageView
+                    android:id="@+id/iv_branch_information_license"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerInParent="true"
+                    android:scaleType="centerCrop"
+                    tools:src="#552365" />
+
+                <ImageView
+                    android:id="@+id/iv_del_branch_information_license"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"

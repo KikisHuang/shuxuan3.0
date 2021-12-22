@@ -74,6 +74,8 @@ public class LocalConstant {
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
 
+    public static  String AdCode = "";
+
     //第一次登录标识符
     public static final String FIRST_LOGIN_KEY = "shugou_first_login_key";
     //第一次进入用户端标识符 用于显示输入邀请码弹框
@@ -94,6 +96,8 @@ public class LocalConstant {
     public static final String LONGITUDE1 = "longitude1";
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
+
+    public static  String locationSelected = "";
 
     public static final String REASON = "reason";
 

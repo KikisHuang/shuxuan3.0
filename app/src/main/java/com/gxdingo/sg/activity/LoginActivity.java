@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
@@ -331,18 +332,19 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     private void setLoginWayState() {
         if (isUserId) {
-            store_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            store_login_tv.setTextColor(getc(R.color.white));
-
-            user_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            user_login_tv.setTextColor(getc(R.color.green_dominant_tone));
-        } else {
-            user_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            user_login_tv.setTextColor(getc(R.color.white));
-
             store_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
             store_login_tv.setTextColor(getc(R.color.green_dominant_tone));
+
+            user_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            user_login_tv.setTextColor(getc(R.color.white));
+        } else {
+            user_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
+            user_login_tv.setTextColor(getc(R.color.green_dominant_tone));
+
+            store_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
+            store_login_tv.setTextColor(getc(R.color.white));
         }
+        sendEvent(new IdSwitchEvent(isUserId));
 
     }
 }

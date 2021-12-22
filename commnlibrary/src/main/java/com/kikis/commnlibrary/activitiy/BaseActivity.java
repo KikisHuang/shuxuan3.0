@@ -780,13 +780,13 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
     public void finishLoadmoreWithNoMoreData() {
         if (refreshLayout != null)
             refreshLayout.finishLoadMoreWithNoMoreData();
+
     }
 
     @Override
     public void resetNoMoreData() {
         if (refreshLayout != null)
             refreshLayout.resetNoMoreData();
-
 
     }
 

@@ -15,6 +15,8 @@ public class StoreLocalConstant {
     public static final String REGION_PATH = "regionPath";
     public static final String ADDRESS = "address";
     public static final String BUSINESS_LICENCE = "businessLicence";
+    public static final String STOREDOOR_PHOTO = "storeDoorPhoto";
+    public static final String INVITATION_CODE = "invitationCode";
     public static final String LONGITUDE = "longitude";
     public static final String LATITUDE = "latitude";
 

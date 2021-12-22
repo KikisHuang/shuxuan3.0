@@ -15,6 +15,7 @@ import com.kikis.commnlibrary.view.GlideRoundTransform;
 import org.jetbrains.annotations.NotNull;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 
 /**
  * @author: Weaving
@@ -31,28 +32,32 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
         super(R.layout.module_recycle_item_store);
 //        mType = type;
 //        if (type == 0)
-        addChildClickViewIds(R.id.store_avatar_iv,R.id.call_phone_iv);
+        addChildClickViewIds(R.id.store_avatar_iv, R.id.call_phone_iv);
     }
 
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, StoreListBean.StoreBean storeBean) {
         Glide.with(getContext())
-                .load(isEmpty(storeBean.getAvatar())?R.drawable.module_svg_client_default_avatar:storeBean.getAvatar())
+                .load(isEmpty(storeBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : storeBean.getAvatar())
                 .apply(RequestOptions.bitmapTransform(new GlideRoundTransform(6)))
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
-        baseViewHolder.setText(R.id.store_name_tv,storeBean.getName());
-        baseViewHolder.setText(R.id.distance_tv,"距离"+(Math.round(storeBean.getDistance()*100/1000)/100.0)+"km");
+        baseViewHolder.setText(R.id.store_name_tv, storeBean.getName());
+
+        baseViewHolder.setText(R.id.distance_tv, "距离" + (div(String.valueOf(53), String.valueOf(1000), 2) + "km"));
+
         LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
+
         labelsView.setLabels(storeBean.getClassNameList());
-        if (storeBean.isShowTop()){
+
+        if (storeBean.isShowTop()) {
             baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);
-        }else {
+        } else {
             baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.GONE);
         }
 
 //        if (mType == 0)
-        baseViewHolder.setText(R.id.phone_number_tv,storeBean.getContactNumber());
+        baseViewHolder.setText(R.id.phone_number_tv, storeBean.getContactNumber());
 
     }
 }

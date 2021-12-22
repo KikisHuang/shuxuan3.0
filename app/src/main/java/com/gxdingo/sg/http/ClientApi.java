@@ -283,4 +283,9 @@ public class ClientApi {
      * 完成用户大转盘抽奖任务
      */
     public static final String TASK_COMPLETE = HIERARCHY + "activity/task/completed";
+
+    /**
+     * 邀请信息
+     */
+    public static final String INVITESELLER = HIERARCHY + "activity/inviteSeller";
 }

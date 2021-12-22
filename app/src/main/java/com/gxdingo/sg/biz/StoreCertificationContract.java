@@ -29,13 +29,15 @@ public class StoreCertificationContract {
 
         //提交认证信息
         void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
-                , String regionPath, String address, String businessLicence, double longitude, double latitude);
+                , String regionPath, String address, String businessLicence,String storeLicence, double longitude, double latitude);
 
         //刷新登录信息
         void getLoginInfoStatus();
 
         //退出登录
         void logout();
+
+        void getInvitationCode();
     }
 
     public interface StoreCertificationListener {
@@ -56,5 +58,8 @@ public class StoreCertificationContract {
 
         //被驳回
         void rejected();
+
+        //显示活动类型布局
+        void showActivityTypeLayout(int type);
     }
 }

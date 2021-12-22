@@ -10,6 +10,7 @@ import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.tencent.bugly.crashreport.CrashReport;
 
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
@@ -32,28 +33,27 @@ public class ShibbolethModel {
     /**
      * 检测口令
      */
-    public static void checkShibboleth(OnCodeListener listener) {
+    public static void checkShibboleth(OnCodeListener listener, int delayTime) {
 
-        new Handler().postDelayed(() -> {
+        try {
+            new Handler().postDelayed(() -> {
 
-            String copyContent = ClipboardUtils.getText().toString();
+                String copyContent = ClipboardUtils.getText().toString();
 
-            //判断是否有这个内容
-            if (!isEmpty(copyContent)) {
-
+                //判断是否有这个内容
+                if (!isEmpty(copyContent)) {
 //                String code = copyContent.substring(0, copyContent.indexOf(" "));
+                    //是否口令
+                    if (isShuXiangShibboleth(copyContent)) {
 
-                //是否口令
-                if (isShuXiangShibboleth(copyContent)) {
+                        //获取活动类型
+                        int mType = getAcType(numberDecode(copyContent));
 
+                        if (listener != null)
+                            listener.onCode(mType, copyContent);
 
-                    //获取活动类型
-                    int mType = getAcType(numberDecode(copyContent));
+                        String url = "";
 
-                    if (listener!=null)
-                        listener.onCode(mType,copyContent);
-
-                    String url = "";
 
         /*            String tempUrl = "";
 
@@ -79,12 +79,14 @@ public class ShibbolethModel {
                     }*/
 //                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
 
-                    //清空剪贴板
-                    copyText("");
+                        //清空剪贴板
+                        copyText("");
+                    }
                 }
-            }
-        }, 1000);//1秒后执行Runnable中的run方法
-
+            }, delayTime);//1秒后执行Runnable中的run方法
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);  // bugly会将这个throwable上报
+        }
     }
 
 }

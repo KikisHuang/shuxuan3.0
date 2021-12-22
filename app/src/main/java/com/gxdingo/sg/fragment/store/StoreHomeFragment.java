@@ -33,7 +33,10 @@ import com.gxdingo.sg.adapter.ClientStoreAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.OnContentListener;
@@ -133,7 +136,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     @Override
     protected ClientHomeContract.ClientHomePresenter createPresenter() {
-        return new ClientHomePresenter();
+        return new ClientHomePresenter(true);
     }
 
     @Override
@@ -176,7 +179,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
         if (location)
-            getP().getNearbyStore(true, true, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishRefresh();
@@ -190,7 +193,10 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         if (getP() != null) {
             if (!hidden) {
                 categoryId = 0;
-                getP().getNearbyStore(true, true, categoryId);
+                //填写了入驻信息才查询附近商家
+                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                    getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
             }
         }
     }
@@ -205,12 +211,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
         if (location)
-            getP().getNearbyStore(false, false, categoryId);
+            getContentView().post(() -> getP().getNearbyStore(false, false, categoryId));
         else {
             getP().checkPermissions(getRxPermissions(), true);
             smartrefreshlayout.finishLoadMore();
         }
-
     }
 
     @Override
@@ -274,7 +279,9 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 this.location = true;
                 getP().getNearbyStore((AddressBean) object, categoryId);
             }
-
+        } else if (object instanceof changeLocationEvent) {
+            changeLocationEvent event = (changeLocationEvent) object;
+            location_tv.setText(event.name);
         }
     }
 
@@ -297,7 +304,12 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
         getP().checkPermissions(getRxPermissions(), true);
-        getP().getCategory();
+
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+
+        //成功入驻信息才查询分类
+        if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+            getP().getCategory();
 
     }
 
@@ -443,6 +455,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                     }
                 }))
                 .show();
+    }
+
+    @Override
+    public void onShareUrlResult(ShareBean shareBean) {
+
     }
 
     @Override

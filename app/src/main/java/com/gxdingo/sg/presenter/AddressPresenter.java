@@ -7,8 +7,9 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
-import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.changeLocationEvent;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.biz.AddressContract;
@@ -23,6 +24,8 @@ import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -32,7 +35,6 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.ADDADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DELADDRESS_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 /**
  * @author: Weaving
@@ -255,6 +257,64 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     public void cacheAddress(AddressBean item) {
         if (mClientCommonModel != null)
             mClientCommonModel.cacheDefaultAddress(item);
+    }
+
+    /**
+     * 获取定位信息
+     *
+     * @param rxPermissions
+     * @param setLocation
+     */
+    @Override
+    public void getLocationInfo(RxPermissions rxPermissions, boolean setLocation) {
+
+
+        if (mClientCommonModel != null) {
+            mClientCommonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
+                @Override
+                public void onNext(boolean value) {
+                    if (isViewAttached() && isBViewAttached()) {
+                        if (!value)
+                            getBV().onFailed();
+                        else {
+
+                            model.location(getContext(), aMapLocation -> {
+
+                                if (aMapLocation.getErrorCode() == 0) {
+                                    if (isViewAttached())
+                                        getV().setCityName(aMapLocation.getPoiName());
+                                    if (setLocation) {
+
+                                        if (mClientCommonModel != null)
+                                            mClientCommonModel.clearCacheDefaultAddress();
+
+                                        LocalConstant.locationSelected = aMapLocation.getPoiName();
+                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(),aMapLocation.getLongitude(),aMapLocation.getLatitude()));
+
+                                        if (isBViewAttached())
+                                            getBV().onSucceed(0);
+                                    }
+
+                                } else {
+                                    getBV().onMessage(aMapLocation.getLocationDetail());
+                                    getBV().onFailed();
+                                }
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        }
     }
 
     @Override

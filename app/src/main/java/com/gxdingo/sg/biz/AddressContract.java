@@ -46,6 +46,8 @@ public class AddressContract {
         void moveCamera();
 
         void cacheAddress(AddressBean item);
+
+        void getLocationInfo(RxPermissions rxPermissions, boolean b);
     }
 
     public interface AddressListener {

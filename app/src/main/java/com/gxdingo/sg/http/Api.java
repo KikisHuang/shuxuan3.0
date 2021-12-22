@@ -159,5 +159,9 @@ public class Api {
      * 投诉
      */
     public static final String COMPLAINT_MSG = HIERARCHY + "complaint/msg";
+    /**
+     * 获取或存放邀请码至服务器
+     */
+    public static final String INVITATIONCODE = HIERARCHY + "store/save/or/get/invitationCode";
 
 }
