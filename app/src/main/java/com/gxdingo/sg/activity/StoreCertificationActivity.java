@@ -256,7 +256,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
             isCheck = true;
             getP().getInvitationCode();
         }
-
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.alibaba.sdk.android.push.MessageReceiver;
 import com.alibaba.sdk.android.push.notification.CPushMessage;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.bean.PushBean;
 import com.kikis.commnlibrary.utils.BadgerManger;

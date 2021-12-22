@@ -31,7 +31,7 @@ public class BadgerUtils {
 
     //xiaomi oppo 通用
     public static void setNotificationBadge(Context context, int count) {
-        //TODO 小米角标有问题
+
 /*        NotificationManager notificationManager = (NotificationManager) context.getSystemService
                 (Context.NOTIFICATION_SERVICE);
         if (notificationManager == null) {
@@ -76,6 +76,8 @@ public class BadgerUtils {
             e.printStackTrace();
         }
         notificationManager.notify(notificationId++, notification);*/
+
+
     }
 
 

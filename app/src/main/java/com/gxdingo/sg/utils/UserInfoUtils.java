@@ -326,7 +326,7 @@ public class UserInfoUtils {
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                    LogUtils.w("bind account success account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override
