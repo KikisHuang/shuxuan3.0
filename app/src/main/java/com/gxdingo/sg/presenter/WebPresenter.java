@@ -295,5 +295,17 @@ public class WebPresenter extends BaseMvpPresenter<BasicsListener, WebContract.W
     public String getUserLocationInfo() {
         return  LocalConstant.AdCode;
     }
+
+    /**
+     * 上传区域编码
+     * @param adCode
+     */
+    @Override
+    public void upLoadRegionCode(String adCode) {
+        if (mClientNetworkModel!=null){
+            mClientNetworkModel.upLoadRegionCode(getContext(),adCode);
+        }
+
+    }
 }
 

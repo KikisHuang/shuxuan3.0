@@ -59,6 +59,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
+import static com.gxdingo.sg.http.Api.UPLOAD_INVITATIONCODE;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADDRESSES;
 import static com.gxdingo.sg.http.ClientApi.ADDRESS_DEFAULT;
@@ -1759,5 +1760,48 @@ public class ClientNetworkModel {
         observable.subscribe(subscriber);
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 上传区域编码
+     *
+     * @param context
+     * @param adCode
+     */
+    public void upLoadRegionCode(Context context, String adCode) {
+        Map<String, String> map = getJsonMap();
+
+        map.put("regionCode", String.valueOf(adCode));
+
+        Observable<ShareBean> observable = HttpClient.post(UPLOAD_INVITATIONCODE, map)
+                .execute(new CallClazzProxy<ApiResult<ShareBean>, ShareBean>(new TypeToken<ShareBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<ShareBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(ShareBean normalBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
     }
 }

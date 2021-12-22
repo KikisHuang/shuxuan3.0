@@ -140,8 +140,8 @@ public class BusinessDistrictModel {
         map.put(StoreLocalConstant.CURRENT, String.valueOf(mPage));
         map.put(StoreLocalConstant.SIZE, String.valueOf(mPageSize));
 
-        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.adCode))
-            map.put("area", LocalConstant.adCode);
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.AdCode))
+            map.put("area", LocalConstant.AdCode);
 
         if (storeId > 0)
             map.put("storeId", String.valueOf(storeId));

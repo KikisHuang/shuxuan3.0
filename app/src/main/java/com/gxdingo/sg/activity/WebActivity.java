@@ -151,8 +151,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setUserAgentString(ua + "ShuGou/" + getAppVersionName());
 
         webView.getSettings().setDefaultTextEncodingName("utf-8");
-        webView.getSettings().setDomStorageEnabled(true);
 
+        webView.getSettings().setDomStorageEnabled(true);
 
         webView.getSettings().setJavaScriptEnabled(true);
 
@@ -265,8 +265,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     public void onLoading(int progress) {
         if (progress < 100)
             onStarts();
-        else
+        else{
             onAfters();
+            getP().upLoadRegionCode(LocalConstant.AdCode);
+        }
     }
 
     @Override

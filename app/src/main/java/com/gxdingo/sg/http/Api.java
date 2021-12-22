@@ -163,5 +163,9 @@ public class Api {
      * 获取或存放邀请码至服务器
      */
     public static final String INVITATIONCODE = HIERARCHY + "store/save/or/get/invitationCode";
+    /**
+     * 上传邀请码至服务器
+     */
+    public static final String UPLOAD_INVITATIONCODE = HIERARCHY + "activity/add/regionCode";
 
 }

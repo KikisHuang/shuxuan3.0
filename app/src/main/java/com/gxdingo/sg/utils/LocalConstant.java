@@ -69,8 +69,6 @@ public class LocalConstant {
     //前后台标识符
     public static boolean isBackground = false;
 
-    public static String adCode = "";
-
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
 
