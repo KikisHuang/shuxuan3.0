@@ -10,7 +10,7 @@ public class Api {
     public static String URL;
 
     //uat服务器开关 ，***打包上线正式服请关闭此开关***
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
 
     public static final String SM = ":";
 
@@ -163,5 +163,9 @@ public class Api {
      * 获取或存放邀请码至服务器
      */
     public static final String INVITATIONCODE = HIERARCHY + "store/save/or/get/invitationCode";
+    /**
+     * 上传邀请码至服务器
+     */
+    public static final String UPLOAD_INVITATIONCODE = HIERARCHY + "activity/add/regionCode";
 
 }

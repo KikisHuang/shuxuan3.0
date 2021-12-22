@@ -19,7 +19,6 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
-import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -301,6 +300,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
      */
     @Override
     public void getInvitationCode() {
+
         String copyContent = ClipboardUtils.getText().toString();
         //判断剪贴板是否有这个内容
         if (!isEmpty(copyContent)) {

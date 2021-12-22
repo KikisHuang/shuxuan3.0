@@ -5,6 +5,9 @@ public class LocalConstant {
     //聊天订阅id
     public static String CHAT_UUID = "";
 
+    //刷新商圈未读消息时间
+    public static final int businessDistrictRefreshTime = 30000;
+
     //聊天常量
     //自己发送的文本类型
     public static final int SelfText = 7776;
@@ -68,8 +71,6 @@ public class LocalConstant {
 
     //前后台标识符
     public static boolean isBackground = false;
-
-    public static String adCode = "";
 
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";

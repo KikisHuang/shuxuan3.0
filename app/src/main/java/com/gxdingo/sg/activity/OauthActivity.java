@@ -13,8 +13,8 @@ import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.lxj.xpopup.XPopup;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -25,7 +25,7 @@ import butterknife.OnClick;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
@@ -131,9 +131,12 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onBaseEvent(object);
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
-            WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!TextUtils.isEmpty(event.code))
-                getP().oauthWeChatLogin(event.code);
+            if (weChatLoginType==0){
+                WeChatLoginEvent event = (WeChatLoginEvent) object;
+                if (!TextUtils.isEmpty(event.code))
+                    getP().oauthWeChatLogin(event.code);
+            }
+
         }else if (object instanceof IdSwitchEvent){
             IdSwitchEvent event = (IdSwitchEvent) object;
             getP().switchId(event.isUser);
@@ -143,17 +146,8 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE){
-            if (type == STORE_LOGIN_SUCCEED) {
-                sendEvent(new ReLoginBean());
-                SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-
-                goToPage(reference.get(), StoreActivity.class, null);
-
-            }
+        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE)
             finish();
-        }
-
 
     }
 }

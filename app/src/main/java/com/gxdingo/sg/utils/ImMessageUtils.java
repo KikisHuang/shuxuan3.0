@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
@@ -15,6 +15,7 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.KikisUitls;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.enums.ReadyState;
@@ -36,6 +37,7 @@ import javax.net.ssl.X509TrustManager;
 
 import static com.gxdingo.sg.utils.LocalConstant.IM_SIGN;
 import static com.gxdingo.sg.utils.LocalConstant.isBackground;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.CHAT_IDENTIFIER;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -153,7 +155,8 @@ public class ImMessageUtils {
                             //如果不是自己发送的消息，加入新消息未读
                             if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier())) {
                                 playBeep();
-                                MessageCountUtils.getInstance().addNewMessage();
+                                MessageCountManager.getInstance().addNewMessage();
+
                             } else {
                                 //自己发送的消息要手动调用服务端接口清除
                                 if (!isEmpty(LocalConstant.CHAT_UUID))

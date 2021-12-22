@@ -3,6 +3,7 @@ package com.gxdingo.sg.biz;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -62,9 +63,9 @@ public class ClientMainContract {
         /**
          * 设置商圈消息未读
          *
-         * @param num
+         * @param bean
          */
-        void setBusinessUnreadMsgNum(int num);
+        void setBusinessUnreadMsgNum(NumberUnreadCommentsBean bean);
     }
 
     public interface ClientMainModelListener {

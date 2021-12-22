@@ -1,29 +1,25 @@
 package com.gxdingo.sg.utils;
 
 import android.content.Context;
-import android.content.Intent;
 
 //import com.alibaba.sdk.android.push.CloudPushService;
 //import com.alibaba.sdk.android.push.CommonCallback;
 //import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import androidx.annotation.NonNull;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
-import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 //import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.LoginActivity;
 import com.gxdingo.sg.activity.OauthActivity;
 import com.gxdingo.sg.bean.UserBean;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -37,13 +33,9 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_OPENID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_PHONE_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
 public class UserInfoUtils {
@@ -88,7 +80,7 @@ public class UserInfoUtils {
             saveIdentifier("");
             saveWallpaper("");
             saveOpenId("");
-            MessageCountUtils.getInstance().setUnreadMessageNum(0);
+            MessageCountManager.getInstance().setUnreadMessageNum(0);
 
             SPUtils.getInstance().put(ADDRESS_CACHE, "");
             EventBus.getDefault().post(LOGOUT);
@@ -334,7 +326,7 @@ public class UserInfoUtils {
             PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    LogUtils.w("bind account success  account == " + UserInfoUtils.getInstance().getIdentifier());
+                    LogUtils.w("bind account success account == " + UserInfoUtils.getInstance().getIdentifier());
                 }
 
                 @Override

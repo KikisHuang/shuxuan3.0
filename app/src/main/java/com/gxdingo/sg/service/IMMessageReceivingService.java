@@ -6,14 +6,12 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.IBinder;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.bean.ExitChatEvent;
-import com.gxdingo.sg.utils.MessageCountUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
@@ -223,7 +221,7 @@ public class IMMessageReceivingService extends Service {
                         if (messageBean != null && messageBean.getId() > 0) {
 
                             if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier()))
-                                MessageCountUtils.getInstance().addNewMessage();
+                                MessageCountManager.getInstance().addNewMessage();
                             else {
                                 if (!isEmpty(LocalConstant.CHAT_UUID))
                                     EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));

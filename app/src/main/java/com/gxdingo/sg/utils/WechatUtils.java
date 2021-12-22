@@ -31,6 +31,9 @@ public class WechatUtils {
     // IWXAPI 是第三方app和微信通信的openApi接口
     private IWXAPI api;
 
+    //0 一键登录页面微信登录  1 手动登录页面微信登录
+    public static int weChatLoginType =0;
+
     private static WechatUtils wechatUtils;
 
     public WechatUtils() {
@@ -70,6 +73,12 @@ public class WechatUtils {
     }
 
     public IWXAPI getWxApi() {
+        regToWx();
+        return api;
+    }
+
+    public IWXAPI getWxApi(int t) {
+        weChatLoginType = t;
         regToWx();
         return api;
     }

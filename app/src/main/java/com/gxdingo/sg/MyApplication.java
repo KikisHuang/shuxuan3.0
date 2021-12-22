@@ -17,8 +17,11 @@ import androidx.multidex.MultiDex;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.huawei.HuaWeiRegister;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import com.blankj.utilcode.util.LogUtils;
+import com.alibaba.sdk.android.push.register.MiPushRegister;
+import com.alibaba.sdk.android.push.register.OppoRegister;
+import com.alibaba.sdk.android.push.register.VivoRegister;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.http.Api;
@@ -100,6 +103,10 @@ import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.BUGLYAPPID;
+import static com.kikis.commnlibrary.utils.Constant.MI_APPID;
+import static com.kikis.commnlibrary.utils.Constant.MI_APP_KEY;
+import static com.kikis.commnlibrary.utils.Constant.OPPO_APPKEY;
+import static com.kikis.commnlibrary.utils.Constant.OPPO_MASTERSECRET;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
@@ -553,13 +560,14 @@ public class MyApplication extends Application {
      */
     private void auxiliaryChannelInit() {
 
-    /*    //小米辅助推送通道注册（如不支持会跳过）
+        //小米辅助推送通道注册（如不支持会跳过）
         MiPushRegister.register(this, MI_APPID, MI_APP_KEY);
         //华为辅助推送通道注册（如不支持会跳过）
         HuaWeiRegister.register(this);
         // OPPO辅助通道注册
-        OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取*/
-
+        OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取
+        // vivo通道注册
+        VivoRegister.register(this);
     }
 
     /**

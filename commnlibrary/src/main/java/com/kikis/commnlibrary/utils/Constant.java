@@ -68,11 +68,11 @@ public class Constant {
     //阿里appid
     public static String ALI_APPID = "2021002138680668";
     //小米appid
-    public static String MI_APPID = "2882303761518396560";
+    public static String MI_APPID = "2882303761520002033";
 
     //oppo appkey
-    public static String OPPO_APPKEY = "75f9cb3df46b420d8b69c5cfd417dffd";
-    public static String OPPO_MASTERSECRET = "b8cc6e5ba95e4a46b47a030a6a8039bf";
+    public static String OPPO_APPKEY = "4cce3ddce416431c9509f21d39a3f2b0";
+    public static String OPPO_MASTERSECRET = "cec076a8efb8442a9b892ac3e35a3ff0";
 
     //qq secret
     public static String QQ_APP_SECRET = "d5eed81fe85eae9bcddb14ae9a78fdac";
@@ -81,7 +81,7 @@ public class Constant {
 
 
     //小米 appkey
-    public static String MI_APP_KEY = "5911839687560";
+    public static String MI_APP_KEY = "5642000265033";
 
     public static String UMENG_APP_KEY = "5da3dfb44ca3577f71000cd4";
     public static String DOUYIN_CLIENT_KEY = "awriamz58963bh44";

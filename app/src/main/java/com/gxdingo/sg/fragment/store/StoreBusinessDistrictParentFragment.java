@@ -212,7 +212,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
 
         if (ClientActivity.getInstance() != null)
-            ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+            ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
 
  /*       if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
             if (ClientActivity.getInstance() != null)

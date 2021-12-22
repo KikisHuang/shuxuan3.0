@@ -9,7 +9,6 @@ import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
-import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.BusinessDistrictModel;
@@ -19,11 +18,9 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
-import com.gxdingo.sg.utils.MessageCountUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
-import com.kikis.commnlibrary.biz.CustomResultListener;
-import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -34,7 +31,7 @@ import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
 
@@ -285,7 +282,9 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
         if (mWebSocketModel != null) {
             mWebSocketModel.getUnreadMessageNumber(getContext(), data -> {
-                MessageCountUtils.getInstance().setUnreadMessageNum((Integer) data);
+                MessageCountManager.getInstance().setUnreadMessageNum((Integer) data);
+                resetBadger(getContext());
+
                 if (isViewAttached())
                     getV().setUnreadMsgNum((Integer) data);
             });
@@ -298,7 +297,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
                      */
                     NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
                     if (isViewAttached())
-                        getV().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                        getV().setBusinessUnreadMsgNum(unreadCommentsBean);
                 }
             });
         }

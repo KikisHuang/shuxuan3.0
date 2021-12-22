@@ -32,7 +32,6 @@ public class LoginContract {
 
         void oauth();
 
-
         /**
          * 一键登录页面微信登陆
          *

@@ -139,6 +139,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     private void webInit() {
 
+        if (!UserInfoUtils.getInstance().isLogin()){
+            UserInfoUtils.getInstance().goToOauthPage(reference.get());
+            finish();
+            return;
+        }
 
         webView.getSettings().setBlockNetworkImage(false);
 
@@ -151,8 +156,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setUserAgentString(ua + "ShuGou/" + getAppVersionName());
 
         webView.getSettings().setDefaultTextEncodingName("utf-8");
-        webView.getSettings().setDomStorageEnabled(true);
 
+        webView.getSettings().setDomStorageEnabled(true);
 
         webView.getSettings().setJavaScriptEnabled(true);
 
@@ -265,8 +270,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     public void onLoading(int progress) {
         if (progress < 100)
             onStarts();
-        else
+        else{
             onAfters();
+            getP().upLoadRegionCode(LocalConstant.AdCode);
+        }
     }
 
     @Override
@@ -277,7 +284,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void loadWebUrl(WebBean webBean) {
         if (!isEmpty(webBean.getContent())) {
-//            webView.loadUrl(webBean.getContent());
+            // webView.loadUrl(webBean.getContent());
             webView.loadDataWithBaseURL(null, webBean.getContent(), "text/html", "utf-8", null);
         } else {
             onMessage("没有获取当文章详情");

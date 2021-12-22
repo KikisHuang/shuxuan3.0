@@ -34,6 +34,7 @@ public class WebContract {
 
         String getUserLocationInfo();
 
+        void upLoadRegionCode(String adCode);
     }
 
     public interface WebListener {
