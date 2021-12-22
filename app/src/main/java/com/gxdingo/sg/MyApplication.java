@@ -17,6 +17,7 @@ import androidx.multidex.MultiDex;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.huawei.HuaWeiRegister;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.alibaba.sdk.android.push.register.MiPushRegister;
 import com.alibaba.sdk.android.push.register.OppoRegister;
@@ -563,7 +564,7 @@ public class MyApplication extends Application {
         //小米辅助推送通道注册（如不支持会跳过）
         MiPushRegister.register(this, MI_APPID, MI_APP_KEY);
         //华为辅助推送通道注册（如不支持会跳过）
-//        HuaWeiRegister.register(this);
+        HuaWeiRegister.register(this);
         // OPPO辅助通道注册
         OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取
         // vivo通道注册
