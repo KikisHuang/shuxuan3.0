@@ -301,6 +301,9 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
      */
     @Override
     public void getInvitationCode() {
+
+
+
         String copyContent = ClipboardUtils.getText().toString();
         //判断剪贴板是否有这个内容
         if (!isEmpty(copyContent)) {
