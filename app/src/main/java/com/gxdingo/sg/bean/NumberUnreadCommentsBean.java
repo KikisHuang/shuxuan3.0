@@ -16,5 +16,13 @@ public class NumberUnreadCommentsBean implements Serializable {
     }
 
     private int unread;
+    private int circleUnread;
 
+    public int getCircleUnread() {
+        return circleUnread;
+    }
+
+    public void setCircleUnread(int circleUnread) {
+        this.circleUnread = circleUnread;
+    }
 }

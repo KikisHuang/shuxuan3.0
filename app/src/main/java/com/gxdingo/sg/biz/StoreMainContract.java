@@ -4,6 +4,7 @@ package com.gxdingo.sg.biz;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -62,7 +63,7 @@ public class StoreMainContract {
          *
          * @param num
          */
-        void setBusinessUnreadMsgNum(int num);
+        void setBusinessUnreadMsgNum(NumberUnreadCommentsBean num);
 
         void showNotifyDialog();
     }

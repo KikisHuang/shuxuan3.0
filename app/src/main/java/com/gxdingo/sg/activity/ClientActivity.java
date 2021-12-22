@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
@@ -33,6 +35,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.utils.RxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
@@ -52,6 +56,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 
 /**
  * @author: Weaving
@@ -79,12 +84,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
-    private boolean showLogin = true;
-
     private static ClientActivity instance;
     StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
     //屏幕监听
     private ScreenListener screenListener;
+
 
     public static ClientActivity getInstance() {
         return instance;
@@ -177,10 +181,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             AliPushMessageReceiver.count = 0;
             BadgeUtil.setBadge(0,this);
         }*/
-
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
-           startImService();
+            startImService();
+            RxUtil.intervals(businessDistrictRefreshTime, number -> {
+                getP().getUnreadMessageNum();
+            }, this);
         }
 
 
@@ -236,7 +242,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().getWechatAuth();
         } else if (type == LOGOUT) {
             setUnreadMsgNum(0);
-            setBusinessUnreadMsgNum(0);
+            setBusinessUnreadMsgNum(null);
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
             getP().checkTab(0);
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
@@ -347,9 +353,18 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     }
 
     @Override
-    public void setBusinessUnreadMsgNum(int data) {
-        tv_business_unread_msg_count.setText(data > 99 ? "99" : "" + data);
-        tv_business_unread_msg_count.setVisibility(data <= 0 ? View.GONE : View.VISIBLE);
+    public void setBusinessUnreadMsgNum(NumberUnreadCommentsBean data) {
+        if (data == null) {
+            tv_business_unread_msg_count.setVisibility(View.GONE);
+            return;
+        }
+        if (data.getUnread() > 0) {
+            tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
+            tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
+        } else {
+            tv_business_unread_msg_count.setText("");
+            tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override
@@ -379,6 +394,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onStop() {
         super.onStop();
+        cancel();
         resetBadger(reference.get());
     }
 

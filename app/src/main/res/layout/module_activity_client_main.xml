@@ -116,7 +116,7 @@
                 android:visibility="gone"
                 android:textColor="@color/white"
                 android:textSize="9sp"
-                tools:text="1" />
+                tools:text=" " />
         </FrameLayout>
 
         <com.gxdingo.sg.view.CircularRevealButton

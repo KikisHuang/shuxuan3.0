@@ -233,7 +233,6 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
                 new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
             });
         }
-
     }
 
 

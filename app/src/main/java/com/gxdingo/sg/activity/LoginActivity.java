@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,7 @@ import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -249,9 +251,12 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     protected void onBaseEvent(Object object) {
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
-            WeChatLoginEvent event = (WeChatLoginEvent) object;
-            if (!isEmpty(event.code))
-                getP().weChatLogin(event.code);
+
+            if (weChatLoginType==1){
+                WeChatLoginEvent event = (WeChatLoginEvent) object;
+                if (!TextUtils.isEmpty(event.code))
+                    getP().oauthWeChatLogin(event.code);
+            }
         }
     }
 

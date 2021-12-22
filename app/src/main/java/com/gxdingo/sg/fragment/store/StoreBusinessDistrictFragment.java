@@ -104,7 +104,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     Context mContext;
     BusinessDistrictListAdapter mAdapter;
-//    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
+    //    TextView tvCommentUnfoldText;//适配器item中的展开更多控件引用
     int mDelPosition = -1;//要删除商圈的索引位置
 
     //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
@@ -231,7 +231,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void initData() {
 
-
     }
 
     @Override
@@ -239,22 +238,17 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
-            //只有用户端商圈获取未读消息
+          /*  //只有用户端商圈获取未读消息
             if (mType == 0)
-                getP().getNumberUnreadComments();
+                getP().getNumberUnreadComments();*/
+
+            getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
             }
-
-//            if (isBrowsing){
-//                cl_visit_countdown.setVisibility(View.VISIBLE);
-//                startCountDown();
-//            }else {
-//                cl_visit_countdown.setVisibility(View.GONE);
-//            }
 
         }
     }
@@ -465,6 +459,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
+                //刷新未读消息
+                getP().getNumberUnreadComments();
                 mAdapter.setList(bean.getList());
             } else {
                 mAdapter.addData(bean.getList());
@@ -505,15 +501,16 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      */
     @Override
     public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
+
         tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
 
         if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
             if (ClientActivity.getInstance() != null)
-                ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         } else {
             if (StoreActivity.getInstance() != null)
-                StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean.getUnread());
+                StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         }
 
     }
