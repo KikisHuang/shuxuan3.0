@@ -17,19 +17,16 @@ import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreMessageFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
 import com.gxdingo.sg.fragment.store.StoreWalletFragment;
 import com.gxdingo.sg.presenter.StoreMainPresenter;
-import com.gxdingo.sg.receiver.AliPushMessageReceiver;
-import com.gxdingo.sg.utils.BadgeUtil;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.MessageCountUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.CircularRevealButton;
@@ -49,6 +46,7 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -232,7 +230,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             if (!isAcBackground)
                 showNewMessageDialog((ReceiveIMMessageBean) object);
 
-            setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+            setUnreadMsgNum(MessageCountManager.getInstance().getUnreadMessageNum());
         }
 
         if (object instanceof ReLoginBean)
@@ -258,10 +256,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     public void onStarts() {
         super.onStarts();
-        if (AliPushMessageReceiver.count>0){
+        /*if (AliPushMessageReceiver.count>0){
             AliPushMessageReceiver.count = 0;
             BadgeUtil.setBadge(0,this);
-        }
+        }*/
     }
 
     @Override
@@ -415,6 +413,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
         if (ImMessageUtils.getInstance().isRunning())
             ImServiceUtils.stopImService();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        resetBadger(reference.get());
     }
 
     @Override

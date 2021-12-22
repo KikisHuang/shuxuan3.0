@@ -3,29 +3,17 @@ package com.gxdingo.sg.receiver;
 import android.content.Context;
 
 import com.alibaba.sdk.android.push.MessageReceiver;
-import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.alibaba.sdk.android.push.notification.CPushMessage;
-import com.blankj.utilcode.util.GsonUtils;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.bean.PushBean;
-import com.gxdingo.sg.utils.BadgeUtil;
-import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.utils.BadgerManger;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.Map;
 
-import static com.blankj.utilcode.util.ScreenUtils.isScreenLock;
-import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 
 /**
@@ -37,7 +25,6 @@ public class AliPushMessageReceiver extends MessageReceiver {
     public static final String TAG = "Shuxiang_User_Push";
 
 
-    public static int count = 0;
     /**
      * 当通知准确到达用户的时候触发
      *
@@ -64,8 +51,8 @@ public class AliPushMessageReceiver extends MessageReceiver {
             if (!LocalConstant.isBackground)
                 PushServiceFactory.getCloudPushService().clearNotifications();
         }*/
-        count ++ ;
-        BadgeUtil.setBadge(count,context);
+
+        BadgerManger.addBadgerNum(context);
 
     }
 

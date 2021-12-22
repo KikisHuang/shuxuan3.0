@@ -1,7 +1,6 @@
 package com.gxdingo.sg.fragment.store;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
@@ -32,7 +31,7 @@ import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreHomeContract;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreHomePresenter;
-import com.gxdingo.sg.utils.MessageCountUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
@@ -54,6 +53,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -223,7 +223,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
                 getP().clearUnreadMsg(subscribesMessage.getShareUuid());
 
                 if (StoreActivity.getInstance() != null)
-                    StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().reduceUnreadMessageNum(subscribesMessage.getUnreadNum()));
+                    StoreActivity.getInstance().setUnreadMsgNum(MessageCountManager.getInstance().reduceUnreadMessageNum(subscribesMessage.getUnreadNum()));
 
             }
         });
@@ -420,7 +420,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
                 SubscribesListBean.SubscribesMessage data = mStoreHomeIMMessageAdapter.getData().get(i);
 
                 if (data.getShareUuid().equals(id)) {
-                    MessageCountUtils.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
+                    MessageCountManager.getInstance().reduceUnreadMessageNum(data.getUnreadNum());
                     data.setUnreadNum(0);
                     e.onNext(i);
                 }
@@ -430,7 +430,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
             int pos = (int) o;
 
             if (StoreActivity.getInstance() != null)
-                StoreActivity.getInstance().setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+                StoreActivity.getInstance().setUnreadMsgNum(MessageCountManager.getInstance().getUnreadMessageNum());
 
             mStoreHomeIMMessageAdapter.notifyItemChanged(pos);
         });

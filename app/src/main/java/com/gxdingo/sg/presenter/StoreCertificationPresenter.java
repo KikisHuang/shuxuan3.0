@@ -3,7 +3,6 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 import android.content.Context;
 
-import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
@@ -16,10 +15,8 @@ import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
-import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
