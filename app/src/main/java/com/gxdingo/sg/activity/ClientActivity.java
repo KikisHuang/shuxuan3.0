@@ -235,6 +235,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
         } else if (type == LOGOUT) {
+            setUnreadMsgNum(0);
+            setBusinessUnreadMsgNum(0);
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
             getP().checkTab(0);
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {

@@ -320,22 +320,19 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
      */
     @Override
     public void onSeleted(int checkTab, int oldTab) {
-
-
         mMenuLayout.get(checkTab).setonSelected(true);
-
         mMenuLayout.get(oldTab).setonSelected(false);
-
     }
 
 
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LOGOUT)
+        if (type == LOGOUT) {
+            setUnreadMsgNum(0);
+            setBusinessUnreadMsgNum(0);
             finish();
-        else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
-
+        } else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
             finish();
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED)
             getP().getUnreadMessageNum();

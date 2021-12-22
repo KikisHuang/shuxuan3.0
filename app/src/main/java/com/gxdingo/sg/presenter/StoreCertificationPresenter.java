@@ -2,9 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 
-import com.blankj.utilcode.util.ClipboardUtils;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
@@ -16,13 +14,10 @@ import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
-import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
-import com.gxdingo.sg.utils.MessageCountUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
@@ -102,7 +97,9 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().onBusinessScopeResult(businessScopeBean.getList());
                     });
                 }
+
             }
+
         }
     }
 
@@ -259,6 +256,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         }
     }
 
+
     @Override
     public void getLoginInfoStatus() {
         if (!UserInfoUtils.getInstance().isLogin())
@@ -295,29 +293,8 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
             networkModel.logOut(getContext());
     }
 
-
-    /**
-     * 获取或存放邀请码至服务器
-     */
     @Override
     public void getInvitationCode() {
-        String copyContent = ClipboardUtils.getText().toString();
-        //判断剪贴板是否有这个内容
-        if (!isEmpty(copyContent)) {
-            ShibbolethModel.checkShibboleth((type, code) -> {
-                if (networkModel != null) {
-                    networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
-                        //如果是被邀请过来的商家，显示布局
-                        if (isViewAttached()) getV().showActivityTypeLayout(type);
-                    });
-                }
-            }, 50);
-        } else {
-            if (networkModel != null) {
-                networkModel.getInvitationCode(getContext(), "", result -> {
-                    if (isViewAttached()) getV().showActivityTypeLayout(30);
-                });
-            }
-        }
+
     }
 }
