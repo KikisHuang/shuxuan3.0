@@ -405,7 +405,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             return;
         }
         if (data.getUnread() > 0) {
-            tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data);
+            tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
             tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
         } else {
             tv_business_unread_msg_count.setText("");

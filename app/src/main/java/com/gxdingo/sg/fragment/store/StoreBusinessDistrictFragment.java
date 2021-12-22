@@ -238,22 +238,17 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
-            //只有用户端商圈获取未读消息
+          /*  //只有用户端商圈获取未读消息
             if (mType == 0)
-                getP().getNumberUnreadComments();
+                getP().getNumberUnreadComments();*/
+
+            getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
                 //获取商圈列表
                 getP().getBusinessDistrictList(true, mStoreId);
             }
-
-//            if (isBrowsing){
-//                cl_visit_countdown.setVisibility(View.VISIBLE);
-//                startCountDown();
-//            }else {
-//                cl_visit_countdown.setVisibility(View.GONE);
-//            }
 
         }
     }
@@ -326,15 +321,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void onRefresh(RefreshLayout refreshLayout) {
         //获取商圈列表
         getP().getBusinessDistrictList(true, mStoreId);
-
-        //清除菜单未读消息
-        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
-            if (ClientActivity.getInstance() != null)
-                ClientActivity.getInstance().setBusinessUnreadMsgNum(null);
-        } else {
-            if (StoreActivity.getInstance() != null)
-                StoreActivity.getInstance().setBusinessUnreadMsgNum(null);
-        }
     }
 
     /**
@@ -473,6 +459,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
+                //刷新未读消息
+                getP().getNumberUnreadComments();
                 mAdapter.setList(bean.getList());
             } else {
                 mAdapter.addData(bean.getList());
@@ -513,6 +501,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
      */
     @Override
     public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
+
         tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
 
