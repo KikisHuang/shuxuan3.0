@@ -139,6 +139,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     private void webInit() {
 
+        if (!UserInfoUtils.getInstance().isLogin()){
+            UserInfoUtils.getInstance().goToOauthPage(reference.get());
+            finish();
+            return;
+        }
 
         webView.getSettings().setBlockNetworkImage(false);
 
@@ -279,7 +284,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void loadWebUrl(WebBean webBean) {
         if (!isEmpty(webBean.getContent())) {
-//            webView.loadUrl(webBean.getContent());
+            // webView.loadUrl(webBean.getContent());
             webView.loadDataWithBaseURL(null, webBean.getContent(), "text/html", "utf-8", null);
         } else {
             onMessage("没有获取当文章详情");
