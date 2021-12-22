@@ -62,7 +62,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     private List<Fragment> mFragmentList;
 
-
     @BindViews({R.id.crb_store_home_page_layout, R.id.crb_store_message_layout, R.id.crb_store_wallet, R.id.crb_store_business_district, R.id.crb_store_my})
     public List<CircularRevealButton> mMenuLayout;
 
@@ -70,13 +69,11 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     private static StoreActivity instance;
 
-
     @BindView(R.id.tv_unread_msg_count)
     public TextView tv_unread_msg_count;
 
     @BindView(R.id.tv_business_unread_msg_count)
     public TextView tv_business_unread_msg_count;
-
     //屏幕监听
     private ScreenListener screenListener;
 
