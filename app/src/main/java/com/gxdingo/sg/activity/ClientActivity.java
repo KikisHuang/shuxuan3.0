@@ -1,8 +1,6 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,10 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
-import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -26,21 +22,17 @@ import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
-import com.gxdingo.sg.service.IMMessageReceivingService;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.MessageCountUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.utils.emotion.EmotionMainFragment;
 import com.gxdingo.sg.view.CircularRevealButton;
 import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.utils.BaseLogUtils;
-import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +44,9 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -182,6 +173,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
 //        }
+    /*    if (AliPushMessageReceiver.count>0){
+            AliPushMessageReceiver.count = 0;
+            BadgeUtil.setBadge(0,this);
+        }*/
 
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
@@ -215,7 +210,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             if (!isAcBackground)
                 showNewMessageDialog((ReceiveIMMessageBean) object);
 
-            setUnreadMsgNum(MessageCountUtils.getInstance().getUnreadMessageNum());
+            setUnreadMsgNum(MessageCountManager.getInstance().getUnreadMessageNum());
         }
 
 
@@ -376,6 +371,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        resetBadger(reference.get());
     }
 
     @Override

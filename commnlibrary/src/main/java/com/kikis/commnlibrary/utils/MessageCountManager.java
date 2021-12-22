@@ -1,25 +1,24 @@
-package com.gxdingo.sg.utils;
+package com.kikis.commnlibrary.utils;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.kikis.commnlibrary.utils.BaseLogUtils;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 
 /**
  * 未读消息统计util
  * kikis
  */
-public class MessageCountUtils {
+public class MessageCountManager {
 
-    private static MessageCountUtils instance;
-    private static final String TAG = MessageCountUtils.class.toString();
+    private static MessageCountManager instance;
 
+    private static final String TAG = MessageCountManager.class.toString();
 
-    private int count = 0;
+    public static int count = 0;
 
-    public static MessageCountUtils getInstance() {
+    public static MessageCountManager getInstance() {
         if (instance == null) {
-            synchronized (MessageCountUtils.class) {
+            synchronized (MessageCountManager.class) {
                 if (instance == null) {
-                    instance = new MessageCountUtils();
+                    instance = new MessageCountManager();
                 }
             }
         }

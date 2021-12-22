@@ -2,12 +2,10 @@ package com.gxdingo.sg.model;
 
 import android.content.Context;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.PayBean;
-import com.gxdingo.sg.utils.MessageCountUtils;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -40,6 +38,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
 import static com.gxdingo.sg.http.Api.SUM_UNREAD;
 import static com.gxdingo.sg.http.Api.TRANSFER;
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
 /**
@@ -283,6 +282,7 @@ public class WebSocketModel {
             public void onNext(NormalBean normalBean) {
                 if (customResultListener != null)
                     customResultListener.onResult(normalBean.unread);
+
             }
         };
 
