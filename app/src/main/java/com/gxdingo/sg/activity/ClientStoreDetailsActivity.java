@@ -275,7 +275,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void initData() {
-        getP().getStoreDetail(storeId);
+        getP().getStoreDetail(getRxPermissions(),storeId);
     }
 
 
@@ -299,4 +299,5 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     public AMap getMap() {
         return mapView.getMap();
     }
+
 }
