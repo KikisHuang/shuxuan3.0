@@ -38,6 +38,7 @@ import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lzy.ninegrid.NineGridView;
+import com.taobao.accs.utl.ALog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -490,6 +491,8 @@ public class MyApplication extends Application {
             PushServiceFactory.init(applicationContext);
 
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
+            if (isDebug)
+                pushService.setLogLevel(CloudPushService.LOG_DEBUG);//ogLevel 支持设置：CloudPushService.ERROR | CloudPushService.INFO | CloudPushService.DEBUG | CloudPushService.OFF（关闭Log）
 
             if (pushService == null)
                 return;
