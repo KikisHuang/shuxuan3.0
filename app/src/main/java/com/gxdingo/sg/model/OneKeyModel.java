@@ -315,20 +315,17 @@ public class OneKeyModel {
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    SPUtils.getInstance().put(LOGIN_WAY, isUse);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                     if (isUse) {
                         SPUtils.getInstance().put(LOGIN_WAY, true);
 //                    sendEvent(new ReLoginBean());
                         goToPage(getContext(), ClientActivity.class, null);
-
                     } else {
-
 //                        sendEvent(new ReLoginBean());
                         SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
 
                         goToPage(getContext(), StoreActivity.class, null);
                     }
+                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                 }
             }
         };
@@ -341,6 +338,9 @@ public class OneKeyModel {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
 
         if (mAuthHelper != null) {
+            mAuthHelper.setAuthListener(null);
+            mAuthHelper.quitLoginPage();
+            mAuthHelper=null;
             LogUtils.i("已启动阿里一键登录页");
             return;
         }
@@ -524,7 +524,7 @@ public class OneKeyModel {
         ((TextView) v.findViewById(R.id.role_tv)).setText(isU ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isU);
 
-        SPUtils.getInstance().put(LOGIN_WAY, this.isUser);
+        SPUtils.getInstance().put(LOGIN_WAY, isU);
     }
 
 
