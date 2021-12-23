@@ -45,7 +45,7 @@
     <!--高德地图 SDK 要求的权限-->
 
     <!--华为角标权限-->
-    <uses-permission android:name = "com.huawei.android.launcher.permission.CHANGE_BADGE " />
+    <uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE " />
     <!--vivo角标权限-->
     <uses-permission android:name="com.vivo.notification.permission.BADGE_ICON" />
 
@@ -54,16 +54,16 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_circle_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         tools:replace="allowBackup">
 
         <!--每日反省服务-->
-<!--        <service android:name=".service.IMMessageReceivingService" />-->
+        <!--        <service android:name=".service.IMMessageReceivingService" />-->
 
         <!-- 为了使用 "通用跳转 SDK" 的能力，需要在您的 App 的 AndroidManifest.xml 中添加这一项 -->
         <!-- 并合理设置 android:scheme 的值 -->
@@ -86,9 +86,13 @@
             android:value="9680339642d6b3328a3532f8bf173661" />
 
         <!-- 友盟-->
-        <meta-data android:name="UMENG_APPKEY" android:value="6073de2b18b72d2d244f05cf"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="6073de2b18b72d2d244f05cf" />
 
-        <meta-data android:name="UMENG_CHANNEL" android:value="${UMENG_CHANNEL_VALUE}"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${UMENG_CHANNEL_VALUE}" />
 
         <!-- 华为推送 -->
         <meta-data
@@ -123,8 +127,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="um.6073de2b18b72d2d244f05cf" />
             </intent-filter>
 
@@ -409,10 +415,17 @@
 
         </receiver>
 
+        <!--阿里云辅助弹窗页面 -->
+        <activity
+            android:name=".activity.AuxiliaryPushActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <!--商家端认证页面 -->
         <activity
             android:name=".activity.StoreCertificationActivity"
+            android:exported="true"
             android:screenOrientation="portrait">
 
         </activity>
@@ -506,7 +519,6 @@
         <activity
             android:name=".activity.StoreBillDetailActivity"
             android:screenOrientation="portrait" />
-
 
 
         <!-- 微信登录回调页 -->

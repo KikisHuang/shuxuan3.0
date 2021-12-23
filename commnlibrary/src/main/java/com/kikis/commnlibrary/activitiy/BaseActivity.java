@@ -37,6 +37,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnRefreshLoadMoreListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -836,20 +837,26 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
 
     /**
      * 显示加载dialog
+     * 调用显示后，记得使用onAfters取消，否则一直存在，无法开启加载dialog
      *
      * @param msg
      */
     public void showLoadingDialog(String msg) {
 
-        if (loadingPopup == null)
-            loadingDialogInit();
+        try {
+            if (loadingPopup == null || !loadingPopup.isShow()) {
+                loadingDialogInit();
+                if (!isEmpty(msg))
+                    loadingPopup.setTitle(msg);
 
-        if (!isEmpty(msg))
-            loadingPopup.setTitle(msg);
+                if (!loadingPopup.isShow())
+                    loadingPopup.show();
+            }
 
-        if (!loadingPopup.isShow())
-            loadingPopup.show();
-
+        } catch (Exception e) {
+            //手动上传异常信息到bugly
+            CrashReport.postCatchedException(e);
+        }
     }
 
     /**

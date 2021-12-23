@@ -143,7 +143,7 @@ public class MyApplication extends Application {
         buglyInit();
         tntX5Init();
         initCloudChannel(this);
-        svgaCacheInit();
+//        svgaCacheInit();
         nineGridLayout();
     }
 
@@ -294,7 +294,7 @@ public class MyApplication extends Application {
          *  如果想监听升级对话框的生命周期事件，可以通过设置OnUILifecycleListener接口
          *  回调参数解释：
          *  context - 当前弹窗上下文对象
-         *  view - 升级对话框的根布局视图，可通过这个对象查找指定view控件
+         *  view - 升级对话框的根布局视图，可通过这个对象查找指定view控件a
          *  upgradeInfo - 升级信息
          */
         Beta.upgradeDialogLifecycleListener = new UILifecycleListener<UpgradeInfo>() {

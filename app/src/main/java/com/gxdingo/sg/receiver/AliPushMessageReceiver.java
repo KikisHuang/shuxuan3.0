@@ -87,7 +87,6 @@ public class AliPushMessageReceiver extends MessageReceiver {
             if (pushBean.getType() == 0)
                 goToPagePutSerializable(context, ChatActivity.class, getIntentEntityMap(new Object[]{pushBean.getShareUuid(), pushBean.getRole()}));
 
-
         } catch (Exception e) {
             BaseLogUtils.e("ali push paser error == " + e);
         }
