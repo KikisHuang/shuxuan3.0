@@ -75,10 +75,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public CircleImageView avatar_cimg;
 
     @BindView(R.id.username_stv)
-    public SuperTextView username_stv;
+    public TextView username_stv;
 
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
+
+    @BindView(R.id.internal_tv)
+    public TextView internal_tv;
 
     @BindView(R.id.fill_invitation_code_stv)
     public SuperTextView fill_invitation_code_stv;
@@ -172,7 +175,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
         else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
-            username_stv.setLeftString(UserInfoUtils.getInstance().getUserNickName());
+            username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
         }else if (type == ClientLocalConstant.FILL_SUCCESS){
             fill_invitation_code_stv.setVisibility(View.GONE);
         }
@@ -255,7 +258,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public void onMineDataResult(ClientMineBean mineBean) {
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(avatar_cimg);
         if (!isEmpty(mineBean.getNickname()))
-            username_stv.setLeftString(mineBean.getNickname());
+            username_stv.setText(mineBean.getNickname());
         if (!isEmpty(mineBean.getBalance()))
             balance_tv.setText(mineBean.getBalance());
         if (mineBean.getAdsList()!=null){

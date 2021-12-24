@@ -280,13 +280,6 @@
 
         </activity>
 
-        <!--客户端收支兑换记录页面 -->
-        <activity
-            android:name=".activity.ClientExchangeRecordActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
-
 
         <!--客户端账户安全页面 -->
         <activity

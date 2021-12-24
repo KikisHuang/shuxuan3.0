@@ -260,7 +260,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 //30口令类型为邀请商家活动
                 if (type != 30) {
                     helpCode = code;
-                    clientNetworkModel.inviteHelp(getContext(), code);
+                    if (clientNetworkModel != null)
+                        clientNetworkModel.inviteHelp(getContext(), code);
                 }
 
             }, 1000);
