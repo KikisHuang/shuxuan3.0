@@ -149,13 +149,6 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE){
-         /*   if (type == STORE_LOGIN_SUCCEED) {
-                sendEvent(new ReLoginBean());
-                SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-
-                goToPage(reference.get(), StoreActivity.class, null);
-
-            }*/
             finish();
         }
 

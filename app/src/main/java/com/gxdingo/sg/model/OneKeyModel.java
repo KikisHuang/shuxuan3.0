@@ -317,12 +317,9 @@ public class OneKeyModel {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     if (isUse) {
                         SPUtils.getInstance().put(LOGIN_WAY, true);
-//                    sendEvent(new ReLoginBean());
                         goToPage(getContext(), ClientActivity.class, null);
                     } else {
-//                        sendEvent(new ReLoginBean());
                         SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-
                         goToPage(getContext(), StoreActivity.class, null);
                     }
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);

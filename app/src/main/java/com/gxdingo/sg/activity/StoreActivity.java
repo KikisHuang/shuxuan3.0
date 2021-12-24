@@ -429,9 +429,15 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        cancel();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        cancel();
+        LogUtils.i(" ============== onStop =============");
         resetBadger(reference.get());
     }
 

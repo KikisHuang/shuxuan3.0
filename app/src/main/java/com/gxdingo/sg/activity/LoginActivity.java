@@ -60,9 +60,6 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     //用户身份登录
     private boolean isUserId = true;
 
-    //登录页登录成功是否返回首页
-    private boolean backHome = true;
-
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
@@ -171,7 +168,6 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     protected void init() {
-        backHome = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
 //        getP().switchPanel(false,true);
         isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
         role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
@@ -231,17 +227,11 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             if (type == STORE_LOGIN_SUCCEED) {
                 sendEvent(new ReLoginBean());
                 SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-
                 goToPage(reference.get(), StoreActivity.class, null);
-
             } else {
-
                 SPUtils.getInstance().put(LOGIN_WAY, true);
-//                    sendEvent(new ReLoginBean());
-                if (backHome) {
-                    sendEvent(new ReLoginBean());
-                    goToPage(reference.get(), ClientActivity.class, null);
-                }
+                sendEvent(new ReLoginBean());
+                goToPage(reference.get(), ClientActivity.class, null);
             }
             finish();
         }
@@ -252,7 +242,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
 
-            if (weChatLoginType==1){
+            if (weChatLoginType == 1) {
                 WeChatLoginEvent event = (WeChatLoginEvent) object;
                 if (!TextUtils.isEmpty(event.code))
                     getP().oauthWeChatLogin(event.code);

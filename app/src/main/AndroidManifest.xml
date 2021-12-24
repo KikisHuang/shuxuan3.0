@@ -135,6 +135,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name=".activity.OauthActivity"
             android:launchMode="singleTask"
@@ -142,7 +143,6 @@
             android:theme="@style/SplashTheme">
 
         </activity>
-
 
         <!--联通电信授权⻚--> <!--如果不需要使⽤窗⼝模式，不要使⽤authsdk_activity_dialog主题，会出现异常动画--> <!--如果需要使⽤authsdk_activity_dialog主题，则screenOrientation⼀定不能指定明确的 ⽅向， ⽐如portrait、sensorPortrait，在8.0的系统上不允许窗⼝模式指定orientation，会 发⽣crash，需要指定为behind， 然后在授权⻚的前⼀个⻚⾯指定具体的orientation-->
         <activity

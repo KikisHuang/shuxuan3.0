@@ -392,9 +392,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        cancel();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        cancel();
         resetBadger(reference.get());
     }
 

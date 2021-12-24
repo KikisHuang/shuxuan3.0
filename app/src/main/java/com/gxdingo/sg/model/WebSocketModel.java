@@ -408,6 +408,10 @@ public class WebSocketModel {
      * 刷新聊天记录列表
      */
     public void refreshChatHistoryList(Context context, String shareUuid, int otherId, int otherRole, CustomResultListener customResultListener) {
+
+        if (!UserInfoUtils.getInstance().isLogin() || UserInfoUtils.getInstance().getUserInfo() == null || isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
+            return;
+
         Map<String, String> map = new HashMap<>();
 
         if (!isEmpty(shareUuid))
