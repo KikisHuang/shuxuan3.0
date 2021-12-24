@@ -143,7 +143,6 @@ public class MyApplication extends Application {
         buglyInit();
         tntX5Init();
         initCloudChannel(this);
-//        svgaCacheInit();
         nineGridLayout();
     }
 
@@ -163,19 +162,6 @@ public class MyApplication extends Application {
             init();
     }
 
-    /**
-     * svga缓存
-     */
-    private void svgaCacheInit() {
-
-        File cacheDir = new File(getPath() + "svga_cache");
-        createOrExistsDir(cacheDir);
-        try {
-            HttpResponseCache.install(cacheDir, 1024 * 1024 * 128);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void xPopupInit() {

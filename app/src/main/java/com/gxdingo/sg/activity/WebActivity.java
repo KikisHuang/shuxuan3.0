@@ -139,11 +139,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     private void webInit() {
 
-        if (!UserInfoUtils.getInstance().isLogin()){
-            UserInfoUtils.getInstance().goToOauthPage(reference.get());
-            finish();
-            return;
-        }
 
         webView.getSettings().setBlockNetworkImage(false);
 
@@ -270,9 +265,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     public void onLoading(int progress) {
         if (progress < 100)
             onStarts();
-        else{
+        else {
             onAfters();
-            getP().upLoadRegionCode(LocalConstant.AdCode);
+            if (UserInfoUtils.getInstance().isLogin())
+                getP().upLoadRegionCode(LocalConstant.AdCode);
         }
     }
 
