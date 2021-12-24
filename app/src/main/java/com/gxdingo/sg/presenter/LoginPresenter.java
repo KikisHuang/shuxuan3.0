@@ -8,6 +8,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 
 import com.alipay.sdk.app.OpenAuthTask;
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -26,6 +27,7 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getSmsCodeTime;
@@ -239,7 +241,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void oauthWeChatLogin(String code) {
         if (oneKeyModel != null)
-            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, oneKeyModel.isUser);
+            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, SPUtils.getInstance().getBoolean(LOGIN_WAY));
 
     }
 
@@ -252,6 +254,12 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     public void switchId(boolean isUser) {
         if (oneKeyModel != null)
             oneKeyModel.settingButtnStatus(isUser);
+    }
+
+    @Override
+    public void quitlogin() {
+        if (oneKeyModel != null)
+            oneKeyModel.quitLoginPage();
     }
 
 

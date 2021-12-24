@@ -40,6 +40,8 @@ public class LoginContract {
         void oauthWeChatLogin(String code);
 
         void switchId(boolean isUser);
+
+        void quitlogin();
     }
 
     public interface LoginListener {

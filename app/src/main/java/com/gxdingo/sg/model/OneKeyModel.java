@@ -272,7 +272,7 @@ public class OneKeyModel {
      * @param type
      */
     public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         if (TextUtils.isEmpty(code)) {
@@ -298,20 +298,18 @@ public class OneKeyModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
             }
 
             @Override
             public void onNext(UserBean userBean) {
-//                OneKeyModel.quitLoginPage();
-                if (netWorkListener!=null)
+                if (netWorkListener != null)
                     netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
 
                     ToastUtils.showLong(gets(R.string.please_bind_phone));
-//                    netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
@@ -337,7 +335,7 @@ public class OneKeyModel {
         if (mAuthHelper != null) {
             mAuthHelper.setAuthListener(null);
             mAuthHelper.quitLoginPage();
-            mAuthHelper=null;
+            mAuthHelper = null;
             LogUtils.i("已启动阿里一键登录页");
             return;
         }
@@ -380,7 +378,7 @@ public class OneKeyModel {
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
 
-                    OneKeyModel.quitLoginPage();
+                    quitLoginPage();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -525,7 +523,7 @@ public class OneKeyModel {
     }
 
 
-    public static void quitLoginPage() {
+    public void quitLoginPage() {
         if (mAuthHelper != null) {
             v = null;
             mAuthHelper.setAuthListener(null);

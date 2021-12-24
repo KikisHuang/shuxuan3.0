@@ -508,8 +508,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         if (isUser) {
             switchGlobalUrl(false);
 
-            SPUtils.getInstance().put(LOGIN_WAY, false);
-
             if (StoreActivity.getInstance() == null)
                 goToPage(getContext(), StoreActivity.class, null);
         }

@@ -149,6 +149,9 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE){
+            if (type!=QUITLOGINPAGE)
+                getP().quitlogin();
+
             finish();
         }
 

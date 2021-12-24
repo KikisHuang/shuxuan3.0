@@ -42,10 +42,16 @@ import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
@@ -81,6 +87,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     public TextView tv_business_unread_msg_count;
     //屏幕监听
     private ScreenListener screenListener;
+
+    private Disposable mDisposable;
 
     public static StoreActivity getInstance() {
         return instance;
@@ -270,12 +278,41 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
             startImService();
-            RxUtil.intervals(businessDistrictRefreshTime, number -> {
-
-                    getP().getUnreadMessageNum();
-            }, this);
+            startTimer();
         }
 
+    }
+
+
+    /**
+     * 启动商圈定时器
+     */
+    private void startTimer() {
+        Observable observable = Observable.interval(businessDistrictRefreshTime, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
+        observable.compose(bindToLifecycle());
+
+        observable.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable disposable) {
+                mDisposable = disposable;
+            }
+
+            @Override
+            public void onNext(@NonNull Long number) {
+                getP().getUnreadMessageNum();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     /**
@@ -431,13 +468,15 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
     @Override
     protected void onPause() {
         super.onPause();
-        cancel();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LogUtils.i(" ============== onStop =============");
         resetBadger(reference.get());
     }
 
