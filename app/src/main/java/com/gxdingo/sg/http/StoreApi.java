@@ -23,6 +23,8 @@ public class StoreApi {
 
     public static final String STORE_SHOP_AGREEMENT_KEY = "shangjiaxieyi";
 
+    public static final String CLIENT_HDGZ_AGREEMENT_KEY = "hdgz";
+
     /**
      * 重置支付密码
      */
