@@ -254,7 +254,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
                         if (isViewAttached() && newData.size() > 0) {
                             BaseLogUtils.i("有新消息，添加到消息列表");
-
                             getV().onAddNewChatHistoryList(newData);
                         }
                     });

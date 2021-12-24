@@ -59,6 +59,7 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
@@ -981,12 +982,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     private void moveTo(int pos) {
 
-        recycleView.post(new Runnable() {
-            @Override
-            public void run() {
-                MoveToPositionTop(recycleView, pos);
-//                mLayoutManager.scrollToPositionWithOffset (pos,0);
-            }
+        recycleView.post(() -> {
+            MoveToPositionTop(recycleView, pos);
         });
     }
 
@@ -1234,11 +1231,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onAddNewChatHistoryList(ArrayList<ReceiveIMMessageBean> list) {
-
-        mChatDatas.clear();
-        mChatDatas.addAll(list);
-        moveTo(mChatDatas.size() - 1);
-        mAdapter.notifyDataSetChanged();
+        try {
+            mChatDatas.clear();
+            mChatDatas.addAll(list);
+            moveTo(mChatDatas.size() - 1);
+            mAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            LogUtils.e("onAddNewChatHistoryList === " + e);
+            //手动上传异常信息到bugly
+            CrashReport.postCatchedException(e);
+        }
     }
 
     @Override

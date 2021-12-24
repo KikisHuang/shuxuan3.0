@@ -555,6 +555,7 @@ public class WebSocketModel {
                 super.onError(e);
                 BaseLogUtils.e(e);
                 if (netWorkListener != null) {
+                    //未设置提现密码
                     if (e.getCode() == 601)
                         netWorkListener.onSucceed(601);
                     netWorkListener.onMessage(e.getMessage());
