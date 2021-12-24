@@ -109,7 +109,7 @@ public class OneKeyModel {
     public boolean isUser;
     //协议是否勾选
     private boolean isCheck;
-    //协议路径
+
     private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     private static View v;
@@ -304,31 +304,23 @@ public class OneKeyModel {
 
             @Override
             public void onNext(UserBean userBean) {
-                OneKeyModel.quitLoginPage();
                 if (netWorkListener != null)
                     netWorkListener.onAfters();
                 //0未绑定手机
                 if (userBean.getIsBindMobile() == 0) {
 
                     ToastUtils.showLong(gets(R.string.please_bind_phone));
-//                    netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    SPUtils.getInstance().put(LOGIN_WAY, isUse);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                     if (isUse) {
                         SPUtils.getInstance().put(LOGIN_WAY, true);
-//                    sendEvent(new ReLoginBean());
                         goToPage(getContext(), ClientActivity.class, null);
-
                     } else {
-
-//                        sendEvent(new ReLoginBean());
                         SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-
                         goToPage(getContext(), StoreActivity.class, null);
                     }
+                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
                 }
             }
         };
@@ -341,6 +333,9 @@ public class OneKeyModel {
         isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
 
         if (mAuthHelper != null) {
+            mAuthHelper.setAuthListener(null);
+            mAuthHelper.quitLoginPage();
+            mAuthHelper = null;
             LogUtils.i("已启动阿里一键登录页");
             return;
         }
@@ -383,7 +378,7 @@ public class OneKeyModel {
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
 
-                    OneKeyModel.quitLoginPage();
+                    quitLoginPage();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -524,11 +519,11 @@ public class OneKeyModel {
         ((TextView) v.findViewById(R.id.role_tv)).setText(isU ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isU);
 
-        SPUtils.getInstance().put(LOGIN_WAY, this.isUser);
+        SPUtils.getInstance().put(LOGIN_WAY, isU);
     }
 
 
-    public static void quitLoginPage() {
+    public void quitLoginPage() {
         if (mAuthHelper != null) {
             v = null;
             mAuthHelper.setAuthListener(null);

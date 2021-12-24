@@ -259,6 +259,7 @@ public class HttpClient {
             LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         }
 
+        SPUtils.getInstance().put(LOGIN_WAY, isUser);
 /*
 
         //正式环境测试

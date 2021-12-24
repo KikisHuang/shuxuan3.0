@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.util.Log;
 import android.view.View;
 
 import com.allen.library.SuperTextView;
@@ -182,7 +183,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                                 String startTime = (startHour < 10 ? "0" : "")+startHour+":"+(startMinute < 10 ? "0" : "")+startMinute;
                                 String endTime = (endHour < 10 ? "0" : "")+endHour+":"+(endMinute < 10 ? "0" : "")+endMinute;
                                 getP().businessTime(startTime,endTime);
-                                business_time_stv.setRightString(startTime+" - "+endTime);
+//                                business_time_stv.setRightString(startTime+" - "+endTime);
                                 popupView.dismiss();
                             }
                         }).show());

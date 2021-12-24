@@ -46,7 +46,7 @@
         android:layout_width="32dp"
         android:layout_height="18dp"
         android:layout_marginTop="5dp"
-        tools:background="#202D3B"
+        android:background="@drawable/module_shape_address_label_green"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="12sp"

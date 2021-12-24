@@ -506,9 +506,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     public void certificationPassed() {
         //如果是用户端入驻，切换全局路径，切换登录方式。
         if (isUser) {
-            switchGlobalUrl(!isUser);
-
-            SPUtils.getInstance().put(LOGIN_WAY, !isUser);
+            switchGlobalUrl(false);
 
             if (StoreActivity.getInstance() == null)
                 goToPage(getContext(), StoreActivity.class, null);

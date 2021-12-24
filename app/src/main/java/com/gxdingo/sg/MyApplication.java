@@ -17,7 +17,11 @@ import androidx.multidex.MultiDex;
 
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.huawei.HuaWeiRegister;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.alibaba.sdk.android.push.register.MiPushRegister;
+import com.alibaba.sdk.android.push.register.OppoRegister;
+import com.alibaba.sdk.android.push.register.VivoRegister;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.http.Api;
@@ -34,6 +38,7 @@ import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lzy.ninegrid.NineGridView;
+import com.taobao.accs.utl.ALog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -138,7 +143,6 @@ public class MyApplication extends Application {
         buglyInit();
         tntX5Init();
         initCloudChannel(this);
-        svgaCacheInit();
         nineGridLayout();
     }
 
@@ -158,19 +162,6 @@ public class MyApplication extends Application {
             init();
     }
 
-    /**
-     * svga缓存
-     */
-    private void svgaCacheInit() {
-
-        File cacheDir = new File(getPath() + "svga_cache");
-        createOrExistsDir(cacheDir);
-        try {
-            HttpResponseCache.install(cacheDir, 1024 * 1024 * 128);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void xPopupInit() {
@@ -289,7 +280,7 @@ public class MyApplication extends Application {
          *  如果想监听升级对话框的生命周期事件，可以通过设置OnUILifecycleListener接口
          *  回调参数解释：
          *  context - 当前弹窗上下文对象
-         *  view - 升级对话框的根布局视图，可通过这个对象查找指定view控件
+         *  view - 升级对话框的根布局视图，可通过这个对象查找指定view控件a
          *  upgradeInfo - 升级信息
          */
         Beta.upgradeDialogLifecycleListener = new UILifecycleListener<UpgradeInfo>() {
@@ -486,6 +477,8 @@ public class MyApplication extends Application {
             PushServiceFactory.init(applicationContext);
 
             CloudPushService pushService = PushServiceFactory.getCloudPushService();
+            if (isDebug)
+                pushService.setLogLevel(CloudPushService.LOG_DEBUG);//ogLevel 支持设置：CloudPushService.ERROR | CloudPushService.INFO | CloudPushService.DEBUG | CloudPushService.OFF（关闭Log）
 
             if (pushService == null)
                 return;
@@ -556,14 +549,14 @@ public class MyApplication extends Application {
      */
     private void auxiliaryChannelInit() {
 
-       /* //小米辅助推送通道注册（如不支持会跳过）
+        //小米辅助推送通道注册（如不支持会跳过）
         MiPushRegister.register(this, MI_APPID, MI_APP_KEY);
         //华为辅助推送通道注册（如不支持会跳过）
         HuaWeiRegister.register(this);
         // OPPO辅助通道注册
         OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取
         // vivo通道注册
-        VivoRegister.register(this);*/
+        VivoRegister.register(this);
     }
 
     /**

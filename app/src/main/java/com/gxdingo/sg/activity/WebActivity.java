@@ -265,9 +265,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     public void onLoading(int progress) {
         if (progress < 100)
             onStarts();
-        else{
+        else {
             onAfters();
-            getP().upLoadRegionCode(LocalConstant.AdCode);
+            if (UserInfoUtils.getInstance().isLogin())
+                getP().upLoadRegionCode(LocalConstant.AdCode);
         }
     }
 
@@ -279,7 +280,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
     @Override
     public void loadWebUrl(WebBean webBean) {
         if (!isEmpty(webBean.getContent())) {
-//            webView.loadUrl(webBean.getContent());
+            // webView.loadUrl(webBean.getContent());
             webView.loadDataWithBaseURL(null, webBean.getContent(), "text/html", "utf-8", null);
         } else {
             onMessage("没有获取当文章详情");

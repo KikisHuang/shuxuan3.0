@@ -34,11 +34,7 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
 
-
-    private Context mContext;
-
     public void location(Context context, AMapLocationListener mLocationListener) {
-        this.mContext = context;
         try {
 
         //初始化定位

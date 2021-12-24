@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,//targetSdkVersion 调到28会导致TwinklingRefreshLayout的报错，如需升级版本（需要更换聊天页面的刷新控件）
-            versionCode            : 31,
-            versionName            : "2.2.2",
+            versionCode            : 32,
+            versionName            : "2.2.3",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]
@@ -142,7 +142,7 @@ ext {
             circleimageview               : "de.hdodenhof:circleimageview:3.1.0", //circleimageview
             rebound                       : "com.facebook.rebound:rebound:0.3.8", //facebook 弹簧动画库
             clansfab                      : "com.github.clans:fab:1.6.4", //clans_fab
-            tbssdk                        : "com.tencent.tbs.tbssdk:sdk:43903", //clans_fab
+            tbssdk                        : "com.tencent.tbs:tbssdk:44136", //clans_fab
             zxingcore                     : "com.google.zxing:core:3.3.3", //zxingcore
             zxing                         : "com.journeyapps:zxing-android-embedded:3.6.0", //zxing android
             floatlayout                   : 'im.ll:floatlayout:1.1.0', //软件盘弹出页面适配控件(FloatOnKeyboardLayout)

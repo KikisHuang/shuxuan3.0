@@ -1,7 +1,5 @@
 package com.gxdingo.sg.presenter;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.biz.ClientStoreContract;
@@ -13,6 +11,7 @@ import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -134,30 +133,32 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
     }
 
     @Override
-    public void getStoreDetail(long storeId) {
-        if (commonModel!=null && isViewAttached())
-            commonModel.checkPermission(getV().getRxPermissions(), new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
+    public void getStoreDetail(RxPermissions rxPermissions, long storeId) {
+        if (commonModel != null && isViewAttached())
+            commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
-                    if (!value)
-                        getBV().onFailed();
-                    else
+                    if (!value) {
+                        if (isBViewAttached())
+                            getBV().onFailed();
+                    } else {
                         model.location(getContext(), aMapLocation -> {
-                            lat = aMapLocation.getLatitude();
-                            lon=aMapLocation.getLongitude();
-                        });
-                    if (clientNetworkModel!=null){
-                        clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lon, lat, new CustomResultListener() {
-                            @Override
-                            public void onResult(Object o) {
-                                StoreDetail storeDetail=(StoreDetail) o;
-                                mStoreDetail = storeDetail;
-                                mapInit(storeDetail.getLatitude(),storeDetail.getLongitude());
-                                getV().onStoreDetailResult(storeDetail);
+
+                            if (aMapLocation.getErrorCode() == 0) {
+                                lat = aMapLocation.getLatitude();
+                                lon = aMapLocation.getLongitude();
+
+                                if (clientNetworkModel != null) {
+                                    clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lat, lon, o -> {
+                                        StoreDetail storeDetail = (StoreDetail) o;
+                                        mStoreDetail = storeDetail;
+                                        mapInit(storeDetail.getLatitude(), storeDetail.getLongitude());
+                                        getV().onStoreDetailResult(storeDetail);
+                                    });
+                                }
                             }
                         });
                     }
-
                 }
 
                 @Override
@@ -174,8 +175,8 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
 
     @Override
     public void mapInit(double latitude, double longitude) {
-        if (model!=null)
-            model.mapInit(getV().getMap(),latitude,longitude);
+        if (model != null)
+            model.mapInit(getV().getMap(), latitude, longitude);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
             case 0:
                 if (isAvilible(getContext(), PN_GAODE_MAP))
                     goToGaoDeMap(getContext(), mStoreDetail.getAddress(), mStoreDetail.getLongitude(), mStoreDetail.getLatitude());
-                 else
+                else
                     getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
                 break;
             case 1:
@@ -199,7 +200,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
             case 2:
                 if (isAvilible(getContext(), PN_TENCENT_MAP))
                     goToTencentMap(getContext(), mStoreDetail.getAddress(), mStoreDetail.getLongitude(), mStoreDetail.getLatitude());
-                 else
+                else
                     getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
                 break;
 
@@ -208,7 +209,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
 
     @Override
     public void callStore(String s) {
-        if (commonModel!=null)
+        if (commonModel != null)
             if (!isEmpty(s))
                 commonModel.goCallPage(getContext(), s);
             else

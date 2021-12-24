@@ -337,7 +337,6 @@ public class ClientNetworkModel {
      */
     public void getStoreList(Context context, boolean refresh, double lon, double lat, int categoryId, String key) {
 
-        netWorkListener.onStarts();
 
         if (refresh)
             resetPage();
@@ -377,7 +376,6 @@ public class ClientNetworkModel {
                     netWorkListener.onMessage(e.getMessage());
                     resetPage();
                 }
-                netWorkListener.onAfters();
             }
 
             @Override
@@ -387,11 +385,8 @@ public class ClientNetworkModel {
                     if (storeListBean != null && storeListBean.getList() != null) {
                         pageNext(refresh, storeListBean.getList().size());
                         netWorkListener.onData(refresh, storeListBean);
-                        netWorkListener.onAfters();
                     }
                 }
-                netWorkListener.onAfters();
-
             }
         };
 

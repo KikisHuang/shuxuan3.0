@@ -520,7 +520,6 @@ public class NetworkModel {
                             goToPage(context, ClientActivity.class, null);
                     }
                 }
-                OneKeyModel.quitLoginPage();
             }
         };
 
@@ -573,7 +572,6 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-                OneKeyModel.quitLoginPage();
                 UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
 
                 if (netWorkListener != null)
@@ -671,7 +669,6 @@ public class NetworkModel {
 
             @Override
             public void onNext(UserBean userBean) {
-                OneKeyModel.quitLoginPage();
                 if (netWorkListener == null)
                     return;
                 netWorkListener.onAfters();

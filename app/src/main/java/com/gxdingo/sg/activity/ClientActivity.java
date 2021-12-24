@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -39,10 +40,16 @@ import com.kikis.commnlibrary.utils.RxUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
@@ -88,6 +95,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
     //屏幕监听
     private ScreenListener screenListener;
+
+    //刷新商圈定时器disposable
+    private Disposable mDisposable;
 
 
     public static ClientActivity getInstance() {
@@ -184,10 +194,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
             startImService();
-            RxUtil.intervals(businessDistrictRefreshTime, number -> {
-                getP().getUnreadMessageNum();
-            }, this);
+            startTimer();
         }
+
 
 
         //商家已登录则跳转到商家主界面
@@ -198,6 +207,37 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 finish();
             }
         }
+    }
+
+    /**
+     * 启动商圈定时器
+     */
+    private void startTimer() {
+        Observable observable = Observable.interval(businessDistrictRefreshTime, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
+        observable.compose(bindToLifecycle());
+
+        observable.subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable disposable) {
+                mDisposable = disposable;
+            }
+
+            @Override
+            public void onNext(@NonNull Long number) {
+                getP().getUnreadMessageNum();
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
 
@@ -392,9 +432,17 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        cancel();
         resetBadger(reference.get());
     }
 

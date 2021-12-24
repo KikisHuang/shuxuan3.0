@@ -79,6 +79,7 @@ import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -288,7 +289,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             AddressBean addressBean = (AddressBean) object;
             if (addressBean.selectType == 1) {
                 this.location = true;
-                getP().getNearbyStore( object, categoryId);
+                getP().getNearbyStore(object, categoryId);
             }
         } else if (object instanceof changeLocationEvent) {
             this.location = true;
@@ -433,6 +434,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             home_banner.setOnBannerListener((data, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) data;
                 if (bannerBean.getType() == 2 && !isEmpty(bannerBean.getPage())) {
+                    if (!UserInfoUtils.getInstance().isLogin()) {
+                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
+                        onMessage(gets(R.string.please_login));
+                        return;
+                    }
                     goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
                 }
             });

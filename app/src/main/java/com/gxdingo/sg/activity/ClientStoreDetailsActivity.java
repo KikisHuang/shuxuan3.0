@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,6 +65,9 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @BindView(R.id.distance_tv)
     public TextView distance_tv;
 
+    @BindView(R.id.business_district_cl)
+    public ConstraintLayout business_district_cl;
+
     @BindView(R.id.store_photo_rv)
     public RecyclerView store_photo_rv;
 
@@ -75,7 +79,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     private ClientStorePhotoAdapter mPhotoAdapter;
 
-    private GestureDetector  gestureDetector;
+    private GestureDetector gestureDetector;
 
 
     @Override
@@ -146,6 +150,10 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     protected void init() {
         storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+        if (storeId <= 0) {
+            onMessage("未获取到店铺信息！");
+            finish();
+        }
         title_layout.setTitleText("金源便利店");
         title_layout.setMoreText("资质");
         if (mapView != null)
@@ -204,8 +212,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.txt_more:
-                if (mStoreDetail!=null && mStoreDetail.getLicence()!=null)
-                    goToPage(this,StoreQualificationActivity.class,getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
+                if (mStoreDetail != null && mStoreDetail.getLicence() != null)
+                    goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                 break;
             case R.id.ll_navigation:
                 if (mNavigationPopupView == null) {
@@ -222,9 +230,9 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
                 break;
             case R.id.ll_send_message:
-                if (UserInfoUtils.getInstance().isLogin()&&  mStoreDetail != null){
-                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null,11,mStoreDetail.getId()}));
-                }else {
+                if (UserInfoUtils.getInstance().isLogin() && mStoreDetail != null) {
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, mStoreDetail.getId()}));
+                } else {
                     UserInfoUtils.getInstance().goToOauthPage(this);
                 }
                 break;
@@ -271,7 +279,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void initData() {
-        getP().getStoreDetail(storeId);
+        getP().getStoreDetail(getRxPermissions(), storeId);
     }
 
 
@@ -289,10 +297,14 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
         else
             distance_tv.setVisibility(View.GONE);
         mPhotoAdapter.setList(storeDetail.getImages());
+
+        business_district_cl.setVisibility(storeDetail == null || storeDetail.getImages() == null || storeDetail.getImages().size() <= 0 ? View.GONE : View.VISIBLE);
+
     }
 
     @Override
     public AMap getMap() {
         return mapView.getMap();
     }
+
 }

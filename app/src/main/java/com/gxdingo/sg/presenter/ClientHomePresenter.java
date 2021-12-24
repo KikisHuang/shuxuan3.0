@@ -250,9 +250,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void oauth(Context context) {
-      /*  new OneKeyModel().getKey(getContext(), this, (CustomResultListener<OneKeyLoginEvent>) event -> {
-            new NetworkModel(this).oneClickLogin(getContext(), event.code, event.isUser);
-        });*/
         UserInfoUtils.getInstance().goToOauthPage(context);
     }
 

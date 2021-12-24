@@ -29,11 +29,14 @@ import butterknife.ButterKnife;
  * @author JM
  */
 public class IMEmotionFragment extends Fragment {
+
     @BindView(R.id.view_pager)
-    ViewPager viewPager;
+    public ViewPager viewPager;
+
     @BindView(R.id.indicator)
-    CirclePageIndicator indicator;
-    MyFragmentPagerAdapter adapter;
+    public CirclePageIndicator indicator;
+
+    public MyFragmentPagerAdapter adapter;
 
 
     public IMEmotionFragment() {
