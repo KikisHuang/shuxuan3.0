@@ -521,7 +521,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void checkRecordPermissions(RxPermissions rxPermissions) {
         if (commonModel != null)
-            commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, new PermissionsListener() {
+            commonModel.checkPermission(rxPermissions, new String[]{RECORD_AUDIO}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
 
