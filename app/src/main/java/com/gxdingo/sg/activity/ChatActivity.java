@@ -773,14 +773,19 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
 
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
-        //地址类型
-        if (receiveIMMessageBean.getType() == 30)
-            setAddressInfo(receiveIMMessageBean.getMsgAddress());
+        try {
+            //地址类型
+            if (receiveIMMessageBean.getType() == 30)
+                setAddressInfo(receiveIMMessageBean.getMsgAddress());
 
-        mChatDatas.add(receiveIMMessageBean);
-        mAdapter.notifyDataSetChanged();
+            mChatDatas.add(receiveIMMessageBean);
+            mAdapter.notifyDataSetChanged();
 
-        moveTo(mChatDatas.size() - 1);
+            moveTo(mChatDatas.size() - 1);
+        } catch (Exception e) {
+            //手动上传异常信息到bugly
+            CrashReport.postCatchedException(e);
+        }
     }
 
     /**
