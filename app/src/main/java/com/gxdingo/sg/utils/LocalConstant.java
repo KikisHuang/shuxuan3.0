@@ -67,6 +67,7 @@ public class LocalConstant {
     public static final int CLIENT_LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
+    public static final int NOTIFY_MSG_LIST_ADAPTER = 4545;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     public static final int QUITLOGINPAGE = 404;

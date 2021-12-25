@@ -13,6 +13,8 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:3.4.3"
+        // 添加greendao插件
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
 
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.0.0'
         classpath 'com.tencent.bugly:symtabfileuploader:latest.release'

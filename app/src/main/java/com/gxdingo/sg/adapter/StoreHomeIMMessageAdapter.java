@@ -3,12 +3,16 @@ package com.gxdingo.sg.adapter;
 import android.view.View;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoUtilsStore;
+import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.utils.DateUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -17,14 +21,21 @@ import com.kikis.commnlibrary.view.RoundAngleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
+import static com.gxdingo.sg.db.SqlUtils.EQUAL;
+import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.utils.DateUtils.IsToday;
 import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.Constant.error;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * 商家主页IM消息适配器
@@ -33,11 +44,16 @@ import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
  */
 public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.SubscribesMessage, BaseViewHolder> {
 
-    private boolean isUser = false;
+    private CommonDaoUtils<DraftBean> mDraftUtils;
+
 
     public StoreHomeIMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+
+        DaoUtilsStore mStore = DaoUtilsStore.getInstance();
+
+        mDraftUtils = mStore.getDratfUtils();
+
     }
 
     @Override
@@ -48,6 +64,7 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
+        TextView draft_tag_tv = baseViewHolder.findView(R.id.draft_tag_tv);
 
         if (subscribesMessage.getSendUserRole() == 10) {
             //用户
@@ -79,28 +96,47 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
             tvTime.setText(date);
 */
 
+
+        String where = WHERE + "uuid " + EQUAL;
+
+        List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{subscribesMessage.getShareUuid()});
+
+        //草稿
+        if (mLocalComList != null && mLocalComList.size() > 0 && !isEmpty(mLocalComList.get(0).draft)) {
+
+            draft_tag_tv.setVisibility(View.VISIBLE);
+
+            tvContent.setText(mLocalComList.get(0).draft);
+
+        } else
+            draft_tag_tv.setVisibility(View.GONE);
+
         tvTime.setText(getCustomDate(string2Millis(dealDateFormat(subscribesMessage.getUpdateTime())), getNowMills()));
 
         tvUnreadMsgCount.setVisibility(subscribesMessage.getUnreadNum() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(subscribesMessage.getUnreadNum()));
         tvNickname.setText(subscribesMessage.getSendNickname());
-        if (subscribesMessage.getLastMsgType() == 0) {
-            tvContent.setText(TextViewUtils.contentConversion(getContext(), subscribesMessage.getLastMsg()));
-        } else if (subscribesMessage.getLastMsgType() == 1) {
-            tvContent.setText("[表情]");
-        } else if (subscribesMessage.getLastMsgType() == 10) {
-            tvContent.setText("[图片]");
-        } else if (subscribesMessage.getLastMsgType() == 11) {
-            tvContent.setText("[语音]");
-        } else if (subscribesMessage.getLastMsgType() == 12) {
-            tvContent.setText("[视频]");
-        } else if (subscribesMessage.getLastMsgType() == 20) {
-            tvContent.setText("[转账]");
-        } else if (subscribesMessage.getLastMsgType() == 21) {
-            tvContent.setText("[收款]");
-        } else if (subscribesMessage.getLastMsgType() == 30) {
-            tvContent.setText("[位置]");
+
+        if (mLocalComList == null || mLocalComList.size() <= 0 || isEmpty(mLocalComList.get(0).draft)) {
+            if (subscribesMessage.getLastMsgType() == 0) {
+                tvContent.setText(TextViewUtils.contentConversion(getContext(), subscribesMessage.getLastMsg()));
+            } else if (subscribesMessage.getLastMsgType() == 1) {
+                tvContent.setText("[表情]");
+            } else if (subscribesMessage.getLastMsgType() == 10) {
+                tvContent.setText("[图片]");
+            } else if (subscribesMessage.getLastMsgType() == 11) {
+                tvContent.setText("[语音]");
+            } else if (subscribesMessage.getLastMsgType() == 12) {
+                tvContent.setText("[视频]");
+            } else if (subscribesMessage.getLastMsgType() == 20) {
+                tvContent.setText("[转账]");
+            } else if (subscribesMessage.getLastMsgType() == 21) {
+                tvContent.setText("[收款]");
+            } else if (subscribesMessage.getLastMsgType() == 30) {
+                tvContent.setText("[位置]");
+            }
         }
+
     }
 
     private RequestOptions getRequestOptions() {

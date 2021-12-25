@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,9 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
+import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoUtilsStore;
+import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -90,14 +94,18 @@ import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
+import static com.gxdingo.sg.db.SqlUtils.EQUAL;
+import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
+import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -356,6 +364,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //设置语音录制时动画播放图片素材
         recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
         mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
+
+        //todo 绑定表情fragment的 CHAT_ID 逻辑有问题
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY, ChatActivity.class.toString() + System.currentTimeMillis());
@@ -696,6 +706,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         super.onTypeEvent(type);
         if (type == EMOTION_LAYOUT_IS_SHOWING)
             moveTo(mChatDatas.size() - 1);
+
     }
 
 
@@ -996,6 +1007,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onDestroy() {
+        getP().saveDraft();
+
         unregisterSoftInputChangedListener(getWindow());
 
         //清除锁定id
@@ -1194,6 +1207,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             if (isEmpty(mShareUuid) && !isEmpty(imChatHistoryListBean.getShareUuid()))
                 mShareUuid = imChatHistoryListBean.getShareUuid();
 
+            getP().checkDraft();
+
             //只在第一页的时候返回，为空就赋值
             if (mAdapter == null) {
                 mChatDatas.clear();
@@ -1324,6 +1339,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public String getShareUUID() {
         return mShareUuid;
+    }
+
+    @Override
+    public EditText getMessageEdttext() {
+        return emotionMainFragment != null && emotionMainFragment.bar_edit_text != null ? emotionMainFragment.bar_edit_text : null;
+    }
+
+    @Override
+    public String getSendIdentifier() {
+        return mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getSendIdentifier()) ? mMessageDetails.getOtherAvatarInfo().getSendIdentifier() : "";
     }
 
     @Override

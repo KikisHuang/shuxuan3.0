@@ -36,6 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
@@ -157,7 +158,8 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         super.onTypeEvent(type);
         if (type == CLIENT_LOGIN_SUCCEED) {
             getP().getSubscribesMessage(true);
-        }
+        }  else if (type == NOTIFY_MSG_LIST_ADAPTER)
+            imMessageAdapter.notifyDataSetChanged();
 
     }
 

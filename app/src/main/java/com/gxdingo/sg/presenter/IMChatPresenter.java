@@ -4,6 +4,10 @@ import android.app.Activity;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoUtilsStore;
+import com.gxdingo.sg.db.bean.DraftBean;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
@@ -36,6 +40,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -45,11 +51,10 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.StringUtils.getString;
-import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.db.SqlUtils.EQUAL;
+import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
@@ -61,6 +66,7 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatContract.IMChatListener> implements IMChatContract.IMChatPresenter, NetWorkListener {
@@ -72,6 +78,9 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private AudioModel mAudioModel;
     private CommonModel commonModel;
 
+    private CommonDaoUtils<DraftBean> mDraftUtils;
+
+
     public IMChatPresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
         networkModel = new NetworkModel(this);
@@ -79,6 +88,10 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         mAudioModel = AudioModel.getInstance();
 
         commonModel = new CommonModel();
+
+        DaoUtilsStore mStore = DaoUtilsStore.getInstance();
+
+        mDraftUtils = mStore.getDratfUtils();
     }
 
     @Override
@@ -552,7 +565,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void playVoice(String content) {
         if (mAudioModel != null) {
-            mAudioModel.audioPlayer(getContext(),content, new AudioModelListener() {
+            mAudioModel.audioPlayer(getContext(), content, new AudioModelListener() {
                 @Override
                 public void onAudioMessage(String msg) {
                     if (isBViewAttached())
@@ -661,6 +674,66 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
             });
 
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+    }
+
+    /**
+     * 保存草稿
+     */
+    @Override
+    public void saveDraft() {
+        if (isViewAttached() && !isEmpty(getV().getShareUUID()) && getV().getMessageEdttext() != null && !isEmpty(getV().getSendIdentifier())) {
+
+            DraftBean draftBean = new DraftBean();
+
+            draftBean.uuid = getV().getShareUUID();
+
+            draftBean.draft = getV().getMessageEdttext().getText().toString();
+
+            draftBean.sendIdentifier = getV().getSendIdentifier();
+
+            String where = WHERE + "uuid " + EQUAL;
+
+            List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{getV().getShareUUID()});
+
+            if (mLocalComList != null && mLocalComList.size() > 0) {
+                //存在则更新草稿
+                draftBean.id = mLocalComList.get(0).id;
+                DaoUtilsStore.getInstance().getDratfUtils().update(draftBean);
+            } else {
+                //不存在插入，并且有草稿，插入数据库
+                if (!isEmpty(getV().getMessageEdttext().getText().toString()))
+                    DaoUtilsStore.getInstance().getDratfUtils().insert(draftBean);
+
+            }
+            EventBus.getDefault().post(LocalConstant.NOTIFY_MSG_LIST_ADAPTER);
+
+        }
+    }
+
+
+    /**
+     * 检测草稿
+     */
+    @Override
+    public void checkDraft() {
+        if (isViewAttached() && !isEmpty(getV().getShareUUID()) && getV().getMessageEdttext() != null) {
+            String where = WHERE + "uuid " + EQUAL;
+
+            List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{getV().getShareUUID()});
+
+            if (mLocalComList != null && mLocalComList.size() > 0 && !isEmpty(mLocalComList.get(0).draft)) {
+
+                if (isDebug)
+                    LogUtils.w(" draft id === " + mLocalComList.get(0).id);
+
+                getV().getMessageEdttext().setText(mLocalComList.get(0).draft);
+            }
+        }
     }
 
 }

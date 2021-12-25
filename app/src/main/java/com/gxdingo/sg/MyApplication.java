@@ -24,6 +24,7 @@ import com.alibaba.sdk.android.push.register.OppoRegister;
 import com.alibaba.sdk.android.push.register.VivoRegister;
 import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.db.DaoManager;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.http.StoreApi;
@@ -236,8 +237,8 @@ public class MyApplication extends Application {
      * greendao数据库框架初始化
      */
     private void initGreenDao() {
-  /*      DaoManager mManager = DaoManager.getInstance();
-        mManager.init(this);*/
+        DaoManager mManager = DaoManager.getInstance();
+        mManager.init(this);
     }
 
 
