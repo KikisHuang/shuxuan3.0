@@ -22,6 +22,7 @@ import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.view.TemplateTitle;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -29,6 +30,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 
 /**
@@ -38,8 +45,8 @@ import butterknife.OnClick;
  */
 public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener {
 
-//    @BindView(R.id.title_layout)
-//    public TemplateTitle title_layout;
+    @BindView(R.id.title_layout)
+    public TemplateTitle title_layout;
 
     @BindView(R.id.settle_in_iv)
     public ImageView settle_in_iv;
@@ -121,7 +128,7 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     }
 
-    @OnClick({R.id.btn_become_store, R.id.btn_invitation})
+    @OnClick({R.id.btn_become_store, R.id.btn_invitation, R.id.btn_more})
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.btn_become_store:
@@ -133,8 +140,12 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
             case R.id.btn_invitation:
                 if (shareBean != null)
                     ShareUtils.UmShare(reference.get(), null, shareBean.getUrl(), shareBean.getTitle(), shareBean.getDescribe(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
-                 else
+                else
                     onMessage("没有获取到分享连接");
+
+                break;
+            case R.id.btn_more:
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_HDGZ_AGREEMENT_KEY}));
 
                 break;
         }
@@ -142,7 +153,10 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     protected void init() {
+        title_layout.setMoreText("活动规则");
 
+        title_layout.getMoreTextView().setTextColor(getc(R.color.green_dominant_tone));
+        title_layout.setTitleText("入驻平台");
     }
 
     @Override

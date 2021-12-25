@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.aliyun.ams.emas-services'
 apply plugin: 'bugly'
+//GreenDao插件
+apply plugin: 'org.greenrobot.greendao'
 
 //plugins {
 //    id 'com.android.application'
@@ -29,10 +31,11 @@ android {
 
         ndk {
             // 设置支持的SO库架构
-//            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+//            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
     }
+
 
     productFlavors {
         HuaWei {}
@@ -89,7 +92,18 @@ android {
     }
 }
 
+greendao {
+    // 指定数据库schema版本号，迁移等操作会用到
+    schemaVersion 1
+    // 设置生成数据库文件的目录，默认是在build中，可以将生成的文件放到我们的java目录中
+    targetGenDir 'src/main/java'
+    // 设置生成的数据库相关文件的包名，默认为entity所在的包名
+    daoPackage 'com.gxdingo.sg.bean.gen'
+}
+
+
 dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.dependencies.multidex
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
@@ -148,17 +162,21 @@ dependencies {
     //websocket
     implementation rootProject.ext.dependencies.websocket
 
-    //高德3D地图so及jar
-    implementation 'com.amap.api:3dmap:8.1.0'
-    //高德定位功能
-    implementation 'com.amap.api:location:5.6.0'
-    implementation 'com.amap.api:search:8.1.0'
+    //3D地图so及jar
+    implementation 'com.amap.api:3dmap:latest.integration'
+    //定位功能
+    implementation 'com.amap.api:location:latest.integration'
+    //搜索功能
+    implementation 'com.amap.api:search:latest.integration'
+
 
     //自定义进度BGAProgressBar
     implementation 'cn.bingoogolapple:bga-progressbar:1.0.1@aar'
 
     //tab控件
     implementation rootProject.ext.dependencies.magicindicator
+    //greendao
+    implementation rootProject.ext.dependencies.greendao
 
     implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
 

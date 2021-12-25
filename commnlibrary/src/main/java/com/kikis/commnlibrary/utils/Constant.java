@@ -53,6 +53,8 @@ public class Constant {
 
     public static String TEMPNAME = getAppName() + " temp";
 
+    public static String APPNAME = "shuxuan";
+
     public static String TEAMPSN = "";
 
     //bugly appid 9c912b9d6d

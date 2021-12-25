@@ -51,42 +51,61 @@
         android:text="Siwuliu"
         android:textColor="#FF2E2E2E"
         android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/store_tab_tv"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/niv_avatar"
-        app:layout_constraintEnd_toStartOf="@+id/store_tab_tv"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/store_tab_tv"
         android:layout_width="28dp"
         android:layout_height="16dp"
-        android:background="@drawable/module_border_green_round8"
-        android:text="客户"
-        android:textSize="9sp"
-        android:gravity="center"
         android:layout_marginStart="5dp"
+        android:background="@drawable/module_border_green_round8"
+        android:gravity="center"
+        android:text="客户"
         android:textColor="@color/green_dominant_tone"
+        android:textSize="9sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_nickname"
         app:layout_constraintStart_toEndOf="@+id/tv_nickname"
         app:layout_constraintTop_toTopOf="@+id/tv_nickname" />
 
-
-    <TextView
-        android:id="@+id/tv_content"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="3dp"
-        android:layout_marginRight="15dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:text="老板！一箱娃哈哈矿泉水"
-        android:textColor="#FFA9A9A9"
-        android:textSize="14sp"
+        android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toRightOf="@+id/niv_avatar"
         app:layout_constraintRight_toLeftOf="@+id/tv_time"
-        app:layout_constraintTop_toBottomOf="@+id/tv_nickname" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_nickname">
+
+        <TextView
+            android:id="@+id/draft_tag_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:textColor="@color/red"
+            android:textSize="13sp"
+            android:text="[草稿]" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="#FFA9A9A9"
+            android:textSize="14sp"
+            tools:text="老板！一箱娃哈哈矿泉水一箱娃哈哈矿泉水一箱娃哈哈矿泉水一箱娃哈哈矿泉水一箱娃哈哈矿泉水" />
+
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/tv_time"

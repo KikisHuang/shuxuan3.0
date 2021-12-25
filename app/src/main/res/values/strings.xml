@@ -74,10 +74,21 @@
     <string name="consent">同意</string>
 
     <string name="privacy_policy">请你务必审慎阅读、充分理解“服务协议”和“隐私政策”各个条款，包括但不限于：为了向你提供即时通讯、内容分享等服务，我们需要收集你的设备信息、操作日志等个人信息。你可以在“设置”中查看、变更、删除个人信息并管理你的授权。你可阅读《服务协议》和《隐私政策》了解详细信息。如你同意，请点击“同意”开始接受我们的服务。</string>
+
     <string name="login_agreement">我已阅读并同意 《服务协议》和《隐私政策》</string>
+
     <string name="find_x_contact">找到%1$s个联系人</string>
+
     <string name="filter_bank_num">0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP</string>
+
     <string name="please_agree_to_the_terms_of_service">请同意服务条款</string>
+
     <string name="phone_number_of_verification_code_cannot_null">手机号或验证码不能为空</string>
+
     <string name="go_navigation">去导航</string>
+
+    <string name="copy">复制</string>
+
+    <string name="revocation">撤回</string>
+
 </resources>

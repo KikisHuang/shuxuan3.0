@@ -39,9 +39,9 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void onSucceed(int type) {
-        if (type == 601) {
+        if (type == 601)
             goToPage(getContext(), ClientSettingPayPwd1Activity.class, null);
-        }
+
     }
 
     @Override

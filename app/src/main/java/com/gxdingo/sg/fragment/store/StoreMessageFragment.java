@@ -53,6 +53,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -313,7 +314,8 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
                 setStoreInfo(userInfo);
             //获取IM订阅信息
             getP().getIMSubscribesList(true);
-        }
+        } else if (type == NOTIFY_MSG_LIST_ADAPTER)
+            mStoreHomeIMMessageAdapter.notifyDataSetChanged();
     }
 
     @Override

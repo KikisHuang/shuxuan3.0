@@ -24,6 +24,9 @@ import com.gxdingo.sg.adapter.IMOtherFunctionsAdapter;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.GlobalBean;
 import com.gxdingo.sg.bean.ImageModel;
+import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoUtilsStore;
+import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SpanStringUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -48,6 +51,8 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.gxdingo.sg.db.SqlUtils.EQUAL;
+import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.kikis.commnlibrary.utils.Constant.CURRENT_POSITION_FLAG;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
 import static com.kikis.commnlibrary.utils.SoftKeyboardUtils.touchEventInView;
@@ -129,7 +134,6 @@ public class EmotionMainFragment extends BaseFragment {
     //对方角色。10=联系用户 11=联系商家 12=联系客服
     private int role = 10;
 
-
     private View.OnTouchListener onTouchListener;
 
     @Override
@@ -193,10 +197,10 @@ public class EmotionMainFragment extends BaseFragment {
                 .bindToSendButton(send_tv, chatId)//绑定发送按钮
                 .build();
 
-
         initFuncationLayout();
         initVoiceView();
     }
+
 
     private void initVoiceView() {
 

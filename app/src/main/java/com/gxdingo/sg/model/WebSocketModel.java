@@ -36,6 +36,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
 import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
+import static com.gxdingo.sg.http.Api.MESSAGE_WITHDRAW;
 import static com.gxdingo.sg.http.Api.SUM_UNREAD;
 import static com.gxdingo.sg.http.Api.TRANSFER;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
@@ -615,5 +616,45 @@ public class WebSocketModel {
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
 
+    }
+
+
+    /**
+     * 撤回消息
+     *
+     * @param context
+     * @param id
+     */
+    public void revocationMessage(Context context, long id, CustomResultListener customResultListener) {
+
+        Map<String, String> map = new HashMap<>();
+
+        map.put("contentId", String.valueOf(id));
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_WITHDRAW, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (customResultListener != null)
+                    customResultListener.onResult(normalBean);
+            }
+        };
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
     }
 }

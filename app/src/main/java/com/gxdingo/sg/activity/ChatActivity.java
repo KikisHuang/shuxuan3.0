@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,10 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
+import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoUtilsStore;
+import com.gxdingo.sg.db.bean.DraftBean;
+import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
@@ -79,6 +84,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.blankj.utilcode.util.KeyboardUtils.registerSoftInputChangedListener;
 import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedListener;
@@ -88,14 +94,18 @@ import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
 import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
+import static com.gxdingo.sg.db.SqlUtils.EQUAL;
+import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
+import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -354,6 +364,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //设置语音录制时动画播放图片素材
         recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
         mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
+
+        //todo 绑定表情fragment的 CHAT_ID 逻辑有问题
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY, ChatActivity.class.toString() + System.currentTimeMillis());
@@ -694,6 +706,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         super.onTypeEvent(type);
         if (type == EMOTION_LAYOUT_IS_SHOWING)
             moveTo(mChatDatas.size() - 1);
+
     }
 
 
@@ -994,6 +1007,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onDestroy() {
+        getP().saveDraft();
+
         unregisterSoftInputChangedListener(getWindow());
 
         //清除锁定id
@@ -1139,6 +1154,51 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
     }
 
+    /**
+     * 聊天item长按事件
+     *
+     * @param view
+     * @param position
+     * @param isSelf
+     */
+    @Override
+    public void onLongClickChatItem(View view, int position, boolean isSelf) {
+        int pos[] = {-1, -1}; //保存当前坐标的数组
+
+        view.getLocationOnScreen(pos); //获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .offsetY(pos[1] - 100)
+                .offsetX(pos[0])
+                .autoDismiss(true)
+                .hasShadowBg(false)
+                .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType(), args -> {
+                    int type = (int) args[0];
+
+                    if (type == 0) {
+                        copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
+                        onMessage("已复制到剪贴板");
+                    } else
+                        getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
+
+                }).show());
+
+    }
+
+    /**
+     * +      * 消息撤回成功
+     * +      *
+     * +      * @param position
+     * +
+     */
+    @Override
+    public void onMessageRevocation(int position) {
+        mChatDatas.get(position).setStatus(1);
+        mAdapter.notifyItemChanged(position);
+    }
+
+
     @Override
     public void onChatHistoryList(IMChatHistoryListBean imChatHistoryListBean) {
 
@@ -1146,6 +1206,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
             if (isEmpty(mShareUuid) && !isEmpty(imChatHistoryListBean.getShareUuid()))
                 mShareUuid = imChatHistoryListBean.getShareUuid();
+
+            getP().checkDraft();
 
             //只在第一页的时候返回，为空就赋值
             if (mAdapter == null) {
@@ -1277,6 +1339,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public String getShareUUID() {
         return mShareUuid;
+    }
+
+    @Override
+    public EditText getMessageEdttext() {
+        return emotionMainFragment != null && emotionMainFragment.bar_edit_text != null ? emotionMainFragment.bar_edit_text : null;
+    }
+
+    @Override
+    public String getSendIdentifier() {
+        return mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getSendIdentifier()) ? mMessageDetails.getOtherAvatarInfo().getSendIdentifier() : "";
     }
 
     @Override
