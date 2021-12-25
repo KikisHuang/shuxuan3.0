@@ -143,6 +143,13 @@ public class IMChatContract {
          */
         void getCacheAddress();
 
+        /**
+         * 撤回消息
+         *
+         * @param id
+         * @param position
+         */
+        void revocationMessage(long id, int position);
     }
 
     public interface IMChatListener {
@@ -218,5 +225,12 @@ public class IMChatContract {
          * @param id
          */
         void readAudioMsg(int position, long id);
+
+        /**
+         * 消息撤回
+         *
+         * @param position
+         */
+        void onMessageRevocation(int position);
     }
 }

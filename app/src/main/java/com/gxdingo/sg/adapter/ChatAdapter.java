@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
@@ -51,10 +52,14 @@ import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
 import static com.gxdingo.sg.utils.LocalConstant.OtherImage;
+import static com.gxdingo.sg.utils.LocalConstant.OtherLogistics;
+import static com.gxdingo.sg.utils.LocalConstant.OtherRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.OtherText;
 import static com.gxdingo.sg.utils.LocalConstant.OtherTransfer;
 import static com.gxdingo.sg.utils.LocalConstant.SelfAudio;
 import static com.gxdingo.sg.utils.LocalConstant.SelfImage;
+import static com.gxdingo.sg.utils.LocalConstant.SelfLogistics;
+import static com.gxdingo.sg.utils.LocalConstant.SelfRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.SelfText;
 import static com.gxdingo.sg.utils.LocalConstant.SelfTransfer;
 import static com.gxdingo.sg.utils.LocalConstant.UNKNOWN;
@@ -112,6 +117,11 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         //是否自己
         boolean self = isEmpty(data.getSendIdentifier()) || myIdentifier.equals(data.getSendIdentifier());
 
+
+        //撤回的消息状态 /状态。0=正常；1=撤回
+        if (data.getStatus() == 1)
+            return self ? SelfRevocation : OtherRevocation;
+
         // genre 消息类型 0=文本 1=图片 2=语音 3=视频 4=商品 5=订单
         //消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
         if (data.getType() == 0 || data.getType() == 1) {
@@ -134,6 +144,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 return SelfTransfer;
             else
                 return OtherTransfer;
+        } else if (data.getType() == 999) {
+            //todo 物流和地址的类型还没确定
+            if (self)
+                return SelfLogistics;
+            else
+                return OtherLogistics;
         } else
             return UNKNOWN;
 
@@ -158,6 +174,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             return R.layout.module_item_chat_self_transfer;
         else if (viewType == OtherTransfer)
             return R.layout.module_item_chat_other_transfer;
+        else if (viewType == SelfLogistics)
+            return R.layout.module_item_chat_self_logistics;
+        else if (viewType == OtherLogistics)
+            return R.layout.module_item_chat_other_logistics;
+        else if (viewType == SelfRevocation || viewType == OtherRevocation)
+            return R.layout.module_item_chat_revocation;
         else if (viewType == UNKNOWN)
             return R.layout.module_include_empty;
 
@@ -168,6 +190,11 @@ public class ChatAdapter extends BaseRecyclerAdapter {
     public void bindData(RecyclerViewHolder holder, int position, Object item) {
         if (getItemViewType(position) == -1 || getItemViewType(position) == UNKNOWN) return;
 
+        if (getItemViewType(position) == OtherRevocation || getItemViewType(position) == SelfRevocation) {
+            TextView revocation_tv = holder.getTextView(R.id.revocation_tv);
+            revocation_tv.setText(getItemViewType(position) == OtherRevocation ? "对方撤回了一条消息" : "你撤回了一条消息");
+            return;
+        }
         ReceiveIMMessageBean data = (ReceiveIMMessageBean) item;
 
         genericViewDataInit(position, data, holder);
@@ -180,8 +207,9 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                         mContext, data.getContent()));
             }
             content.setOnLongClickListener(v -> {
-                copyText(content.getText().toString());
-                customToast("已复制到剪贴板");
+                if (chatClickListener != null) {
+                    chatClickListener.onLongClickChatItem(content, position, getItemViewType(position) == SelfText ? true : false);
+                }
                 return false;
             });
         }
@@ -205,6 +233,15 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 if (chatClickListener != null)
                     chatClickListener.onImageClick(data.getContent());
             });
+
+            if (getItemViewType(position) == SelfImage) {
+                content_img.setOnLongClickListener(v -> {
+                    if (chatClickListener != null) {
+                        chatClickListener.onLongClickChatItem(content_img, position, true);
+                    }
+                    return false;
+                });
+            }
         }
 
         //语音类型
@@ -216,6 +253,15 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             if (getItemViewType(position) == OtherAudio) {
                 TextView unread_tv = holder.getTextView(R.id.unread_tv);
                 unread_tv.setVisibility(data.recipientRead == 0 ? View.VISIBLE : View.GONE);
+            }
+
+            if (getItemViewType(position) == SelfAudio) {
+                voice_ll.setOnLongClickListener(v -> {
+                    if (chatClickListener != null) {
+                        chatClickListener.onLongClickChatItem(voice_ll, position, true);
+                    }
+                    return false;
+                });
             }
 
             if (data.getVoiceDuration() > 0) {
@@ -256,78 +302,57 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             } else
                 stopAnima((AnimationDrawable) iv_voice_scrolling.getBackground());
 
-
             voice_ll.setOnClickListener(v -> {
+                voice_ll.post(() -> {
+                            try {
 
-                voice_ll.post(new Runnable() {
-                    @Override
-                    public void run() {
+                                AnimationDrawable anim = (AnimationDrawable) iv_voice_scrolling.getBackground();
 
-                        AnimationDrawable anim = (AnimationDrawable) iv_voice_scrolling.getBackground();
+                                if (mTagContent == "") {
+                                    //未有语音在播放，播放语音
+                                    mTagContent = data.getContent();
+                                    mTime = System.currentTimeMillis();
+                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                                    anim.start();
 
-                        if (mTagContent == "") {
-                            //未有语音在播放，播放语音
-                            mTagContent = data.getContent();
-                            mTime = System.currentTimeMillis();
-                            startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
-                            anim.start();
+                                    if (chatClickListener != null) {
+                                        chatClickListener.onAudioClick(data.getContent(), true, position);
+                                        if (data.recipientRead == 0)
+                                            chatClickListener.clearUnread(position, data.getId());
+                                    }
 
-                            if (chatClickListener != null) {
-                                chatClickListener.onAudioClick(data.getContent(), true, position);
-                                if (data.recipientRead == 0)
-                                    chatClickListener.clearUnread(position, data.getId());
+                                } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
+                                    //正在播放中,取消语音播放
+                                    mTagContent = "";
+                                    mTime = 0;
+                                    stopAnima(anim);
+                                    cancel();
+
+                                    if (chatClickListener != null)
+                                        chatClickListener.onAudioClick(data.getContent(), false, position);
+
+                                } else {
+                                    //已经超时的播放，播放语音
+                                    mTagContent = data.getContent();
+                                    mTime = System.currentTimeMillis();
+                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                                    anim.start();
+
+                                    if (chatClickListener != null) {
+                                        chatClickListener.onAudioClick(data.getContent(), true, position);
+
+                                        if (data.recipientRead == 0)
+                                            chatClickListener.clearUnread(position, data.getId());
+                                    }
+
+                                }
+                            } catch (Exception e) {
+                                LogUtils.e(" audio play error === " + e);
                             }
-
-                        } else if (data.getContent() == mTagContent && System.currentTimeMillis() - mTime <= (data.getVoiceDuration() * 1000)) {
-                            //正在播放中,取消语音播放
-                            mTagContent = "";
-                            mTime = 0;
-                            stopAnima(anim);
-                            cancel();
-
-                            if (chatClickListener != null)
-                                chatClickListener.onAudioClick(data.getContent(), false, position);
-
-                        } else {
-                            //已经超时的播放，播放语音
-                            mTagContent = data.getContent();
-                            mTime = System.currentTimeMillis();
-                            startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
-                            anim.start();
-
-                            if (chatClickListener != null) {
-                                chatClickListener.onAudioClick(data.getContent(), true, position);
-
-                                if (data.recipientRead == 0)
-                                    chatClickListener.clearUnread(position, data.getId());
-                            }
-
                         }
-                    }
-                });
-
-                   /*     if (anim.isRunning()) {
-//                            stopVoiceAnima(holder);
-                            anim.selectDrawable(0);//选择当前动画的第一帧，然后停止
-                            anim.stop();
-                            cancel();
-                            if (chatClickListener != null)
-                                chatClickListener.onAudioClick(data.getContent(), anim,position);
-                        } else {
-                            stopVoiceAnima(holder);
-                            if (getItemViewType(position) == OtherAudio && data.recipientRead == 0) {
-                                data.recipientRead = 1;
-                                notifyItemChanged(position);
-                                chatClickListener.clearUnread(data.getId());
-                            }
-                            anim.start();//启动动画
-                            startTimer(data.getVoiceDuration());
-                            if (chatClickListener != null)
-                                chatClickListener.onAudioClick(data.getContent(), anim,position);
-                        }*/
+                );
 
             });
-
 
         }
 

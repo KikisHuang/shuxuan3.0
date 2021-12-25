@@ -24,6 +24,14 @@ public class LocalConstant {
     //自己发送的转账类型
     public static final int SelfTransfer = 7781;
 
+    //自己发送的物流信息类型
+    public static final int SelfLogistics = 7782;
+    //自己发送的地址信息类型
+    public static final int SelfAddressInfo = 7783;
+    //自己撤回消息类型
+    public static final int SelfRevocation = 7784;
+
+
     //他人发送的文字类型
     public static final int OtherText = 77781;
     //他人发送的图片类型
@@ -38,6 +46,17 @@ public class LocalConstant {
     public static final int OtherFile = 77785;
     //他人发送的转账类型
     public static final int OtherTransfer = 77786;
+
+    //他人发送的物流信息类型
+    public static final int OtherLogistics = 77787;
+
+    //他人发送的地址信息类型
+    public static final int OtherAddressInfo = 77788;
+
+    //他人撤回消息类型
+    public static final int OtherRevocation = 77789;
+
+
     //未知类型
     public static final int UNKNOWN = 666666;
 

@@ -646,4 +646,21 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     }
 
+    /**
+     * 撤回消息
+     *
+     * @param id
+     * @param position
+     */
+    @Override
+    public void revocationMessage(long id, int position) {
+
+        if (mWebSocketModel != null)
+            mWebSocketModel.revocationMessage(getContext(), id, t -> {
+                getV().onMessageRevocation(position);
+
+            });
+
+    }
+
 }

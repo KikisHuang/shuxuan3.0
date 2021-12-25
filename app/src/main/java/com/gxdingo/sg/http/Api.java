@@ -168,4 +168,9 @@ public class Api {
      */
     public static final String UPLOAD_INVITATIONCODE = HIERARCHY + "activity/add/regionCode";
 
+    /**
+     *      * 消息内容未读状态改成已读
+     */
+    public static final String MESSAGE_WITHDRAW = HIERARCHY + "mps/message/withdraw";
+
 }

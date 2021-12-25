@@ -30,6 +30,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
+import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
@@ -79,6 +80,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.blankj.utilcode.util.KeyboardUtils.registerSoftInputChangedListener;
 import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedListener;
@@ -1138,6 +1140,51 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
             goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
     }
+
+    /**
+     * 聊天item长按事件
+     *
+     * @param view
+     * @param position
+     * @param isSelf
+     */
+    @Override
+    public void onLongClickChatItem(View view, int position, boolean isSelf) {
+        int pos[] = {-1, -1}; //保存当前坐标的数组
+
+        view.getLocationOnScreen(pos); //获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .offsetY(pos[1] - 100)
+                .offsetX(pos[0])
+                .autoDismiss(true)
+                .hasShadowBg(false)
+                .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType(), args -> {
+                    int type = (int) args[0];
+
+                    if (type == 0) {
+                        copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
+                        onMessage("已复制到剪贴板");
+                    } else
+                        getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
+
+                }).show());
+
+    }
+
+    /**
+     * +      * 消息撤回成功
+     * +      *
+     * +      * @param position
+     * +
+     */
+    @Override
+    public void onMessageRevocation(int position) {
+        mChatDatas.get(position).setStatus(1);
+        mAdapter.notifyItemChanged(position);
+    }
+
 
     @Override
     public void onChatHistoryList(IMChatHistoryListBean imChatHistoryListBean) {
