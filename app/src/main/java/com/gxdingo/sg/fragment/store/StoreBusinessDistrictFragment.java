@@ -26,6 +26,7 @@ import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
+import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
@@ -300,7 +301,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     }
 
-    private void startCountDown() {
+    private void startCountDown(ActivityEvent event) {
         if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
@@ -339,7 +340,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             public void onComplete() {
 
                 cl_visit_countdown.setVisibility(View.GONE);
-                getP().complete();
+                getP().complete(event.identifier);
                 if (mDisposable != null) {
                     mDisposable.dispose();
                     mDisposable = null;
@@ -354,6 +355,11 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         //商圈未读评论类型事件
         if (object instanceof ReceiveIMMessageBean.DataByType) {
             getP().getNumberUnreadComments();
+        } else if (object instanceof ActivityEvent) {
+            //活动事件
+            cl_visit_countdown.setVisibility(View.VISIBLE);
+            startCountDown((ActivityEvent) object);
+
         }
     }
 
@@ -371,9 +377,6 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈列表
             getP().getBusinessDistrictList(true, mStoreId);
 
-        } else if (type == LocalConstant.VISIT_CIRCLE) {
-            cl_visit_countdown.setVisibility(View.VISIBLE);
-            startCountDown();
         } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部

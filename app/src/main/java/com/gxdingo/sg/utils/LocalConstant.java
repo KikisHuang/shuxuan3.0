@@ -226,6 +226,5 @@ public class LocalConstant {
     public static final int IMG = 1123;
     public static final int ADD = 1124;
 
-    public static final int VISIT_CIRCLE = 1245;
 
 }

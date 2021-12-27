@@ -19,7 +19,6 @@ import com.lzy.ninegrid.ImageInfo;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import io.reactivex.Observable;
@@ -253,9 +252,9 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     }
 
     @Override
-    public void complete() {
+    public void complete(String identifier) {
         if (clientNetworkModel != null)
-            clientNetworkModel.completeTask(getContext(), 10);
+            clientNetworkModel.completeTask(getContext(), identifier,10);
     }
 
     /**

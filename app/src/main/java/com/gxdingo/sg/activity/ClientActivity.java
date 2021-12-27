@@ -17,6 +17,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -254,6 +255,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (object instanceof ReceiveIMMessageBean.DataByType) {
             //商圈未读评论类型事件
             getP().getUnreadMessageNum();
+        } else if (object instanceof ActivityEvent) {
+            //活动事件
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            getP().checkTab(2);
         }
     }
 
@@ -277,9 +282,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == SOTRE_REVIEW_SUCCEED) {
             //用户认证成功，关闭客户端
             finish();
-        } else if (type == LocalConstant.VISIT_CIRCLE) {
-            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
@@ -411,8 +413,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
             tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
         } else {
-        tv_business_unread_msg_count.getLayoutParams().width = dp2px(10);
-        tv_business_unread_msg_count.getLayoutParams().height = dp2px(10);
+            tv_business_unread_msg_count.getLayoutParams().width = dp2px(10);
+            tv_business_unread_msg_count.getLayoutParams().height = dp2px(10);
             tv_business_unread_msg_count.setText("");
             tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
         }

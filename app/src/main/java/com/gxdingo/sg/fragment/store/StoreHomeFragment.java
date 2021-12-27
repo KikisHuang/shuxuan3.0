@@ -30,6 +30,7 @@ import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
+import com.gxdingo.sg.adapter.HomePageBannerAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
@@ -401,30 +402,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
         if (bannerBeans.size() > 0) {
             home_banner.setVisibility(View.VISIBLE);
-            home_banner.setBannerRound(8);
-            home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {
-                @Override
-                public void onBindView(BannerImageHolder holder, HomeBannerBean data, int position, int size) {
-                    Glide.with(reference.get())
-                            .load(data.getImage())
-                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
-                            .into(new SimpleTarget<Drawable>() {
-                                @Override
-                                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
-                                    int width = resource.getIntrinsicWidth();
-                                    int height = resource.getIntrinsicHeight();
-
-                                    int newheight = getScreenWidth() * height / width;
-
-                                    home_banner.getLayoutParams().height = newheight;
-
-
-                                    holder.imageView.setImageDrawable(resource);
-                                }
-                            });
-
-                }
-            });
+            home_banner.setAdapter(new HomePageBannerAdapter(reference.get(), bannerBeans));
             home_banner.setOnBannerListener((data, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) data;
                 if (bannerBean.getType() == 2 && !isEmpty(bannerBean.getPage())) {

@@ -68,7 +68,7 @@ public class StoreBusinessDistrictContract {
         void PhotoViewer(ArrayList<String> images, int position);
 
         //完成浏览商圈
-        void complete();
+        void complete(String identifier);
     }
 
     public interface StoreBusinessDistrictListener {

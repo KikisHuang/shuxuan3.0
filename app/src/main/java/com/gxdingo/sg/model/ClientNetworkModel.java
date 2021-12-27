@@ -5,14 +5,12 @@ import android.content.Context;
 import com.amap.api.services.core.LatLonPoint;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.ShareBean;
-import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.ClientApi;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
@@ -38,11 +36,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.utils.ScreenUtils;
-import com.zhouyou.http.EasyHttp;
-import com.zhouyou.http.callback.CallBack;
 import com.zhouyou.http.callback.CallClazzProxy;
-import com.zhouyou.http.callback.SimpleCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 
@@ -98,7 +92,6 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Weaving
@@ -1667,14 +1660,18 @@ public class ClientNetworkModel {
      * 完成用户大转盘抽奖任务
      *
      * @param context
+     * @param identifier
      * @param completeType
      */
-    public void completeTask(Context context, int completeType) {
+    public void completeTask(Context context, String identifier, int completeType) {
         Map<String, String> map = getJsonMap();
 
         if (netWorkListener != null) {
             netWorkListener.onStarts();
         }
+
+        if (!isEmpty(identifier))
+            map.put("identifier", identifier);
 
         //map.put(Constant.CODE, code);
         map.put("completeType", String.valueOf(completeType));
