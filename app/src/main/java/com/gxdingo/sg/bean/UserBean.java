@@ -186,6 +186,7 @@ public class UserBean implements Serializable {
         private int status;//状态 0=待审核 10=已认证 20=已驳回 40=已禁用 90=永久关闭
         private String statusText;//店铺状态对应的文本
 
+        public String rejectReason;
 
         public String getAddress() {
             return address;

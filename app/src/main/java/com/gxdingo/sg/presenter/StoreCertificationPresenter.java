@@ -275,7 +275,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         //未提交认证流程
                     } else if (data.getStore().getStatus() == 20) {
                         //回调显示被驳回
-                        getV().rejected();
+                        getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
                         //回调显示已认证通过
                         getV().certificationPassed();
