@@ -72,9 +72,13 @@ public class LocalConstant {
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     public static final int QUITLOGINPAGE = 404;
     //显示商圈未读消息dot
-    public static final int SHOW_BUSINESS_DISTRICT_UN_READ_DOT  = 1242;
+    public static final int SHOW_BUSINESS_DISTRICT_UN_READ_DOT = 1242;
 
     public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
+    //商圈页面到顶部事件
+    public static final int BUSINESS_DISTRICT_IS_TOP = 998;
+    //商圈页面浏览中事件
+    public static final int BUSINESS_DISTRICT_IS_BROWSE = 997;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int STORE_LOGIN_SUCCEED = 21;
@@ -97,7 +101,7 @@ public class LocalConstant {
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
 
-    public static  String AdCode = "";
+    public static String AdCode = "";
 
     //第一次登录标识符
     public static final String FIRST_LOGIN_KEY = "shugou_first_login_key";
@@ -120,7 +124,7 @@ public class LocalConstant {
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
 
-    public static  String locationSelected = "";
+    public static String locationSelected = "";
 
     public static final String REASON = "reason";
 

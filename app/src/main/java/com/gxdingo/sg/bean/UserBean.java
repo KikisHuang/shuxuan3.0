@@ -22,6 +22,24 @@ public class UserBean implements Serializable {
     private Integer isBindMobile;
     private String openid;
     private String identifier;
+    private String emasId;
+
+    public String getEmasId() {
+        return emasId;
+    }
+
+    public void setEmasId(String emasId) {
+        this.emasId = emasId;
+    }
+
+    public Boolean getSetPassword() {
+        return isSetPassword;
+    }
+
+    public void setSetPassword(Boolean setPassword) {
+        isSetPassword = setPassword;
+    }
+
     private String mobile;
     private String nickname;
     private String avatar;

@@ -3,6 +3,7 @@ package com.gxdingo.sg.fragment.client;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -407,10 +408,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onBannerResult(List<HomeBannerBean> bannerBeans) {
         if (bannerBeans.size() > 0) {
+            home_banner.setBannerRound(8);
             home_banner.setVisibility(View.VISIBLE);
             home_banner.setAdapter(new BannerImageAdapter<HomeBannerBean>(bannerBeans) {
                 @Override
                 public void onBindView(BannerImageHolder holder, HomeBannerBean data, int position, int size) {
+
                     Glide.with(reference.get())
                             .load(data.getImage())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
@@ -421,9 +424,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                                     int height = resource.getIntrinsicHeight();
 
                                     int newheight = getScreenWidth() * height / width;
-
-                                    home_banner.getLayoutParams().height = newheight;
-
 
                                     holder.imageView.setImageDrawable(resource);
                                 }

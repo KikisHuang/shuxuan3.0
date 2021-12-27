@@ -25,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_AVATAR_KEY;
+import static com.gxdingo.sg.utils.ClientLocalConstant.USER_EMAS;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_IDENTIFIER;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_ID_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.USER_INFO_KEY;
@@ -35,6 +36,7 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.USER_WALLPAGER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.ADDRESS_CACHE;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
+import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
@@ -67,6 +69,7 @@ public class UserInfoUtils {
             saveUserNickName(userBean.getNickname());
             saveIdentifier(userBean.getIdentifier());
             saveOpenId(userBean.getOpenid());
+            saveEMAS(userBean.getEmasId());
             SPUtils.getInstance().put(USER_INFO_KEY, GsonUtil.gsonToStr(userBean));
             bindPushAccount();
         } else {
@@ -78,6 +81,7 @@ public class UserInfoUtils {
             saveUserNickName("");
             saveUserToken("");
             saveIdentifier("");
+            saveEMAS("");
             saveWallpaper("");
             saveOpenId("");
             MessageCountManager.getInstance().setUnreadMessageNum(0);
@@ -140,6 +144,15 @@ public class UserInfoUtils {
      */
     public void saveIdentifier(String identifier) {
         SPUtils.getInstance().put(USER_IDENTIFIER, identifier);
+    }
+
+    /**
+     * 保存saveEMAS
+     *
+     * @return
+     */
+    public void saveEMAS(String emas) {
+        SPUtils.getInstance().put(USER_EMAS, emas);
     }
 
     /**
@@ -312,6 +325,15 @@ public class UserInfoUtils {
     }
 
     /**
+     * 获取emas
+     *
+     * @return
+     */
+    public String getEMAS() {
+        return SPUtils.getInstance().getString(USER_EMAS);
+    }
+
+    /**
      * 绑定推送账号
      */
     public void bindPushAccount() {
@@ -323,17 +345,17 @@ public class UserInfoUtils {
                 LogUtils.w("pushService is null ");
                 return;
             }
-            PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getIdentifier(), new CommonCallback() {
+            PushServiceFactory.getCloudPushService().bindAccount(UserInfoUtils.getInstance().getEMAS(), new CommonCallback() {
                 @Override
                 public void onSuccess(String s) {
-                    LogUtils.w("bind account success account == " + UserInfoUtils.getInstance().getIdentifier());
+                    if (isDebug)
+                        LogUtils.i("bind account success account == " + UserInfoUtils.getInstance().getEMAS());
                 }
 
                 @Override
                 public void onFailed(String s, String s1) {
-
-                    LogUtils.w("bind account onfailed ");
-
+                    if (isDebug)
+                        LogUtils.e("bind account onfailed ");
                 }
             });
         }

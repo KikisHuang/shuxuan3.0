@@ -104,6 +104,16 @@
                 app:is_selected="false"
                 app:text="@string/business_district" />
 
+            <ImageView
+                android:id="@+id/back_to_top"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                android:background="@color/content9"
+                android:src="@drawable/module_svg_back_to_top" />
+
             <TextView
                 android:id="@+id/tv_business_unread_msg_count"
                 android:layout_width="16dp"

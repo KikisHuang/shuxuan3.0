@@ -16,6 +16,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
@@ -35,26 +36,37 @@ import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
+import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_BROWSE;
+import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_TOP;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
@@ -114,7 +126,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     //客户端查询单独商家商圈所需id
     private int mStoreId = 0;
 
-    private CountDownTimer countDownTimer;
+    private Disposable mDisposable;
+    //活动倒计时
+    private int countDown = 15;
 
     /**
      * 商圈子视图点击监听接口
@@ -227,6 +241,23 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@androidx.annotation.NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int firstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
+
+                if (firstCompletelyVisibleItemPosition == 0) {
+                    LogUtils.i("BUSINESS_DISTRICT_IS_TOP");
+                    sendEvent(BUSINESS_DISTRICT_IS_TOP);
+                } else {
+                    LogUtils.i("BUSINESS_DISTRICT_IS_BROWSE");
+                    sendEvent(BUSINESS_DISTRICT_IS_BROWSE);
+                }
+            }
+        });
     }
 
     @Override
@@ -262,34 +293,59 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 cl_visit_countdown.setVisibility(View.GONE);
             }
         }
-        if (hidden && countDownTimer != null)
-            countDownTimer.cancel();
+        if (hidden && mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
+        }
+
     }
 
     private void startCountDown() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-            countDownTimer = null;
+        if (mDisposable != null) {
+            mDisposable.dispose();
+            mDisposable = null;
         }
+        countDown = 15;
+        count_down_tv.setText(countDown + "");
+        Observable observable = Observable.interval(1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread());
 
-        countDownTimer = new CountDownTimer(15 * 1000, 1000) {
+        observable.compose(((BaseActivity) getActivity()).bindToLifecycle());
+
+        observable.subscribe(new Observer<Long>() {
             @Override
-            public void onTick(long millisUntilFinished) {
+            public void onSubscribe(@NonNull Disposable disposable) {
+                mDisposable = disposable;
+            }
 
-                String value = String.valueOf((int) (millisUntilFinished / 1000));
-                Log.d("business_circle========", "onStart: " + value);
+            @Override
+            public void onNext(@NonNull Long number) {
+
+                String value = String.valueOf(--countDown);
+
+                if (countDown <= 0)
+                    onComplete();
 
                 if (count_down_tv != null && !isEmpty(value))
                     count_down_tv.setText(value);
             }
 
             @Override
-            public void onFinish() {
-                Log.d("business_circle========", "onFinish: ");
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
                 cl_visit_countdown.setVisibility(View.GONE);
                 getP().complete();
+                if (mDisposable != null) {
+                    mDisposable.dispose();
+                    mDisposable = null;
+                }
             }
-        }.start();
+        });
     }
 
     @Override
@@ -319,6 +375,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown();
         } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
+            forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.smoothMoveToPosition(recyclerView, 0);
         }

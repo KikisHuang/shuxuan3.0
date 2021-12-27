@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,7 @@ import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -54,6 +56,9 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
+import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_BROWSE;
+import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_TOP;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
@@ -65,6 +70,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RxUtil.cancel;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Weaving
@@ -86,6 +92,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @BindView(R.id.tv_unread_msg_count)
     public TextView tv_unread_msg_count;
+
+    @BindView(R.id.back_to_top)
+    public ImageView back_to_top;
 
     @BindView(R.id.tv_business_unread_msg_count)
     public TextView tv_business_unread_msg_count;
@@ -268,6 +277,24 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
+        } else if (type == BUSINESS_DISTRICT_IS_TOP) {
+            backToTopIconState(false);
+
+        } else if (type == BUSINESS_DISTRICT_IS_BROWSE) {
+            backToTopIconState(true);
+        }
+    }
+
+    private void backToTopIconState(boolean show) {
+        if (!show) {
+            if (back_to_top.getVisibility() == View.VISIBLE) {
+                back_to_top.setVisibility(View.GONE);
+            }
+        } else {
+            if (back_to_top.getVisibility() == View.GONE) {
+                back_to_top.setVisibility(View.VISIBLE);
+                back_to_top.setAnimation(AnimationUtil.getInstance().ViewShowAnima(100));
+            }
         }
     }
 
@@ -296,6 +323,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
+
         }
 
         switch (v.getId()) {
@@ -372,9 +400,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
         }
         if (data.getUnread() > 0) {
+            tv_business_unread_msg_count.getLayoutParams().width = dp2px(16);
+            tv_business_unread_msg_count.getLayoutParams().height = dp2px(16);
             tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
             tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
         } else {
+        tv_business_unread_msg_count.getLayoutParams().width = dp2px(10);
+        tv_business_unread_msg_count.getLayoutParams().height = dp2px(10);
             tv_business_unread_msg_count.setText("");
             tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
         }
