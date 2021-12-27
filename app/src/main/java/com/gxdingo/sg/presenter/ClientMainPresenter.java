@@ -18,6 +18,7 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -33,6 +34,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.CommonUtils.isNotificationEnabled;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
 
 /**
@@ -303,5 +305,15 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
         }
 
 
+    }
+
+    /**
+     * 监测通知栏是否开启
+     */
+    @Override
+    public void checkNotifications() {
+
+        if (SPUtils.getInstance().getBoolean(LocalConstant.NOTIFICATION_MANAGER_KEY, true) && !isNotificationEnabled(getContext()))
+            getV().showNotifyDialog();
     }
 }

@@ -21,6 +21,8 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
@@ -39,6 +41,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +67,7 @@ import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
+import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -188,6 +192,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         registerAppStatusChangedListener(this);
         screenListener = new ScreenListener(reference.get());
         screenListener.begin(this);
+
+        getP().checkNotifications();
     }
 
     @Override
@@ -410,6 +416,26 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             tv_business_unread_msg_count.setText("");
             tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
         }
+    }
+
+    /**
+     * 显示提示用户未开启通知栏弹窗
+     */
+    @Override
+    public void showNotifyDialog() {
+        SgConfirm2ButtonPopupView sgConfirm2ButtonPopupView = new SgConfirm2ButtonPopupView(reference.get(), "检测到您未开启通知栏权限，消息无法准确推送到，是否去开启？", new MyConfirmListener() {
+            @Override
+            public void onConfirm() {
+                goNotifySetting(reference.get());
+                SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+            }
+        });
+        sgConfirm2ButtonPopupView.setCancelCilcikListener(v -> {
+            SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+        });
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .asCustom(sgConfirm2ButtonPopupView).show();
     }
 
     @Override
