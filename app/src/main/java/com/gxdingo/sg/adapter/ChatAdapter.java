@@ -359,7 +359,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         //转账类型
         if (getItemViewType(position) == SelfTransfer || getItemViewType(position) == OtherTransfer) {
 
-            ReceiveIMMessageBean.MsgAccounts msgAccounts = data.getMsgAccounts();
+            ReceiveIMMessageBean.DataByType dataByType = data.getDataByType();
 
             ConstraintLayout cl_transfer_accounts_bg = (ConstraintLayout) holder.getView(R.id.cl_transfer_accounts_bg);
             TextView amount_tv = holder.getTextView(R.id.amount_tv);
@@ -374,19 +374,19 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onTransferClick(position, data.getId());
             });
 
-            if (msgAccounts != null) {
+            if (dataByType != null) {
                 cl_transfer_accounts_bg.setVisibility(View.VISIBLE);
 
                 NumberFormat nf = NumberFormat.getInstance();
-                String account = nf.format(msgAccounts.getAmount());
+                String account = nf.format(dataByType.getAmount());
 
                 amount_tv.setText(account);
 
                 //0=未付款；1=待领取；2=已收款；3=拒绝收款；4=过期退回
-                if (msgAccounts.getStatus() == 1) {
+                if (dataByType.getStatus() == 1) {
                     status_tv.setText("待领取");
                     cl_transfer_accounts_bg.getBackground().setAlpha(255);
-                } else if (msgAccounts.getStatus() == 2) {
+                } else if (dataByType.getStatus() == 2) {
 
                     boolean isSelf = data.getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier());
 
@@ -399,21 +399,21 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
 
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
-                } else if (msgAccounts.getStatus() == 3) {
+                } else if (dataByType.getStatus() == 3) {
                     status_tv.setText("拒绝收款");
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
-                } else if (msgAccounts.getStatus() == 4) {
+                } else if (dataByType.getStatus() == 4) {
                     status_tv.setText("过期退回");
                     cl_transfer_accounts_bg.getBackground().setAlpha(100);
                 }
                 //转账方支付类型。10=微信,20=支付宝
-                if (msgAccounts.getPayType() == 10) {
+                if (dataByType.getPayType() == 10) {
                     transfer_type_name_tv.setText("微信转账");
                     iv_transfer_accounts_type_icon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_wechat_icon);
-                } else if (msgAccounts.getPayType() == 20) {
+                } else if (dataByType.getPayType() == 20) {
                     transfer_type_name_tv.setText("支付宝转账");
                     iv_transfer_accounts_type_icon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_alipay_icon);
-                } else if (msgAccounts.getPayType() == 30) {
+                } else if (dataByType.getPayType() == 30) {
                     transfer_type_name_tv.setText("钱包转账");
                     iv_transfer_accounts_type_icon.setImageResource(R.drawable.module_im_chat_transfer_accounts_type_blance_icon);
                 }
@@ -458,7 +458,6 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             time_tv.setText(isToday(date) ? dealDateFormat(data.getCreateTime(), "HH:mm") : date);
         }
-
 
         if (position == 0)
             time_tv.setVisibility(View.VISIBLE);

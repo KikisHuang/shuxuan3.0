@@ -701,6 +701,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
             List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{getV().getShareUUID()});
 
             if (mLocalComList != null && mLocalComList.size() > 0) {
+
                 //存在则更新草稿
                 draftBean.id = mLocalComList.get(0).id;
                 DaoUtilsStore.getInstance().getDratfUtils().update(draftBean);

@@ -71,6 +71,8 @@ public class LocalConstant {
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     public static final int QUITLOGINPAGE = 404;
+    //显示商圈未读消息dot
+    public static final int SHOW_BUSINESS_DISTRICT_UN_READ_DOT  = 1242;
 
     public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
     //确认收货

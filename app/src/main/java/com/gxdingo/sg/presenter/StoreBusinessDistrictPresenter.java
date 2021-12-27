@@ -232,6 +232,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      */
     @Override
     public void getNumberUnreadComments() {
+        if (businessDistrictModel!=null)
         businessDistrictModel.getNumberUnreadComments(getContext(), this);
     }
 
@@ -242,6 +243,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      */
     @Override
     public void deleteBusinessDistrictDynamics(long id) {
+        if (businessDistrictModel!=null)
         businessDistrictModel.storeDeleteBusinessDistrictDynamics(getContext(), id);
     }
 

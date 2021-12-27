@@ -55,6 +55,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
@@ -194,10 +195,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUnreadMessageNum();
             startImService();
-            startTimer();
         }
-
-
 
         //商家已登录则跳转到商家主界面
         if (UserInfoUtils.getInstance().isLogin()) {
@@ -207,37 +205,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 finish();
             }
         }
-    }
-
-    /**
-     * 启动商圈定时器
-     */
-    private void startTimer() {
-        Observable observable = Observable.interval(businessDistrictRefreshTime, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread());
-        observable.compose(bindToLifecycle());
-
-        observable.subscribe(new Observer<Long>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable disposable) {
-                mDisposable = disposable;
-            }
-
-            @Override
-            public void onNext(@NonNull Long number) {
-                getP().getUnreadMessageNum();
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
     }
 
 
@@ -269,6 +236,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
             goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
+        } else if (object instanceof ReceiveIMMessageBean.DataByType) {
+            //商圈未读评论类型事件
+            getP().getUnreadMessageNum();
         }
     }
 
@@ -295,6 +265,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LocalConstant.VISIT_CIRCLE) {
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
             getP().checkTab(2);
+        } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+            //商圈有未读消息数
+            getP().getUnreadMessageNum();
         }
     }
 
