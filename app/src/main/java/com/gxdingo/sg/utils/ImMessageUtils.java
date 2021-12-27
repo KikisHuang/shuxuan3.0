@@ -149,25 +149,28 @@ public class ImMessageUtils {
                     if (!isEmpty(message)) {
                         ReceiveIMMessageBean messageBean = GsonUtil.GsonToBean(message, ReceiveIMMessageBean.class);
 
+
+                        if (messageBean != null && messageBean.getType() == 1001 || messageBean.getType() == 1002) {
+                            //商圈未读通知、商圈被评论通知
+                            EventBus.getDefault().post(messageBean.getType() == 1001 ? LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT : messageBean.getDataByType());
+                            return;
+                        }
                         //消息接收
                         if (messageBean != null && messageBean.getId() > 0) {
-
                             //如果不是自己发送的消息，加入新消息未读
                             if (!CHAT_IDENTIFIER.equals(messageBean.getSendIdentifier())) {
                                 playBeep();
                                 MessageCountManager.getInstance().addNewMessage();
-
                             } else {
                                 //自己发送的消息要手动调用服务端接口清除
                                 if (!isEmpty(LocalConstant.CHAT_UUID))
                                     EventBus.getDefault().post(new ExitChatEvent(LocalConstant.CHAT_UUID));
                             }
-
                             passMessage(messageBean);
                         }
                     }
-
                 }
+
             };
             try {
                 if (!isEmpty(mUrl) && mUrl.contains("wss"))
@@ -182,6 +185,7 @@ public class ImMessageUtils {
         } else {
             mBaseWebSocket = null;
         }
+
     }
 
     private void sslInit() throws Exception {

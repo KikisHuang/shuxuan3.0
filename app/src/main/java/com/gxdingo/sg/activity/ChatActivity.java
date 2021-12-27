@@ -538,8 +538,27 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         if (receiveIMMessageBean.getType() != 30)
                             //一样则通过该方法显示消息
                             receiveNewMsg(receiveIMMessageBean);
-                        else
-                            setAddressInfo(receiveIMMessageBean.getMsgAddress());
+                        else {
+                            if (receiveIMMessageBean.getDataByType() != null) {
+                                ReceiveIMMessageBean.DataByType type = receiveIMMessageBean.getDataByType();
+
+                                AddressBean addressBean = new AddressBean();
+                                addressBean.setId(type.getId());
+                                addressBean.identifier = type.getIdentifier();
+                                addressBean.setMobile(type.getMobile());
+                                addressBean.setName(type.getName());
+                                addressBean.setGender(type.getGender());
+                                addressBean.setRegionPath(type.getRegionPath());
+                                addressBean.setStreet(type.getStreet());
+                                addressBean.setDoorplate(type.getDoorplate());
+                                addressBean.setLatitude(type.getLatitude());
+                                addressBean.setLongitude(type.getLongitude());
+
+                                setAddressInfo(addressBean);
+                            }
+
+                        }
+
                     }
 
                     //自己发送的转账消息
@@ -775,8 +794,22 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
         try {
             //地址类型
-            if (receiveIMMessageBean.getType() == 30)
-                setAddressInfo(receiveIMMessageBean.getMsgAddress());
+            if (receiveIMMessageBean.getType() == 30) {
+                ReceiveIMMessageBean.DataByType type = receiveIMMessageBean.getDataByType();
+
+                AddressBean addressBean = new AddressBean();
+                addressBean.setId(type.getId());
+                addressBean.identifier = type.getIdentifier();
+                addressBean.setMobile(type.getMobile());
+                addressBean.setName(type.getName());
+                addressBean.setGender(type.getGender());
+                addressBean.setRegionPath(type.getRegionPath());
+                addressBean.setStreet(type.getStreet());
+                addressBean.setDoorplate(type.getDoorplate());
+                addressBean.setLatitude(type.getLatitude());
+                addressBean.setLongitude(type.getLongitude());
+                setAddressInfo(addressBean);
+            }
 
             mChatDatas.add(receiveIMMessageBean);
             mAdapter.notifyDataSetChanged();
@@ -812,12 +845,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             moveTo(mChatDatas.size() - 1);
 
         //如果是前一条转账的状态事件，刷新前一条发送转账消息的状态
-        if (receiveIMMessageBean.getType() == 21 && receiveIMMessageBean.getMsgAccounts() != null) {
+        if (receiveIMMessageBean.getType() == 21 && receiveIMMessageBean.getDataByType() != null) {
             RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
 
                 for (int i = 0; i < mChatDatas.size(); i++) {
-                    if (mChatDatas.get(i).getMsgAccounts() != null && mChatDatas.get(i).getMsgAccounts().getId() != null && mChatDatas.get(i).getMsgAccounts().getId().equals(receiveIMMessageBean.getMsgAccounts().getId())) {
-                        mChatDatas.get(i).setMsgAccounts(receiveIMMessageBean.getMsgAccounts());
+                    if (mChatDatas.get(i).getDataByType() != null && mChatDatas.get(i).getDataByType().getId() > 0 && mChatDatas.get(i).getDataByType().getId() == (receiveIMMessageBean.getDataByType().getId())) {
+                        mChatDatas.get(i).setDataByType(receiveIMMessageBean.getDataByType());
                         e.onNext(i);
                         break;
                     }
@@ -1358,7 +1391,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void getTransFerSucceed(int position) {
-        mChatDatas.get(position).getMsgAccounts().setStatus(2);
+        mChatDatas.get(position).getDataByType().setStatus(2);
         mAdapter.notifyItemChanged(position);
     }
 

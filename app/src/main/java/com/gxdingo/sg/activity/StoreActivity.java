@@ -55,6 +55,7 @@ import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
@@ -250,6 +251,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             GoNoticePageEvent event = (GoNoticePageEvent) object;
             goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
 
+        }else if (object instanceof ReceiveIMMessageBean.DataByType) {
+            getP().getUnreadMessageNum();
         }
 
 
@@ -278,42 +281,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             getP().getUnreadMessageNum();
             startImService();
-            startTimer();
         }
 
     }
 
-
-    /**
-     * 启动商圈定时器
-     */
-    private void startTimer() {
-        Observable observable = Observable.interval(businessDistrictRefreshTime, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread());
-        observable.compose(bindToLifecycle());
-
-        observable.subscribe(new Observer<Long>() {
-            @Override
-            public void onSubscribe(@NonNull Disposable disposable) {
-                mDisposable = disposable;
-            }
-
-            @Override
-            public void onNext(@NonNull Long number) {
-                getP().getUnreadMessageNum();
-            }
-
-            @Override
-            public void onError(@NonNull Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-    }
 
     /**
      * 获取fragment集合
@@ -370,7 +341,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         mMenuLayout.get(oldTab).setonSelected(false);
     }
 
-
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
@@ -382,6 +352,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             finish();
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED)
             getP().getUnreadMessageNum();
+         else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+            //商圈有未读消息数
+            getP().getUnreadMessageNum();
+        }
 
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
 //            checkUserStatus();//检查用户状态

@@ -385,7 +385,7 @@ public class BusinessDistrictModel {
                 if (netWorkListener != null)
                     netWorkListener.onAfters();
 
-                if (netWorkListener != null)
+                if (listener != null)
                     listener.multipleDataResult(unreadBean);
 
             }

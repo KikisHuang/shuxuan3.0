@@ -35,6 +35,7 @@ import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
@@ -291,6 +292,15 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }.start();
     }
 
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        //商圈未读评论类型事件
+        if (object instanceof ReceiveIMMessageBean.DataByType) {
+            getP().getNumberUnreadComments();
+        }
+    }
+
     /**
      * event事件
      *
@@ -505,13 +515,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
 
-        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+  /*      if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
             if (ClientActivity.getInstance() != null)
                 ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         } else {
             if (StoreActivity.getInstance() != null)
                 StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
-        }
+        }*/
 
     }
 
