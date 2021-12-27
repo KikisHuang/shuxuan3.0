@@ -251,7 +251,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             GoNoticePageEvent event = (GoNoticePageEvent) object;
             goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
 
-        }else if (object instanceof ReceiveIMMessageBean.DataByType) {
+        } else if (object instanceof ReceiveIMMessageBean.DataByType) {
             getP().getUnreadMessageNum();
         }
 
@@ -352,7 +352,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             finish();
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED)
             getP().getUnreadMessageNum();
-         else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+        else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
         }
