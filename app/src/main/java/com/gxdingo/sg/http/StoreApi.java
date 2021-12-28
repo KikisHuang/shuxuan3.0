@@ -19,7 +19,7 @@ public class StoreApi {
     public static final String TEST_URL = "192.168.110.248";
 
     //端口
-    public static final String STORE_PORT = "8088";
+    public static final String STORE_PORT = "8081";
 
     public static final String STORE_SHOP_AGREEMENT_KEY = "shangjiaxieyi";
 

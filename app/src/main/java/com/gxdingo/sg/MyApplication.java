@@ -559,7 +559,6 @@ public class MyApplication extends Application {
         // vivo通道注册
         VivoRegister.register(this);
 
-
     }
 
     /**
