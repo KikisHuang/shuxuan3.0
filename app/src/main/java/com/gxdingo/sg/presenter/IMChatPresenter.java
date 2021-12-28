@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.gen.DraftBeanDao;
 import com.gxdingo.sg.db.CommonDaoUtils;
 import com.gxdingo.sg.db.DaoUtilsStore;
 import com.gxdingo.sg.db.bean.DraftBean;
@@ -696,19 +697,19 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
             draftBean.sendIdentifier = getV().getSendIdentifier();
 
-            String where = WHERE + "uuid " + EQUAL;
 
-            List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{getV().getShareUUID()});
+            DraftBean db = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(getV().getShareUUID()));
 
-            if (mLocalComList != null && mLocalComList.size() > 0) {
+            if (db != null) {
 
                 //存在则更新草稿
-                draftBean.id = mLocalComList.get(0).id;
-                DaoUtilsStore.getInstance().getDratfUtils().update(draftBean);
+                draftBean.id = db.id;
+                new Thread(() -> DaoUtilsStore.getInstance().getDratfUtils().update(draftBean)).start();
+
             } else {
                 //不存在插入，并且有草稿，插入数据库
                 if (!isEmpty(getV().getMessageEdttext().getText().toString()))
-                    DaoUtilsStore.getInstance().getDratfUtils().insert(draftBean);
+                    new Thread(() -> DaoUtilsStore.getInstance().getDratfUtils().insert(draftBean)).start();
 
             }
             EventBus.getDefault().post(LocalConstant.NOTIFY_MSG_LIST_ADAPTER);
@@ -723,16 +724,15 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     @Override
     public void checkDraft() {
         if (isViewAttached() && !isEmpty(getV().getShareUUID()) && getV().getMessageEdttext() != null) {
-            String where = WHERE + "uuid " + EQUAL;
 
-            List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{getV().getShareUUID()});
+            DraftBean db = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(getV().getShareUUID()));
 
-            if (mLocalComList != null && mLocalComList.size() > 0 && !isEmpty(mLocalComList.get(0).draft)) {
+            if (db != null && !isEmpty(db.draft)) {
 
                 if (isDebug)
-                    LogUtils.w(" draft id === " + mLocalComList.get(0).id);
+                    LogUtils.w(" draft id === " + db.id);
 
-                getV().getMessageEdttext().setText(mLocalComList.get(0).draft);
+                getV().getMessageEdttext().setText(db.draft);
             }
         }
     }

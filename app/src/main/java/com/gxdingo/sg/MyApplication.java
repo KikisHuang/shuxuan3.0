@@ -558,6 +558,8 @@ public class MyApplication extends Application {
         OppoRegister.register(this, OPPO_APPKEY, OPPO_MASTERSECRET); // appKey/appSecret在OPPO开发者平台获取
         // vivo通道注册
         VivoRegister.register(this);
+
+
     }
 
     /**
