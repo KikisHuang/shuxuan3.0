@@ -1,5 +1,6 @@
 package com.gxdingo.sg.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -27,6 +28,8 @@ import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lzy.ninegrid.NineGridView;
+import com.sackcentury.shinebuttonlib.ShineButton;
+import com.sackcentury.shinebuttonlib.ShineButton.OnButtonClickListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -72,12 +75,20 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         TextView tvCommentCount = baseViewHolder.findView(R.id.tv_comment_count);
         LinearLayout llCommentLayout = baseViewHolder.findView(R.id.ll_comment_layout);
         TextView tvOpenComment = baseViewHolder.findView(R.id.tv_open_comment);
+        TextView like_tv = baseViewHolder.findView(R.id.like_tv);
+        TextView share_tv = baseViewHolder.findView(R.id.share_tv);
         NineGridView picture_gridview = baseViewHolder.findView(R.id.picture_gridview);
 
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
         TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
+
+
+        if (getItemPosition(data) % 2 == 0)
+            like_tv.setText("999");
+        else
+            like_tv.setText("");
 
 /*        //登录方式，true 用户，false 商家
         boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
@@ -183,11 +194,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         }
 
 
-
         if (data.getCommentList().size() < 10) {
             //小余10条不显示 展开、收起布局
             llCommentUnfoldPutAwayLayout.setVisibility(View.GONE);
-        } else if (data.getCommentList().size() >=10 && data.getCommentList().size() != data.getComments()) {
+        } else if (data.getCommentList().size() >= 10 && data.getCommentList().size() != data.getComments()) {
 
             llCommentUnfoldPutAwayLayout.setVisibility(View.VISIBLE);
             tvCommentUnfoldPutAwayText.setText("展开更多");
@@ -200,8 +210,9 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
             changeDrawable(tvCommentUnfoldPutAwayText, R.drawable.module_svg_business_district_comment_put_away);
         }
 
+        if (data.getComments() > 0)
+            tvCommentCount.setText(data.getComments() + "");
 
-        tvCommentCount.setText(data.getComments() + "评论");
         //点击评论数量展开评论列表
         tvCommentCount.setOnClickListener(v -> {
 
@@ -296,6 +307,17 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         Drawable drawable = mContext.getResources().getDrawable(resId);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         textView.setCompoundDrawables(null, null, drawable, null);
+    }
+
+
+    /**
+     * @param @param drw
+     * @return void
+     * @desc 设置左边图标
+     */
+    public void setAlertLeftIcon(TextView tv, Drawable drw) {
+        drw.setBounds(0, 0, drw.getMinimumWidth(), drw.getMinimumHeight());
+        tv.setCompoundDrawables(null, null, drw, null);
     }
 
 }

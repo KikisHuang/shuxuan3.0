@@ -178,12 +178,10 @@ dependencies {
     //greendao
     implementation rootProject.ext.dependencies.greendao
 
-    implementation 'com.gyf.immersionbar:immersionbar-components:3.0.0'
-
     //九宫格控件
     api project(':ninegridview')
-
-
+    //like bt
+    implementation 'com.sackcentury:shinebutton:1.0.0'
     //小米辅助通道
     implementation 'com.aliyun.ams:alicloud-android-third-push-xiaomi:3.7.2'
     implementation 'com.aliyun.ams:alicloud-android-third-push:3.7.2'
