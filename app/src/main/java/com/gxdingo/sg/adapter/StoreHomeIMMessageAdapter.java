@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.gen.DraftBeanDao;
 import com.gxdingo.sg.db.CommonDaoUtils;
 import com.gxdingo.sg.db.DaoUtilsStore;
 import com.gxdingo.sg.db.bean.DraftBean;
@@ -96,17 +97,14 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
             tvTime.setText(date);
 */
 
-
-        String where = WHERE + "uuid " + EQUAL;
-
-        List<DraftBean> mLocalComList = mDraftUtils.queryByNativeSql(where, new String[]{subscribesMessage.getShareUuid()});
+        DraftBean draftBean = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(subscribesMessage.getShareUuid()));
 
         //草稿
-        if (mLocalComList != null && mLocalComList.size() > 0 && !isEmpty(mLocalComList.get(0).draft)) {
+        if (draftBean != null && !isEmpty(draftBean.draft)) {
 
             draft_tag_tv.setVisibility(View.VISIBLE);
 
-            tvContent.setText(mLocalComList.get(0).draft);
+            tvContent.setText(draftBean.draft);
 
         } else
             draft_tag_tv.setVisibility(View.GONE);
@@ -117,7 +115,7 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         tvUnreadMsgCount.setText(String.valueOf(subscribesMessage.getUnreadNum()));
         tvNickname.setText(subscribesMessage.getSendNickname());
 
-        if (mLocalComList == null || mLocalComList.size() <= 0 || isEmpty(mLocalComList.get(0).draft)) {
+        if (draftBean == null || isEmpty(draftBean.draft)) {
             if (subscribesMessage.getLastMsgType() == 0) {
                 tvContent.setText(TextViewUtils.contentConversion(getContext(), subscribesMessage.getLastMsg()));
             } else if (subscribesMessage.getLastMsgType() == 1) {

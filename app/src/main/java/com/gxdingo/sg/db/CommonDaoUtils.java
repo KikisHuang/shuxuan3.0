@@ -2,6 +2,8 @@ package com.gxdingo.sg.db;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.bean.gen.DaoSession;
+import com.gxdingo.sg.bean.gen.DraftBeanDao;
+import com.gxdingo.sg.db.bean.DraftBean;
 import com.kikis.commnlibrary.utils.Constant;
 
 import org.greenrobot.greendao.AbstractDao;
@@ -141,17 +143,33 @@ public class CommonDaoUtils<T> {
      */
 
     public List<T> queryByNativeSql(String sql, String[] conditions) {
+
         return daoSession.queryRaw(entityClass, sql, conditions);
     }
 
     /**
-     * 使用queryBuilder进行查询
+     * 使用queryBuilder进行查询 返回list
      *
      * @return
      */
 
     public List<T> queryByQueryBuilder(WhereCondition cond, WhereCondition... condMore) {
         QueryBuilder<T> queryBuilder = daoSession.queryBuilder(entityClass);
+
         return queryBuilder.where(cond, condMore).list();
+    }
+
+
+
+    /**
+     * 使用queryBuilder进行查询 返回唯一
+     *
+     * @return
+     */
+
+    public T queryByQueryBuilderUnique(WhereCondition cond, WhereCondition... condMore) {
+        QueryBuilder<T> queryBuilder = daoSession.queryBuilder(entityClass);
+
+        return queryBuilder.where(cond, condMore).unique();
     }
 }
