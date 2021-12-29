@@ -204,6 +204,7 @@
         android:layout_marginLeft="45dp"
         android:layout_marginRight="45dp"
         android:layout_marginTop="10dp"
+        android:padding="8dp"
         android:background="@drawable/module_select_send_address_cancel_button"
         android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"

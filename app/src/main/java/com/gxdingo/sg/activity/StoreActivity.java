@@ -362,7 +362,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        }else if (type == GO_TO_BUSINESS_CIRCLE) {
+        } else if (type == GO_TO_BUSINESS_CIRCLE) {
             toBusinessCircle();
         }
 
@@ -513,7 +513,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     //分享口令类型40登录成功跳转商圈页
     private void toBusinessCircle() {
-        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)&&UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
+        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false) && UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
             SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
             getP().checkTab(3);
         }
