@@ -99,6 +99,8 @@ public class LocalConstant {
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
     public static final String TO_BUSINESS_CIRCLE = "to_business_circle";
+    //本地临时口令
+    public static String TEMP_SHIBBOLETH = "";
     public static final int GO_TO_BUSINESS_CIRCLE = 1012;
 
     public static String AdCode = "";

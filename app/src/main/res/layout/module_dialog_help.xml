@@ -24,8 +24,8 @@
             android:layout_marginTop="65dp"
             android:gravity="center"
             android:textColor="#765C42"
-            android:textSize="24sp"
-            tools:text="我在参与助力活动 快来助我一臂之力吧" />
+            android:textSize="19sp"
+            tools:text="我在参与助力活动\n快来助我一臂之力吧" />
 
         <ImageView
             android:id="@+id/avatar_img"

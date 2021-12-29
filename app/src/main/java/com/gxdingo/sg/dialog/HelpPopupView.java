@@ -13,6 +13,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.biz.HelpListener;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import butterknife.BindView;
@@ -95,10 +96,10 @@ public class HelpPopupView extends CenterPopupView {
                 help_type_title_tv.setText("为好友助力");
                 subTitle_tv.setText(helpBean.getSubtitle());
                 btn_help.setText("帮忙助力");
-                Glide.with(this).load(helpBean.getUserAvatar()).into(avatar_img);
+                Glide.with(this).load(helpBean.getUserAvatar()).apply(GlideUtils.getInstance().getCircleCrop()).into(avatar_img);
             } else{
                 help_type_title_tv.setText("助力成功");
-                Glide.with(this).load(helpBean.getImage()).into(avatar_img);
+                Glide.with(this).load(helpBean.getImage()).apply(GlideUtils.getInstance().getCircleCrop()).into(avatar_img);
                 subTitle_tv.setVisibility(GONE);
                 btn_help.setText("一键免费抽奖");
             }

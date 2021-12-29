@@ -93,7 +93,12 @@ public class ShibbolethModel {
 //                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
 
                         //清空剪贴板
-                        copyText("");
+                        if (UserInfoUtils.getInstance().isLogin()) {
+                            copyText("");
+                            LocalConstant.TEMP_SHIBBOLETH = "";
+                        } else
+                            LocalConstant.TEMP_SHIBBOLETH = copyContent;
+
                     }
                 }
             }, delayTime);//1秒后执行Runnable中的run方法

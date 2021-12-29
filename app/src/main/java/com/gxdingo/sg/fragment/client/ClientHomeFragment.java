@@ -44,6 +44,7 @@ import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.utils.ClientLocalConstant;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -303,9 +304,10 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == CLIENT_LOGIN_SUCCEED) {
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1) {
+
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && isEmpty(LocalConstant.TEMP_SHIBBOLETH))
                 showInvitationCodeDialog();
-            }
+
         }
     }
 
