@@ -61,8 +61,6 @@ import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_BROWSE;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_TOP;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -242,23 +240,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@androidx.annotation.NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int firstCompletelyVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition();
-
-                if (firstCompletelyVisibleItemPosition == 0) {
-                    LogUtils.i("BUSINESS_DISTRICT_IS_TOP");
-                    sendEvent(BUSINESS_DISTRICT_IS_TOP);
-                } else {
-                    LogUtils.i("BUSINESS_DISTRICT_IS_BROWSE");
-                    sendEvent(BUSINESS_DISTRICT_IS_BROWSE);
-                }
-            }
-        });
+        recyclerView.getItemAnimator().setChangeDuration(0);
     }
 
     @Override
@@ -380,7 +362,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
-            RecycleViewUtils.smoothMoveToPosition(recyclerView, 0);
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
         }
     }
 
@@ -488,6 +470,19 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                     goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
                 }
 
+            } else if (view.getId() == R.id.like_tv) {
+                int status = (int) object;
+
+                getP().likedOrUnliked(status, mAdapter.getData().get(position).getId(), position);
+
+                mAdapter.getData().get(position).likedStatus = status;
+
+                mAdapter.notifyItemChanged(position);
+            } else if (view.getId() == R.id.share_tv) {
+
+                String imgUrl = mAdapter.getData().get(position).getImages() != null && mAdapter.getData().get(position).getImages().size() > 0 ? mAdapter.getData().get(position).getImages().get(0) : LocalConstant.SHARE_BUSINESS_DISTRICT_URL;
+
+                getP().shareLink(mAdapter.getData().get(position).getContent(), imgUrl, (String) object);
             }
         }
     };
@@ -608,6 +603,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             }*/
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void refreshLikeNum(String o, int position) {
+        mAdapter.getData().get(position).liked = o;
+
+        mAdapter.notifyItemChanged(position);
     }
 
     /**

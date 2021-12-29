@@ -197,12 +197,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        categoryId = 0;
-//        getP().getNearbyStore(true,categoryId);
-//    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        getP().checkHelpCode();
+    }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -217,7 +216,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        getP().checkHelpCode();
+
     }
 
     @Override

@@ -18,6 +18,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.zhouyou.http.callback.CallClazzProxy;
@@ -35,6 +36,7 @@ import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_GET_COMMENT;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
+import static com.gxdingo.sg.http.StoreApi.CIRCLE_LIKEDORUNLIKED;
 import static com.gxdingo.sg.http.StoreApi.DELETE_MY_OWN_COMMENT;
 import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
@@ -142,6 +144,9 @@ public class BusinessDistrictModel {
 
         if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.AdCode))
             map.put("area", LocalConstant.AdCode);
+
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
+            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
 
         if (storeId > 0)
             map.put("storeId", String.valueOf(storeId));
@@ -284,7 +289,7 @@ public class BusinessDistrictModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(UserInfoUtils.getInstance().getUserInfo().getRole()==10?BUSINESS_DISTRICT_COMMENT_OR_ADD:BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
+        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
                 .execute(new CallClazzProxy<ApiResult<BusinessDistrictCommentOrReplyBean>, BusinessDistrictCommentOrReplyBean>(new TypeToken<BusinessDistrictCommentOrReplyBean>() {
                 }.getType()) {
                 });
@@ -306,7 +311,7 @@ public class BusinessDistrictModel {
                     netWorkListener.onAfters();
                 }
 
-                if (listener!=null)
+                if (listener != null)
                     listener.multipleDataResult(commentOrReplyBean, businessDistrict);
             }
         };
@@ -471,6 +476,46 @@ public class BusinessDistrictModel {
 
                 if (netWorkListener != null)
                     netWorkListener.onSucceed(300);
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 点赞 or 取消点赞
+     */
+    public void likedOrUnliked(Context context, int status, long id, CustomResultListener customResultListener) {
+
+        Map<String, String> map = new HashMap<>();
+
+        map.put(LocalConstant.STATUS, String.valueOf(status));
+
+        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
+            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
+
+        map.put("circleId", String.valueOf(id));
+
+        Observable<NormalBean> observable = HttpClient.post(CIRCLE_LIKEDORUNLIKED, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null)
+                    customResultListener.onResult(normalBean.liked);
 
             }
         };

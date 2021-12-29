@@ -44,6 +44,9 @@ public class BusinessDistrictListBean implements Serializable {
         private String identifier;
         private String storeName;
         private String stareAvatar;
+        public String forwardingUrl;
+        public int likedStatus;
+        public String liked;
         private ArrayList<String> images;//商圈图片（需要判空null/[]处理）
         public ArrayList<ImageInfo> imageInfos = new ArrayList<>();
         private ArrayList<Comment> commentList = new ArrayList<>();//**注意**：当comments < 10时返回，否则返回空数组 []

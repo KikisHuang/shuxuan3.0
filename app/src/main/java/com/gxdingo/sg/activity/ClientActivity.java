@@ -60,11 +60,10 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_BROWSE;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_TOP;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
+import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
@@ -97,9 +96,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @BindView(R.id.tv_unread_msg_count)
     public TextView tv_unread_msg_count;
-
-    @BindView(R.id.back_to_top)
-    public ImageView back_to_top;
 
     @BindView(R.id.tv_business_unread_msg_count)
     public TextView tv_business_unread_msg_count;
@@ -200,6 +196,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onStart() {
         super.onStart();
+
 //        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
@@ -278,6 +275,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
             finish();
         } else if (type == CLIENT_LOGIN_SUCCEED) {
+            toBusinessCircle();
             getP().getUnreadMessageNum();
         } else if (type == SOTRE_REVIEW_SUCCEED) {
             //用户认证成功，关闭客户端
@@ -285,31 +283,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        } else if (type == BUSINESS_DISTRICT_IS_TOP) {
-            backToTopIconState(false);
-
-        } else if (type == BUSINESS_DISTRICT_IS_BROWSE) {
-            backToTopIconState(true);
+        } else if (type == GO_TO_BUSINESS_CIRCLE) {
+            toBusinessCircle();
         }
     }
 
-    private void backToTopIconState(boolean show) {
-        if (!show) {
-            if (back_to_top.getVisibility() == View.VISIBLE) {
-                back_to_top.setVisibility(View.GONE);
-            }
-        } else {
-            if (back_to_top.getVisibility() == View.GONE) {
-                back_to_top.setVisibility(View.VISIBLE);
-                back_to_top.setAnimation(AnimationUtil.getInstance().ViewShowAnima(100));
-            }
-        }
-    }
 
     @Override
     protected void initData() {
-
-
     }
 
     private void fragmentInit() {
@@ -516,5 +497,16 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onUserPresent() {
 
+    }
+
+
+    //分享口令类型40登录成功跳转商圈页
+    private void toBusinessCircle() {
+        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)) {
+            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
+
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            getP().checkTab(2);
+        }
     }
 }

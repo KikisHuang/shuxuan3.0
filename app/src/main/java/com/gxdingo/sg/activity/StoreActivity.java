@@ -57,9 +57,9 @@ import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_BROWSE;
-import static com.gxdingo.sg.utils.LocalConstant.BUSINESS_DISTRICT_IS_TOP;
+import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
+import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
@@ -207,8 +207,8 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected void initData() {
-
     }
+
 
     @Override
     protected void statusBarInit() {
@@ -288,7 +288,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             getP().getUnreadMessageNum();
             startImService();
         }
-
+        toBusinessCircle();
     }
 
 
@@ -356,11 +356,14 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             finish();
         } else if (type == LocalConstant.CLIENT_LOGIN_SUCCEED) {
             finish();
-        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED)
+        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
+            toBusinessCircle();
             getP().getUnreadMessageNum();
-        else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+        } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
+        }else if (type == GO_TO_BUSINESS_CIRCLE) {
+            toBusinessCircle();
         }
 
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
@@ -506,5 +509,13 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .asCustom(sgConfirm2ButtonPopupView).show();
+    }
+
+    //分享口令类型40登录成功跳转商圈页
+    private void toBusinessCircle() {
+        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)&&UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
+            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
+            getP().checkTab(3);
+        }
     }
 }

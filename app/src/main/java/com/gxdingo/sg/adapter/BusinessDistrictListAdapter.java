@@ -40,6 +40,7 @@ import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 
 /**
@@ -85,14 +86,22 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
 
 
-        if (getItemPosition(data) % 2 == 0)
-            like_tv.setText("999");
-        else
-            like_tv.setText("");
-
 /*        //登录方式，true 用户，false 商家
         boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
 
+        like_tv.setText(data.liked);
+
+        setAlertLeftIcon(like_tv, data.likedStatus == 0 ? getd(R.drawable.module_svg_unlike_heart) : getd(R.drawable.module_svg_like_heart));
+
+        like_tv.setOnClickListener(v -> {
+            // 0 未点赞/取消赞 1已点赞
+            if (mOnChildViewClickListener != null)
+                mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.likedStatus == 0 ? 1 : 0);
+        });
+        share_tv.setOnClickListener(v -> {
+            if (mOnChildViewClickListener != null)
+                mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.forwardingUrl);
+        });
 
         Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
 
@@ -212,6 +221,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         if (data.getComments() > 0)
             tvCommentCount.setText(data.getComments() + "");
+        else
+            tvCommentCount.setText("");
 
         //点击评论数量展开评论列表
         tvCommentCount.setOnClickListener(v -> {

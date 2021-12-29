@@ -21,7 +21,7 @@ public class StoreBusinessDistrictContract {
          *
          * @param refresh true 表示刷新，false表示加载更多
          */
-        void getBusinessDistrictList(boolean refresh,int StoreId);
+        void getBusinessDistrictList(boolean refresh, int StoreId);
 
         /**
          * 提交评论/回复
@@ -45,6 +45,7 @@ public class StoreBusinessDistrictContract {
 
         /**
          * 去重合并评论
+         *
          * @param commentList       原来的评论数据
          * @param unfoldCommentList 展开评论获取的评论数据
          * @param businessDistrict
@@ -69,6 +70,12 @@ public class StoreBusinessDistrictContract {
 
         //完成浏览商圈
         void complete(String identifier);
+
+        //点赞of 取消点赞
+        void likedOrUnliked(int status, long id, int position);
+
+        //分享连接
+        void shareLink(String content, String imgUrl, String url);
     }
 
     public interface StoreBusinessDistrictListener {
@@ -97,5 +104,12 @@ public class StoreBusinessDistrictContract {
         void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean);
 
         void onCommentListRefresh(ArrayList<BusinessDistrictListBean.Comment> commentList, ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total);
+
+        /**
+         * 刷新点赞数量
+         *
+         * @param position
+         */
+        void refreshLikeNum(String o, int position);
     }
 }

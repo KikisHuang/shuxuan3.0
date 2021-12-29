@@ -306,10 +306,12 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (!isEmpty(copyContent)) {
             ShibbolethModel.checkShibboleth((type, code) -> {
                 if (networkModel != null) {
-                    networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
-                        //如果是被邀请过来的商家，显示布局
-                        if (isViewAttached()) getV().showActivityTypeLayout(type);
-                    });
+                    if (type == 30) {
+                        networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
+                            //如果是被邀请过来的商家，显示布局
+                            if (isViewAttached()) getV().showActivityTypeLayout(type);
+                        });
+                    }
                 }
             }, 50);
         } else {

@@ -5,6 +5,8 @@ public class LocalConstant {
     //聊天订阅id
     public static String CHAT_UUID = "";
 
+    public static String SHARE_BUSINESS_DISTRICT_URL = "https://dgkjmm.oss-cn-shenzhen.aliyuncs.com/log/shuxuan.jpg";
+
     //刷新商圈未读消息时间
     public static final int businessDistrictRefreshTime = 30000;
 
@@ -75,10 +77,6 @@ public class LocalConstant {
     public static final int SHOW_BUSINESS_DISTRICT_UN_READ_DOT = 1242;
 
     public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
-    //商圈页面到顶部事件
-    public static final int BUSINESS_DISTRICT_IS_TOP = 998;
-    //商圈页面浏览中事件
-    public static final int BUSINESS_DISTRICT_IS_BROWSE = 997;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int STORE_LOGIN_SUCCEED = 21;
@@ -100,6 +98,8 @@ public class LocalConstant {
 
     //分享的口令
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
+    public static final String TO_BUSINESS_CIRCLE = "to_business_circle";
+    public static final int GO_TO_BUSINESS_CIRCLE = 1012;
 
     public static String AdCode = "";
 

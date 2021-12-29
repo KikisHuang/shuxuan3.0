@@ -202,11 +202,6 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         }
     }
 
-    @Override
-    protected void lazyInit() {
-        super.lazyInit();
-        getP().checkHelpCode();
-    }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
@@ -236,6 +231,11 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
             }
         });
         mCategoryAdapter.setOnItemClickListener(this);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        getP().checkHelpCode();
     }
 
     @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})

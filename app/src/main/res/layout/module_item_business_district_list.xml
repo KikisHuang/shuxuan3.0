@@ -167,7 +167,7 @@
         android:textSize="12sp"
         app:layout_constraintRight_toLeftOf="@+id/tv_comment_count"
         app:layout_constraintTop_toBottomOf="@+id/picture_fml"
-        tools:text="3" />
+        />
 
     <TextView
         android:id="@+id/tv_comment_count"
