@@ -1,6 +1,5 @@
 package com.gxdingo.sg.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * 商家经营范围
@@ -179,7 +177,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     }
 
     @Override
-    public void rejected() {
+    public void rejected(String rejectReason) {
 
     }
 

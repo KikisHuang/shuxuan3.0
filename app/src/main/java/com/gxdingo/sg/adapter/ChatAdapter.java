@@ -370,7 +370,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             cl_transfer_accounts_bg.setOnClickListener(v -> {
                 //只有stats ==1 待领取状态的他人转账消息才可点击
-                if (chatClickListener != null && getItemViewType(position) == OtherTransfer && data.getStatus() == 1)
+                if (chatClickListener != null && getItemViewType(position) == OtherTransfer && data.getDataByType().getStatus() == 1)
                     chatClickListener.onTransferClick(position, data.getId());
             });
 

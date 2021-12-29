@@ -134,6 +134,7 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         mCompositeDisposable = new CompositeDisposable();
         if (initContentView() != 0)
             ViewInit();
+        statusBarInit();
         ButterKnife.bind(this);
         if (refreshLayout() != null)
             refreshViewinit(refreshLayout());
@@ -141,8 +142,6 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
         registerPresenter();
         init();
         initData();
-        statusBarInit();
-
     }
 
     /**

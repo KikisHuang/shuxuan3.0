@@ -104,6 +104,7 @@
                 app:is_selected="false"
                 app:text="@string/business_district" />
 
+
             <TextView
                 android:id="@+id/tv_business_unread_msg_count"
                 android:layout_width="16dp"

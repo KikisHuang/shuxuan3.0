@@ -10,11 +10,16 @@ import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 
+import org.greenrobot.eventbus.EventBus;
+
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
+import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.isShuXiangShibboleth;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
@@ -48,6 +53,14 @@ public class ShibbolethModel {
 
                         //获取活动类型
                         int mType = getAcType(numberDecode(copyContent));
+
+                        //40 保存跳转状态
+                        if (mType == 40) {
+                            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, true);
+                            if (UserInfoUtils.getInstance().isLogin())
+                                EventBus.getDefault().post(GO_TO_BUSINESS_CIRCLE);
+                        }
+
 
                         if (listener != null)
                             listener.onCode(mType, copyContent);

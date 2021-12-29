@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.allen.library.SuperTextView;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -17,7 +15,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
-import com.gxdingo.sg.activity.ChangeBindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
@@ -36,26 +33,20 @@ import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.StatusBarUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gyf.immersionbar.ImmersionBar;
-import com.gyf.immersionbar.components.SimpleImmersionOwner;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.lxj.xpopup.XPopup;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.umeng.commonsdk.debug.E;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
-import com.youth.banner.listener.OnBannerListener;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -75,10 +66,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public CircleImageView avatar_cimg;
 
     @BindView(R.id.username_stv)
-    public SuperTextView username_stv;
+    public TextView username_stv;
 
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
+
+    @BindView(R.id.internal_tv)
+    public TextView internal_tv;
 
     @BindView(R.id.fill_invitation_code_stv)
     public SuperTextView fill_invitation_code_stv;
@@ -90,6 +84,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public RecyclerView cash_coupon_rv;
 
     private ClientCouponAdapter mAdapter;
+
+    private String integralLink = "";
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -153,7 +149,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        if (UserInfoUtils.getInstance().isLogin()){
+        if (UserInfoUtils.getInstance().isLogin()) {
             getP().getUserInfo();
             checkShowFillCode();
         }
@@ -164,16 +160,14 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == LocalConstant.CLIENT_LOGIN_SUCCEED
-                ||type == LocalConstant.CLIENT_REFRESH_USER_HOME
-                ||type ==LocalConstant.CASH_SUCCESSS){
+                || type == LocalConstant.CLIENT_REFRESH_USER_HOME
+                || type == LocalConstant.CASH_SUCCESSS) {
             getP().getUserInfo();
             checkShowFillCode();
-        }
-
-        else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS){
+        } else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS) {
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
-            username_stv.setLeftString(UserInfoUtils.getInstance().getUserNickName());
-        }else if (type == ClientLocalConstant.FILL_SUCCESS){
+            username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
+        } else if (type == ClientLocalConstant.FILL_SUCCESS) {
             fill_invitation_code_stv.setVisibility(View.GONE);
         }
     }
@@ -181,33 +175,33 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof ReceiveIMMessageBean){
+        if (object instanceof ReceiveIMMessageBean) {
             ReceiveIMMessageBean messageBean = (ReceiveIMMessageBean) object;
-            if (messageBean.getType()==21){
+            if (messageBean.getType() == 21) {
                 getP().getUserInfo();
             }
         }
     }
 
-    @OnClick({R.id.avatar_cimg,R.id.username_stv,R.id.check_bill_tv,R.id.btn_cash,R.id.ll_address_manage,R.id.ll_account_security
-            ,R.id.ll_contract_server,R.id.ll_about_us,R.id.fill_invitation_code_stv,R.id.private_protocol_stv,R.id.logout_stv})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.check_bill_tv, R.id.btn_cash, R.id.ll_address_manage, R.id.ll_account_security
+            , R.id.ll_contract_server, R.id.ll_about_us, R.id.fill_invitation_code_stv, R.id.private_protocol_stv, R.id.logout_stv})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.avatar_cimg:
             case R.id.username_stv:
-                ShareAnimaStartPages(getContext(),avatar_cimg,"userAvatar" ,ClientPersonalDataActivity.class,null);
+                ShareAnimaStartPages(getContext(), avatar_cimg, "userAvatar", ClientPersonalDataActivity.class, null);
                 break;
             case R.id.check_bill_tv:
-                goToPage(getContext(), ClientAccountRecordActivity.class,null);
+                goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
             case R.id.btn_cash:
-                goToPage(getContext(), ClientCashActivity.class,getIntentMap(new String[]{balance_tv.getText().toString()}));
+                goToPage(getContext(), ClientCashActivity.class, getIntentMap(new String[]{balance_tv.getText().toString()}));
                 break;
             case R.id.ll_address_manage:
-                goToPage(getContext(), ClientAddressListActivity.class,null);
+                goToPage(getContext(), ClientAddressListActivity.class, null);
                 break;
             case R.id.ll_account_security:
-                goToPage(getContext(), ClientAccountSecurityActivity.class,null);
+                goToPage(getContext(), ClientAccountSecurityActivity.class, null);
                 break;
             case R.id.ll_contract_server:
                 String url = WEB_URL + ClientApi.SERVER_URL;
@@ -217,7 +211,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about our"}));
                 break;
             case R.id.fill_invitation_code_stv:
-                goToPage(getContext(), ClientFillInvitationCodeActivity.class,null);
+                goToPage(getContext(), ClientFillInvitationCodeActivity.class, null);
                 break;
             case R.id.private_protocol_stv:
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghuxieyi"}));
@@ -233,6 +227,12 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                             }
                         })).show();
                 break;
+            case R.id.check_internal_stv:
+
+                if (!isEmpty(integralLink))
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, integralLink}));
+
+                break;
         }
     }
 
@@ -241,8 +241,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     }
 
-    private void checkShowFillCode(){
-        if (UserInfoUtils.getInstance().getUserInfo().getInviterId() !=0)
+    private void checkShowFillCode() {
+        if (UserInfoUtils.getInstance().getUserInfo().getInviterId() != 0)
             fill_invitation_code_stv.setVisibility(View.GONE);
     }
 
@@ -255,10 +255,19 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public void onMineDataResult(ClientMineBean mineBean) {
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(avatar_cimg);
         if (!isEmpty(mineBean.getNickname()))
-            username_stv.setLeftString(mineBean.getNickname());
+            username_stv.setText(mineBean.getNickname());
+
         if (!isEmpty(mineBean.getBalance()))
             balance_tv.setText(mineBean.getBalance());
-        if (mineBean.getAdsList()!=null){
+
+
+        integralLink = mineBean.integralLink;
+
+        if (!isEmpty(mineBean.integral))
+            internal_tv.setText(mineBean.integral);
+
+
+        if (mineBean.getAdsList() != null) {
             mine_banner.setAdapter(new BannerImageAdapter<ClientMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, ClientMineBean.AdsListBean data, int position, int size) {
@@ -270,7 +279,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             });
             mine_banner.start();
         }
-        if (mineBean.getCouponList()!=null)
+        if (mineBean.getCouponList() != null)
             mAdapter.setList(mineBean.getCouponList());
 
     }
@@ -279,13 +288,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mine_banner!=null)
+        if (mine_banner != null)
             mine_banner.stop();
     }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-        ClientCouponBean item =(ClientCouponBean) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class,getIntentEntityMap(new Object[]{item}));
+        ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
+        goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
     }
 }

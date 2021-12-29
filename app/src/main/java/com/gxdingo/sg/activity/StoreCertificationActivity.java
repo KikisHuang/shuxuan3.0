@@ -1,7 +1,6 @@
 package com.gxdingo.sg.activity;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -21,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.allen.library.SuperTextView;
 import com.amap.api.services.core.PoiItem;
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
@@ -40,11 +38,9 @@ import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
@@ -52,7 +48,8 @@ import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.ClientApi.STORE_NAMING_RULES;
 import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
 import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -137,14 +134,14 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     @BindView(R.id.tv_right_button)
     public TextView tvRightButton;
 
+    @BindView(R.id.tv_status)
+    public TextView tv_status;
+
     @BindView(R.id.business_layout)
     public ConstraintLayout businessLayout;
 
     @BindView(R.id.iv_result_status)
     public ImageView ivResultStatus;
-
-    @BindView(R.id.tv_status)
-    public TextView tvStatus;
 
     @BindView(R.id.ll_certification_result_layout)
     public LinearLayout llCertificationResultLayout;
@@ -347,8 +344,12 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                         , mPoiItem.getLatLonPoint().getLongitude(), mPoiItem.getLatLonPoint().getLatitude());
                 break;
             case R.id.btn_result_botton:
-                //刷新登录信息
-                getP().getLoginInfoStatus();
+                if (btnResultBotton.getText().equals("重新认证")) {
+                    businessLayout.setVisibility(View.VISIBLE);
+                    llCertificationResultLayout.setVisibility(View.GONE);
+                } else
+                    //刷新登录信息
+                    getP().getLoginInfoStatus();
                 break;
         }
     }
@@ -524,17 +525,39 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         titleLayout.setTitleText("");
         businessLayout.setVisibility(View.GONE);
         llCertificationResultLayout.setVisibility(View.VISIBLE);
+
+        tv_status.setText("正在审核");
+        tv_status.setTextColor(getc(R.color.green_dominant_tone));
+
+        ivResultStatus.setBackgroundResource(R.drawable.module_svg_store_certification_audit_status);
+
+        btnResultBotton.setText("刷新一下");
+
     }
 
     /**
      * 被驳回
+     *
+     * @param rejectReason
      */
     @Override
-    public void rejected() {
+    public void rejected(String rejectReason) {
+
+        businessLayout.setVisibility(View.GONE);
+        llCertificationResultLayout.setVisibility(View.VISIBLE);
+
+
         onMessage("已被驳回，请重新提交");
         titleLayout.setTitleText("认证信息");
-        businessLayout.setVisibility(View.VISIBLE);
-        llCertificationResultLayout.setVisibility(View.GONE);
+
+        if (!isEmpty(rejectReason)) {
+            tv_status.setText(rejectReason);
+            tv_status.setTextColor(getc(R.color.red_dominant_tone));
+        }
+        ivResultStatus.setImageDrawable(getd(R.drawable.module_svg_store_certification_audit_failed_status));
+
+        btnResultBotton.setText("重新认证");
+
     }
 
     /**

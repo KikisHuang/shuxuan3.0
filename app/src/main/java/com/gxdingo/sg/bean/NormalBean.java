@@ -21,6 +21,7 @@ public class NormalBean {
 
     public int state;
     public int status;
+    public String liked;
     public int msg_id;
     public int code=-1;
     public int unread;

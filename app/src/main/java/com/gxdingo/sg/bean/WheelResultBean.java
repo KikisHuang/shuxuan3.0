@@ -9,6 +9,7 @@ public class WheelResultBean {
     public int jumpType;
     public int type;
     public String helpCode;
+    public String activityIdentifier;
     public String url;
     public String image;
     public String title;

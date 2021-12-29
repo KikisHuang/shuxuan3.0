@@ -39,6 +39,8 @@ public class ClientMainContract {
         void getAliKey();
 
         void getUnreadMessageNum();
+
+        void checkNotifications();
     }
 
     public interface ClientMainListener {
@@ -66,6 +68,8 @@ public class ClientMainContract {
          * @param bean
          */
         void setBusinessUnreadMsgNum(NumberUnreadCommentsBean bean);
+
+        void showNotifyDialog();
     }
 
     public interface ClientMainModelListener {

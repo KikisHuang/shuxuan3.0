@@ -12,6 +12,7 @@ public class ClientLocalConstant {
     public static final String USER_OPENID_KEY = "shuxuan_user_openid_key";
     public static final String USER_WALLPAGER_KEY = "shuxuan_user_wallpager_key";
     public static final String USER_IDENTIFIER = "shuxuan_user_identifier_key";
+    public static final String USER_EMAS = "shuxuan_user_emas_key";
 
     public static final String MESSAGE_NOTICE_KEY = "shuxuan_message_notice_key";
 

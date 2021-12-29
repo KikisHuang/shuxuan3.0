@@ -6,6 +6,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -16,10 +17,13 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
@@ -28,6 +32,7 @@ import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -37,6 +42,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +61,20 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
+import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
+import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RxUtil.cancel;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Weaving
@@ -179,11 +189,14 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         registerAppStatusChangedListener(this);
         screenListener = new ScreenListener(reference.get());
         screenListener.begin(this);
+
+        getP().checkNotifications();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
 //        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
@@ -239,6 +252,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (object instanceof ReceiveIMMessageBean.DataByType) {
             //商圈未读评论类型事件
             getP().getUnreadMessageNum();
+        } else if (object instanceof ActivityEvent) {
+            //活动事件
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            getP().checkTab(2);
         }
     }
 
@@ -258,23 +275,22 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
             finish();
         } else if (type == CLIENT_LOGIN_SUCCEED) {
+            toBusinessCircle();
             getP().getUnreadMessageNum();
         } else if (type == SOTRE_REVIEW_SUCCEED) {
             //用户认证成功，关闭客户端
             finish();
-        } else if (type == LocalConstant.VISIT_CIRCLE) {
-            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
+        } else if (type == GO_TO_BUSINESS_CIRCLE) {
+            toBusinessCircle();
         }
     }
 
+
     @Override
     protected void initData() {
-
-
     }
 
     private void fragmentInit() {
@@ -296,6 +312,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
+
         }
 
         switch (v.getId()) {
@@ -372,12 +389,36 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
         }
         if (data.getUnread() > 0) {
+            tv_business_unread_msg_count.getLayoutParams().width = dp2px(16);
+            tv_business_unread_msg_count.getLayoutParams().height = dp2px(16);
             tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
             tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
         } else {
+            tv_business_unread_msg_count.getLayoutParams().width = dp2px(10);
+            tv_business_unread_msg_count.getLayoutParams().height = dp2px(10);
             tv_business_unread_msg_count.setText("");
             tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
         }
+    }
+
+    /**
+     * 显示提示用户未开启通知栏弹窗
+     */
+    @Override
+    public void showNotifyDialog() {
+        SgConfirm2ButtonPopupView sgConfirm2ButtonPopupView = new SgConfirm2ButtonPopupView(reference.get(), "检测到您未开启通知栏权限，消息无法准确推送到，是否去开启？", new MyConfirmListener() {
+            @Override
+            public void onConfirm() {
+                goNotifySetting(reference.get());
+                SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+            }
+        });
+        sgConfirm2ButtonPopupView.setCancelCilcikListener(v -> {
+            SPUtils.getInstance().put(LocalConstant.NOTIFICATION_MANAGER_KEY, false);
+        });
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .asCustom(sgConfirm2ButtonPopupView).show();
     }
 
     @Override
@@ -456,5 +497,16 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onUserPresent() {
 
+    }
+
+
+    //分享口令类型40登录成功跳转商圈页
+    private void toBusinessCircle() {
+        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)) {
+            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
+
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            getP().checkTab(2);
+        }
     }
 }

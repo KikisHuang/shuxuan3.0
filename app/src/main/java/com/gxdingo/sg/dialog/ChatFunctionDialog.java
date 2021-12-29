@@ -43,7 +43,10 @@ public class ChatFunctionDialog extends PositionPopupView {
 
         copy_tv.setVisibility(type == 0 ? VISIBLE : GONE);
 
-        revocation_tv.setVisibility(isSelf ? VISIBLE : GONE);
+//        revocation_tv.setVisibility(isSelf ? VISIBLE : GONE);
+
+        //todo 隐藏撤回功能
+        revocation_tv.setVisibility(GONE);
 
         copy_tv.setOnClickListener(view -> {
             customArgsResultListener.onResult(0);

@@ -106,7 +106,6 @@
                 app:focus_icon="@drawable/module_svg_store_main_menu_business_district_selected"
                 app:is_selected="false"
                 app:text="@string/store_business_district" />
-
             <TextView
                 android:id="@+id/tv_business_unread_msg_count"
                 android:layout_width="16dp"

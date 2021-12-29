@@ -119,7 +119,6 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         return R.layout.module_fragment_store_business_district_parent;
     }
 
-
     @Override
     protected View noDataLayout() {
         return null;
@@ -225,6 +224,11 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
 
     @Override
     public void onCommentListRefresh(ArrayList<BusinessDistrictListBean.Comment> commentList, ArrayList<BusinessDistrictUnfoldCommentListBean.UnfoldComment> unfoldCommentList, BusinessDistrictListBean.BusinessDistrict businessDistrict, int total) {
+
+    }
+
+    @Override
+    public void refreshLikeNum(String o, int position) {
 
     }
 

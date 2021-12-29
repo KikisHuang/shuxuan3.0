@@ -22,6 +22,24 @@ public class UserBean implements Serializable {
     private Integer isBindMobile;
     private String openid;
     private String identifier;
+    private String emasId;
+
+    public String getEmasId() {
+        return emasId;
+    }
+
+    public void setEmasId(String emasId) {
+        this.emasId = emasId;
+    }
+
+    public Boolean getSetPassword() {
+        return isSetPassword;
+    }
+
+    public void setSetPassword(Boolean setPassword) {
+        isSetPassword = setPassword;
+    }
+
     private String mobile;
     private String nickname;
     private String avatar;
@@ -168,6 +186,7 @@ public class UserBean implements Serializable {
         private int status;//状态 0=待审核 10=已认证 20=已驳回 40=已禁用 90=永久关闭
         private String statusText;//店铺状态对应的文本
 
+        public String rejectReason;
 
         public String getAddress() {
             return address;

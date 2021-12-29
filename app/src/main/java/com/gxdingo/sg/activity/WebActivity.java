@@ -11,6 +11,7 @@ import android.webkit.WebSettings;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WebBean;
 import com.gxdingo.sg.bean.WheelResultBean;
@@ -415,7 +416,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         WheelResultBean wheelResultBean = GsonUtil.GsonToBean(restultData, WheelResultBean.class);
         if (wheelResultBean == null) return;
 
-        if (wheelResultBean.type == 20) {
+        if (wheelResultBean.type == 20 || wheelResultBean.type == 21) {
+
 
             if (wheelResultBean.jumpType == 30) {
                 ShareUtils.UmShare(this, new UMShareListener() {
@@ -427,7 +429,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                     @Override
                     public void onResult(SHARE_MEDIA share_media) {
                         LogUtils.d("onResult:" + share_media);
-                        getP().completeTask();
+
+                        getP().completeTask(wheelResultBean.activityIdentifier);
                     }
 
                     @Override
@@ -464,7 +467,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
                 }, wheelResultBean.url, wheelResultBean.title, wheelResultBean.describe, R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
 
             } else if (wheelResultBean.jumpType == 10) {
-                sendEvent(LocalConstant.VISIT_CIRCLE);
+                sendEvent(new ActivityEvent(wheelResultBean.activityIdentifier, wheelResultBean.type));
                 finish();
             }
         } else if (wheelResultBean.type == 30) {

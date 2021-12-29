@@ -18,6 +18,8 @@ public class ClientMineBean {
      */
 
     private String balance;
+    public String integral;
+    public String integralLink;
     private List<ClientCouponBean> couponList;
     private List<AdsListBean> adsList;
     private String nickname;

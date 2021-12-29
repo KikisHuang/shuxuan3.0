@@ -275,7 +275,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         //未提交认证流程
                     } else if (data.getStore().getStatus() == 20) {
                         //回调显示被驳回
-                        getV().rejected();
+                        getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
                         //回调显示已认证通过
                         getV().certificationPassed();
@@ -306,10 +306,12 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
         if (!isEmpty(copyContent)) {
             ShibbolethModel.checkShibboleth((type, code) -> {
                 if (networkModel != null) {
-                    networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
-                        //如果是被邀请过来的商家，显示布局
-                        if (isViewAttached()) getV().showActivityTypeLayout(type);
-                    });
+                    if (type == 30) {
+                        networkModel.getInvitationCode(getContext(), type == 30 ? code : "", result -> {
+                            //如果是被邀请过来的商家，显示布局
+                            if (isViewAttached()) getV().showActivityTypeLayout(type);
+                        });
+                    }
                 }
             }, 50);
         } else {

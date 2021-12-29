@@ -28,7 +28,7 @@ public class WebContract {
 
         void openPhoto(ValueCallback<Uri[]> valueCallback, int mode);
 
-        void completeTask();
+        void completeTask(String identifier);
 
         void clearCache();
 

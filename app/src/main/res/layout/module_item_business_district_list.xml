@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -155,19 +154,48 @@
         app:layout_constraintTop_toBottomOf="@+id/picture_fml"
         tools:text="2021.01.30 13:23" />
 
+
+    <TextView
+        android:id="@+id/share_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:drawableRight="@drawable/module_svg_business_district_share"
+        android:gravity="center"
+        android:textColor="@color/graya9a9a9"
+        android:textSize="12sp"
+        app:layout_constraintRight_toLeftOf="@+id/tv_comment_count"
+        app:layout_constraintTop_toBottomOf="@+id/picture_fml"
+        />
+
     <TextView
         android:id="@+id/tv_comment_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="45dp"
-        android:drawableLeft="@drawable/module_svg_business_district_comment_icon"
-        android:drawablePadding="5dp"
-        android:text="0条评论"
-        android:textColor="#FF2E2E2E"
-        android:textSize="13sp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/picture_fml" />
+        android:layout_marginEnd="10dp"
+        android:drawableRight="@drawable/module_svg_business_district_comment_icon"
+        android:gravity="center"
+        android:textColor="@color/graya9a9a9"
+        android:textSize="12sp"
+        app:layout_constraintRight_toLeftOf="@+id/like_tv"
+        app:layout_constraintTop_toBottomOf="@+id/picture_fml"
+        tools:text="3" />
+
+
+    <TextView
+        android:id="@+id/like_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:drawableRight="@drawable/module_svg_unlike_heart"
+        android:gravity="center"
+        android:textColor="@color/graya9a9a9"
+        android:textSize="12sp"
+        app:layout_constraintRight_toRightOf="@+id/tv_content"
+        app:layout_constraintTop_toBottomOf="@+id/picture_fml"
+        tools:text="9" />
 
     <LinearLayout
         android:id="@+id/ll_comment_layout"
@@ -175,7 +203,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
         android:layout_marginRight="45dp"
-        android:background="@mipmap/bg_business_district_message_reply_content"
+        android:layout_marginTop="10dp"
+        android:padding="8dp"
+        android:background="@drawable/module_select_send_address_cancel_button"
         android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

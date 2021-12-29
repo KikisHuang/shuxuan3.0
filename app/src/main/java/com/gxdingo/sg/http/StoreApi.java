@@ -238,6 +238,10 @@ public class StoreApi {
      */
     public static final String BUSINESS_DISTRICT_LIST = HIERARCHY + "circle/list";
     /**
+     * 商圈点赞
+     */
+    public static final String CIRCLE_LIKEDORUNLIKED = HIERARCHY + "circle/likedOrUnliked";
+    /**
      * 发布商圈信息
      */
     public static final String RELEASE_BUSINESS_DISTRICT_INFO = HIERARCHY + "circle/save";

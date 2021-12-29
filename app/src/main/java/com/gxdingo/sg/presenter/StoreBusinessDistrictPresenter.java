@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 
+import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
@@ -10,16 +11,19 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.lzy.ninegrid.ImageInfo;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 import io.reactivex.Observable;
@@ -232,8 +236,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      */
     @Override
     public void getNumberUnreadComments() {
-        if (businessDistrictModel!=null)
-        businessDistrictModel.getNumberUnreadComments(getContext(), this);
+        if (businessDistrictModel != null)
+            businessDistrictModel.getNumberUnreadComments(getContext(), this);
     }
 
     /**
@@ -243,8 +247,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      */
     @Override
     public void deleteBusinessDistrictDynamics(long id) {
-        if (businessDistrictModel!=null)
-        businessDistrictModel.storeDeleteBusinessDistrictDynamics(getContext(), id);
+        if (businessDistrictModel != null)
+            businessDistrictModel.storeDeleteBusinessDistrictDynamics(getContext(), id);
     }
 
     @Override
@@ -253,9 +257,65 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     }
 
     @Override
-    public void complete() {
+    public void complete(String identifier) {
         if (clientNetworkModel != null)
-            clientNetworkModel.completeTask(getContext(), 10);
+            clientNetworkModel.completeTask(getContext(), identifier, 10);
+    }
+
+    /**
+     * 点赞 or 取消点赞
+     *
+     * @param status
+     * @param id
+     * @param position
+     */
+    @Override
+    public void likedOrUnliked(int status, long id, int position) {
+
+        if (businessDistrictModel != null)
+            businessDistrictModel.likedOrUnliked(getContext(), status, id, (CustomResultListener<String>) o -> {
+
+                if (isViewAttached())
+                    getV().refreshLikeNum(o, position);
+
+            });
+
+    }
+
+    /**
+     * 分享
+     *
+     * @param content
+     * @param imgUrl
+     * @param url
+     */
+    @Override
+    public void shareLink(String content, String imgUrl, String url) {
+
+
+        ShareUtils.UmShare(getContext(), new UMShareListener() {
+            @Override
+            public void onStart(SHARE_MEDIA share_media) {
+
+            }
+
+            @Override
+            public void onResult(SHARE_MEDIA share_media) {
+
+            }
+
+            @Override
+            public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+
+            }
+
+            @Override
+            public void onCancel(SHARE_MEDIA share_media) {
+
+            }
+        }, url, content, content, imgUrl, SHARE_MEDIA.WEIXIN_CIRCLE);
+
+
     }
 
     /**

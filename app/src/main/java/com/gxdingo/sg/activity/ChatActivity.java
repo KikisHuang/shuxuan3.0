@@ -1205,22 +1205,28 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         view.getLocationOnScreen(pos); //获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
 
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .offsetY(pos[1] - 100)
-                .offsetX(pos[0])
-                .autoDismiss(true)
-                .hasShadowBg(false)
-                .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType(), args -> {
-                    int type = (int) args[0];
+        //todo 隐藏撤回功能 ,暂时只有text类型显示弹窗
+        ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
+        if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType()==0){
+            new XPopup.Builder(reference.get())
+                    .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .offsetY(pos[1] - 100)
+                    .offsetX(pos[0])
+                    .autoDismiss(true)
+                    .hasShadowBg(false)
+                    .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType(), args -> {
+                        int type = (int) args[0];
 
-                    if (type == 0) {
-                        copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
-                        onMessage("已复制到剪贴板");
-                    } else
-                        getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
+                        if (type == 0) {
+                            copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
+                            onMessage("已复制到剪贴板");
+                        } else
+                            getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
 
-                }).show());
+                    }).show());
+        }
+
+
 
     }
 

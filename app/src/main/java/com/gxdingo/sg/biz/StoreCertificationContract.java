@@ -57,7 +57,7 @@ public class StoreCertificationContract {
         void onReview();
 
         //被驳回
-        void rejected();
+        void rejected(String rejectReason);
 
         //显示活动类型布局
         void showActivityTypeLayout(int type);
