@@ -9,9 +9,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
@@ -70,9 +72,13 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.REFRESH_LOCATION;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -232,6 +238,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         });
         mCategoryAdapter.setOnItemClickListener(this);
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -293,6 +300,10 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
             if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1) {
                 showInvitationCodeDialog();
             }
+        } else if (type == REFRESH_LOCATION) {
+            //判断如果有权限，进行重新定位，刷新操作
+            if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
+                getP().checkPermissions(getRxPermissions(), true);
         }
         //店铺审核成功重新初始化数据
         if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED)
@@ -304,6 +315,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
+
         getP().checkPermissions(getRxPermissions(), true);
 
         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();

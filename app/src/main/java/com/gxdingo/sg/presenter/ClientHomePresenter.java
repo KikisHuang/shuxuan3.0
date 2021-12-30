@@ -33,6 +33,7 @@ import com.gxdingo.sg.model.CommonModel;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -114,6 +115,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                         getV().setDistrict(aMapLocation.getPoiName());
 
                                     lat = aMapLocation.getLatitude();
+
                                     lon = aMapLocation.getLongitude();
 
                                     LocalConstant.AdCode = aMapLocation.getAdCode();

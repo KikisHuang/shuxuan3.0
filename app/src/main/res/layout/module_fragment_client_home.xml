@@ -100,11 +100,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"/>
-
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/store_rv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:overScrollMode="never"
+                        android:scrollbars="none"
                         android:padding="@dimen/dp_10"/>
 
                     <include layout="@layout/module_include_client_home_nodata"/>

@@ -472,6 +472,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onForeground(Activity activity) {
+        //前后台切换刷新定位、附近商家接口。
+        sendEvent(LocalConstant.REFRESH_LOCATION);
         LocalConstant.isBackground = false;
     }
 

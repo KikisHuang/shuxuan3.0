@@ -440,6 +440,7 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     public void onForeground(Activity activity) {
+        sendEvent(LocalConstant.REFRESH_LOCATION);
         LocalConstant.isBackground = false;
     }
 

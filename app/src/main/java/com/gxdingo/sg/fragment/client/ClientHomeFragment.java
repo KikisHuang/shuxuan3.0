@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
@@ -77,10 +79,14 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.REFRESH_LOCATION;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -202,6 +208,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onStart() {
         super.onStart();
         getP().checkHelpCode();
+
     }
 
     @Override
@@ -304,10 +311,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == CLIENT_LOGIN_SUCCEED) {
-
             if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && isEmpty(LocalConstant.TEMP_SHIBBOLETH))
                 showInvitationCodeDialog();
-
+        } else if (type == REFRESH_LOCATION) {
+            //判断如果有权限，进行重新定位，刷新操作
+            if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
+                getP().checkPermissions(getRxPermissions(), true);
         }
     }
 
@@ -316,10 +325,13 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
         mAllTypeData = new ArrayList<>();
         mDefaultTypeData = new ArrayList<>();
+
         getP().checkPermissions(getRxPermissions(), true);
+
         getP().getCategory();
 
     }
+
 
     private void addData(List<CategoriesBean> categories) {
 

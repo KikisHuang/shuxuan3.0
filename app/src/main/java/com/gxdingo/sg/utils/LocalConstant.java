@@ -10,6 +10,8 @@ public class LocalConstant {
     //刷新商圈未读消息时间
     public static final int businessDistrictRefreshTime = 30000;
 
+    public static final int REFRESH_LOCATION = 41456;
+
     //聊天常量
     //自己发送的文本类型
     public static final int SelfText = 7776;

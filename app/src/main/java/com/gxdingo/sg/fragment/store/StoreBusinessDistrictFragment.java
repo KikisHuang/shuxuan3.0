@@ -570,14 +570,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
 
-  /*      if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+        //刷新主菜单未读消息提示
+        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
             if (ClientActivity.getInstance() != null)
                 ClientActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
         } else {
             if (StoreActivity.getInstance() != null)
                 StoreActivity.getInstance().setBusinessUnreadMsgNum(unreadCommentsBean);
-        }*/
-
+        }
     }
 
     @Override
