@@ -109,6 +109,7 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
         openId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         appName = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
         mIsUse = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 2, false);
+
     }
 
     @OnClick({R.id.send_verification_code_bt})

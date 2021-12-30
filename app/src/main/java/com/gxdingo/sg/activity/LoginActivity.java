@@ -173,6 +173,8 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
         setLoginWayState();
         setTextHighLightWithClick(agreement_tv.getText().toString(), new String[]{"《服务协议》", "《隐私政策》"});
+
+        getP().getVerificationCodeTime();
     }
 
     @Override
@@ -273,7 +275,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     public void setVerificationCodeTime(int time) {
+        send_verification_code_bt.setTotalTime(time);
 
+        send_verification_code_bt.start();
     }
 
     //身份切换

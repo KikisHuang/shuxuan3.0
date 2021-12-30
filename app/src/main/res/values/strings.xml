@@ -90,5 +90,6 @@
     <string name="copy">复制</string>
 
     <string name="revocation">撤回</string>
+    <string name="real_name_authentication">实名认证</string>
 
 </resources>

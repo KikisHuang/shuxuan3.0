@@ -134,6 +134,7 @@ public class ChangeBindingPhoneActivity extends BaseMvpActivity<ChangeBindPhoneC
         getP().getUserPhone();
 //        getP().checkCode();
 //        getP().sendVerificationCode();
+
     }
 
     @Override

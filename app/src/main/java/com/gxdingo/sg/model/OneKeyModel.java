@@ -314,10 +314,10 @@ public class OneKeyModel {
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     if (isUse) {
-                        SPUtils.getInstance().put(LOGIN_WAY, true);
+//                        SPUtils.getInstance().put(LOGIN_WAY, true);
                         goToPage(getContext(), ClientActivity.class, null);
                     } else {
-                        SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
+//                        SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
                         goToPage(getContext(), StoreActivity.class, null);
                     }
                     EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
@@ -377,13 +377,23 @@ public class OneKeyModel {
                     //除了用户取消操作的事件，其他都跳转登录页面
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
+/*
+                    //不是用户手动退出登录页，吐丝提示
+                    if (netWorkListener != null&&!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
+                        netWorkListener.onMessage(tokenRet.getMsg());
+
+                    //一键登录环境获取失败，切换为用户端状态
+                    switchGlobalUrl(true);
+
+                    if (ClientActivity.getInstance() == null)
+                        goToPage(context, ClientActivity.class, null);*/
 
                     quitLoginPage();
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mAuthHelper.setAuthListener(null);
             }
         };
 

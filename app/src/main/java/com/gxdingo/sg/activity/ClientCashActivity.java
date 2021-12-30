@@ -197,6 +197,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 et_cash_amount.setText(amount);
                 break;
             case R.id.btn_confirm:
+
                 String balance = et_cash_amount.getText().toString();
                 if (isEmpty(balance)) {
                     onMessage("请输入提现金额");
@@ -328,7 +329,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
             } else if (posDot == 0) {
                 //首位是点，去掉点
                 s.delete(posDot, posDot + 1);
-                if (!isEmpty(s.toString())){
+                if (!isEmpty(s.toString())) {
                     if (BigDecimalUtils.compare(s.toString(), amount))
                         et_cash_amount.setText(amount);
                 }

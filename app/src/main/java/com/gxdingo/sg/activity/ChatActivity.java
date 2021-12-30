@@ -1079,16 +1079,13 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         map.put(Constant.FILE, new File(url));
 
-        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, new ProgressListener() {
-            @Override
-            public void onProgress(boolean done, int progress) {
-                if (done) {
-                    //上传成功
-                    mChatDatas.get(pos).upload_progress = 100;
-                } else {
-                    mChatDatas.get(pos).upload_progress = progress;
-                    mAdapter.notifyItemChanged(pos);
-                }
+        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, (done, progress) -> {
+            if (done) {
+                //上传成功
+                mChatDatas.get(pos).upload_progress = 100;
+            } else {
+                mChatDatas.get(pos).upload_progress = progress;
+                mAdapter.notifyItemChanged(pos);
             }
         })
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -1207,7 +1204,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         //todo 隐藏撤回功能 ,暂时只有text类型显示弹窗
         ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
-        if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType()==0){
+        if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() == 0) {
             new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                     .offsetY(pos[1] - 100)
@@ -1225,7 +1222,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                     }).show());
         }
-
 
 
     }
@@ -1361,11 +1357,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean, int pos) {
-
-        mChatDatas.set(pos, receiveIMMessageBean);
-
-        mAdapter.notifyItemChanged(pos);
-
+        if (pos <= mChatDatas.size() - 1){
+            mChatDatas.set(pos, receiveIMMessageBean);
+            mAdapter.notifyItemChanged(pos);
+        }
     }
 
     @Override

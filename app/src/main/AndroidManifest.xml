@@ -507,6 +507,11 @@
             android:name=".activity.StoreBillDetailActivity"
             android:screenOrientation="portrait" />
 
+        <!--实名认证页面 -->
+        <activity
+            android:name=".activity.RealNameAuthenticationActivity"
+            android:screenOrientation="portrait" />
+
 
         <!-- 微信登录回调页 -->
         <activity
