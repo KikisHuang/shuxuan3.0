@@ -82,7 +82,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     private List<StoreListBean.StoreBean> mHistoryList;
 
     //是否首页
-    private boolean isHome = false;
+    private boolean isHome;
 
 
     public ClientHomePresenter(boolean home) {

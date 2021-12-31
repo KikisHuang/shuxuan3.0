@@ -11,6 +11,7 @@ import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 
@@ -53,7 +54,11 @@ public class ShibbolethModel {
 
                         //获取活动类型
                         int mType = getAcType(numberDecode(copyContent));
-
+                        if (mType <= 0) {
+                            BaseLogUtils.i("无效口令，清除");
+                            copyText("");
+                            return;
+                        }
                         //40 保存跳转状态
                         if (mType == 40) {
                             SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, true);
