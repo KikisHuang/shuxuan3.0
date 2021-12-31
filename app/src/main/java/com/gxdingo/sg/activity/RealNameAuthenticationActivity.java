@@ -3,6 +3,8 @@ package com.gxdingo.sg.activity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.AuthenticationContract;
@@ -25,6 +28,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.GlideUtils;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -34,6 +38,8 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis
@@ -58,6 +64,11 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @BindView(R.id.bottom_cl)
     public ConstraintLayout bottom_cl;
 
+    @BindView(R.id.name_edt)
+    public EditText name_edt;
+
+    @BindView(R.id.idcard_edt)
+    public EditText idcard_edt;
 
     @BindView(R.id.back_img)
     public ImageView back_img;
@@ -70,6 +81,9 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
 
     @BindView(R.id.hint3)
     public TextView hint3;
+
+    @BindView(R.id.submit_bt)
+    public Button submit_bt;
 
 
     @Override
@@ -145,11 +159,15 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @Override
     protected void initData() {
 
-        showAuthenticationStatusDialog();
+        int width = ScreenUtils.getScreenWidth(reference.get()) / 2 - dp2px(44);
+
+        front_img.getLayoutParams().height = width * 10 / 16;
+
+        back_img.getLayoutParams().height = width * 10 / 16;
     }
 
 
-    @OnClick({R.id.front_img, R.id.back_img, R.id.front_upload_ll, R.id.back_upload_ll})
+    @OnClick({R.id.submit_bt, R.id.front_img, R.id.back_img, R.id.front_upload_ll, R.id.back_upload_ll})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -166,6 +184,11 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
                 break;
             case R.id.back_upload_ll:
                 showAlbumDialog(1);
+                break;
+            case R.id.submit_bt:
+                if (submit_bt.isSelected())
+                    getP().submitAuthenticationInfo();
+
                 break;
 
         }
@@ -185,18 +208,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
                 })).show();
     }
 
-    /**
-     * 显示认证状态弹窗
-     */
-    private void showAuthenticationStatusDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .autoDismiss(true)
-                .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), status -> {
-
-                }).show());
-    }
 
     @Override
     protected void onBaseEvent(Object object) {
@@ -223,10 +234,60 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
             back_img.setVisibility(View.VISIBLE);
         }
 
-        hint3.setVisibility(View.VISIBLE);
-
         Glide.with(reference.get()).load(path).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(selectedType == 0 ? front_img : back_img);
 
     }
 
+    @Override
+    public void onOCRInfoResult(IdCardOCRBean data) {
+
+        hint3.setVisibility(View.VISIBLE);
+
+        if (data != null && data.getFrontResult() != null && !isEmpty(data.getFrontResult().getIdnumber())) {
+            bottom_cl.setVisibility(View.VISIBLE);
+            if (!isEmpty(data.getFrontResult().getName()))
+                name_edt.setText(data.getFrontResult().getName());
+
+            if (!isEmpty(data.getFrontResult().getIdnumber()))
+                idcard_edt.setText(data.getFrontResult().getIdnumber());
+        }
+    }
+
+    @Override
+    public String getIdCardName() {
+        return name_edt.getText().toString();
+    }
+
+    @Override
+    public String getIdCardNumber() {
+        return idcard_edt.getText().toString();
+    }
+
+    @Override
+    public void changeButtonStatus() {
+        submit_bt.setSelected(true);
+    }
+
+    @Override
+    public void onOCRFailed(int type) {
+        if (type == 0) {
+            front_upload_ll.setVisibility(View.VISIBLE);
+            front_check_img.setVisibility(View.GONE);
+            front_img.setVisibility(View.INVISIBLE);
+        } else {
+            back_upload_ll.setVisibility(View.VISIBLE);
+            back_check_img.setVisibility(View.GONE);
+            back_img.setVisibility(View.INVISIBLE);
+        }
+        if (back_img.getVisibility() == View.INVISIBLE && front_img.getVisibility() == View.INVISIBLE)
+            hint3.setVisibility(View.GONE);
+
+    }
+
+
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        finish();
+    }
 }

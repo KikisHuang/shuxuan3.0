@@ -127,6 +127,7 @@ public class LocalConstant {
     public static final String LONGITUDE1 = "longitude1";
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
+    public static final String CERTFLAG = "certFlag";
 
     public static String locationSelected = "";
 

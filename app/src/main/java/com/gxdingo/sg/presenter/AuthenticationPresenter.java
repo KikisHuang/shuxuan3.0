@@ -1,6 +1,8 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+
+import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.AuthenticationContract;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -9,6 +11,7 @@ import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.PhotoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
@@ -20,6 +23,7 @@ import java.util.List;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis
@@ -28,15 +32,15 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
  */
 public class AuthenticationPresenter extends BaseMvpPresenter<BasicsListener, AuthenticationContract.AuthenticationListener> implements AuthenticationContract.AuthenticationPresenter, NetWorkListener, OnResultCallbackListener<LocalMedia> {
 
-    private ClientNetworkModel clientNetworkModel;
-
     private NetworkModel mNetworkModel;
 
     //上传的类型 0正面 1反面
     private int selectedType = 0;
 
+    private String frontImg = "";
+    private String backImg = "";
+
     public AuthenticationPresenter() {
-        clientNetworkModel = new ClientNetworkModel(this);
         mNetworkModel = new NetworkModel(this);
     }
 
@@ -134,6 +138,35 @@ public class AuthenticationPresenter extends BaseMvpPresenter<BasicsListener, Au
 
     }
 
+    /**
+     * 提交认证信息
+     */
+    @Override
+    public void submitAuthenticationInfo() {
+        if (!isViewAttached())
+            return;
+
+        if (isEmpty(frontImg))
+            getBV().onMessage("请上传身份证正面照");
+        else if (isEmpty(backImg))
+            getBV().onMessage("请上传身份证反面照");
+        else if (isEmpty(getV().getIdCardName()))
+            getBV().onMessage("请填写身份证名称");
+        else if (isEmpty(getV().getIdCardNumber()))
+            getBV().onMessage("请填写身份证号码");
+
+
+        if (mNetworkModel != null)
+            mNetworkModel.certification(getContext(), getV().getIdCardName(), getV().getIdCardNumber(), frontImg, backImg, new CustomResultListener() {
+                @Override
+                public void onResult(Object o) {
+                    if (isViewAttached())
+                        getBV().onSucceed(0);
+                }
+            });
+
+    }
+
     @Override
     public void onResult(List<LocalMedia> result) {
 
@@ -144,15 +177,46 @@ public class AuthenticationPresenter extends BaseMvpPresenter<BasicsListener, Au
                 @Override
                 public void loadSucceed(String path) {
 
-                    if (isViewAttached())
-                        getV().upLoadSucceed(path, selectedType);
+                    if (selectedType == 0)
+                        frontImg = path;
+                    else
+                        backImg = path;
+
+                    if (mNetworkModel != null)
+                        mNetworkModel.idCardOCR(getContext(), selectedType == 0?"face":"back", path, o -> {
+
+                            if (o != null) {
+
+                                if (isViewAttached())
+                                    getV().upLoadSucceed(path, selectedType);
+
+                                IdCardOCRBean data = (IdCardOCRBean) o;
+
+                                if (isViewAttached())
+                                    getV().onOCRInfoResult(data);
+
+                            } else {
+                                if (selectedType == 0)
+                                    frontImg = "";
+                                else
+                                    backImg = "";
+
+                                if (isViewAttached())
+                                    getV().onOCRFailed(selectedType);
+                            }
+
+                            if (!isEmpty(frontImg) && !isEmpty(backImg) && isViewAttached())
+                                getV().changeButtonStatus();
+
+                        });
+
                 }
 
                 @Override
                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                 }
-            });
+            }, 1);
 
         }
 

@@ -196,7 +196,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                                 }
-                            });
+                            },0);
 
                         }
                     }

@@ -20,6 +20,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BankcardListActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
+import com.gxdingo.sg.activity.RealNameAuthenticationActivity;
 import com.gxdingo.sg.activity.StoreBillDetailActivity;
 import com.gxdingo.sg.activity.StoreCashActivity;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
@@ -29,14 +30,20 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
+import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
+import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
+import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.CenterPopupView;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 
 import butterknife.BindView;
@@ -154,6 +161,12 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @OnClick({R.id.img_more, R.id.alipay_stv, R.id.wechat_stv, R.id.bankcard_stv, R.id.record_stv})
     public void OnClickViews(View v) {
+
+        if ((v.getId() == R.id.alipay_stv || v.getId() == R.id.wechat_stv || v.getId() == R.id.bankcard_stv) && mWalletBean != null && mWalletBean.authStatus != 1) {
+            showAuthenticationStatusDialog();
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.img_more:
 //                Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
@@ -166,19 +179,47 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
                 break;
             case R.id.alipay_stv:
-                goToCash(ClientLocalConstant.ALIPAY);
+                if (mWalletBean != null) {
+                    goToCash(ClientLocalConstant.ALIPAY);
+
+                }
+
                 break;
             case R.id.wechat_stv:
-                goToCash(ClientLocalConstant.WECHAT);
+                if (mWalletBean != null) {
+                    goToCash(ClientLocalConstant.WECHAT);
+                }
+
                 break;
             case R.id.bankcard_stv:
-                goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true, true}));
+                if (mWalletBean != null)
+                    goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true, true}));
+
                 break;
             case R.id.record_stv:
                 goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
         }
     }
+
+
+    /**
+     * 显示认证状态弹窗
+     */
+    private void showAuthenticationStatusDialog() {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, status -> {
+                    if (mWalletBean.authStatus == 0)
+                        getP().getWalletHome(true);
+                    if (mWalletBean.authStatus == 2)
+                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+
+                }).show());
+    }
+
 
     @Override
     public void onSucceed(int type) {

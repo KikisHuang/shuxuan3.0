@@ -16,6 +16,7 @@ import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
+import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
@@ -55,6 +56,8 @@ import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
+import static com.gxdingo.sg.http.Api.EXTRA_CERTIFICATION;
+import static com.gxdingo.sg.http.Api.EXTRA_IDCARDOCR;
 import static com.gxdingo.sg.http.Api.INVITATIONCODE;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
@@ -862,8 +865,9 @@ public class NetworkModel {
      *
      * @param context
      * @param path
+     * @param certFlag 是否是实名认证图片 0否 1是 :默认0
      */
-    public void upLoadImage(Context context, String path, UpLoadImageListener loadImageListener) {
+    public void upLoadImage(Context context, String path, UpLoadImageListener loadImageListener, int certFlag) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -871,8 +875,11 @@ public class NetworkModel {
         Map<String, Object> map = getObjMap();
 
         map.put(Constant.FILE, new File(path));
+/*
+        if (certFlag > 0)
+            map.put(LocalConstant.CERTFLAG, certFlag);*/
 
-        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, null)
+        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, null).headers(LocalConstant.CERTFLAG, String.valueOf(certFlag))
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1201,4 +1208,100 @@ public class NetworkModel {
             netWorkListener.onDisposable(subscriber);
     }
 
+    /**
+     * 阿里云身份证时别
+     */
+    public void idCardOCR(Context context, String side, String imgUrl, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("side", side);
+        map.put("imageUrl", imgUrl);
+
+        if (netWorkListener!=null)
+            netWorkListener.onStarts();
+
+        Observable<IdCardOCRBean> observable = HttpClient.post(EXTRA_IDCARDOCR, map)
+                .execute(new CallClazzProxy<ApiResult<IdCardOCRBean>, IdCardOCRBean>(new TypeToken<IdCardOCRBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<IdCardOCRBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                customResultListener.onResult(null);
+
+                if (netWorkListener != null){
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+
+
+            }
+
+            @Override
+            public void onNext(IdCardOCRBean idCardOCRBean) {
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+
+                if (customResultListener != null)
+                    customResultListener.onResult(idCardOCRBean);
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 实名认证
+     */
+    public void certification(Context context, String name, String cardNumber, String frontUrl, String backUrl, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("name", name);
+
+        map.put("cardNumber", cardNumber);
+
+        map.put("frontUrl", frontUrl);
+
+        map.put("backUrl", backUrl);
+
+        Observable<NormalBean> observable = HttpClient.post(EXTRA_CERTIFICATION, map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(normalBean.msg);
+                }
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(normalBean.msg);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
 }

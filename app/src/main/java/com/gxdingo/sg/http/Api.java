@@ -169,8 +169,18 @@ public class Api {
     public static final String UPLOAD_INVITATIONCODE = HIERARCHY + "activity/add/regionCode";
 
     /**
-     *      * 消息内容未读状态改成已读
+     * * 消息内容未读状态改成已读
      */
     public static final String MESSAGE_WITHDRAW = HIERARCHY + "mps/message/withdraw";
+
+    /**
+     * 阿里云身份证时别
+     */
+    public static final String EXTRA_IDCARDOCR = HIERARCHY + "extra/idCardOCR";
+
+    /**
+     * 实名认证
+     */
+    public static final String EXTRA_CERTIFICATION = HIERARCHY + "extra/certification";
 
 }

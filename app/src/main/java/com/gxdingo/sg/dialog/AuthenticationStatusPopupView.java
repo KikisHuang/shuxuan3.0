@@ -20,11 +20,14 @@ import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
 import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.RealNameAuthenticationActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.view.PartTextClickSpan;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.util.regex.Matcher;
@@ -36,6 +39,7 @@ import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
@@ -56,9 +60,16 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
     private CustomResultListener listener;
 
-    public AuthenticationStatusPopupView(@NonNull Context context, CustomResultListener<Integer> listener) {
+    private int authStatus;
+
+    private String authImage;
+
+    public AuthenticationStatusPopupView(@NonNull Context context, int authStatus, String authImage, CustomResultListener<Integer> listener) {
         super(context);
         this.listener = listener;
+        this.authStatus = authStatus;
+        this.authImage = authImage;
+
         addInnerContent();
     }
 
@@ -72,6 +83,23 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
         done_bt.setOnClickListener(this);
         close_img.setOnClickListener(this);
+
+        Glide.with(getContext()).load(authImage).apply(GlideUtils.getInstance().getDefaultOptions()).into(status_img);
+
+        String hint1 = "";
+        String hint2 = "";
+        if (authStatus == 0) {
+            hint1 = "证件认证中";
+            hint2 = "信息认证中，请稍候…";
+            done_bt.setText("刷新");
+        } else if (authStatus == 2) {
+            hint1 = "认证失败";
+            hint2 = "信息认证不通过请重新认证";
+            done_bt.setText("确定");
+        }
+
+        hint_one_tv.setText(hint1);
+        hint_two_tv.setText(hint2);
 
     }
 
@@ -88,9 +116,8 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
                 this.dismiss();
                 break;
             case R.id.done_bt:
-                if (listener != null) {
-
-                }
+                if (listener != null)
+                    listener.onResult(authStatus);
                 this.dismiss();
                 break;
         }

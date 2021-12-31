@@ -58,7 +58,7 @@
         <ImageView
             android:id="@+id/front_img"
             android:layout_width="0dp"
-            android:layout_height="96dp"
+            android:layout_height="26dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="4dp"
             android:scaleType="centerCrop"
@@ -130,7 +130,7 @@
         <ImageView
             android:id="@+id/back_img"
             android:layout_width="0dp"
-            android:layout_height="96dp"
+            android:layout_height="26dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="20dp"
             android:scaleType="centerCrop"
@@ -209,11 +209,12 @@
             android:textColor="@color/graya9a9a9" />
 
         <EditText
+            android:id="@+id/name_edt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:background="@color/white"
-            android:text="张三"
+            tools:text="张三"
             android:textColor="@color/graye2e2e2"
             app:layout_constraintBottom_toBottomOf="@+id/name_tg"
             app:layout_constraintLeft_toRightOf="@+id/name_tg"
@@ -232,6 +233,7 @@
 
 
         <EditText
+            android:id="@+id/idcard_edt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -253,6 +255,7 @@
         android:layout_marginBottom="20dp"
         android:text="请确认身份信息，如有错误请修改或重拍"
         android:textColor="@color/gray_a9"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

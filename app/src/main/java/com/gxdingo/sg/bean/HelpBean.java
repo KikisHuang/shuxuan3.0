@@ -19,6 +19,7 @@ public class HelpBean {
     private String buttonToUrl;
     private String userAvatar;
     private String image;
+    public String buttonText;
     private String title;
     private String subtitle;
     private Integer lotteryCount;

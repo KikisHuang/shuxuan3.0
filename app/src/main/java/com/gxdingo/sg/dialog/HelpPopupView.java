@@ -95,13 +95,13 @@ public class HelpPopupView extends CenterPopupView {
             if (helpBean.getType() == 0){
                 help_type_title_tv.setText("为好友助力");
                 subTitle_tv.setText(helpBean.getSubtitle());
-                btn_help.setText("帮忙助力");
+                btn_help.setText(helpBean.buttonText);
                 Glide.with(this).load(helpBean.getUserAvatar()).apply(GlideUtils.getInstance().getCircleCrop()).into(avatar_img);
             } else{
                 help_type_title_tv.setText("助力成功");
                 Glide.with(this).load(helpBean.getImage()).apply(GlideUtils.getInstance().getCircleCrop()).into(avatar_img);
                 subTitle_tv.setVisibility(GONE);
-                btn_help.setText("一键免费抽奖");
+                btn_help.setText(helpBean.buttonText);
             }
         }
     }

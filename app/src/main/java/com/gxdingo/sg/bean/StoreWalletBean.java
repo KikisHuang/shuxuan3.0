@@ -16,8 +16,8 @@ public class StoreWalletBean implements Serializable {
      * isShowAlipay : 0
      * isShowBank : 0
      * explain : 1、每3天可提现1次
-     2、提现不收取服务费
-     3、。
+     * 2、提现不收取服务费
+     * 3、。
      * alipay :
      * wechat :
      * balance : 9108.01
@@ -30,6 +30,8 @@ public class StoreWalletBean implements Serializable {
     private Integer isShowBank;
     private String explain;
     private String alipay;
+    public int authStatus;
+    public String authImage;
     private String wechat;
     private Double balance;
     private List<BankcardBean> bankList;
@@ -106,8 +108,6 @@ public class StoreWalletBean implements Serializable {
     public void setTransactionList(List<TransactionBean> transactionList) {
         this.transactionList = transactionList;
     }
-
-
 
 
 }

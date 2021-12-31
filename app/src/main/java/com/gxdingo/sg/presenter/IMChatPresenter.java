@@ -507,7 +507,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                         onAfters();
                     }
 
-                });
+                },0);
 
             } else {
                 getBV().onMessage("录制时间太短");

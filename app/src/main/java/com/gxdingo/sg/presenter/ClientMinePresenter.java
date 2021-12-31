@@ -217,7 +217,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                 }
-            });
+            },0);
         }
     }
 

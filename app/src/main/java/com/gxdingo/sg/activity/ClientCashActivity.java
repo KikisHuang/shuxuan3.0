@@ -16,6 +16,7 @@ import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.OnAccountSelectListener;
 import com.gxdingo.sg.biz.PayPasswordListener;
+import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.dialog.ClientCashSelectDialog;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
@@ -198,26 +199,52 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 break;
             case R.id.btn_confirm:
 
-                goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                if (cashInfoBean != null) {
+                    //认证成功
+                    if (cashInfoBean.authStatus == 1) {
 
-                String balance = et_cash_amount.getText().toString();
-                if (isEmpty(balance)) {
-                    onMessage("请输入提现金额");
-                    return;
-                }
-                if (!BigDecimalUtils.compare(balance, "0")) {
-                    onMessage("请输入有效提现金额");
-                    return;
+                        String balance = et_cash_amount.getText().toString();
+                        if (isEmpty(balance)) {
+                            onMessage("请输入提现金额");
+                            return;
+                        }
+                        if (!BigDecimalUtils.compare(balance, "0")) {
+                            onMessage("请输入有效提现金额");
+                            return;
+                        }
+
+                        if (mtype != -1)
+                            showPayPswDialog();
+                        else
+                            onMessage("请选择提现方式");
+                    } else if (cashInfoBean.authStatus == 2 || cashInfoBean.authStatus == 0)
+                        showAuthenticationStatusDialog();
+
                 }
 
-                if (mtype != -1)
-                    showPayPswDialog();
-                else
-                    onMessage("请选择提现方式");
 
                 break;
         }
     }
+
+
+    /**
+     * 显示认证状态弹窗
+     */
+    private void showAuthenticationStatusDialog() {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, status -> {
+                    if (cashInfoBean.authStatus == 0)
+                        getP().getCashInfo();
+                    if (cashInfoBean.authStatus == 2)
+                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+
+                }).show());
+    }
+
 
     private void showPayPswDialog() {
         new XPopup.Builder(reference.get())

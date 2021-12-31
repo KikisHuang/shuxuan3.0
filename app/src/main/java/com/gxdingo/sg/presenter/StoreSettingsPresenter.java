@@ -32,8 +32,8 @@ import static com.luck.picture.lib.config.PictureMimeType.s;
  * @date: 2021/11/10
  * @page:
  */
-public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,StoreSettingsContract.StoreSettingsListener>
-        implements OnResultCallbackListener<LocalMedia>,StoreSettingsContract.StoreSettingsPresenter, NetWorkListener {
+public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, StoreSettingsContract.StoreSettingsListener>
+        implements OnResultCallbackListener<LocalMedia>, StoreSettingsContract.StoreSettingsPresenter, NetWorkListener {
 
     private NetworkModel networkModel;
 
@@ -71,7 +71,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,Stor
             DistanceListBean distanceListBean = (DistanceListBean) o;
             if (isViewAttached() && distanceListBean.getList() != null)
                 getV().onDistanceResult(distanceListBean.getList());
-        }else if (o instanceof StoreDetailBean){
+        } else if (o instanceof StoreDetailBean) {
             if (isViewAttached())
                 getV().onInfoResult((StoreDetailBean) o);
         }
@@ -138,7 +138,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,Stor
 
     @Override
     public void getStoreInfo() {
-        if (storeNetworkModel!=null)
+        if (storeNetworkModel != null)
             storeNetworkModel.getStoreDetails(getContext());
     }
 
@@ -168,43 +168,43 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,Stor
 
     @Override
     public void getDistanceList() {
-        if (storeNetworkModel!=null)
+        if (storeNetworkModel != null)
             storeNetworkModel.getDeliveryScope(getContext());
     }
 
     @Override
     public void getQrCode() {
-        if (storeNetworkModel!=null)
+        if (storeNetworkModel != null)
             storeNetworkModel.getExclusiveQRcode(getContext());
     }
 
     @Override
     public void updateStoreName(String name) {
-        if (storeNetworkModel!=null)
+        if (storeNetworkModel != null)
             storeNetworkModel.updateStoreName(getContext(), name);
     }
 
     @Override
     public void changMobile(String mobile) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.updateContractNumber(getContext(),mobile);
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateContractNumber(getContext(), mobile);
     }
 
     @Override
     public void businessTime(String startTime, String endTime) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.updateBusinessTime(getContext(),startTime,endTime);
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateBusinessTime(getContext(), startTime, endTime);
     }
 
     @Override
     public void deliveryScope(String scope) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.updateMaxDistance(getContext(),scope);
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateMaxDistance(getContext(), scope);
     }
 
     @Override
     public void getAuthInfo() {
-        if (storeNetworkModel!=null)
+        if (storeNetworkModel != null)
             storeNetworkModel.getAuthInfo(getContext());
     }
 
@@ -226,7 +226,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener,Stor
                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                 }
-            });
+            }, 0);
         }
     }
 

@@ -64,7 +64,7 @@ public class HttpClient {
      */
     public static PostRequest post(String url, Map<String, String> map) {
 
-            PostRequest request = EasyHttp.post(url);
+        PostRequest request = EasyHttp.post(url);
 
         String timeStamp = getCurrentTimeUTCM();
 
@@ -227,8 +227,8 @@ public class HttpClient {
 
                     }
                 });
-            } else
-                customToast("未知的上传类型");
+            }/*  else
+                customToast("未知的上传类型");*/
 
         }
         return request;

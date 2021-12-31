@@ -18,6 +18,7 @@ import com.gxdingo.sg.presenter.StoreHomePresenter;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
 import butterknife.BindView;
@@ -158,7 +159,7 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreWalletContract
 
     @Override
     public void onTransactionDetail(TransactionDetails transactionDetails) {
-        Glide.with(this).load(isEmpty(transactionDetails.getAvatar()) ? R.drawable.module_svg_client_default_avatar : transactionDetails.getAvatar())
+        Glide.with(this).load(isEmpty(transactionDetails.getAvatar()) ? R.drawable.module_svg_client_default_avatar : transactionDetails.getAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6))
                 .into(avatar_img);
         transfer_object_tv.setText(transactionDetails.getTitle());
         amount_tv.setText(String.valueOf(transactionDetails.getAmount()));

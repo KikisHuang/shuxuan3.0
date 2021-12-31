@@ -35,6 +35,8 @@ public class ClientCashInfoBean {
     private String alipay;
     private String wechat;
     private String balance;
+    public int authStatus;
+    public String authImage;
     private List<BankcardBean> bankList;
 
     public String getMobile() {
