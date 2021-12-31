@@ -172,7 +172,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 //                Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
 //                startActivityForResult(intent, REQUEST_CODE_SCAN);
 
-
 //                getRxPermissions();
 
                 getP().checkPermissions(getRxPermissions());
