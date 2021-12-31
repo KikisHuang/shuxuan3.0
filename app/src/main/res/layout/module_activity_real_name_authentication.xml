@@ -274,6 +274,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/module_selector_submit_bt"
             android:text="@string/submit"
+            android:stateListAnimator="@null"
             android:textColor="@drawable/module_selector_text_color" />
 
     </LinearLayout>

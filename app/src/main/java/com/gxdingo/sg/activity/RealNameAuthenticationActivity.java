@@ -16,10 +16,13 @@ import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.AuthenticationContract;
 import com.gxdingo.sg.biz.LoginContract;
+import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
+import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.presenter.AuthenticationPresenter;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
@@ -29,8 +32,7 @@ import com.lxj.xpopup.core.BasePopupView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
-import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -142,6 +144,8 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
 
     @Override
     protected void initData() {
+
+        showAuthenticationStatusDialog();
     }
 
 
@@ -167,13 +171,31 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
         }
     }
 
+    /**
+     * 显示相册、拍照选择弹窗
+     *
+     * @param type
+     */
     private void showAlbumDialog(int type) {
-          new XPopup.Builder(reference.get())
-                    .isDestroyOnDismiss(true)
-                    .isDarkTheme(false)
-                    .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
-                        getP().photoItemClick(pos, type);
-                    })).show();
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true)
+                .isDarkTheme(false)
+                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
+                    getP().photoItemClick(pos, type);
+                })).show();
+    }
+
+    /**
+     * 显示认证状态弹窗
+     */
+    private void showAuthenticationStatusDialog() {
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), status -> {
+
+                }).show());
     }
 
     @Override
@@ -206,4 +228,5 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
         Glide.with(reference.get()).load(path).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(selectedType == 0 ? front_img : back_img);
 
     }
+
 }

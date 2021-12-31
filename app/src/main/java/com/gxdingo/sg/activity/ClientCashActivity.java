@@ -198,6 +198,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 break;
             case R.id.btn_confirm:
 
+                goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+
                 String balance = et_cash_amount.getText().toString();
                 if (isEmpty(balance)) {
                     onMessage("请输入提现金额");

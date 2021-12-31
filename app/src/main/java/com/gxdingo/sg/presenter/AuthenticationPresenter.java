@@ -1,8 +1,6 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
-
-import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.AuthenticationContract;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -16,9 +14,12 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.io.File;
 import java.util.List;
 
+import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
+import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 
 /**
  * @author: Kikis

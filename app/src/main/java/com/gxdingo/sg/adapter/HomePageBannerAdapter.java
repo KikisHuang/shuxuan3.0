@@ -64,7 +64,7 @@ public class HomePageBannerAdapter extends BannerAdapter<HomeBannerBean, HomePag
                         int newheight = getScreenWidth() * height / width;
 
                         holder.imageView.setImageDrawable(resource);
-
+                        holder.imageView.getLayoutParams().height = newheight;
                     }
                 });
     }
