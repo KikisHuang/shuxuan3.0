@@ -36,7 +36,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
  * @date: 2021/10/15
  * @page:
  */
-public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener{
+public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -57,12 +57,16 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract
     public Button btn_next_or_confirm;
 
     private String firstPassword;
+    //验证码不为空，为发送验证码方式修改
+    private String code = "";
+    //旧密码
+    private String oldPasswd = "";
 
     private boolean isUpdate;
 
     @OnClick(R.id.btn_next_or_confirm)
-    public void confirm(){
-        getP().changePayPwd();
+    public void confirm() {
+        getP().changePayPwd(code,oldPasswd);
     }
 
     @Override
@@ -133,7 +137,7 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
-        if (type == 1){
+        if (type == 1) {
             sendEvent(ClientLocalConstant.UPDATE_SUCCESS);
             ToastUtils.showLong("修改成功!");
             finish();
@@ -147,7 +151,10 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract
             title_layout.setTitleText(gets(R.string.update_pay_pwd));
         else
             title_layout.setTitleText(gets(R.string.setting_pay_pwd));
-        firstPassword = getIntent().getStringExtra(Constant.PARAMAS+0);
+        firstPassword = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        code = getIntent().getStringExtra(Constant.PARAMAS + 1);
+        oldPasswd = getIntent().getStringExtra(Constant.PARAMAS + 2);
+
         hint_tv.setText("再次输入");
         pay_pwd_hint.setVisibility(View.GONE);
         pay_psw_cdv.setVisibility(View.GONE);
@@ -191,8 +198,8 @@ public class ClientSettingPayPwd3Activity extends BaseMvpActivity<PayPwdContract
     }
 
     /*
-    * 输入完成密码
-    * */
+     * 输入完成密码
+     * */
     @Override
     public String getCode() {
         return password_layout.getPassString();

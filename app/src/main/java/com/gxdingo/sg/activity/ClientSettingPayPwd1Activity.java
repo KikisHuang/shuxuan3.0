@@ -29,12 +29,13 @@ import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
- * @page:
+ * @page:验证码方式
  */
 public class ClientSettingPayPwd1Activity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener {
 
@@ -162,6 +163,7 @@ public class ClientSettingPayPwd1Activity extends BaseMvpActivity<PayPwdContract
         if (object.equals(ClientLocalConstant.UPDATE_SUCCESS))
             finish();
     }
+
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
@@ -178,7 +180,7 @@ public class ClientSettingPayPwd1Activity extends BaseMvpActivity<PayPwdContract
 
     @Override
     public void setUserPhone(String phone) {
-        hint_tv.setText("为确认身份，我们已发送验证码到手机号： "+getUserPhone(phone)+"进行验证。");
+        hint_tv.setText("为确认身份，我们已发送验证码到手机号： " + getUserPhone(phone) + "进行验证。");
     }
 
     @Override
@@ -193,7 +195,7 @@ public class ClientSettingPayPwd1Activity extends BaseMvpActivity<PayPwdContract
 
     @Override
     public void next() {
-        goToPage(this,ClientSettingPayPwd2Activity.class,null);
+        goToPage(this, ClientSettingPayPwd2Activity.class, getIntentMap(new String[]{getCode()}));
     }
 
 

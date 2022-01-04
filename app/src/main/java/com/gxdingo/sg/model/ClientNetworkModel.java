@@ -12,6 +12,7 @@ import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.http.ClientApi;
+import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
@@ -1142,7 +1143,8 @@ public class ClientNetworkModel {
 //        if (!isEmpty(oldPassword))
 //            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
         map.put("oldPassword", payPassword);
-        netWorkListener.onStarts();
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
         Observable<CheckPayPwdBean> observable = HttpClient.post(CHECK_PAY_PASSWORD, map)
                 .execute(new CallClazzProxy<ApiResult<CheckPayPwdBean>, CheckPayPwdBean>(new TypeToken<CheckPayPwdBean>() {
                 }.getType()) {
@@ -1152,32 +1154,38 @@ public class ClientNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
 
             }
 
             @Override
             public void onNext(CheckPayPwdBean checkPayPwdBean) {
-                netWorkListener.onAfters();
-                netWorkListener.onSucceed(checkPayPwdBean.getAuthentication());
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onSucceed(checkPayPwdBean.getAuthentication());
+                }
             }
         };
 
         observable.subscribe(subscriber);
-        netWorkListener.onDisposable(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
     }
 
     /**
      * 修改支付密码
-     *
-     * @param
      */
-    public void updatePayPassword(Context context, String payPassword) {
+    public void updatePayPassword(Context context, String newPassword, String oldPassword, String code) {
         Map<String, String> map = new HashMap<>();
-//        if (!isEmpty(oldPassword))
-//            map.put(StoreLocalConstant.OLD_PASSWORD, oldPassword);
-        map.put("newPassword", payPassword);
+
+
+        if (!isEmpty(oldPassword) && (isEmpty(code)))
+            map.put("oldPassword", oldPassword);
+
+        map.put("newPassword", newPassword);
         netWorkListener.onStarts();
         Observable<NormalBean> observable = HttpClient.post(UPDATE_WITHDRAWAL_PASSWORD, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {

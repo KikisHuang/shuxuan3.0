@@ -17,9 +17,9 @@ public class PayPwdContract {
 
         void certify();
 
-        void certifyPwd();
+        void certifyPwd(String pwd);
 
-        void changePayPwd();
+        void changePayPwd(String code, String oldPasswd);
     }
 
     public interface PayPwdListener{

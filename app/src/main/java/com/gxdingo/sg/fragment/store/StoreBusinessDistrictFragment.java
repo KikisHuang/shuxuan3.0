@@ -357,8 +357,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
-            getP().getBusinessDistrictList(true, mStoreId);
-
+//            getP().getBusinessDistrictList(true, mStoreId);
+            isFirstLoad = false;
         } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部

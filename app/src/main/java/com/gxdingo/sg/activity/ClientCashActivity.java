@@ -40,6 +40,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -158,11 +159,17 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
     @OnClick({R.id.cash_account_stv, R.id.btn_all, R.id.btn_confirm})
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.cash_account_stv:
-                if (cashInfoBean != null)
+                if (cashInfoBean != null) {
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
                             .asCustom(new ClientCashSelectDialog(reference.get(), cashInfoBean, new OnAccountSelectListener() {
@@ -196,6 +203,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                                 }
                             }))
                             .show();
+                }
+
                 break;
             case R.id.btn_all:
                 et_cash_amount.setText(amount);
@@ -236,6 +245,13 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
      */
     private void showAuthenticationStatusDialog() {
 
+        //未认证状态直接跳转认证页面
+        if (cashInfoBean.authStatus == 0) {
+            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+            onMessage("请先填写实名认证信息");
+            return;
+        }
+
         if (!showAuthenticationStatusDialog)
             showAuthenticationStatusDialog = true;
 
@@ -243,10 +259,10 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, status -> {
-                    if (cashInfoBean.authStatus == 2 )
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, cashInfoBean.rejectReason,status -> {
+                    if (cashInfoBean.authStatus == 2)
                         getP().getCashInfo();
-                    else if (cashInfoBean.authStatus == 0|| cashInfoBean.authStatus == 3)
+                    else if (cashInfoBean.authStatus == 3)
                         goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
                     else if (cashInfoBean.authStatus == 1) {
                         //认证成功无需操作
@@ -272,6 +288,16 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     @Override
     public void onTransactionResult(boolean refresh, List<TransactionBean> transactions) {
+
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == AUTHENTICATION_SUCCEEDS) {
+            showAuthenticationStatusDialog = false;
+            getP().getCashInfo();
+        }
 
     }
 

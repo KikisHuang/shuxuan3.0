@@ -288,6 +288,7 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
+        sendEvent(LocalConstant.AUTHENTICATION_SUCCEEDS);
         finish();
     }
 }

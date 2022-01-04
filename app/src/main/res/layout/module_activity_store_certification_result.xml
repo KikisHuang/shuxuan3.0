@@ -42,5 +42,6 @@
         android:text="刷新一下"
         android:textColor="@color/white"
         android:textSize="14sp"
+        android:stateListAnimator="@null"
         app:layout_constraintTop_toBottomOf="@+id/tv_status" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -57,10 +57,14 @@ public class ClientSettingPayPwd2Activity extends BaseMvpActivity<PayPwdContract
     public Button btn_next_or_confirm;
 
     private boolean isUpdate;
+    //验证码 （空为密码修改）
+    private String code = "";
+    //旧密码
+    private String oldPasswd = "";
 
     @OnClick(R.id.btn_next_or_confirm)
-    public void nextStep(){
-        goToPage(this,ClientSettingPayPwd3Activity.class,getIntentMap(new String[]{password_layout.getPassString()}));
+    public void nextStep() {
+        goToPage(this, ClientSettingPayPwd3Activity.class, getIntentMap(new String[]{password_layout.getPassString(),code,oldPasswd}));
         password_layout.removeAllPwd();
     }
 
@@ -136,6 +140,9 @@ public class ClientSettingPayPwd2Activity extends BaseMvpActivity<PayPwdContract
         else
             title_layout.setTitleText(gets(R.string.setting_pay_pwd));
 
+        code = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        oldPasswd = getIntent().getStringExtra(Constant.PARAMAS + 1);
+
         pay_pwd_hint.setVisibility(View.VISIBLE);
         pay_psw_cdv.setVisibility(View.GONE);
         btn_next_or_confirm.setText(gets(R.string.next));
@@ -173,7 +180,7 @@ public class ClientSettingPayPwd2Activity extends BaseMvpActivity<PayPwdContract
 
     @Override
     public void setUserPhone(String phone) {
-        hint_tv.setText("请为账号 "+getUserPhone(phone)+"设置6位数支付密码");
+        hint_tv.setText("请为账号 " + getUserPhone(phone) + "设置6位数支付密码");
     }
 
     @Override

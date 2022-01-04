@@ -6,7 +6,6 @@ import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
-import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
@@ -49,27 +48,22 @@ public class PayPwdPresenter extends BaseMvpPresenter<BasicsListener, PayPwdCont
     @Override
     public void certify() {
         if (mNetworkModel!=null )
-            mNetworkModel.checkSMSCode(getContext(), phone, getV().getCode(), new CustomResultListener() {
-                @Override
-                public void onResult(Object o) {
-                    getV().next();
-                }
-            });
+            mNetworkModel.checkSMSCode(getContext(), phone, getV().getCode(), o -> getV().next());
     }
 
     @Override
-    public void certifyPwd() {
+    public void certifyPwd(String pwd) {
         if (clientNetworkModel!=null)
-            clientNetworkModel.checkPayPwd(getContext(),getV().getCode());
+            clientNetworkModel.checkPayPwd(getContext(),pwd);
     }
 
     @Override
-    public void changePayPwd() {
+    public void changePayPwd(String code, String oldPasswd) {
         if (!getV().getCode().equals(getV().getFirstPwd())){
             onMessage("两次输入的密码不一致，请重新输入！");
             return;
         }
-        clientNetworkModel.updatePayPassword(getContext(),getV().getFirstPwd());
+        clientNetworkModel.updatePayPassword(getContext(),getV().getCode(), oldPasswd,code);
     }
 
     @Override

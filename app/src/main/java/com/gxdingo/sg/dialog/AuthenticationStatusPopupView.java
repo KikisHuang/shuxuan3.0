@@ -41,6 +41,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis
@@ -64,12 +65,14 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
     private int authStatus;
 
     private String authImage;
+    private String rejectReason;
 
-    public AuthenticationStatusPopupView(@NonNull Context context, int authStatus, String authImage, CustomResultListener<Integer> listener) {
+    public AuthenticationStatusPopupView(@NonNull Context context, int authStatus, String authImage, String rejectReason, CustomResultListener<Integer> listener) {
         super(context);
         this.listener = listener;
         this.authStatus = authStatus;
         this.authImage = authImage;
+        this.rejectReason = rejectReason;
 
         addInnerContent();
     }
@@ -102,7 +105,7 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
             done_bt.setText("刷新");
         } else if (authStatus == 3) {
             hint1 = "认证失败";
-            hint2 = "信息认证不通过请重新认证";
+            hint2 = !isEmpty(rejectReason) ? rejectReason : "信息认证不通过请重新认证";
             done_bt.setText("确定");
         }
 

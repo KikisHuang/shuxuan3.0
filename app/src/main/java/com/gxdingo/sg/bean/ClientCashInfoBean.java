@@ -37,6 +37,7 @@ public class ClientCashInfoBean {
     private String balance;
     public int authStatus;
     public String authImage;
+    public String rejectReason;
     private List<BankcardBean> bankList;
 
     public String getMobile() {

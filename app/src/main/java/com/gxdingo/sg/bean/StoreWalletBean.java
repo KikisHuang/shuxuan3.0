@@ -33,6 +33,7 @@ public class StoreWalletBean implements Serializable {
     // 认证状态 0 未认证，1 已认证 2 认证中 3 认证失败
     public int authStatus;
     public String authImage;
+    public String rejectReason;
     private String wechat;
     private Double balance;
     private List<BankcardBean> bankList;

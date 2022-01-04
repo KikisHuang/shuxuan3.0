@@ -88,6 +88,9 @@ public class LocalConstant {
     //投诉成功
     public static final int COMPLAINT_SUCCEED = 32;
 
+    //实名认证成功
+    public static final int AUTHENTICATION_SUCCEEDS = 33;
+
     public final static int EMOTION_LAYOUT_IS_SHOWING = 1848;
 
     public final static int CONSENT_AGREEMENT = 11111;

@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
@@ -12,6 +13,7 @@ import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.PayPwdContract;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.presenter.PayPwdPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.view.CountdownView;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -27,12 +29,13 @@ import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
  * @date: 2021/10/15
- * @page:
+ * @page:支付密码方式修改
  */
 public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.PayPwdPresenter> implements PayPwdContract.PayPwdListener {
 
@@ -63,7 +66,7 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -145,7 +148,7 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
 
             @Override
             public void onFinished(String pwd) {
-                getP().certifyPwd();
+                getP().certifyPwd(pwd);
             }
         });
     }
@@ -159,11 +162,11 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
     public void onSucceed(int type) {
         super.onSucceed(type);
         //是否与旧密码一致。0=否；1=是
-        if (type == 0){
+        if (type == 0) {
             password_layout.removeAllPwd();
             onMessage("密码错误！");
-        }else if (type == 1)
-            goToPage(this,ClientSettingPayPwd2Activity.class,null);
+        } else if (type == 1)
+            goToPage(this, ClientSettingPayPwd2Activity.class, getIntentMap(new String[]{"", getFirstPwd()}));
     }
 
     @Override
@@ -191,5 +194,12 @@ public class ClientCertifyPayPswActivity extends BaseMvpActivity<PayPwdContract.
         super.onMessage(msg);
         if (!isEmpty(password_layout.getPassString()))
             password_layout.removeAllPwd();
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object.equals(ClientLocalConstant.UPDATE_SUCCESS))
+            finish();
     }
 }

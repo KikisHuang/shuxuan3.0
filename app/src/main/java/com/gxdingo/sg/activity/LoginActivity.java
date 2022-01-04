@@ -275,9 +275,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     @Override
     public void setVerificationCodeTime(int time) {
-        send_verification_code_bt.setTotalTime(time);
+        /*send_verification_code_bt.setTotalTime(time);
 
-        send_verification_code_bt.start();
+        send_verification_code_bt.start();*/
     }
 
     //身份切换

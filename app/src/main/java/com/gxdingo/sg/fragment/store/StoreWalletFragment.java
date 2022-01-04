@@ -43,6 +43,7 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -139,18 +140,22 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         transaction_rv.setAdapter(mAdapter);
         transaction_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemClickListener(this);
+
     }
 
 
     @Override
     protected void initData() {
+
     }
 
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        if (UserInfoUtils.getInstance().isLogin())
+        if (UserInfoUtils.getInstance().isLogin()) {
+            showAuthenticationStatusDialog = false;
             getP().getWalletHome(true);
+        }
     }
 
     @OnClick({R.id.img_more, R.id.alipay_stv, R.id.wechat_stv, R.id.bankcard_stv, R.id.record_stv})
@@ -201,6 +206,13 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
      */
     private void showAuthenticationStatusDialog() {
 
+        //未认证状态直接跳转认证页面
+        if (mWalletBean.authStatus == 0) {
+            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+            onMessage("请先填写实名认证信息");
+            return;
+        }
+
         if (!showAuthenticationStatusDialog)
             showAuthenticationStatusDialog = true;
 
@@ -208,11 +220,11 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, status -> {
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason,status -> {
 
-                    if (mWalletBean.authStatus == 2 )
+                    if (mWalletBean.authStatus == 2)
                         getP().getWalletHome(true);
-                    else if (mWalletBean.authStatus == 0|| mWalletBean.authStatus == 3)
+                    else if (mWalletBean.authStatus == 3)
                         goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
                     else if (mWalletBean.authStatus == 1) {
                         //认证成功0无需操作
@@ -272,10 +284,14 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
+
         if (type == LocalConstant.CASH_SUCCESSS)
             getP().getWalletHome(true);
 
-        if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+        else if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
+            getP().getWalletHome(true);
+        } else if (type == AUTHENTICATION_SUCCEEDS) {
+            showAuthenticationStatusDialog = false;
             getP().getWalletHome(true);
         }
     }
@@ -295,7 +311,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 if (mWalletBean.authStatus == 1)
                     showAuthenticationStatusDialog = false;
             }
-
 
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(double2Str(walletBean.getBalance()));
