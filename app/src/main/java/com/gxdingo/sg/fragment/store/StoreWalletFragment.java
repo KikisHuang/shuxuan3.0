@@ -1,7 +1,6 @@
 package com.gxdingo.sg.fragment.store;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,8 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.allen.library.SuperTextView;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
@@ -30,21 +27,16 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
-import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
-import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.PasswordLayout;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.CenterPopupView;
-import com.uuzuche.lib_zxing.activity.CaptureActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,7 +44,6 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
-import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -92,6 +83,9 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     private ClientTransactionRecordAdapter mAdapter;
 
     private StoreWalletBean mWalletBean;
+
+    //显示认证状态弹窗
+    private boolean showAuthenticationStatusDialog = false;
 
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
@@ -206,15 +200,23 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
      * 显示认证状态弹窗
      */
     private void showAuthenticationStatusDialog() {
+
+        if (!showAuthenticationStatusDialog)
+            showAuthenticationStatusDialog = true;
+
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
                 .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, status -> {
-                    if (mWalletBean.authStatus == 0)
+
+                    if (mWalletBean.authStatus == 2 )
                         getP().getWalletHome(true);
-                    if (mWalletBean.authStatus == 2)
+                    else if (mWalletBean.authStatus == 0|| mWalletBean.authStatus == 3)
                         goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                    else if (mWalletBean.authStatus == 1) {
+                        //认证成功0无需操作
+                    }
 
                 }).show());
     }
@@ -287,6 +289,14 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
         mWalletBean = walletBean;
         if (refresh) {
+
+            if (showAuthenticationStatusDialog) {
+                showAuthenticationStatusDialog();
+                if (mWalletBean.authStatus == 1)
+                    showAuthenticationStatusDialog = false;
+            }
+
+
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(double2Str(walletBean.getBalance()));
             if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {

@@ -60,6 +60,7 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
     private CustomResultListener listener;
 
+    // 认证状态 0 未认证，1 已认证 2 认证中 3 认证失败
     private int authStatus;
 
     private String authImage;
@@ -88,11 +89,18 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
         String hint1 = "";
         String hint2 = "";
-        if (authStatus == 0) {
+
+        if (authStatus == 1) {
+
+            hint1 = "恭喜您，认证成功";
+            hint2 = "身份认证通过";
+            done_bt.setText("完成");
+
+        } else if (authStatus == 2) {
             hint1 = "证件认证中";
             hint2 = "信息认证中，请稍候…";
             done_bt.setText("刷新");
-        } else if (authStatus == 2) {
+        } else if (authStatus == 3) {
             hint1 = "认证失败";
             hint2 = "信息认证不通过请重新认证";
             done_bt.setText("确定");

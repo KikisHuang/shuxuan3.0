@@ -30,6 +30,7 @@ public class StoreWalletBean implements Serializable {
     private Integer isShowBank;
     private String explain;
     private String alipay;
+    // 认证状态 0 未认证，1 已认证 2 认证中 3 认证失败
     public int authStatus;
     public String authImage;
     private String wechat;
