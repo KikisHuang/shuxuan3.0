@@ -83,6 +83,7 @@ public class HttpClient {
 
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
+            request.headers(Constant.EMASID, UserInfoUtils.getInstance().getEMAS());
 
             BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }

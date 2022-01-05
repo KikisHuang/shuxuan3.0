@@ -292,6 +292,7 @@ public class Constant {
     public static final String OPENID = "openid";
     public static final String TYPE = "type";
     public static final String TOKEN = "token";
+    public static final String EMASID = "emasId";
     public static final String TIME = "time";
 
 
