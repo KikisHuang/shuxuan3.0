@@ -29,6 +29,7 @@ import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCouponAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -41,6 +42,7 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.lxj.xpopup.XPopup;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.tencent.bugly.crashreport.biz.UserInfoBean;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
@@ -175,6 +177,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
             username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
         } else if (type == ClientLocalConstant.FILL_SUCCESS) {
+
+            UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+            userBean.setInviterId(1);
+            UserInfoUtils.getInstance().saveUserInfo(userBean);
+
             fill_invitation_code_stv.setVisibility(View.GONE);
             getP().getUserInfo();
         }
