@@ -218,10 +218,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             if (data != null) {
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
-//                ToastUtils.showLong(content);
                 int mType = getAcType(numberDecode(content));
                 if (mType == 10)
                     getP().scanCode(content);
+                else
+                    onMessage("无法识别的二维码类型");
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }

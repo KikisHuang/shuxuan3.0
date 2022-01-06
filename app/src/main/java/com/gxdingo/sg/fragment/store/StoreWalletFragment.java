@@ -222,7 +222,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason,status -> {
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason, status -> {
 
                     if (mWalletBean.authStatus == 2)
                         getP().getWalletHome(true);
@@ -347,11 +347,11 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             if (data != null) {
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
-//                ToastUtils.showLong(content);
                 int mType = getAcType(numberDecode(content));
                 if (mType == 11)
                     getP().scanCode(content);
-                getP().scanCode(content);
+                else
+                    onMessage("无法识别的二维码类型");
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }
