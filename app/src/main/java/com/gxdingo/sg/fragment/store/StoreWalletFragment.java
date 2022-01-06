@@ -294,6 +294,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         mWalletBean = walletBean;
         if (refresh) {
 
+            banAppBarScroll(walletBean != null && walletBean.getTransactionList() != null && walletBean.getTransactionList().size() > 3);
+
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(double2Str(walletBean.getBalance()));
             if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
@@ -343,5 +345,23 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         TransactionBean item = (TransactionBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item}));
         goToPagePutSerializable(getContext(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
+    }
+
+
+    /**
+     * 控制appbar的滑动
+     *
+     * @param isScroll true 允许滑动 false 禁止滑动
+     */
+    private void banAppBarScroll(boolean isScroll) {
+        View mAppBarChildAt = appbar_layout.getChildAt(0);
+        AppBarLayout.LayoutParams mAppBarParams = (AppBarLayout.LayoutParams) mAppBarChildAt.getLayoutParams();
+        if (isScroll) {
+            mAppBarParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+            mAppBarChildAt.setLayoutParams(mAppBarParams);
+        } else {
+            mAppBarParams.setScrollFlags(0);
+        }
+
     }
 }

@@ -29,6 +29,7 @@ import com.gxdingo.sg.presenter.StoreMainPresenter;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
@@ -114,12 +115,12 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     @Override
     protected boolean ImmersionBar() {
-        return false;
+        return true;
     }
 
     @Override
     protected int StatusBarColors() {
-        return R.color.white;
+        return R.color.main_tone;
     }
 
     @Override
@@ -343,6 +344,28 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
      */
     @Override
     public void onSeleted(int checkTab, int oldTab) {
+        int color = 0;
+        boolean statusBarDarkFont = false;
+        switch (checkTab) {
+            case 0:
+                statusBarDarkFont = false;
+                color = R.color.main_tone;
+                break;
+            case 1:
+                statusBarDarkFont = false;
+                color = R.color.green68aa50;
+                break;
+            case 2:
+            case 3:
+                statusBarDarkFont = true;
+                color = R.color.white;
+                break;
+            case 4:
+                statusBarDarkFont = true;
+                color = R.color.grayf6;
+                break;
+        }
+        ImmersionBar.with(this).statusBarDarkFont(statusBarDarkFont).statusBarColor(color).init();
         mMenuLayout.get(checkTab).setonSelected(true);
         mMenuLayout.get(oldTab).setonSelected(false);
     }

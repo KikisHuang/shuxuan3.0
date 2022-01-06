@@ -68,9 +68,6 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
 
     public StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
 
-    @BindView(R.id.tv_status_bar)
-    public LinearLayout tvStatusBar;
-
     @BindView(R.id.ll_search_layout)
     public LinearLayout llSearchLayout;
 
@@ -204,9 +201,6 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
 
     @Override
     protected void init() {
-        int statusBarHeight = ScreenUtils.getStatusHeight(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
-        tvStatusBar.setLayoutParams(params);
         setAppBarLayoutListener();
 
         mStoreHomeIMMessageAdapter = new StoreHomeIMMessageAdapter();

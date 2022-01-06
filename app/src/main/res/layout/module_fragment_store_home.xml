@@ -27,7 +27,6 @@
                     android:id="@+id/ll_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="50dp"
                     android:paddingBottom="12dp"
                     android:paddingHorizontal="16dp"
                     android:gravity="center_vertical"
