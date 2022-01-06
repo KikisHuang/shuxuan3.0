@@ -26,6 +26,10 @@ public class ClientMineContract {
         void modityNickName(String toString);
 
         void logout();
+
+        void scan(RxPermissions rxPermissions);
+
+        void scanCode(String content);
     }
 
     public interface ClientMineListener<T>{

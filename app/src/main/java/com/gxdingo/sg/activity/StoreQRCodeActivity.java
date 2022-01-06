@@ -146,13 +146,15 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
 
     @Override
     public void onQRResult(StoreQRCodeBean qrCodeBean) {
+
         coupon_title_tv.setText(qrCodeBean.getStoreName());
-        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(qrCodeBean.getCouponIdIdentifier(), 250, 250);
+
+        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(qrCodeBean.getActiveCode(), 280, 280);
 
         Glide.with(reference.get()).asBitmap().load(!isEmpty(UserInfoUtils.getInstance().getUserAvatar()) ? UserInfoUtils.getInstance().getUserAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                Bitmap LogoQrCodeBtmp = QRCodeUtil.addLogo(qrCodeBitmap, resource, 0.2f);
+                Bitmap LogoQrCodeBtmp = QRCodeUtil.addLogo(qrCodeBitmap, resource, 0.15f);
                 qr_code_iv.setImageBitmap(LogoQrCodeBtmp);
             }
         });

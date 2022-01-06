@@ -268,7 +268,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             onStarts();
         else {
             onAfters();
-            if (UserInfoUtils.getInstance().isLogin())
+            if (UserInfoUtils.getInstance().isLogin()&&UserInfoUtils.getInstance().getUserInfo().getRole()==10)
                 getP().upLoadRegionCode(LocalConstant.AdCode);
         }
     }

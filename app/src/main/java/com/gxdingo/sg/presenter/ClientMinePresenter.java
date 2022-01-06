@@ -8,6 +8,7 @@ import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.ClientMainModel;
 import com.gxdingo.sg.model.ClientMineModel;
@@ -22,10 +23,13 @@ import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.List;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.VIBRATE;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -197,6 +201,37 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void logout() {
         if (networkModel!=null)
             networkModel.logOut(getContext());
+    }
+
+    @Override
+    public void scan(RxPermissions rxPermissions) {
+        if (mClientCommonModel!=null)
+            mClientCommonModel.checkPermission(rxPermissions, new String[]{CAMERA, VIBRATE}, new PermissionsListener() {
+                @Override
+                public void onNext(boolean value) {
+                    if (!value){
+                        getBV().onFailed();
+                    }else {
+                        getBV().onSucceed(1);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+    }
+
+    @Override
+    public void scanCode(String content) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.receiveCoupon(getContext(), content);
     }
 
     @Override

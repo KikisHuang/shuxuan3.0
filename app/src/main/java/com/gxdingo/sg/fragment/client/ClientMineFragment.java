@@ -1,9 +1,11 @@
 package com.gxdingo.sg.fragment.client;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,7 @@ import com.gxdingo.sg.activity.ClientCashActivity;
 import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.ClientPersonalDataActivity;
+import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCouponAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
@@ -46,8 +49,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -169,7 +174,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
         } else if (type == ClientLocalConstant.FILL_SUCCESS) {
             fill_invitation_code_stv.setVisibility(View.GONE);
+            getP().getUserInfo();
         }
+
     }
 
     @Override
@@ -183,10 +190,40 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         }
     }
 
-    @OnClick({R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.check_bill_tv, R.id.btn_cash, R.id.ll_address_manage, R.id.ll_account_security
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        if (type == 1) {
+            Intent intent = new Intent(getContext(), CustomCaptureActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_SCAN);
+        }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // 扫描二维码/条码回传
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+                //返回的文本内容
+                String content = data.getStringExtra("success_result");
+//                ToastUtils.showLong(content);
+                getP().scanCode(content);
+                //返回的BitMap图像
+//                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
+            }
+        }
+    }
+
+    @OnClick({R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.check_bill_tv, R.id.btn_cash, R.id.ll_address_manage, R.id.ll_account_security
             , R.id.ll_contract_server, R.id.ll_about_us, R.id.fill_invitation_code_stv, R.id.private_protocol_stv, R.id.logout_stv})
     public void onClickViews(View v) {
         switch (v.getId()) {
+            case R.id.btn_scan:
+                getP().scan(getRxPermissions());
+                break;
             case R.id.avatar_cimg:
             case R.id.username_stv:
                 ShareAnimaStartPages(getContext(), avatar_cimg, "userAvatar", ClientPersonalDataActivity.class, null);
