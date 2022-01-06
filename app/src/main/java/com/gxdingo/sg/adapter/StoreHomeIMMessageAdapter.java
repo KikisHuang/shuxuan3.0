@@ -67,22 +67,28 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
         TextView draft_tag_tv = baseViewHolder.findView(R.id.draft_tag_tv);
 
-        if (subscribesMessage.getSendUserRole() == 10) {
-            //用户
-            store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));
-            store_tab_tv.setBackgroundResource(R.drawable.module_border_green_round8);
-            store_tab_tv.setText("客户");
-        } else if (subscribesMessage.getSendUserRole() == 11) {
-            //商家
-            store_tab_tv.setTextColor(getc(R.color.yellow_tag));
-            store_tab_tv.setBackgroundResource(R.drawable.module_border_yellow_round8);
-            store_tab_tv.setText("商家");
-        } else if (subscribesMessage.getSendUserRole() == 12) {
-            //商家
-            store_tab_tv.setTextColor(getc(R.color.blue_text));
-            store_tab_tv.setBackgroundResource(R.drawable.module_border_blue_round8);
-            store_tab_tv.setText("客服");
+
+        store_tab_tv.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.VISIBLE : View.GONE);
+
+        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11) {
+            if (subscribesMessage.getSendUserRole() == 10) {
+                //用户
+                store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));
+                store_tab_tv.setBackgroundResource(R.drawable.module_border_green_round8);
+                store_tab_tv.setText("客户");
+            } else if (subscribesMessage.getSendUserRole() == 11) {
+                //商家
+                store_tab_tv.setTextColor(getc(R.color.yellow_tag));
+                store_tab_tv.setBackgroundResource(R.drawable.module_border_yellow_round8);
+                store_tab_tv.setText("商家");
+            } else if (subscribesMessage.getSendUserRole() == 12) {
+                //商家
+                store_tab_tv.setTextColor(getc(R.color.blue_text));
+                store_tab_tv.setBackgroundResource(R.drawable.module_border_blue_round8);
+                store_tab_tv.setText("客服");
+            }
         }
+
 
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(getRequestOptions()).into(nivAvatar);
 

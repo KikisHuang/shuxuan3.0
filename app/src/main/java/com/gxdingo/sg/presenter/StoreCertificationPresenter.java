@@ -2,10 +2,8 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 
 import com.blankj.utilcode.util.ClipboardUtils;
-import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
@@ -21,8 +19,8 @@ import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.PictureSelectionModel;
@@ -54,7 +52,14 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     private StoreNetworkModel storeNetworkModel;
 
-    public StoreCertificationPresenter() {
+    private boolean isUser;
+
+    private int status;
+
+    public StoreCertificationPresenter(boolean isUser) {
+
+        this.isUser = isUser;
+
         networkModel = new NetworkModel(this);
         mCommonModel = new CommonModel();
         storeNetworkModel = new StoreNetworkModel(this);
@@ -196,7 +201,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                                 }
-                            },0);
+                            }, 0);
 
                         }
                     }
@@ -262,8 +267,9 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     public void getLoginInfoStatus() {
         if (!UserInfoUtils.getInstance().isLogin())
             return;
+
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), 1, o -> {
+            storeNetworkModel.refreshLoginStauts(getContext(), status == 10 ? 1 : !isUser ? 1 : 0, o -> {
                 UserBean data = (UserBean) o;
 
                 if (!isEmpty(data.getToken()))
@@ -277,8 +283,20 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         //回调显示被驳回
                         getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
-                        //回调显示已认证通过
-                        getV().certificationPassed();
+
+                        if (isUser && status != 10) {
+                            status = 10;
+                            storeNetworkModel.refreshLoginStauts(getContext(), status, new CustomResultListener() {
+                                @Override
+                                public void onResult(Object o) {
+                                    //回调显示已认证通过
+                                    getV().certificationPassed();
+                                }
+                            });
+                        } else
+                            //回调显示已认证通过
+                            getV().certificationPassed();
+
                     } else if (data.getStore().getStatus() == 0) {
                         //回调显示在审核
                         getV().onReview();

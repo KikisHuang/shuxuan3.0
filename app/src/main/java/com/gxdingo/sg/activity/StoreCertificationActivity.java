@@ -167,7 +167,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
-        return new StoreCertificationPresenter();
+        return new StoreCertificationPresenter(isUser);
     }
 
     @Override
@@ -231,10 +231,15 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     }
 
     @Override
+    protected void onBaseCreate() {
+        super.onBaseCreate();
+        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
+    }
+
+    @Override
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("认证信息");
-        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
         initAgreementStyle();
     }
 
