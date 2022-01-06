@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.blankj.utilcode.util.StringUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -18,12 +17,11 @@ import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
-import com.gxdingo.sg.utils.QRCodeUtil;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.tencent.smtt.sdk.WebView;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.List;
 
@@ -147,15 +145,15 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
     @Override
     public void onQRResult(StoreQRCodeBean qrCodeBean) {
 
-        coupon_title_tv.setText(qrCodeBean.getStoreName());
-
-        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(qrCodeBean.getActiveCode(), 280, 280);
+//        coupon_title_tv.setText(qrCodeBean.getStoreName());
 
         Glide.with(reference.get()).asBitmap().load(!isEmpty(UserInfoUtils.getInstance().getUserAvatar()) ? UserInfoUtils.getInstance().getUserAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                Bitmap LogoQrCodeBtmp = QRCodeUtil.addLogo(qrCodeBitmap, resource, 0.15f);
-                qr_code_iv.setImageBitmap(LogoQrCodeBtmp);
+
+                Bitmap qrCodeBitmap =  CodeUtils.createImage(qrCodeBean.getActiveCode(), 280, 280, resource);
+
+                qr_code_iv.setImageBitmap(qrCodeBitmap);
             }
         });
 

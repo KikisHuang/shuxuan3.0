@@ -52,6 +52,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_OK;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
+import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -210,7 +212,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
 //                ToastUtils.showLong(content);
-                getP().scanCode(content);
+                int mType = getAcType(numberDecode(content));
+                if (mType == 10)
+                    getP().scanCode(content);
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }

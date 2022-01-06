@@ -44,6 +44,8 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
+import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
+import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -346,6 +348,9 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
 //                ToastUtils.showLong(content);
+                int mType = getAcType(numberDecode(content));
+                if (mType == 11)
+                    getP().scanCode(content);
                 getP().scanCode(content);
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);

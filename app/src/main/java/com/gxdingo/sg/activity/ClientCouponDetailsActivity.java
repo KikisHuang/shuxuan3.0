@@ -11,10 +11,10 @@ import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.gxdingo.sg.utils.DateUtils;
-import com.gxdingo.sg.utils.QRCodeUtil;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -129,7 +129,10 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
             return;
         }
         coupon_title_tv.setText(mCouponBean.getCouponName());
-        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
+//        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
+
+        Bitmap qrCodeBitmap =  CodeUtils.createImage(mCouponBean.getCouponIdentifier(), 280, 280, null);
+
         qr_code_iv.setImageBitmap(qrCodeBitmap);
         valid_date_tv.setText("有效期至："+ DateUtils.dealDateFormat(mCouponBean.getExpireTime()));
     }
