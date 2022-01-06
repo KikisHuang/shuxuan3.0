@@ -257,6 +257,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             if (mType == 0)
                 getP().getNumberUnreadComments();*/
 
+            if (mType!=3)
             getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
@@ -336,6 +337,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.onBaseEvent(object);
         //商圈未读评论类型事件
         if (object instanceof ReceiveIMMessageBean.DataByType) {
+            if (mType!=3)
             getP().getNumberUnreadComments();
         } else if (object instanceof ActivityEvent) {
             //活动事件
@@ -354,6 +356,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
                 || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == SOTRE_REVIEW_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
+            if (mType!=3)
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
             //获取商圈列表
@@ -524,6 +527,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
+                if (mType!=3)
                 //刷新未读消息
                 getP().getNumberUnreadComments();
                 mAdapter.setList(bean.getList());
@@ -567,8 +571,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onNumberUnreadComments(NumberUnreadCommentsBean unreadCommentsBean) {
 
-        tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
-        tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
+        //单独商圈页面不显示未读数
+        if (mType != 3) {
+            tvUnreadMsgCount.setVisibility(unreadCommentsBean.getUnread() > 0 ? View.VISIBLE : View.INVISIBLE);
+            tvUnreadMsgCount.setText(String.valueOf(unreadCommentsBean.getUnread()));
+        }
+
 
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getRole() != null) {
             //刷新主菜单未读消息提示

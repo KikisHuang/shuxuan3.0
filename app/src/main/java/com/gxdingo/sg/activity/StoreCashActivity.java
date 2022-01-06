@@ -12,6 +12,7 @@ import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
+import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
@@ -29,6 +30,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isQQClientAvailable;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
@@ -63,6 +65,9 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     private PasswordLayout mPasswordLayout;
 
     private int mBankCardId = -1;
+
+    //显示认证状态弹窗
+    private boolean showAuthenticationStatusDialog = false;
 
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
@@ -171,18 +176,27 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
                 et_cash_amount.setText(double2Str(mWalletBean.getBalance()));
                 break;
             case R.id.btn_confirm:
-                String balance = et_cash_amount.getText().toString();
-                if (isEmpty(balance)) {
-                    onMessage("请输入提现金额");
-                    return;
+
+                if (mWalletBean != null) {
+                    //已认证
+                    if (mWalletBean.authStatus == 1) {
+                        String balance = et_cash_amount.getText().toString();
+                        if (isEmpty(balance)) {
+                            onMessage("请输入提现金额");
+                            return;
+                        }
+                        if (!BigDecimalUtils.compare(balance, "0")) {
+                            onMessage("请输入有效提现金额");
+                            return;
+                        }
+                        showPayPswDialog(balance);
+                    }else
+                        showAuthenticationStatusDialog();
                 }
-                if (!BigDecimalUtils.compare(balance, "0")) {
-                    onMessage("请输入有效提现金额");
-                    return;
-                }
-                showPayPswDialog(balance);
+
                 break;
         }
+
     }
 
     private void showPayPswDialog(String balance) {
@@ -238,7 +252,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         @Override
         public void afterTextChanged(Editable s) {
             if (!isEmpty(s.toString()))
-                if (BigDecimalUtils.compare(s.toString(),double2Str(mWalletBean.getBalance())))
+                if (BigDecimalUtils.compare(s.toString(), double2Str(mWalletBean.getBalance())))
                     et_cash_amount.setText(double2Str(mWalletBean.getBalance()));
         }
     };
@@ -251,6 +265,9 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     @Override
     public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
 
+        mWalletBean = walletBean;
+        if (showAuthenticationStatusDialog)
+            showAuthenticationStatusDialog();
     }
 
     @Override
@@ -274,5 +291,48 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         super.onMessage(msg);
         if (mPasswordLayout != null)
             mPasswordLayout.removeAllPwd();
+    }
+
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+        if (type == AUTHENTICATION_SUCCEEDS) {
+            showAuthenticationStatusDialog = false;
+            getP().getWalletHome(true);
+        }
+    }
+
+    /**
+     * 显示认证状态弹窗
+     */
+    private void showAuthenticationStatusDialog() {
+
+        //未认证状态直接跳转认证页面
+        if (mWalletBean.authStatus == 0) {
+            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+            onMessage("请先填写实名认证信息");
+            return;
+        }
+
+        if (!showAuthenticationStatusDialog)
+            showAuthenticationStatusDialog = true;
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason, status -> {
+                    if (!checkClickInterval(123))
+                        return;
+                        if (mWalletBean.authStatus == 2)
+                            getP().getWalletHome(true);
+                        else if (mWalletBean.authStatus == 3)
+                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                        else if (mWalletBean.authStatus == 1) {
+                            //认证成功0无需操作
+                        }
+
+                }).show());
     }
 }

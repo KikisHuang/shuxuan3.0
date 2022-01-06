@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.allen.library.SuperTextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.google.android.material.appbar.AppBarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BankcardListActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
@@ -27,6 +28,7 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
+import com.gxdingo.sg.biz.AppBarStateChangeListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
@@ -47,6 +49,7 @@ import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
+import static com.kikis.commnlibrary.utils.ColorUtils.changeAlpha;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -80,15 +83,21 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @BindView(R.id.bankcard_stv)
     public SuperTextView bankcard_stv;
 
+    @BindView(R.id.appbar_layout)
+    public AppBarLayout appbar_layout;
+
+    @BindView(R.id.record_stv)
+    public SuperTextView record_stv;
+
+    @BindView(R.id.divide)
+    public View divide;
+
     @BindView(R.id.transaction_rv)
     public RecyclerView transaction_rv;
 
     private ClientTransactionRecordAdapter mAdapter;
 
     private StoreWalletBean mWalletBean;
-
-    //显示认证状态弹窗
-    private boolean showAuthenticationStatusDialog = false;
 
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
@@ -107,7 +116,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
     @Override
     protected int initContentView() {
-        return R.layout.module_fragment_store_wallet;
+        return R.layout.module_fragment_new_store_wallet;
     }
 
     @Override
@@ -142,7 +151,23 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         transaction_rv.setAdapter(mAdapter);
         transaction_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemClickListener(this);
+        AppbarInit();
+    }
 
+    private void AppbarInit() {
+
+        appbar_layout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, int state, int verticalOffset) {
+
+            }
+
+            @Override
+            public void onStateOffset(AppBarLayout appBarLayout, int verticalOffset) {
+
+            }
+        });
     }
 
 
@@ -155,7 +180,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     protected void lazyInit() {
         super.lazyInit();
         if (UserInfoUtils.getInstance().isLogin()) {
-            showAuthenticationStatusDialog = false;
             getP().getWalletHome(true);
         }
     }
@@ -163,10 +187,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     @OnClick({R.id.img_more, R.id.alipay_stv, R.id.wechat_stv, R.id.bankcard_stv, R.id.record_stv})
     public void OnClickViews(View v) {
 
-        if ((v.getId() == R.id.alipay_stv || v.getId() == R.id.wechat_stv || v.getId() == R.id.bankcard_stv) && mWalletBean != null && mWalletBean.authStatus != 1) {
-            showAuthenticationStatusDialog();
-            return;
-        }
 
         switch (v.getId()) {
             case R.id.img_more:
@@ -200,39 +220,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
                 goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
         }
-    }
-
-
-    /**
-     * 显示认证状态弹窗
-     */
-    private void showAuthenticationStatusDialog() {
-
-        //未认证状态直接跳转认证页面
-        if (mWalletBean.authStatus == 0) {
-            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-            onMessage("请先填写实名认证信息");
-            return;
-        }
-
-        if (!showAuthenticationStatusDialog)
-            showAuthenticationStatusDialog = true;
-
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .autoDismiss(true)
-                .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason, status -> {
-
-                    if (mWalletBean.authStatus == 2)
-                        getP().getWalletHome(true);
-                    else if (mWalletBean.authStatus == 3)
-                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                    else if (mWalletBean.authStatus == 1) {
-                        //认证成功0无需操作
-                    }
-
-                }).show());
     }
 
 
@@ -293,7 +280,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
         else if (type == StoreLocalConstant.SOTRE_REVIEW_SUCCEED) {
             getP().getWalletHome(true);
         } else if (type == AUTHENTICATION_SUCCEEDS) {
-            showAuthenticationStatusDialog = false;
             getP().getWalletHome(true);
         }
     }
@@ -307,12 +293,6 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     public void onWalletHomeResult(boolean refresh, StoreWalletBean walletBean) {
         mWalletBean = walletBean;
         if (refresh) {
-
-            if (showAuthenticationStatusDialog) {
-                showAuthenticationStatusDialog();
-                if (mWalletBean.authStatus == 1)
-                    showAuthenticationStatusDialog = false;
-            }
 
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(double2Str(walletBean.getBalance()));

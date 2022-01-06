@@ -42,4 +42,8 @@
             <flag name="eight" value="8" />
         </attr>
     </declare-styleable>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
 </resources>

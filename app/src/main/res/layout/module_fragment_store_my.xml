@@ -89,7 +89,7 @@
             app:sDividerLineHeight="0.5dp"
             app:sDividerLineType="bottom"
             app:sLeftIconMarginLeft="25dp"
-            app:sLeftIconRes="@drawable/module_svg_store_account_security"
+            app:sLeftIconRes="@drawable/module_svg_store_address_manage"
             app:sLeftTextColor="#1F1F1F"
             app:sLeftTextSize="15sp"
             app:sLeftTextString="地址管理"

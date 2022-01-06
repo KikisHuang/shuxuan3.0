@@ -259,15 +259,16 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, cashInfoBean.rejectReason,status -> {
-                    if (cashInfoBean.authStatus == 2)
-                        getP().getCashInfo();
-                    else if (cashInfoBean.authStatus == 3)
-                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                    else if (cashInfoBean.authStatus == 1) {
-                        //认证成功无需操作
-                    }
-
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, cashInfoBean.rejectReason, status -> {
+                    if (!checkClickInterval(123))
+                        return;
+                        if (cashInfoBean.authStatus == 2)
+                            getP().getCashInfo();
+                        else if (cashInfoBean.authStatus == 3)
+                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                        else if (cashInfoBean.authStatus == 1) {
+                            //认证成功无需操作
+                        }
                 }).show());
     }
 

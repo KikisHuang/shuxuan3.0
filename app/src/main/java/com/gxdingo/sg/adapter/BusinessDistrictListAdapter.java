@@ -42,6 +42,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * 用户端和商家端商圈列表适配器
@@ -89,7 +90,11 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 /*        //登录方式，true 用户，false 商家
         boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
 
-        like_tv.setText(data.liked);
+
+        if (!isEmpty(data.liked) && !data.liked.equals("0"))
+            like_tv.setText(data.liked);
+        else
+            like_tv.setText("");
 
         setAlertLeftIcon(like_tv, data.likedStatus == 0 ? getd(R.drawable.module_svg_unlike_heart) : getd(R.drawable.module_svg_like_heart));
 
