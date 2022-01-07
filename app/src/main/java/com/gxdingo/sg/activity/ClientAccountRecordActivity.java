@@ -165,19 +165,22 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         mAdapter.setOnItemClickListener(this);
         date = getNowString(new SimpleDateFormat("yyyy-MM"));
 
-        account_record_lv.setOnLabelSelectChangeListener((label, data, isSelect, position) -> {
-            switch (position) {
-                case 0:
-                    status = 0;
-                    break;
-                case 1:
-                    status = 1;
-                    break;
-                case 2:
-                    status = -1;
-                    break;
+        account_record_lv.setOnLabelClickListener(new LabelsView.OnLabelClickListener() {
+            @Override
+            public void onLabelClick(TextView label, Object data, int position) {
+                switch (position) {
+                    case 0:
+                        status = 0;
+                        break;
+                    case 1:
+                        status = 1;
+                        break;
+                    case 2:
+                        status = -1;
+                        break;
+                }
+                getP().getAccountRecord(true, status, date);
             }
-            getP().getAccountRecord(true, status, date);
         });
     }
 
@@ -191,7 +194,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         account_record_lv.setSelects(2);
         date_tv.setText(Calendar.getInstance().get(Calendar.YEAR) + gets(R.string.common_year) + (Calendar.getInstance().get(Calendar.MONTH) + 1) + gets(R.string.common_month));
 
-//        getP().getAccountRecord(true,status,date);
+        getP().getAccountRecord(true, status, date);
     }
 
     @OnClick(R.id.ll_selected_date)
@@ -201,21 +204,18 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new SelectDateDialog(reference.get(),date, new ClientPickerDateListener() {
-                            @Override
-                            public void onSelected(BottomPopupView dialog, int year, int month) {
+                        .asCustom(new SelectDateDialog(reference.get(),date, (dialog, year, month) -> {
 
-                                date_tv.setText(year + gets(R.string.common_year) + month + gets(R.string.common_month));
+                            date_tv.setText(year + gets(R.string.common_year) + month + gets(R.string.common_month));
 
 //                                Calendar calendar = Calendar.getInstance();
 //                                calendar.set(Calendar.YEAR, year);
 //                                // 月份从零开始，所以需要减 1
 //                                calendar.set(Calendar.MONTH, month - 1);
 ////                                ToastUtils.showLong("时间戳：" + calendar.getTimeInMillis());
-                                date = year + "-" + (month < 10 ? "0" + month : month);
-                                getP().getAccountRecord(true, status, date);
-                                dialog.dismiss();
-                            }
+                            date = year + "-" + (month < 10 ? "0" + month : month);
+                            getP().getAccountRecord(true, status, date);
+                            dialog.dismiss();
                         }))
                         .show();
                 break;

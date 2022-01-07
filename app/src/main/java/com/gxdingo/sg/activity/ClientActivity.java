@@ -103,7 +103,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     private long timeDValue = 0; // 计算时间差值，判断是否需要退出
 
     private static ClientActivity instance;
-    StoreBusinessDistrictFragment mStoreBusinessDistrictFragment;
     //屏幕监听
     private ScreenListener screenListener;
 
@@ -295,11 +294,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private void fragmentInit() {
 
-        mStoreBusinessDistrictFragment = StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, null);
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(mStoreBusinessDistrictFragment);
+        mFragmentList.add(new StoreBusinessDistrictFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 

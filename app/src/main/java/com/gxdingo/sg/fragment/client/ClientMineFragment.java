@@ -2,7 +2,9 @@ package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,8 @@ import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCouponAdapter;
+import com.gxdingo.sg.adapter.HomePageBannerAdapter;
+import com.gxdingo.sg.adapter.MineBannerAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UserBean;
@@ -142,6 +146,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void init() {
+
         mAdapter = new ClientCouponAdapter();
         cash_coupon_rv.setAdapter(mAdapter);
         cash_coupon_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
@@ -150,13 +155,6 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void initData() {
-
-//        mine_banner.setOnBannerListener(new OnBannerListener() {
-//            @Override
-//            public void OnBannerClick(Object data, int position) {
-//                ToastUtils.showLong(position);
-//            }
-//        });
     }
 
     @Override
@@ -322,30 +320,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
         if (mineBean.getAdsList() != null) {
 
-
-
-            mine_banner.setAdapter(new BannerImageAdapter<ClientMineBean.AdsListBean>(mineBean.getAdsList()) {
-                @Override
-                public void onBindView(BannerImageHolder holder, ClientMineBean.AdsListBean data, int position, int size) {
-
-                    Glide.with(reference.get())
-                            .load(data.getImage())
-                            .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
-                            .into(new SimpleTarget<Drawable>() {
-                                @Override
-                                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
-                                    int width = resource.getIntrinsicWidth();
-                                    int height = resource.getIntrinsicHeight();
-
-                                    int newheight = getScreenWidth() * height / width;
-
-                                    holder.imageView.setImageDrawable(resource);
-                                    holder.imageView.getLayoutParams().height = newheight;
-                                }
-                            });
-                }
-            });
-            mine_banner.start();
+            mine_banner.setAdapter(new MineBannerAdapter(reference.get(), mineBean.getAdsList()) {});
         }
 
         if (mineBean.getCouponList() != null)
@@ -353,12 +328,25 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mine_banner != null)
+            mine_banner.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mine_banner != null)
+            mine_banner.stop();
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mine_banner != null)
-            mine_banner.stop();
+            mine_banner.destroy();
     }
 
     @Override

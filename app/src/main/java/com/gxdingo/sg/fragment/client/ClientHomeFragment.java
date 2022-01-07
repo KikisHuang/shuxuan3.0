@@ -2,6 +2,7 @@ package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -9,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -208,7 +210,22 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onStart() {
         super.onStart();
         getP().checkHelpCode();
+        if (home_banner != null)
+            home_banner.start();
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (home_banner != null)
+            home_banner.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (home_banner != null)
+            home_banner.destroy();
     }
 
     @Override
@@ -239,8 +256,10 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
+
     @Override
     protected void init() {
+
         scrollViewInit();
         mStoreAdapter = new ClientStoreAdapter();
         store_rv.setAdapter(mStoreAdapter);
@@ -384,6 +403,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         });
     }
 
+
     @Override
     public void onFailed() {
         super.onFailed();
@@ -436,8 +456,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 }
             });
 
-
-            home_banner.start();
         } else {
             home_banner.setVisibility(View.GONE);
         }
@@ -533,12 +551,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (home_banner != null)
-            home_banner.stop();
-    }
 
     private void showInvitationCodeDialog() {
         if (fillCodePopupView == null) {
