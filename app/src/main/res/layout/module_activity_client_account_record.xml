@@ -41,7 +41,7 @@
         app:labelTextPaddingTop="2dp"
         app:wordMargin="30dp"
         app:maxLines="1"
-        app:selectType="SINGLE"
+        app:selectType="SINGLE_IRREVOCABLY"
         app:layout_constraintStart_toEndOf="@+id/ll_selected_date"
         app:layout_constraintTop_toTopOf="@+id/ll_selected_date"
         app:layout_constraintBottom_toBottomOf="@id/ll_selected_date"

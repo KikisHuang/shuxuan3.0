@@ -11,18 +11,24 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.ClientPickerDateListener;
 import com.gxdingo.sg.view.PickerLayoutManager;
 import com.lxj.xpopup.core.BottomPopupView;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.TimeUtils.date2String;
+import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
@@ -39,18 +45,21 @@ public class SelectDateDialog extends BottomPopupView implements PickerLayoutMan
 
     private ClientPickerDateListener onListener;
 
-    private final int mStartYear = Calendar.getInstance().get(Calendar.YEAR)-10 ;
+    private final int mStartYear = Calendar.getInstance().get(Calendar.YEAR) - 10;
     private final int mEndYear = Calendar.getInstance().get(Calendar.YEAR);
 
-    private  PickerLayoutManager mYearManager;
-    private  PickerLayoutManager mMonthManager;
+    private PickerLayoutManager mYearManager;
+    private PickerLayoutManager mMonthManager;
 
     private PickerAdapter mYearAdapter;
     private PickerAdapter mMonthAdapter;
 
-    public SelectDateDialog(@NonNull Context context,ClientPickerDateListener listener) {
+    private String date = "";
+
+    public SelectDateDialog(@NonNull Context context, String date, ClientPickerDateListener listener) {
         super(context);
         this.onListener = listener;
+        this.date = date;
     }
 
     @Override
@@ -93,14 +102,17 @@ public class SelectDateDialog extends BottomPopupView implements PickerLayoutMan
         rv_picker_year.setAdapter(mYearAdapter);
         rv_picker_month.setAdapter(mMonthAdapter);
 
-        Calendar calendar = Calendar.getInstance(Locale.CHINA);
-        setYear(calendar.get(Calendar.YEAR));
-        setMonth(calendar.get(Calendar.MONTH) + 1);
-
+        try {
+            Date d = string2Date(date, "yyyy-MM");
+            setYear(Integer.parseInt(date2String(d, "yyyy")));
+            setMonth(Integer.valueOf(date2String(d, "MM")));
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+        }
         mYearManager.setOnPickerListener(this);
     }
 
-    private void setYear(int year){
+    private void setYear(int year) {
         int index = year - mStartYear;
         if (index < 0) {
             index = 0;
@@ -110,7 +122,7 @@ public class SelectDateDialog extends BottomPopupView implements PickerLayoutMan
         rv_picker_year.scrollToPosition(index);
     }
 
-    private void setMonth(int month){
+    private void setMonth(int month) {
         int index = month - 1;
         if (index < 0) {
             index = 0;
@@ -121,9 +133,9 @@ public class SelectDateDialog extends BottomPopupView implements PickerLayoutMan
     }
 
     @OnClick(R.id.btn_done)
-    public void onClickView(){
-        if (onListener!=null)
-            onListener.onSelected(this,mStartYear + mYearManager.getPickedPosition(),mMonthManager.getPickedPosition() + 1);
+    public void onClickView() {
+        if (onListener != null)
+            onListener.onSelected(this, mStartYear + mYearManager.getPickedPosition(), mMonthManager.getPickedPosition() + 1);
     }
 
     @Override

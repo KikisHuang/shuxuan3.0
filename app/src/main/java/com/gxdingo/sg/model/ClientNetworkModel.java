@@ -613,10 +613,18 @@ public class ClientNetworkModel {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
+
+        if (refresh)
+            resetPage();
+
         Map<String, String> map = getJsonMap();
+
         map.put(ClientLocalConstant.STATUS, String.valueOf(status));
+
         if (!isEmpty(date))
             map.put(ClientLocalConstant.DATE, date);
+
+        map.put(LocalConstant.CURRENT, String.valueOf(getPage()));
 
         Observable<ClientAccountTransactionBean> observable = HttpClient.post(TRANSACTION_RECORD, map)
                 .execute(new CallClazzProxy<ApiResult<ClientAccountTransactionBean>, ClientAccountTransactionBean>(new TypeToken<ClientAccountTransactionBean>() {
@@ -644,7 +652,6 @@ public class ClientNetworkModel {
                     netWorkListener.onAfters();
                     pageNext(refresh, transactionBean.getList().size());
                 }
-
 
             }
         };

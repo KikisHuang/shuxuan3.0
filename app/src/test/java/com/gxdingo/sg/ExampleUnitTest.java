@@ -9,14 +9,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import static com.blankj.utilcode.util.RegexUtils.isMobileExact;
+import static com.blankj.utilcode.util.TimeUtils.date2String;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
 
@@ -34,9 +38,13 @@ public class ExampleUnitTest {
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
 
-        System.out.println(div(String.valueOf(37),String.valueOf(1000), 2));
-    }
+        String date = "2022-03";
 
+        Date d = string2Date(date, "yyyy-MM");
+
+        System.out.println("s === " + date2String(d));
+
+    }
 
 
     /**

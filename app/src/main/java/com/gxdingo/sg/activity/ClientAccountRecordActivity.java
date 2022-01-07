@@ -30,6 +30,7 @@ import com.lxj.xpopup.core.BottomPopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +38,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowDate;
+import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -69,12 +72,12 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     private ClientTransactionRecordAdapter mAdapter;
 
-    private List<String> labels ;
+    private List<String> labels;
 
     //0=支出；1=收入 -1全部
     private int status = -1;
 
-    private String date ;
+    private String date;
 
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
@@ -144,13 +147,13 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
-        getP().getAccountRecord(true,status,date);
+        getP().getAccountRecord(true, status, date);
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
-        getP().getAccountRecord(false,status,date);
+        getP().getAccountRecord(false, status, date);
     }
 
     @Override
@@ -160,22 +163,21 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemClickListener(this);
-        account_record_lv.setOnLabelSelectChangeListener(new LabelsView.OnLabelSelectChangeListener() {
-            @Override
-            public void onLabelSelectChange(TextView label, Object data, boolean isSelect, int position) {
-                switch (position){
-                    case 0:
-                        status = 0;
-                        break;
-                    case 1:
-                        status = 1;
-                        break;
-                    case 2:
-                        status = -1;
-                        break;
-                }
-                getP().getAccountRecord(true,status,date);
+        date = getNowString(new SimpleDateFormat("yyyy-MM"));
+
+        account_record_lv.setOnLabelSelectChangeListener((label, data, isSelect, position) -> {
+            switch (position) {
+                case 0:
+                    status = 0;
+                    break;
+                case 1:
+                    status = 1;
+                    break;
+                case 2:
+                    status = -1;
+                    break;
             }
+            getP().getAccountRecord(true, status, date);
         });
     }
 
@@ -187,28 +189,31 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
         labels.add("其他");
         account_record_lv.setLabels(labels);
         account_record_lv.setSelects(2);
-        date_tv.setText(Calendar.getInstance().get(Calendar.YEAR)+gets(R.string.common_year)+(Calendar.getInstance().get(Calendar.MONTH)+1)+gets(R.string.common_month));
-        date = Calendar.getInstance().get(Calendar.YEAR)+"-"+(Calendar.getInstance().get(Calendar.MONTH)+1);
-        getP().getAccountRecord(true,status,date);
+        date_tv.setText(Calendar.getInstance().get(Calendar.YEAR) + gets(R.string.common_year) + (Calendar.getInstance().get(Calendar.MONTH) + 1) + gets(R.string.common_month));
+
+//        getP().getAccountRecord(true,status,date);
     }
 
     @OnClick(R.id.ll_selected_date)
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.ll_selected_date:
+
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new SelectDateDialog(reference.get(), new ClientPickerDateListener() {
+                        .asCustom(new SelectDateDialog(reference.get(),date, new ClientPickerDateListener() {
                             @Override
                             public void onSelected(BottomPopupView dialog, int year, int month) {
-                                date_tv.setText(year+gets(R.string.common_year)+month+gets(R.string.common_month));
+
+                                date_tv.setText(year + gets(R.string.common_year) + month + gets(R.string.common_month));
+
 //                                Calendar calendar = Calendar.getInstance();
 //                                calendar.set(Calendar.YEAR, year);
 //                                // 月份从零开始，所以需要减 1
 //                                calendar.set(Calendar.MONTH, month - 1);
 ////                                ToastUtils.showLong("时间戳：" + calendar.getTimeInMillis());
-                                date = year+"-"+month;
-                                getP().getAccountRecord(true,status,date);
+                                date = year + "-" + (month < 10 ? "0" + month : month);
+                                getP().getAccountRecord(true, status, date);
                                 dialog.dismiss();
                             }
                         }))
@@ -218,7 +223,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     }
 
     @Override
-    public void onTransactionResult(boolean refresh,List<TransactionBean> transactions) {
+    public void onTransactionResult(boolean refresh, List<TransactionBean> transactions) {
         if (refresh)
             mAdapter.setList(transactions);
         else
@@ -248,9 +253,9 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-        if (!isUser){
+        if (!isUser) {
             TransactionBean item = (TransactionBean) adapter.getItem(position);
-            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
         }
     }
 }

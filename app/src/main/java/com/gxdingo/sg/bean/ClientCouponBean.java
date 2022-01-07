@@ -27,6 +27,7 @@ public class ClientCouponBean implements Serializable {
     private Double orderAmount;
     private Integer storeId;
     private String expireTime;
+    public String storeAvatar;
     private String couponIdentifier;
 
     public Integer getId() {

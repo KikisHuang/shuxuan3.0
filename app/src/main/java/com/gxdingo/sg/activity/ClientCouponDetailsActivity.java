@@ -6,11 +6,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.gxdingo.sg.utils.DateUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
@@ -21,6 +28,7 @@ import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
@@ -111,37 +119,44 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
     @Override
     protected void init() {
         title_layout.setBackgroundColor(getc(R.color.divide_color));
-        mCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE+0);
+        mCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mCouponBean = (ClientCouponBean) intent.getSerializableExtra(Constant.SERIALIZABLE+0);
+        mCouponBean = (ClientCouponBean) intent.getSerializableExtra(Constant.SERIALIZABLE + 0);
         initData();
     }
 
     @Override
     protected void initData() {
-        if (mCouponBean==null){
+        if (mCouponBean == null) {
             onMessage("未获取到优惠劵信息!");
             finish();
             return;
         }
-        coupon_title_tv.setText(mCouponBean.getCouponName());
+        coupon_title_tv.setText("扫码立减" + mCouponBean.getCouponAmount() + "元");
 //        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
 
-        Bitmap qrCodeBitmap =  CodeUtils.createImage(mCouponBean.getCouponIdentifier(), 280, 280, null);
+        Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.storeAvatar) ? mCouponBean.storeAvatar : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 
-        qr_code_iv.setImageBitmap(qrCodeBitmap);
-        valid_date_tv.setText("有效期至："+ DateUtils.dealDateFormat(mCouponBean.getExpireTime()));
+                Bitmap qrCodeBitmap = CodeUtils.createImage(mCouponBean.getCouponIdentifier(), 280, 280, resource);
+
+                qr_code_iv.setImageBitmap(qrCodeBitmap);
+            }
+        });
+
+        valid_date_tv.setText("有效期至：" + DateUtils.dealDateFormat(mCouponBean.getExpireTime()));
     }
 
     @OnClick(R.id.other_coupon_stv)
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.other_coupon_stv:
-                goToPage(this,ClientCouponListActivity.class,null);
+                goToPage(this, ClientCouponListActivity.class, null);
                 break;
         }
     }

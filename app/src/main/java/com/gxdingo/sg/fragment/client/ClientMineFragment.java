@@ -1,6 +1,7 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,6 +14,8 @@ import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
@@ -52,6 +55,7 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
@@ -317,17 +321,33 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
 
         if (mineBean.getAdsList() != null) {
+
+
+
             mine_banner.setAdapter(new BannerImageAdapter<ClientMineBean.AdsListBean>(mineBean.getAdsList()) {
                 @Override
                 public void onBindView(BannerImageHolder holder, ClientMineBean.AdsListBean data, int position, int size) {
+
                     Glide.with(reference.get())
                             .load(data.getImage())
                             .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
-                            .into(holder.imageView);
+                            .into(new SimpleTarget<Drawable>() {
+                                @Override
+                                public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
+                                    int width = resource.getIntrinsicWidth();
+                                    int height = resource.getIntrinsicHeight();
+
+                                    int newheight = getScreenWidth() * height / width;
+
+                                    holder.imageView.setImageDrawable(resource);
+                                    holder.imageView.getLayoutParams().height = newheight;
+                                }
+                            });
                 }
             });
             mine_banner.start();
         }
+
         if (mineBean.getCouponList() != null)
             mAdapter.setList(mineBean.getCouponList());
 
