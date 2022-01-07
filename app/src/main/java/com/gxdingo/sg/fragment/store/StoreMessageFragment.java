@@ -317,7 +317,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
         super.onResume();
     }
 
-    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.iv_more2})
+    @OnClick({R.id.tv_search, R.id.iv_search2, R.id.iv_more, R.id.ll_search_layout2, R.id.iv_more2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_search:
@@ -327,6 +327,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
                 startActivity(new Intent(reference.get(), StoreHomeSearchActivity.class));
                 break;
             case R.id.iv_more:
+            case R.id.ll_search_layout2:
                 showSelectBusinessStatusDialog();
                 break;
             case R.id.iv_more2:

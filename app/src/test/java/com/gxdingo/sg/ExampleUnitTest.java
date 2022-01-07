@@ -5,6 +5,9 @@ import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import org.junit.Test;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.blankj.utilcode.util.RegexUtils.isMobileExact;
 import static com.blankj.utilcode.util.TimeUtils.date2String;
@@ -30,6 +36,8 @@ import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
+
     @Test
     public void addition_isCorrect() {
 //        assertEquals(4, 2 + 2);
@@ -38,14 +46,7 @@ public class ExampleUnitTest {
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
 
-        String date = "2022-03";
-
-        Date d = string2Date(date, "yyyy-MM");
-
-        System.out.println("s === " + date2String(d));
-
     }
-
 
     /**
      * 日期格式转换yyyy-MM-dd'T'HH:mm:ss.SSSXXX  (yyyy-MM-dd'T'HH:mm:ss.SSSZ) TO  yyyy-MM-dd HH:mm:ss

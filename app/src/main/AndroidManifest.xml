@@ -115,11 +115,23 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
+
+
+        <!--测试Activity-->
+        <activity
+            android:name=".activity.TestActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+
+        </activity>
+
         <!--引导页面 -->
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -529,6 +541,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
 
     </application>
 
