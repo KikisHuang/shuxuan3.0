@@ -368,11 +368,15 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void scanCode(Context context) {
+    public void scanCode(Context context,String couponIdentifier) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<NormalBean> observable = HttpClient.post(STORE_SCAN_CODE)
+
+        Map<String, String> map = new HashMap<>();
+        map.put("couponIdentifier", couponIdentifier);
+
+        Observable<NormalBean> observable = HttpClient.post(STORE_SCAN_CODE,map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -384,7 +388,6 @@ public class StoreNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-
                 }
             }
 

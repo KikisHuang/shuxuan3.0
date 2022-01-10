@@ -105,7 +105,7 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     @Override
     public void scanCode(String couponIdentifier) {
         if (storeNetworkModel!=null)
-            storeNetworkModel.scanCode(getContext());
+            storeNetworkModel.scanCode(getContext(),couponIdentifier);
     }
 
 //    @Override
