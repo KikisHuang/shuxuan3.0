@@ -69,6 +69,7 @@ import butterknife.OnClick;
 
 import static com.gxdingo.sg.adapter.TabPageAdapter.STORE_BUSINESS_DISTRICT_TAB;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -158,6 +159,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
     protected void initData() {
 
     }
+
     @Override
     protected void lazyInit() {
         super.lazyInit();
@@ -168,7 +170,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         }
     }
 
-    @OnClick({R.id.unread_iv,R.id.iv_send_business_district})
+    @OnClick({R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.unread_iv:
@@ -200,6 +202,16 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
     @Override
     public void onReturnCommentListResult(BusinessDistrictListBean.BusinessDistrict businessDistrict, BusinessDistrictUnfoldCommentListBean commentListBean) {
 
+    }
+
+    @Override
+    protected void onTypeEvent(Integer type) {
+        super.onTypeEvent(type);
+
+        if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+            //获取商圈评论未读数量
+            getP().getNumberUnreadComments();
+        }
     }
 
     /**

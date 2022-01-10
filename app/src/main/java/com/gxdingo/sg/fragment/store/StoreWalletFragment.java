@@ -297,7 +297,7 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             banAppBarScroll(walletBean != null && walletBean.getTransactionList() != null && walletBean.getTransactionList().size() > 3);
 
             mAdapter.setList(walletBean.getTransactionList());
-            balance_tv.setText(double2Str(walletBean.getBalance()));
+            balance_tv.setText(walletBean.getBalance());
             if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
                 ll_account.setVisibility(View.GONE);
             } else {

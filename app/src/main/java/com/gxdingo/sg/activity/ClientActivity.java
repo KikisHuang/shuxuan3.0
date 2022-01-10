@@ -386,16 +386,19 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             tv_business_unread_msg_count.setVisibility(View.GONE);
             return;
         }
+
         if (data.getUnread() > 0) {
             tv_business_unread_msg_count.getLayoutParams().width = dp2px(16);
             tv_business_unread_msg_count.getLayoutParams().height = dp2px(16);
             tv_business_unread_msg_count.setText(data.getUnread() > 99 ? "99" : "" + data.getUnread());
             tv_business_unread_msg_count.setVisibility(data.getUnread() <= 0 ? View.GONE : View.VISIBLE);
         } else {
+
             tv_business_unread_msg_count.getLayoutParams().width = dp2px(10);
             tv_business_unread_msg_count.getLayoutParams().height = dp2px(10);
             tv_business_unread_msg_count.setText("");
             tv_business_unread_msg_count.setVisibility(data.getCircleUnread() <= 0 ? View.GONE : View.VISIBLE);
+
         }
     }
 

@@ -146,7 +146,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
 
         }
         if (mWalletBean != null)
-            et_cash_amount.setHint("可转出到卡" + double2Str(mWalletBean.getBalance()) + "元");
+            et_cash_amount.setHint("可转出到卡" + mWalletBean.getBalance() + "元");
 
         et_cash_amount.addTextChangedListener(textWatcher);
         if (mType.equals(ClientLocalConstant.ALIPAY))
@@ -173,7 +173,7 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
 //                    goToPagePutSerializable(this,BankcardListActivity.class,getIntentEntityMap(new Object[]{true}));
 //                break;
             case R.id.btn_all:
-                et_cash_amount.setText(double2Str(mWalletBean.getBalance()));
+                et_cash_amount.setText(mWalletBean.getBalance());
                 break;
             case R.id.btn_confirm:
 
@@ -252,8 +252,8 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         @Override
         public void afterTextChanged(Editable s) {
             if (!isEmpty(s.toString()))
-                if (BigDecimalUtils.compare(s.toString(), double2Str(mWalletBean.getBalance())))
-                    et_cash_amount.setText(double2Str(mWalletBean.getBalance()));
+                if (BigDecimalUtils.compare(s.toString(), mWalletBean.getBalance()))
+                    et_cash_amount.setText(mWalletBean.getBalance());
         }
     };
 

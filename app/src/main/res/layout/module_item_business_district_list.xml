@@ -195,7 +195,7 @@
         android:textSize="12sp"
         app:layout_constraintRight_toRightOf="@+id/tv_content"
         app:layout_constraintTop_toBottomOf="@+id/picture_fml"
-        tools:text="9" />
+        tools:text="0" />
 
     <LinearLayout
         android:id="@+id/ll_comment_layout"

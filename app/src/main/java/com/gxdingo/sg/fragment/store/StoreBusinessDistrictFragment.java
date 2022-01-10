@@ -62,6 +62,7 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -366,6 +367,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
+        }else if (type==SHOW_BUSINESS_DISTRICT_UN_READ_DOT){
+            if (mType!=3)
+                //获取商圈评论未读数量
+                getP().getNumberUnreadComments();
         }
     }
 

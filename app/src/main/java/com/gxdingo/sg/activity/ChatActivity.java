@@ -365,7 +365,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         recordedVoiceScrolling.setBackgroundResource(R.drawable.module_im_recorded_voice_scrolling);
         mRecordedVoiceAnimation = (AnimationDrawable) recordedVoiceScrolling.getBackground();
 
-        //todo 绑定表情fragment的 CHAT_ID 逻辑有问题
+        //todo 绑定表情fragment的 CHAT_ID 逻辑有问题,如果mShareUuid没有的时候，CHAT_ID无法绑定。
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY, ChatActivity.class.toString() + System.currentTimeMillis());
@@ -428,7 +428,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
                 break;
             case R.id.cl_other_side_address_layout:
-
 
                 if (otherRole == 11) {
                     if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
@@ -534,7 +533,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                     //判断消息发送者是否跟当前聊天
                     if (mMessageDetails.getOtherAvatarInfo().getSendIdentifier().equals(receiveIMMessageBean.getSendIdentifier())) {
-
                         if (receiveIMMessageBean.getType() != 30)
                             //一样则通过该方法显示消息
                             receiveNewMsg(receiveIMMessageBean);
@@ -556,16 +554,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                                 setAddressInfo(addressBean);
                             }
-
                         }
-
                     }
 
                     //自己发送的转账消息
-                    if (UserInfoUtils.getInstance().getIdentifier().equals(receiveIMMessageBean.getSendIdentifier()) && receiveIMMessageBean.getType() == 20) {
+                    if (UserInfoUtils.getInstance().getIdentifier().equals(receiveIMMessageBean.getSendIdentifier()) && receiveIMMessageBean.getType() == 20)
                         receiveNewMsg(receiveIMMessageBean);
-                    }
-
                 }
             }
         }
@@ -1262,7 +1256,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 recycleView.setAdapter(mAdapter);
                 addData(imChatHistoryListBean.getList());
 
-
                 if (imChatHistoryListBean.getOtherAvatarInfo() != null) {
                     title_layout.setTitleTextSize(16);
                     title_layout.setTitleText(imChatHistoryListBean.getOtherAvatarInfo().getSendNickname());//标题设置为对方昵称
@@ -1357,7 +1350,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     public void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean, int pos) {
-        if (pos <= mChatDatas.size() - 1){
+        if (pos <= mChatDatas.size() - 1) {
             mChatDatas.set(pos, receiveIMMessageBean);
             mAdapter.notifyItemChanged(pos);
         }

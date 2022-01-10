@@ -35,7 +35,7 @@ public class StoreWalletBean implements Serializable {
     public String authImage;
     public String rejectReason;
     private String wechat;
-    private Double balance;
+    private String balance;
     private List<BankcardBean> bankList;
     private List<TransactionBean> transactionList;
 
@@ -87,11 +87,11 @@ public class StoreWalletBean implements Serializable {
         this.wechat = wechat;
     }
 
-    public Double getBalance() {
+    public String getBalance() {
         return balance;
     }
 
-    public void setBalance(Double balance) {
+    public void setBalance(String balance) {
         this.balance = balance;
     }
 
