@@ -44,9 +44,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 
 /**
  * 商圈消息适配器
@@ -89,7 +91,7 @@ public class BusinessDistrictMessageAdapter extends BaseQuickAdapter<BusinessDis
         Glide.with(getContext()).load(comment.getCircleImage()).into(ivPicture);
 
         if (!TextUtils.isEmpty(comment.getCreateTime()))
-            ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(getCustomDate(string2Millis(dealDateFormat(comment.getCreateTime())), getNowMills()));
+            ((TextView) baseViewHolder.findView(R.id.tv_time)).setText(showTimeText(string2Date(dealDateFormat(comment.getCreateTime()))));
 
         //回复评论的内容
         RecyclerView recyclerView = baseViewHolder.findView(R.id.rv_reply_content);

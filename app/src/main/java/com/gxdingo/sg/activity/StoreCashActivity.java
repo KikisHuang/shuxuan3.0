@@ -158,6 +158,8 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
 
         if (mWalletBean != null && !isEmpty(mWalletBean.getExplain()))
             content_tv.setText(mWalletBean.getExplain());
+
+        clickInterval  = 500;
     }
 
     @Override

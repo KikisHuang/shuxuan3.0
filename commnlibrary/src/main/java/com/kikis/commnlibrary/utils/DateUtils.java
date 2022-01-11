@@ -298,7 +298,7 @@ public class DateUtils {
         int minutes = (int) ((diff) / (CAL_MINUTES));
 
         if (days <= 0 && hours <= 0 && minutes <= 60)
-            return minutes + "分钟前";
+            return minutes <= 0 ? "刚刚" : minutes + "分钟前";
         if (days <= 0 && hours < 24)
             return hours + "小时前";
         if (days > 0 && days <= 15)
@@ -392,6 +392,8 @@ public class DateUtils {
         long wee = getWeeOfToday();
 
         if (start >= wee) {
+
+
             //今天
             return String.format("%tR", start);
         }

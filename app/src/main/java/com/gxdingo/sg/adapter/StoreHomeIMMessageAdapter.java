@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.db.SqlUtils.EQUAL;
 import static com.gxdingo.sg.db.SqlUtils.WHERE;
@@ -36,6 +37,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.error;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -115,7 +117,7 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         } else
             draft_tag_tv.setVisibility(View.GONE);
 
-        tvTime.setText(getCustomDate(string2Millis(dealDateFormat(subscribesMessage.getUpdateTime())), getNowMills()));
+        tvTime.setText(showTimeText(string2Date(dealDateFormat(subscribesMessage.getUpdateTime()))));
 
         tvUnreadMsgCount.setVisibility(subscribesMessage.getUnreadNum() > 0 ? View.VISIBLE : View.INVISIBLE);
         tvUnreadMsgCount.setText(String.valueOf(subscribesMessage.getUnreadNum()));

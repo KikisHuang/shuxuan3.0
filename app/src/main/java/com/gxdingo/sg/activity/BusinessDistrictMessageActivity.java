@@ -63,8 +63,6 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
     TextView functionBt;
     //    @BindView(R.id.classics_footer)
 //    ClassicsFooter classicsFooter;
-    @BindView(R.id.smartrefreshlayout)
-    SmartRefreshLayout smartrefreshlayout;
     @BindView(R.id.nodata_layout)
     View nodataLayout;
 
@@ -110,7 +108,7 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
 
     @Override
     protected View refreshLayout() {
-        return smartrefreshlayout;
+        return null ;
     }
 
     @Override
@@ -120,17 +118,17 @@ public class BusinessDistrictMessageActivity extends BaseMvpActivity<BusinessDis
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_business_district_message;
+        return R.layout.module_include_nodata_recycle;
     }
 
     @Override
     protected boolean refreshEnable() {
-        return true;
+        return false;
     }
 
     @Override
     protected boolean loadmoreEnable() {
-        return true;
+        return false;
     }
 
     /**

@@ -150,7 +150,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
         et_cash_amount.setHint("可转出到卡" + amount + "元");
         et_cash_amount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-
+        clickInterval  = 500;
     }
 
     @Override

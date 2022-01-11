@@ -34,14 +34,17 @@ import com.sackcentury.shinebuttonlib.ShineButton.OnButtonClickListener;
 import org.jetbrains.annotations.NotNull;
 
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
+import static com.blankj.utilcode.util.TimeUtils.getNowDate;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
+import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
+import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -119,13 +122,13 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         String createTime = dealDateFormat(data.getCreateTime());
         //用户端ui布局显示
         if (mType != 2) {
-            client_date_tv.setText(getCustomDate(string2Millis(createTime), getNowMills()));
+            client_date_tv.setText(showTimeText(string2Date(createTime)));
             client_date_tv.setVisibility(View.VISIBLE);
             tvTime.setVisibility(View.GONE);
             ivDelete.setVisibility(View.GONE);
         } else {
             //商家端ui布局显示
-            tvTime.setText(getCustomDate(string2Millis(createTime), getNowMills()));
+            tvTime.setText(showTimeText(string2Date(createTime)));
             tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);
             client_date_tv.setVisibility(View.GONE);

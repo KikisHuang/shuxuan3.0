@@ -24,6 +24,7 @@ public class Api {
 
     //测试oss上传路径
     public static final String TEST_OSS_UPLOAD_URL = "192.168.110.248:8080/";
+
     //正式oss上传路径
     public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/app/";
 
