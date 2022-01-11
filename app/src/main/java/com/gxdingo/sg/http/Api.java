@@ -25,7 +25,7 @@ public class Api {
     //测试oss上传路径
     public static final String TEST_OSS_UPLOAD_URL = "192.168.110.248:8080/";
     //正式oss上传路径
-    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/exuser/";
+    public static final String OFFICIAL_OSS_UPLOAD_URL = "shuxuan.gxdingo.com/app/";
 
     //uat oss上传路径
     public static final String UAT_OSS_UPLOAD_URL = "uat.gxdingo.com/public/";
@@ -38,8 +38,7 @@ public class Api {
     //im 测试
     public static final String IM_TEST_URL = "192.168.110.236:8083/";
     //im 正式
-    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsgr/";
-
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsg/";
 
     //oss路径
     public static String OSS_URL = "192.168.110.248:8080/";

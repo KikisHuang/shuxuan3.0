@@ -13,7 +13,7 @@ public class ClientApi {
     public static final String UAT_URL = "uat.gxdingo.com/exuser/";
 
     //正式路径
-    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/exuser/";
+    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
 
     //客户端隐私协议文章
     public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";

@@ -240,7 +240,7 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
             switch (msg.what){
                 case SDK_AUTH_FLAG:
                     AuthResult authResult = (AuthResult) msg.obj;
-                    if (clientNetworkModel != null) {
+                    if (clientNetworkModel != null&&!isEmpty(authResult.getAuthCode())) {
                         clientNetworkModel.bindThirdParty(getContext(), authResult.getAuthCode(),0);
                     }
                     break;

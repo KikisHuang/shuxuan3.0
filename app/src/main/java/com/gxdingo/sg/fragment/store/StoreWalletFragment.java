@@ -199,22 +199,24 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
                 break;
             case R.id.alipay_stv:
-                if (mWalletBean != null) {
+                if (mWalletBean != null && mWalletBean.getIsShowAlipay() == 1)
                     goToCash(ClientLocalConstant.ALIPAY);
-
-                }
+                 else
+                    onMessage("暂时无法使用该提现方式");
 
                 break;
             case R.id.wechat_stv:
-                if (mWalletBean != null) {
+                if (mWalletBean != null&& mWalletBean.getIsShowWechat() == 1)
                     goToCash(ClientLocalConstant.WECHAT);
-                }
+                else
+                    onMessage("暂时无法使用该提现方式");
 
                 break;
             case R.id.bankcard_stv:
-                if (mWalletBean != null)
+                if (mWalletBean != null&& mWalletBean.getIsShowBank() == 1)
                     goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true, true}));
-
+                else
+                    onMessage("暂时无法使用该提现方式");
                 break;
             case R.id.record_stv:
                 goToPage(getContext(), ClientAccountRecordActivity.class, null);
@@ -298,13 +300,13 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
             mAdapter.setList(walletBean.getTransactionList());
             balance_tv.setText(walletBean.getBalance());
-            if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
+         /*   if (walletBean.getIsShowAlipay() == 0 && walletBean.getIsShowWechat() == 0 && walletBean.getIsShowBank() == 0) {
                 ll_account.setVisibility(View.GONE);
             } else {
                 alipay_stv.setVisibility(walletBean.getIsShowAlipay() == 1 ? View.VISIBLE : View.GONE);
                 wechat_stv.setVisibility(walletBean.getIsShowWechat() == 1 ? View.VISIBLE : View.GONE);
                 bankcard_stv.setVisibility(walletBean.getIsShowBank() == 1 ? View.VISIBLE : View.GONE);
-            }
+            }*/
         } else
             mAdapter.addData(walletBean.getTransactionList());
     }
