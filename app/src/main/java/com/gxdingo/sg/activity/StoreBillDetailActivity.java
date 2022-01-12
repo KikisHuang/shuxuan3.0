@@ -185,4 +185,9 @@ public class StoreBillDetailActivity extends BaseMvpActivity<StoreWalletContract
         else
             payment_time_stv.setRightString(dealDateFormat(transactionDetails.getPaymentTime()));
     }
+
+    @Override
+    public void onRemindResult(String data) {
+
+    }
 }

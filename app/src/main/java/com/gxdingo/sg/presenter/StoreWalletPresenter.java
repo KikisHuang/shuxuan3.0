@@ -12,6 +12,7 @@ import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCashActivity;
 import com.gxdingo.sg.bean.AuthResult;
+import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreWalletBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionDetails;
@@ -48,6 +49,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * 商家钱包控制器
+ *
  * @author JM
  */
 public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, StoreWalletContract.StoreWalletListener> implements StoreWalletContract
@@ -73,19 +75,19 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     @Override
     public void getWalletHome(boolean refresh) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.getWalletHome(getContext(),refresh);
+        if (storeNetworkModel != null)
+            storeNetworkModel.getWalletHome(getContext(), refresh);
     }
 
     @Override
     public void checkPermissions(RxPermissions rxPermissions) {
-        if (commonModel!=null)
+        if (commonModel != null)
             commonModel.checkPermission(rxPermissions, new String[]{CAMERA, VIBRATE}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
-                    if (!value){
+                    if (!value) {
                         getBV().onFailed();
-                    }else {
+                    } else {
                         getBV().onSucceed(1);
                     }
                 }
@@ -104,8 +106,8 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     @Override
     public void scanCode(String couponIdentifier) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.scanCode(getContext(),couponIdentifier);
+        if (storeNetworkModel != null)
+            storeNetworkModel.scanCode(getContext(), couponIdentifier);
     }
 
 //    @Override
@@ -135,21 +137,21 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 //    }
 
     @Override
-    public void cash(String balance,String password) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.balanceCash(getContext(),getV().getCashType(),balance,password,getV().getBackCardId());
+    public void cash(String balance, String password) {
+        if (storeNetworkModel != null)
+            storeNetworkModel.balanceCash(getContext(), getV().getCashType(), balance, password, getV().getBackCardId());
     }
 
     @Override
     public void bind(String code, int type) {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.bindThirdParty(getContext(),code,type);
+        if (storeNetworkModel != null)
+            storeNetworkModel.bindThirdParty(getContext(), code, type);
     }
 
     @Override
     public void bindAli() {
         mNetworkModel.getAliyPayAuthinfo(getContext(), str -> {
-            auth((Activity) getContext(), (String) str,handler);
+            auth((Activity) getContext(), (String) str, handler);
 //            simpleAuth((Activity) getContext(), (String) str, callback);
         });
     }
@@ -158,10 +160,10 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     public void bindWechat() {
         if (!isViewAttached() || mModdel == null)
             return;
-        if (isWeixinAvilible(getContext())){
+        if (isWeixinAvilible(getContext())) {
             LocalConstant.isLogin = false;
             mModdel.wxLogin();
-        }else {
+        } else {
             if (isBViewAttached())
                 getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.wechat)));
         }
@@ -169,8 +171,19 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     @Override
     public void getTransactionDetails() {
-        if (storeNetworkModel!=null)
-            storeNetworkModel.getTransactionDetail(getContext(),getV().getBackCardId());
+        if (storeNetworkModel != null)
+            storeNetworkModel.getTransactionDetail(getContext(), getV().getBackCardId());
+    }
+
+    /**
+     * 获取扫码核销优惠券弹窗内容
+     */
+    @Override
+    public void getNoRemindContent() {
+
+        if (storeNetworkModel != null)
+            storeNetworkModel.getScanningInfo(getContext());
+
     }
 
 
@@ -194,13 +207,17 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (o instanceof StoreWalletBean){
-            if (isViewAttached())
-                getV().onWalletHomeResult(refresh,(StoreWalletBean) o);
-        }else if (o instanceof TransactionDetails){
-            if (isViewAttached())
+        if (!isViewAttached())
+            return;
+
+        if (o instanceof StoreWalletBean)
+            getV().onWalletHomeResult(refresh, (StoreWalletBean) o);
+         else if (o instanceof TransactionDetails)
                 getV().onTransactionDetail((TransactionDetails) o);
-        }
+         else if (o instanceof NormalBean)
+            //获取扫码核销优惠券弹窗内容回调
+            getV().onRemindResult( ((NormalBean) o).remindValue);
+
     }
 
     @Override
@@ -263,16 +280,16 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
     }
 
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
 //            super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case SDK_AUTH_FLAG:
                     AuthResult authResult = (AuthResult) msg.obj;
                     if (storeNetworkModel != null) {
                         if (!isEmpty(authResult.getAuthCode())) {
-                            storeNetworkModel.bindThirdParty(getContext(),authResult.getAuthCode(),0);
+                            storeNetworkModel.bindThirdParty(getContext(), authResult.getAuthCode(), 0);
                         } else
                             onMessage("没有获取到authCode");
                     }
@@ -293,7 +310,7 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
                 String authCode = bundle.getString("auth_code");
                 if (storeNetworkModel != null) {
                     if (!isEmpty(authCode)) {
-                        storeNetworkModel.bindThirdParty(getContext(),authCode,0);
+                        storeNetworkModel.bindThirdParty(getContext(), authCode, 0);
                     } else
                         onMessage("没有获取到authCode");
                 }

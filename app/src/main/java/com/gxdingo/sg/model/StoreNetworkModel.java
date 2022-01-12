@@ -61,6 +61,7 @@ import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
 import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.StoreApi.CATEGORY_LIST;
 import static com.gxdingo.sg.http.StoreApi.CHECK_QUALIFICATION;
+import static com.gxdingo.sg.http.StoreApi.CONFIG_SCANNING_REMIND;
 import static com.gxdingo.sg.http.StoreApi.DELIVERY_SCOPE;
 import static com.gxdingo.sg.http.StoreApi.MINE_INFO;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
@@ -252,7 +253,7 @@ public class StoreNetworkModel {
      * @param
      */
     public void settle(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
-            , String regionPath, String address, String businessLicence, String storeLicence,double longitude, double latitude) {
+            , String regionPath, String address, String businessLicence, String storeLicence, double longitude, double latitude) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -368,7 +369,7 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void scanCode(Context context,String couponIdentifier) {
+    public void scanCode(Context context, String couponIdentifier) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -376,7 +377,7 @@ public class StoreNetworkModel {
         Map<String, String> map = new HashMap<>();
         map.put("couponIdentifier", couponIdentifier);
 
-        Observable<NormalBean> observable = HttpClient.post(STORE_SCAN_CODE,map)
+        Observable<NormalBean> observable = HttpClient.post(STORE_SCAN_CODE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1040,45 +1041,6 @@ public class StoreNetworkModel {
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
     }
-    /**
-     * 绑定第三方提现账号
-     *
-     * @param
-     */
-//    public void walletBinding(Context context,String code,boolean isAli) {
-//
-//        Map<String, String> map = getJsonMap();
-//        map.put(Constant.CODE,code);
-//        if (isAli)
-//            map.put("appName","alipay");
-//        else
-//            map.put("appName","wechat");
-//        netWorkListener.onStarts();
-//
-//        Observable<NormalBean> observable = HttpClient.post(WALLET_BINDING,map)
-//                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
-//                }.getType()) {
-//                });
-//        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
-//            @Override
-//            public void onError(ApiException e) {
-//                super.onError(e);
-//                LogUtils.e(e);
-//                netWorkListener.onMessage(e.getMessage());
-//                netWorkListener.onAfters();
-//
-//            }
-//
-//            @Override
-//            public void onNext(NormalBean normalBean) {
-//                netWorkListener.onSucceed(isAli?0:1);
-//                netWorkListener.onAfters();
-//            }
-//        };
-//
-//        observable.subscribe(subscriber);
-//        netWorkListener.onDisposable(subscriber);
-//    }
 
 
     /**
@@ -1146,6 +1108,43 @@ public class StoreNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
+    }
+
+    /**
+     * 获取扫码核销优惠券弹窗内容
+     */
+    public void getScanningInfo(Context context) {
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Observable<NormalBean> observable = HttpClient.post(CONFIG_SCANNING_REMIND)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onData(true, normalBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
     }
 
 

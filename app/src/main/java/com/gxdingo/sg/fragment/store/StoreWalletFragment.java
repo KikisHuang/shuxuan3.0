@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.allen.library.SuperTextView;
+import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.appbar.AppBarLayout;
@@ -29,8 +30,11 @@ import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.AppBarStateChangeListener;
+import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
+import com.gxdingo.sg.dialog.ScanningHintPopupView;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreWalletPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -50,6 +54,7 @@ import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.kikis.commnlibrary.utils.ColorUtils.changeAlpha;
+import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -98,6 +103,8 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     private ClientTransactionRecordAdapter mAdapter;
 
     private StoreWalletBean mWalletBean;
+
+    private String scanContent  = "";
 
     @Override
     protected StoreWalletContract.StoreWalletPresenter createPresenter() {
@@ -201,19 +208,19 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
             case R.id.alipay_stv:
                 if (mWalletBean != null && mWalletBean.getIsShowAlipay() == 1)
                     goToCash(ClientLocalConstant.ALIPAY);
-                 else
+                else
                     onMessage("暂时无法使用该提现方式");
 
                 break;
             case R.id.wechat_stv:
-                if (mWalletBean != null&& mWalletBean.getIsShowWechat() == 1)
+                if (mWalletBean != null && mWalletBean.getIsShowWechat() == 1)
                     goToCash(ClientLocalConstant.WECHAT);
                 else
                     onMessage("暂时无法使用该提现方式");
 
                 break;
             case R.id.bankcard_stv:
-                if (mWalletBean != null&& mWalletBean.getIsShowBank() == 1)
+                if (mWalletBean != null && mWalletBean.getIsShowBank() == 1)
                     goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true, true}));
                 else
                     onMessage("暂时无法使用该提现方式");
@@ -322,6 +329,18 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
     }
 
     @Override
+    public void onRemindResult(String data) {
+        ScanningHintPopupView dialog =  new ScanningHintPopupView(reference.get(), data, flag -> {
+                SPUtils.getInstance().put(LocalConstant.SCANNING_NO_REMIND, (Boolean) flag);
+                getP().scanCode(scanContent);
+        });
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true)
+                .isDarkTheme(false)
+                .asCustom(dialog).show();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -330,11 +349,17 @@ public class StoreWalletFragment extends BaseMvpFragment<StoreWalletContract.Sto
 
             if (data != null) {
                 //返回的文本内容
-                String content = data.getStringExtra("success_result");
-                int mType = getAcType(numberDecode(content));
-                if (mType == 11)
-                    getP().scanCode(content);
-                else
+                 scanContent = data.getStringExtra("success_result");
+                int mType = getAcType(numberDecode(scanContent));
+                if (mType == 11) {
+                    boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
+
+                    if (!showDialog)
+                        getP().getNoRemindContent();
+                     else
+                        getP().scanCode(scanContent);
+
+                } else
                     onMessage("无法识别的二维码类型");
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);

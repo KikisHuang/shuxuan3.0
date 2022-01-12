@@ -202,7 +202,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 categoryId = 0;
                 //填写了入驻信息才查询附近商家
                 UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-                if (userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+                if (userBean != null && userBean.getStore() != null && userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
                     getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
             }
         }

@@ -49,6 +49,7 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
+    private int role = 10;
 
     public StoreHomeIMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
@@ -70,7 +71,10 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
         TextView draft_tag_tv = baseViewHolder.findView(R.id.draft_tag_tv);
 
 
-        store_tab_tv.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? View.VISIBLE : View.GONE);
+        if (role == 0 && UserInfoUtils.getInstance().getUserInfo() != null)
+            UserInfoUtils.getInstance().getUserInfo().getRole();
+
+        store_tab_tv.setVisibility(role == 11 ? View.VISIBLE : View.GONE);
 
         if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11) {
             if (subscribesMessage.getSendUserRole() == 10) {

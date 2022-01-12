@@ -228,8 +228,9 @@ public class HttpClient {
 
                     }
                 });
-            }/*  else
-                customToast("未知的上传类型");*/
+            }  else {
+                request.params(entry.getKey(), String.valueOf(entry.getValue()));
+            }
 
         }
         return request;

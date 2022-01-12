@@ -16,6 +16,8 @@ public class NormalBean {
 
     public String result;
 
+    public String remindValue;
+
     public String qrcode;
     public String distance;
 

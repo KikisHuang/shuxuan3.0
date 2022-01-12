@@ -155,6 +155,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void initData() {
+
     }
 
     @Override

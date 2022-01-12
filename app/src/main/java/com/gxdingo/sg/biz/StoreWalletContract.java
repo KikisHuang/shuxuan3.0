@@ -30,6 +30,8 @@ public class StoreWalletContract {
         void bindWechat();
 
         void getTransactionDetails();
+
+        void getNoRemindContent();
     }
 
     public interface StoreWalletListener {
@@ -41,5 +43,7 @@ public class StoreWalletContract {
         String getCashType();
 
         void onTransactionDetail(TransactionDetails transactionDetails);
+
+        void onRemindResult(String data);
     }
 }

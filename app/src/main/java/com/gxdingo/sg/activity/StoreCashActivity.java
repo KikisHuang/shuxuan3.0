@@ -283,6 +283,11 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
     }
 
     @Override
+    public void onRemindResult(String data) {
+
+    }
+
+    @Override
     public void onSucceed(int type) {
 //        sendEvent(StoreLocalConstant.CASH_SUCCESS);
         finish();

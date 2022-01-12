@@ -269,4 +269,8 @@ public class StoreApi {
      * 删除我自己的评论
      */
     public static final String DELETE_MY_OWN_COMMENT = HIERARCHY + "circle/comment/delete";
+    /**
+     * 获取扫码核销优惠卷弹窗内容
+     */
+    public static final String CONFIG_SCANNING_REMIND = HIERARCHY + "config/scanning/remind";
 }

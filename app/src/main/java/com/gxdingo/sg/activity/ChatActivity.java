@@ -1075,11 +1075,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, (done, progress) -> {
             if (done) {
-                //上传成功
-                mChatDatas.get(pos).upload_progress = 100;
+                if (pos <= mChatDatas.size() - 1&&mAdapter!=null)
+                    //上传成功
+                    mChatDatas.get(pos).upload_progress = 100;
             } else {
-                mChatDatas.get(pos).upload_progress = progress;
-                mAdapter.notifyItemChanged(pos);
+                if (pos <= mChatDatas.size() - 1&&mAdapter!=null) {
+                    mChatDatas.get(pos).upload_progress = progress;
+                    mAdapter.notifyItemChanged(pos);
+                }
             }
         })
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -1115,7 +1118,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         observable.subscribe(subscriber);
         addDisposable(subscriber);
-
     }
 
 

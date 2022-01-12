@@ -1,89 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/module_shape_bg_white_top_20r"
     android:gravity="center_horizontal"
-    android:background="@drawable/module_shape_bg_white_top_20r">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="提现到"
-        android:textSize="16sp"
-        android:textColor="#2E2E2E"/>
+        android:textColor="#2E2E2E"
+        android:textSize="16sp" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/alipay_stv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="@dimen/dp_10"
+        app:sCenterTextBackground="@drawable/module_shape_border_unbind_account"
+        app:sCenterTextColor="#FE9F00"
+        app:sCenterTextSize="12sp"
+        app:sCenterTextString="未绑定"
+        app:sCenterViewGravity="left_center"
         app:sLeftIconMarginLeft="20dp"
         app:sLeftIconRes="@drawable/module_svg_alipay_icon"
-        app:sLeftTextString="支付宝"
         app:sLeftTextColor="#262626"
         app:sLeftTextSize="14sp"
-        app:sCenterViewGravity="left_center"
-        app:sCenterTextBackground="@drawable/module_shape_border_unbind_account"
-        app:sCenterTextString="未绑定"
-        app:sCenterTextSize="12sp"
-        app:sCenterTextColor="#FE9F00"
-        app:sRightTextString="去添加"
-        app:sRightTextSize="14sp"
+        app:sLeftTextString="支付宝"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
         app:sRightTextColor="#2E2E2E"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sRightTextSize="14sp"
+        app:sRightTextString="去添加" />
+
     <com.allen.library.SuperTextView
         android:id="@+id/wechaty_stv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        app:sCenterTextBackground="@drawable/module_shape_border_unbind_account"
+        app:sCenterTextColor="#FE9F00"
+        app:sCenterTextSize="12sp"
+        app:sCenterTextString="未绑定"
+        app:sCenterViewGravity="left_center"
         app:sLeftIconMarginLeft="20dp"
         app:sLeftIconRes="@drawable/module_svg_wechat_pay_icon"
-        app:sLeftTextString="微信"
         app:sLeftTextColor="#262626"
         app:sLeftTextSize="14sp"
-        app:sCenterViewGravity="left_center"
-        app:sCenterTextBackground="@drawable/module_shape_border_unbind_account"
-        app:sCenterTextString="未绑定"
-        app:sCenterTextSize="12sp"
-        app:sCenterTextColor="#FE9F00"
-        app:sRightTextString="去添加"
-        app:sRightTextSize="14sp"
+        app:sLeftTextString="微信"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
         app:sRightTextColor="#2E2E2E"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sRightTextSize="14sp"
+        app:sRightTextString="去添加" />
 
     <com.allen.library.SuperTextView
         android:id="@+id/bankcard_stv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:sLeftIconMarginLeft="20dp"
-        app:sLeftIconRes="@drawable/module_svg_bankcard_pay_icon"
-        app:sLeftTextString="银行卡"
-        app:sLeftTextColor="#262626"
-        app:sLeftTextSize="14sp"
-        app:sCenterViewGravity="left_center"
         app:sCenterMaxEms="12"
         app:sCenterTextBackground="@drawable/module_shape_border_unbind_account"
-        app:sCenterTextString="未绑定"
-        app:sCenterTextSize="12sp"
         app:sCenterTextColor="#FE9F00"
-        app:sRightTextString="去添加"
-        app:sRightTextSize="14sp"
+        app:sCenterTextSize="12sp"
+        app:sCenterTextString="未绑定"
+        app:sCenterViewGravity="left_center"
+        app:sLeftIconMarginLeft="20dp"
+        app:sLeftIconRes="@drawable/module_svg_bankcard_pay_icon"
+        app:sLeftTextColor="#262626"
+        app:sLeftTextSize="14sp"
+        app:sLeftTextString="银行卡"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
         app:sRightTextColor="#2E2E2E"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+        app:sRightTextSize="14sp"
+        app:sRightTextString="去添加" />
 
 
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
+        android:layout_marginHorizontal="@dimen/dp_10"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="60dp"
-        android:layout_marginHorizontal="@dimen/dp_10"
+        android:background="@drawable/module_shape_bg_gray_6r"
+        android:stateListAnimator="@null"
         android:text="@string/cancel"
-        android:textSize="15sp"
         android:textColor="#2E2E2E"
-        android:background="@drawable/module_shape_bg_gray_6r"/>
+        android:textSize="15sp" />
 
 </LinearLayout>

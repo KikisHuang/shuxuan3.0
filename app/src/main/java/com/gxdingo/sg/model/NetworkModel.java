@@ -875,11 +875,11 @@ public class NetworkModel {
         Map<String, Object> map = getObjMap();
 
         map.put(Constant.FILE, new File(path));
-/*
-        if (certFlag > 0)
-            map.put(LocalConstant.CERTFLAG, certFlag);*/
 
-        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, null).headers(LocalConstant.CERTFLAG, String.valueOf(certFlag))
+        if (certFlag > 0)
+            map.put(LocalConstant.CERTFLAG, certFlag);
+
+        Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, null)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
