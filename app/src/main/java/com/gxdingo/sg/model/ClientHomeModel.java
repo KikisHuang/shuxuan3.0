@@ -37,21 +37,21 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
     public void location(Context context, AMapLocationListener mLocationListener) {
         try {
 
-        //初始化定位
-        try {
-            mLocationClient = new AMapLocationClient(context);
-        } catch (Exception e) {
-            e.printStackTrace();
-            BaseLogUtils.i("AMapLocationClient == " + e);
-        }
+            //初始化定位
+            try {
+                mLocationClient = new AMapLocationClient(context);
+            } catch (Exception e) {
+                e.printStackTrace();
+                BaseLogUtils.i("AMapLocationClient == " + e);
+            }
 
-        mLocationClient.setLocationListener(mLocationListener);
-        mLocationOption = new AMapLocationClientOption();
-        mLocationOption.setOnceLocation(true);
-        mLocationClient.setLocationOption(mLocationOption);
-        mLocationClient.startLocation();
-        }catch (Exception e){
-            BaseLogUtils.e("AMapLocationClient Error === "+e);
+            mLocationClient.setLocationListener(mLocationListener);
+            mLocationOption = new AMapLocationClientOption();
+            mLocationOption.setOnceLocation(true);
+            mLocationClient.setLocationOption(mLocationOption);
+            mLocationClient.startLocation();
+        } catch (Exception e) {
+            BaseLogUtils.e("AMapLocationClient Error === " + e);
         }
     }
 
@@ -63,6 +63,9 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
      * @param longitude
      */
     public void mapInit(AMap aMap, double latitude, double longitude) {
+
+        if (aMap == null)
+            return;
 
         MyLocationStyle myLocationStyle = new MyLocationStyle();//初始化定位蓝点样式类myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE);//连续定位、且将视角移动到地图中心点，定位点依照设备方向旋转，并且会跟随设备移动。（1秒1次定位）如果不设置myLocationType，默认也会执行此种模式。
 

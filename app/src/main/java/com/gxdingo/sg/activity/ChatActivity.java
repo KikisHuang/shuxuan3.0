@@ -1075,11 +1075,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, (done, progress) -> {
             if (done) {
-                if (pos <= mChatDatas.size() - 1&&mAdapter!=null)
+                if (pos <= mChatDatas.size() - 1 && mAdapter != null)
                     //上传成功
                     mChatDatas.get(pos).upload_progress = 100;
             } else {
-                if (pos <= mChatDatas.size() - 1&&mAdapter!=null) {
+                if (pos <= mChatDatas.size() - 1 && mAdapter != null) {
                     mChatDatas.get(pos).upload_progress = progress;
                     mAdapter.notifyItemChanged(pos);
                 }
@@ -1094,7 +1094,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 super.onError(e);
                 LogUtils.e(e);
                 onMessage("图片上传失败 " + e.getMessage());
-                mChatDatas.remove(pos);
+                if (pos <= mChatDatas.size() - 1)
+                    mChatDatas.remove(pos);
                 mAdapter.notifyDataSetChanged();
                 onAfters();
             }
@@ -1102,14 +1103,15 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             @Override
             public void onNext(NormalBean normalBean) {
                 onAfters();
-                LogUtils.i("onNext onNext onNext onNext");
 
-                mChatDatas.get(pos).upload_progress = 100;
-                mChatDatas.get(pos).setContent(normalBean.url);
+                if (pos <= mChatDatas.size() - 1) {
+                    mChatDatas.get(pos).upload_progress = 100;
+                    mChatDatas.get(pos).setContent(normalBean.url);
 
-                mAdapter.notifyItemChanged(pos);
+                    mAdapter.notifyItemChanged(pos);
 
-                getP().sendPictureMessage(mShareUuid, normalBean.url, pos);
+                    getP().sendPictureMessage(mShareUuid, normalBean.url, pos);
+                }
 //                getP().sendMessage(mShareUuid, 10, normalBean.url, 0, null);
 
 
@@ -1361,7 +1363,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onUploadImageUrl(String url) {
         upLoadFile(url);
-        emotionMainFragment.hideSoftKeyboard();
+        if (emotionMainFragment != null)
+            emotionMainFragment.hideSoftKeyboard();
     }
 
     @Override

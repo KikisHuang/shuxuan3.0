@@ -49,7 +49,7 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
-    private int role = 10;
+    private int role = 0;
 
     public StoreHomeIMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
@@ -72,11 +72,11 @@ public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBe
 
 
         if (role == 0 && UserInfoUtils.getInstance().getUserInfo() != null)
-            UserInfoUtils.getInstance().getUserInfo().getRole();
+            role = UserInfoUtils.getInstance().getUserInfo().getRole();
 
         store_tab_tv.setVisibility(role == 11 ? View.VISIBLE : View.GONE);
 
-        if (UserInfoUtils.getInstance().getUserInfo().getRole() == 11) {
+        if (role == 11) {
             if (subscribesMessage.getSendUserRole() == 10) {
                 //用户
                 store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));

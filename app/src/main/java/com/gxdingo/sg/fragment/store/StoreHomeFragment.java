@@ -204,6 +204,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
                 if (userBean != null && userBean.getStore() != null && userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
                     getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
+
             }
         }
     }
