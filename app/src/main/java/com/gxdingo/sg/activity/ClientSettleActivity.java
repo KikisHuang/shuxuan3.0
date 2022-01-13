@@ -17,12 +17,15 @@ import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.dialog.InviteFriendsActionSheetPopupView;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -31,9 +34,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
@@ -138,9 +143,20 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
                     getP().oauth(this);
                 break;
             case R.id.btn_invitation:
-                if (shareBean != null)
-                    ShareUtils.UmShare(reference.get(), null, shareBean.getUrl(), shareBean.getTitle(), shareBean.getDescribe(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
-                else
+                if (shareBean != null) {
+                    new XPopup.Builder(reference.get())
+                            .isDarkTheme(false)
+                            .asCustom(new InviteFriendsActionSheetPopupView(reference.get(), view -> {
+                                if (view.getId() == R.id.share_wechat_ll)
+                                    ShareUtils.UmShare(reference.get(), null, shareBean.getUrl(), shareBean.getTitle(), shareBean.getDescribe(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
+                                else if (view.getId() == R.id.copy_invite_friends_ll) {
+                                    copyText(shareBean.getInviteCode());
+                                    onMessage("已复制到剪切板");
+                                }
+
+                            }).show());
+
+                } else
                     onMessage("没有获取到分享连接");
 
                 break;
