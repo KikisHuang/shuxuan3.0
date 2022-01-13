@@ -151,6 +151,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         cash_coupon_rv.setAdapter(mAdapter);
         cash_coupon_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
         mAdapter.setOnItemChildClickListener(this);
+
     }
 
     @Override
@@ -321,7 +322,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
         if (mineBean.getAdsList() != null) {
 
-            mine_banner.setAdapter(new MineBannerAdapter(reference.get(), mineBean.getAdsList()) {});
+            mine_banner.setAdapter(new MineBannerAdapter(reference.get(), mineBean.getAdsList()) {
+            });
         }
 
         if (mineBean.getCouponList() != null)
