@@ -85,7 +85,7 @@ public class HttpClient {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
             request.headers(Constant.EMASID, UserInfoUtils.getInstance().getEMAS());
 
-            BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
+            BaseLogUtils.d(" EMASID === " + UserInfoUtils.getInstance().getEMAS());
         }
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
