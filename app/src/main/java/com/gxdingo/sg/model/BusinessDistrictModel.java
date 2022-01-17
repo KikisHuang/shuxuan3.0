@@ -193,6 +193,7 @@ public class BusinessDistrictModel {
      * 商家发布商圈信息
      */
     public void storeReleaseBusinessDistrict(Context context, String content, List<String> images) {
+
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.CONTENT, content);
         map.put(StoreLocalConstant.IMAGES, GsonUtil.gsonToStr(images));

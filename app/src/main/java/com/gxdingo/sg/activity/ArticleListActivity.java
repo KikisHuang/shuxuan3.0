@@ -103,7 +103,7 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_include_standard_recycle;
     }
 
     @Override
