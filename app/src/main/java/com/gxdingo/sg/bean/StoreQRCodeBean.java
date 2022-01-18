@@ -21,6 +21,7 @@ public class StoreQRCodeBean {
     private String storeAvatar;
     private String storeName;
     private String url;
+    public String title;
     private String activeCode;
 
     public String getCouponIdIdentifier() {

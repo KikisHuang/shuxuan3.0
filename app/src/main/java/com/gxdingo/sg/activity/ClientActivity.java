@@ -238,14 +238,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             setUnreadMsgNum(MessageCountManager.getInstance().getUnreadMessageNum());
         }
 
-
         if (object instanceof OneKeyLoginEvent) {
             getP().oneKeyLogin(((OneKeyLoginEvent) object).code, ((OneKeyLoginEvent) object).isUser);
-        } else if (object instanceof WeChatLoginEvent) {
+        }/* else if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code) && event.login)
                 getP().wechatLogin(event.code);
-        } else if (object instanceof GoNoticePageEvent) {
+        }*/ else if (object instanceof GoNoticePageEvent) {
             GoNoticePageEvent event = (GoNoticePageEvent) object;
             goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{event.id, event.type}));
         } else if (object instanceof ReceiveIMMessageBean.DataByType) {
@@ -263,10 +262,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         super.onTypeEvent(type);
         if (type == LocalConstant.ALIPAY_LOGIN_EVENT) {
             getP().aliLogin();
-        } else if (type == LocalConstant.WECHAT_LOGIN_EVENT) {
+        }/* else if (type == LocalConstant.WECHAT_LOGIN_EVENT) {
             LocalConstant.isLogin = true;
             getP().getWechatAuth();
-        } else if (type == LOGOUT) {
+        }*/ else if (type == LOGOUT) {
             setUnreadMsgNum(0);
             setBusinessUnreadMsgNum(null);
             ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();

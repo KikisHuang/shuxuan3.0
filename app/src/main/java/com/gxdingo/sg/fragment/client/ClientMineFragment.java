@@ -65,6 +65,7 @@ import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
+import static com.kikis.commnlibrary.utils.CommonUtils.URLRequest;
 import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -222,11 +223,21 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             if (data != null) {
                 //返回的文本内容
                 String content = data.getStringExtra("success_result");
-                int mType = getAcType(numberDecode(content));
-                if (mType == 10)
-                    getP().scanCode(content);
-                else
+
+                if (!isEmpty(content) && content.contains("activeCode=")) {
+                    //url中获取活动码
+                    String activeCode = URLRequest(content).get("activeCode");
+
+                    int mType = getAcType(numberDecode(activeCode));
+
+                    if (mType == 10)
+                        getP().scanCode(activeCode);
+                    else
+                        onMessage("无法识别的二维码类型");
+
+                } else
                     onMessage("无法识别的二维码类型");
+
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }

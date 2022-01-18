@@ -118,9 +118,13 @@ public class ArticleListActivity extends BaseMvpActivity<WebContract.WebPresente
 
     @Override
     protected void init() {
+
         mAdapter = new ArticleListAdapter();
+
         recyclerView.setAdapter(mAdapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
+
         mAdapter.setOnItemClickListener(this);
 
         articleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);

@@ -529,7 +529,7 @@ public class OneKeyModel {
         ((TextView) v.findViewById(R.id.role_tv)).setText(isU ? "树选客户端" : "树选商家端");
         switchGlobalUrl(isU);
 
-        SPUtils.getInstance().put(LOGIN_WAY, isU);
+//        SPUtils.getInstance().put(LOGIN_WAY, isU);
     }
 
 

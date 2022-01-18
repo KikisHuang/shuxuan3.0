@@ -29,6 +29,7 @@ import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
+import static com.kikis.commnlibrary.utils.CommonUtils.URLRequest;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -44,7 +45,13 @@ public class ExampleUnitTest {
 
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
+        String json = "http://uat.gxdingo.com/html/#/pages/activity/coupon/detail?activeCode=dWKULklfNvKfWdp&couponIdIdentifier=invite-new-register";
 
+
+        System.out.println(" is include  === " + json.contains("activeCode="));
+
+        //dWKULklfNvKfWdp
+        System.out.println(" content  === " + URLRequest(json).get("activeCode"));
 
     }
 
