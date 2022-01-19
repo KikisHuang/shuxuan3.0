@@ -26,12 +26,12 @@
         android:layout_marginTop="13dp"
         android:orientation="horizontal"
         app:layout_constraintLeft_toRightOf="@+id/iv_avatar"
-        app:layout_constraintRight_toLeftOf="@+id/client_date_tv"
+        app:layout_constraintRight_toLeftOf="@+id/distance_tv"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tv_store_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="left"
@@ -39,22 +39,10 @@
             android:textColor="#FF1F1F1F"
             android:textSize="16sp"
             app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toStartOf="@id/authenticated_img"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="金源便金源便金源便" />
-
-        <ImageView
-            android:id="@+id/authenticated_img"
-            android:layout_width="52dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center"
-            android:src="@mipmap/store_authenticated"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_store_name"
-            app:layout_constraintEnd_toStartOf="@id/barrier"
-            app:layout_constraintStart_toEndOf="@id/tv_store_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_store_name"></ImageView>
 
 
         <androidx.constraintlayout.widget.Barrier
@@ -66,20 +54,62 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- 已实名img-->
+    <ImageView
+        android:id="@+id/real_name_img"
+        android:layout_width="54dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/module_svg_store_authenticated"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/store_name_ll"
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"></ImageView>
+
+
+    <ImageView
+        android:id="@+id/authenticated_img"
+        android:layout_width="54dp"
+        android:layout_height="18dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/module_svg_store_authenticated"
+        app:layout_constraintStart_toStartOf="@+id/store_name_ll"
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"></ImageView>
+
     <TextView
-        android:id="@+id/tv_today_new_products_label"
+        android:id="@+id/one_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/module_bg_business_district_today_new_products"
+        android:gravity="center"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
         android:text="新品上架"
         android:textColor="#599252"
-        android:textSize="12sp"
-        app:layout_constraintLeft_toRightOf="@+id/iv_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/store_name_ll" />
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"
+        app:layout_constraintLeft_toRightOf="@+id/authenticated_img"
+        app:layout_constraintTop_toTopOf="@+id/authenticated_img" />
+
+    <TextView
+        android:id="@+id/two_label"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/module_bg_business_district_today_new_products"
+        android:gravity="center"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:text="新品上架"
+        android:textColor="#599252"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"
+        app:layout_constraintLeft_toRightOf="@+id/one_label"
+        app:layout_constraintTop_toTopOf="@+id/authenticated_img" />
 
     <ImageView
         android:id="@+id/iv_delete"
@@ -88,22 +118,21 @@
         android:layout_marginTop="9dp"
         android:layout_marginRight="20dp"
         android:padding="6dp"
-        android:src="@drawable/module_svg_delete_4"
+        android:src="@drawable/module_svg_delete_grey"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/client_date_tv"
+        android:id="@+id/distance_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
-        android:layout_marginEnd="20dp"
         android:padding="6dp"
         android:textColor="@color/gray_a9"
         android:textSize="12sp"
         app:layout_constraintRight_toLeftOf="@+id/iv_delete"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="2021-05-21 " />
+        tools:text="距离 1.5km" />
 
     <TextView
         android:id="@+id/tv_content"
@@ -118,7 +147,7 @@
         android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_today_new_products_label" />
+        app:layout_constraintTop_toBottomOf="@+id/authenticated_img" />
 
     <FrameLayout
         android:id="@+id/picture_fml"
@@ -149,10 +178,10 @@
         android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/gray_a9"
-        android:textSize="12sp"
+        android:textSize="13sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/picture_fml"
-        tools:text="2021.01.30 13:23" />
+        tools:text="今天" />
 
 
     <TextView
@@ -166,8 +195,7 @@
         android:textColor="@color/graya9a9a9"
         android:textSize="12sp"
         app:layout_constraintRight_toLeftOf="@+id/tv_comment_count"
-        app:layout_constraintTop_toBottomOf="@+id/picture_fml"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/picture_fml" />
 
     <TextView
         android:id="@+id/tv_comment_count"
@@ -202,11 +230,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
-        android:layout_marginRight="45dp"
         android:layout_marginTop="10dp"
-        android:padding="8dp"
+        android:layout_marginRight="45dp"
         android:background="@drawable/module_select_send_address_cancel_button"
         android:orientation="vertical"
+        android:padding="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_comment_count">
@@ -253,6 +281,7 @@
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/module_svg_business_district_comment_put_away"
                 android:text="收起"
+                android:gravity="center"
                 android:textColor="#FFA9A9A9"
                 android:textSize="12sp" />
 

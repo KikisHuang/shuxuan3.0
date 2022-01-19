@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ResourceUtils;
@@ -16,6 +17,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.adapter.BusinessDistrictReleaseLabelAdapter;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictReleaseContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -57,6 +59,11 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
     EditText etContent;
     @BindView(R.id.gpe_picture)
     GridPictureEditing gpePicture;
+
+    @BindView(R.id.label_recyclerView)
+    RecyclerView label_recyclerView;
+
+    private BusinessDistrictReleaseLabelAdapter mLabelAdapter;
 
     int mMaxCount = 9;//最大图片数
     int mSpanCount = 4;//每行多少列
@@ -141,6 +148,20 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
         tvRightButton.setPadding(lr, tb, lr, tb);
 
         initGpeImages();
+        label_recyclerView.setLayoutManager(new GridLayoutManager(reference.get(), 5));
+
+        mLabelAdapter = new BusinessDistrictReleaseLabelAdapter();
+
+        List<String> testData = new ArrayList<>();
+
+        testData.add("");
+        testData.add("");
+        testData.add("");
+        testData.add("");
+
+        mLabelAdapter.setList(testData);
+        label_recyclerView.setAdapter(mLabelAdapter);
+
     }
 
     @Override

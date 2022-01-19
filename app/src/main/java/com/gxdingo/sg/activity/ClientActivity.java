@@ -28,6 +28,7 @@ import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
@@ -85,7 +86,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private List<Fragment> mFragmentList;
 
-    @BindViews({R.id.home_page_layout, R.id.message_layout, R.id.business_layout, R.id.mine_layout})
+    @BindViews({R.id.business_layout, R.id.home_page_layout, R.id.message_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
 
     @BindView(R.id.msg_fl)
@@ -136,7 +137,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected int StatusBarColors() {
-        return R.color.main_tone;
+        return R.color.grayf6;
     }
 
     @Override
@@ -269,7 +270,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (type == LOGOUT) {
             setUnreadMsgNum(0);
             setBusinessUnreadMsgNum(null);
-            ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
             finish();
@@ -295,9 +296,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     private void fragmentInit() {
 
         mFragmentList = new ArrayList<>();
+        mFragmentList.add(new StoreBusinessDistrictParentFragment());
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(new StoreBusinessDistrictFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 
@@ -316,18 +317,18 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         switch (v.getId()) {
             case R.id.home_page_layout:
                 ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
-                getP().checkTab(0);
+                getP().checkTab(1);
                 break;
             case R.id.message_layout:
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-                getP().checkTab(1);
+                getP().checkTab(2);
                 break;
             case R.id.settle_in:
                 goToPage(this, ClientSettleActivity.class, null);
                 break;
             case R.id.business_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-                getP().checkTab(2);
+                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
+                getP().checkTab(0);
                 break;
             case R.id.mine_layout:
                 ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();

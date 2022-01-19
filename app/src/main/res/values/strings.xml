@@ -90,5 +90,6 @@
     <string name="real_name_authentication">实名认证</string>
     <string name="refuse">拒绝</string>
     <string name="no_longer_remind">不再提醒</string>
+    <string name="store">店铺</string>
 
 </resources>

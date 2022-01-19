@@ -65,31 +65,6 @@
             app:layout_constraintEnd_toEndOf="@+id/unread_iv"
             app:layout_constraintTop_toTopOf="@+id/unread_iv" />
 
-        <!--        <RelativeLayout-->
-        <!--            android:id="@+id/rl_message_list"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_centerVertical="true"-->
-        <!--            android:layout_marginRight="45dp"-->
-        <!--            android:layout_alignParentEnd="true">-->
-
-        <!--            <ImageView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:src="@drawable/module_svg_store_message_bell" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/tv_unread_msg_count"-->
-        <!--                android:layout_width="16dp"-->
-        <!--                android:layout_height="16dp"-->
-        <!--                android:layout_marginLeft="16dp"-->
-        <!--                android:background="@drawable/module_unread_im_msg_red_bg"-->
-        <!--                android:gravity="center"-->
-        <!--                android:text="0"-->
-        <!--                android:visibility="visible"-->
-        <!--                android:textColor="@color/white"-->
-        <!--                android:textSize="10sp" />-->
-        <!--        </RelativeLayout>-->
 
         <ImageView
             android:id="@+id/iv_send_business_district"

@@ -1,6 +1,5 @@
 package com.gxdingo.sg.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -28,22 +26,16 @@ import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lzy.ninegrid.NineGridView;
-import com.sackcentury.shinebuttonlib.ShineButton;
-import com.sackcentury.shinebuttonlib.ShineButton.OnButtonClickListener;
 
 import org.jetbrains.annotations.NotNull;
 
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
-import static com.blankj.utilcode.util.TimeUtils.getNowDate;
-import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
-import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
@@ -87,7 +79,9 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
-        TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
+        TextView distance_tv = baseViewHolder.findView(R.id.distance_tv);
+
+        ImageView real_name_img = baseViewHolder.findView(R.id.real_name_img);
 
 
 /*        //登录方式，true 用户，false 商家
@@ -120,18 +114,20 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         tvStoreName.setText(data.getStoreName());
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());
+
+        tvTime.setText(showTimeText(string2Date(createTime)));
+        //todo  缺少距离字段
+        distance_tv.setText("距离 1.5km");
+
         //用户端ui布局显示
         if (mType != 2) {
-            client_date_tv.setText(showTimeText(string2Date(createTime)));
-            client_date_tv.setVisibility(View.VISIBLE);
-            tvTime.setVisibility(View.GONE);
+            distance_tv.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.GONE);
         } else {
             //商家端ui布局显示
-            tvTime.setText(showTimeText(string2Date(createTime)));
-            tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);
-            client_date_tv.setVisibility(View.GONE);
+
+            distance_tv.setVisibility(View.GONE);
         }
 
         ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +158,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         if (data.getImages() != null && data.getImages().size() > 0) {
 
             if (data.imageInfos != null && data.imageInfos.size() > 0) {
-                picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, baseViewHolder.getAdapterPosition(), new NineClickListener() {
+                picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, getItemPosition(data), new NineClickListener() {
                     @Override
                     public void onNineGridViewClick(int position, int index) {
 

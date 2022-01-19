@@ -253,7 +253,8 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
 
     @Override
     public void PhotoViewer(ArrayList<String> images, int position) {
-        getImagePreviewInstance((Activity) getContext(), NetworkAuto, position, true).setImageList(images).start();
+        if (images != null && images.size() > 0)
+            getImagePreviewInstance((Activity) getContext(), NetworkAuto, position, true).setImageList(images).start();
     }
 
     @Override

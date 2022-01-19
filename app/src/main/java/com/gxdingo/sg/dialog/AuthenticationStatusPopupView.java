@@ -93,7 +93,12 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
         String hint1 = "";
         String hint2 = "";
 
-        if (authStatus == 1) {
+        if (authStatus == 0) {
+            hint1 = "身份认证";
+            hint2 = "发布商圈需要完成实名认证";
+            done_bt.setText("去认证");
+
+        } else if (authStatus == 1) {
 
             hint1 = "恭喜您，认证成功";
             hint2 = "身份认证通过";

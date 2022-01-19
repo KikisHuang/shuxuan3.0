@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,10 +26,14 @@ import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
+import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.adapter.BusinessDistrictLabelAdapter;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
+import com.gxdingo.sg.adapter.HomePageBannerAdapter;
 import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
+import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
@@ -41,14 +46,19 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.kikis.commnlibrary.utils.StringUtils;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.sunfusheng.marqueeview.MarqueeView;
+import com.youth.banner.Banner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -64,6 +74,7 @@ import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
@@ -129,6 +140,15 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     private Disposable mDisposable;
     //活动倒计时
     private int countDown = 15;
+
+
+    private BusinessDistrictLabelAdapter mLabelAdapter;
+
+    private RecyclerView label_recyclerView;
+
+    private MarqueeView marqueeView;
+
+    private Banner mBanner;
 
     /**
      * 商圈子视图点击监听接口
@@ -239,13 +259,66 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener, mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 
+
         //recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10)));
         recyclerView.setAdapter(mAdapter);
         recyclerView.getItemAnimator().setChangeDuration(0);
+        headViewInit();
+    }
+
+    private void headViewInit() {
+
+        if (mType == 1) {
+
+            //增加头部广告
+            LinearLayout mHeadLayout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_business_district_head, new LinearLayout(reference.get()));
+            mBanner = mHeadLayout.findViewById(R.id.banner);
+            String bannerTestJson = "[{\"id\":12,\"position\":\"app-home-middle\",\"identifier\":\"\",\"title\":\"大转盘活动\",\"type\":2,\"image\":\"https://dgkjuat.oss-cn-guangzhou.aliyuncs.com/upload/20211210/f2f9555bf330499ba59d481951b66f70.jpg\",\"page\":\"http://uat.gxdingo.com/html/#/pages/activity/turntable/lottery\",\"status\":1,\"sort\":0,\"remark\":\"大转盘活动\",\"createTime\":\"2021-12-06T09:38:01.000+00:00\",\"positionName\":null},{\"id\":13,\"position\":\"app-home-middle\",\"identifier\":\"\",\"title\":\"0元拿活动\",\"type\":2,\"image\":\"https://dgkjuat.oss-cn-guangzhou.aliyuncs.com/upload/20211210/b1cca225ca734b5e9bad0c3130d2b0ca.jpg\",\"page\":\"http://uat.gxdingo.com/html/#/pages/activity/integral/index\",\"status\":1,\"sort\":0,\"remark\":\"0元拿活动\",\"createTime\":\"2021-12-10T06:16:35.000+00:00\",\"positionName\":null}]";
+
+            List<HomeBannerBean> bannerBeans = GsonUtil.jsonToList(bannerTestJson, HomeBannerBean.class);
+
+            mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), bannerBeans));
+            mBanner.setOnBannerListener((data, position) -> {
+                HomeBannerBean bannerBean = (HomeBannerBean) data;
+                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage())) {
+                    if (!UserInfoUtils.getInstance().isLogin()) {
+                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
+                        onMessage(gets(R.string.please_login));
+                        return;
+                    }
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                }
+            });
+
+            label_recyclerView = mHeadLayout.findViewById(R.id.label_recyclerView);
+
+            label_recyclerView.setLayoutManager(new LinearLayoutManager(reference.get(), RecyclerView.HORIZONTAL, false));
+
+            mLabelAdapter = new BusinessDistrictLabelAdapter();
+
+            marqueeView = mHeadLayout.findViewById(R.id.marqueeView);
+
+            List<String> messages = new ArrayList<>();
+            messages.add("1.:因疫情原因，部分地区无法配送，奖品可以直接折算现金");
+            messages.add("2.:因疫情原因，部分地区无法配送，奖品可以直接折算现金");
+
+            marqueeView.startWithList(messages);
+
+            List<String> datas = new ArrayList<>();
+
+            datas.add("");
+            datas.add("");
+            datas.add("");
+
+            mLabelAdapter.setList(datas);
+            label_recyclerView.setAdapter(mLabelAdapter);
+            mAdapter.addHeaderView(mHeadLayout);
+        }
     }
 
     @Override
     protected void initData() {
+
 
     }
 
@@ -258,8 +331,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             if (mType == 0)
                 getP().getNumberUnreadComments();*/
 
-            if (mType!=3)
-            getP().getNumberUnreadComments();
+            if (mType != 3)
+                getP().getNumberUnreadComments();
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
@@ -338,8 +411,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         super.onBaseEvent(object);
         //商圈未读评论类型事件
         if (object instanceof ReceiveIMMessageBean.DataByType) {
-            if (mType!=3)
-            getP().getNumberUnreadComments();
+            if (mType != 3)
+                getP().getNumberUnreadComments();
         } else if (object instanceof ActivityEvent) {
             //活动事件
             cl_visit_countdown.setVisibility(View.VISIBLE);
@@ -357,9 +430,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
                 || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == SOTRE_REVIEW_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
-            if (mType!=3)
-            //获取商圈评论未读数量
-            getP().getNumberUnreadComments();
+            if (mType != 3)
+                //获取商圈评论未读数量
+                getP().getNumberUnreadComments();
             //获取商圈列表
             getP().getBusinessDistrictList(true, mStoreId);
             isFirstLoad = false;
@@ -367,8 +440,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
-        }else if (type==SHOW_BUSINESS_DISTRICT_UN_READ_DOT){
-            if (mType!=3)
+        } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
+            if (mType != 3)
                 //获取商圈评论未读数量
                 getP().getNumberUnreadComments();
         }
@@ -426,6 +499,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     OnChildViewClickListener mOnChildViewClickListener = new OnChildViewClickListener() {
         @Override
         public void item(View view, int parentPosition, int position, Object object) {
+
             //点击评论一下
             if (view.getId() == R.id.tv_open_comment) {
                 BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
@@ -437,7 +511,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 if (businessDistrict != null) {
                     ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
                     if (commentList != null) {
-                        BusinessDistrictListBean.Comment comment = commentList.get(position);
+                        BusinessDistrictListBean.Comment comment = commentList.get(parentPosition);
                         if (UserInfoUtils.getInstance().getIdentifier().equals(comment.getIdentifier())) {
                             onMessage("您不能回复自己的评论");
                             return;
@@ -481,16 +555,20 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             } else if (view.getId() == R.id.like_tv) {
                 int status = (int) object;
 
-                getP().likedOrUnliked(status, mAdapter.getData().get(position).getId(), position);
+                getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
 
-                mAdapter.getData().get(position).likedStatus = status;
+                mAdapter.getData().get(parentPosition).likedStatus = status;
 
-                mAdapter.notifyItemChanged(position);
+                if (mType == 1)
+                    mAdapter.notifyItemChanged(parentPosition + 1);
+                else
+                    mAdapter.notifyItemChanged(parentPosition);
+
             } else if (view.getId() == R.id.share_tv) {
 
-                String imgUrl = mAdapter.getData().get(position).getImages() != null && mAdapter.getData().get(position).getImages().size() > 0 ? mAdapter.getData().get(position).getImages().get(0) : LocalConstant.SHARE_BUSINESS_DISTRICT_URL;
+                String imgUrl = mAdapter.getData().get(parentPosition).getImages() != null && mAdapter.getData().get(parentPosition).getImages().size() > 0 ? mAdapter.getData().get(parentPosition).getImages().get(0) : LocalConstant.SHARE_BUSINESS_DISTRICT_URL;
 
-                getP().shareLink(mAdapter.getData().get(position).getContent(), imgUrl, (String) object);
+                getP().shareLink(mAdapter.getData().get(parentPosition).getContent(), imgUrl, (String) object);
             }
         }
     };
@@ -532,9 +610,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
-                if (mType!=3)
-                //刷新未读消息
-                getP().getNumberUnreadComments();
+                if (mType != 3)
+                    //刷新未读消息
+                    getP().getNumberUnreadComments();
                 mAdapter.setList(bean.getList());
             } else {
                 mAdapter.addData(bean.getList());
@@ -624,7 +702,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     public void refreshLikeNum(String o, int position) {
         mAdapter.getData().get(position).liked = o;
 
-        mAdapter.notifyItemChanged(position);
+        if (mType == 1)
+            mAdapter.notifyItemChanged(position + 1);
+        else
+            mAdapter.notifyItemChanged(position);
     }
 
     /**
@@ -638,4 +719,37 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         textView.setCompoundDrawables(null, null, drawable, null);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (mType == 1 && marqueeView != null)
+            marqueeView.startFlipping();
+
+        if (mType == 1 && mBanner != null)
+            mBanner.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mType == 1 && marqueeView != null)
+            marqueeView.stopFlipping();
+
+        if (mType == 1 && mBanner != null)
+            mBanner.stop();
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (mType == 1 && mBanner != null)
+            mBanner.destroy();
+    }
+
+
 }
