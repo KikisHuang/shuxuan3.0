@@ -2,6 +2,8 @@ package com.gxdingo.sg.adapter;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -47,9 +49,25 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
 
         baseViewHolder.setText(R.id.distance_tv, "距离" + (div(double2Str(storeBean.getDistance()), String.valueOf(1000), 2) + "km"));
 
-        LabelsView labelsView = baseViewHolder.getView(R.id.store_label_lv);
+        TextView label_tv = baseViewHolder.findView(R.id.label_tv);
+        LinearLayout label_ll = baseViewHolder.findView(R.id.label_ll);
 
-        labelsView.setLabels(storeBean.getClassNameList());
+        if (storeBean.getClassNameList() != null && storeBean.getClassNameList().size() > 0) {
+
+            label_ll.setVisibility(View.VISIBLE);
+
+            String label = "";
+
+            for (int i = 0; i < storeBean.getClassNameList().size(); i++) {
+                if (i == 0)
+                    label = storeBean.getClassNameList().get(i);
+                else
+                    label += " | " + storeBean.getClassNameList().get(i);
+            }
+            label_tv.setText(label);
+        } else
+            label_ll.setVisibility(View.GONE);
+
 
         if (storeBean.isShowTop()) {
             baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);

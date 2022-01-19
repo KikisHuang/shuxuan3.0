@@ -410,7 +410,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
             mStoreAdapter.addData(storeBeans);
     }
 
-    @Override
+/*    @Override
     public void onBannerResult(List<HomeBannerBean> bannerBeans) {
 
         if (bannerBeans.size() > 0) {
@@ -428,7 +428,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         } else {
             home_banner.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {
@@ -456,7 +456,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     @Override
     public void onItemClick(View itemView, int pos) {
-        if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
+  /*      if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
 
             boolean expan = ((CategoriesBean) mCategoryAdapter.getData().get(pos)).isSelected;
 
@@ -472,7 +472,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 getP().checkPermissions(getRxPermissions(), true);
             else
                 getP().getNearbyStore(true, true, categoryId);
-        }
+        }*/
     }
 
     @Override

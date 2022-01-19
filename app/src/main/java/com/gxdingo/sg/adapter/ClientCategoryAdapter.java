@@ -19,17 +19,14 @@ import java.util.List;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 
 /**
- * @author: Weaving
- * @date: 2021/10/18
+ * @author: kikis
+ * @date: 2022/1/19
  * @page:
  */
 public class ClientCategoryAdapter extends BaseRecyclerAdapter {
 
-    private int width = 0;
-
     public ClientCategoryAdapter() {
         super(null);
-        width = (int) (ScreenUtils.getScreenWidth() * 1 / 5.5);
     }
 
     @Override
@@ -41,27 +38,11 @@ public class ClientCategoryAdapter extends BaseRecyclerAdapter {
     public void bindData(RecyclerViewHolder holder, int position, Object item) {
         CategoriesBean categoriesBean = (CategoriesBean) item;
 
-        LinearLayout class_item = holder.getLinearLayout(R.id.class_item);
 
         ImageView class_img = holder.getImageView(R.id.class_img);
         TextView class_name_tv = holder.getTextView(R.id.class_name_tv);
 
-
-        class_item.getLayoutParams().height = width;
-
-        if (getItemCount() > 4 && position == getItemCount() - 1) {
-
-            if (!categoriesBean.isSelected) {
-                Glide.with(mContext).load(R.drawable.module_svg_category_expand).into(class_img);
-                class_name_tv.setText("更多");
-            } else {
-                Glide.with(mContext).load(R.drawable.module_svg_category_unexpand).into(class_img);
-                class_name_tv.setText("收起");
-            }
-
-        } else
-            Glide.with(mContext).load(isEmpty(categoriesBean.getImage()) ? R.mipmap.ic_default_avatar : categoriesBean.getImage()).into(class_img);
-
+        Glide.with(mContext).load(isEmpty(categoriesBean.getImage()) ? R.mipmap.ic_default_avatar : categoriesBean.getImage()).into(class_img);
 
         if (categoriesBean.getName() != null)
             class_name_tv.setText(categoriesBean.getName());

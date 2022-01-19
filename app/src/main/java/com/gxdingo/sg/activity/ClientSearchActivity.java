@@ -297,10 +297,6 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         }
     }
 
-    @Override
-    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
-
-    }
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {

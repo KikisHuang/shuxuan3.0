@@ -32,6 +32,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
+import com.gxdingo.sg.activity.ClientSettleActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
@@ -62,6 +63,7 @@ import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
+import com.kikis.commnlibrary.utils.IntentUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
@@ -123,8 +125,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @BindView(R.id.category_rv)
     public RecyclerView category_rv;
 
-    @BindView(R.id.home_banner)
-    public Banner home_banner;
 
     @BindView(R.id.store_rv)
     public RecyclerView store_rv;
@@ -210,22 +210,16 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onStart() {
         super.onStart();
         getP().checkHelpCode();
-        if (home_banner != null)
-            home_banner.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (home_banner != null)
-            home_banner.stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (home_banner != null)
-            home_banner.destroy();
     }
 
     @Override
@@ -268,12 +262,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         mStoreAdapter.setOnItemClickListener(this);
         mCategoryAdapter = new ClientCategoryAdapter();
         category_rv.setAdapter(mCategoryAdapter);
-        category_rv.setLayoutManager(new GridLayoutManager(reference.get(), 5) {
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
+
+        category_rv.setLayoutManager(new LinearLayoutManager(reference.get(), RecyclerView.HORIZONTAL, false));
+
         mCategoryAdapter.setOnItemClickListener(this);
     }
 
@@ -302,10 +293,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                     getP().oauth(getContext());
                 break;
             case R.id.btn_invitation:
-                Intent textIntent = new Intent(Intent.ACTION_SEND);
-                textIntent.setType("text/plain");
-                textIntent.putExtra(Intent.EXTRA_TEXT, "http://gxdingo.com/getapp-shuxuan");
-                startActivity(Intent.createChooser(textIntent, "分享"));
+                IntentUtils.goToPage(reference.get(), ClientSettleActivity.class, null);
                 break;
         }
     }
@@ -352,41 +340,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     }
 
 
-    private void addData(List<CategoriesBean> categories) {
-
-        mCategoryAdapter.clear();
-        mCategoryAdapter.notifyDataSetChanged();
-
-        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-
-            mAllTypeData.addAll(categories);
-
-            for (int i = 0; i < categories.size(); i++) {
-                if (mDefaultTypeData.size() < 4)
-                    mDefaultTypeData.add(categories.get(i));
-
-            }
-
-            e.onNext(mDefaultTypeData);
-            e.onComplete();
-        }), (BaseActivity) reference.get()).subscribe(o -> switchData(mDefaultTypeData));
-
-    }
-
-
-    private void switchData(List<CategoriesBean> data) {
-        mCategoryAdapter.clear();
-
-        mCategoryAdapter.addDataAll(data);
-
-        if (mAllTypeData.size() > 4) {
-            CategoriesBean categoriesBean = new CategoriesBean();
-            mCategoryAdapter.addData(categoriesBean, mCategoryAdapter.getData().size());
-        }
-
-        mCategoryAdapter.notifyDataSetChanged();
-    }
-
     private void scrollViewInit() {
 
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -427,39 +380,22 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onCategoryResult(List<CategoriesBean> categories) {
-        addData(categories);
+        if (mCategoryAdapter!=null){
+            mCategoryAdapter.clear();
+            mCategoryAdapter.addDataAll(categories);
+        }
     }
 
 
     @Override
     public void onStoresResult(boolean refresh, boolean search, List<StoreListBean.StoreBean> storeBeans) {
+
         if (refresh)
             mStoreAdapter.setList(storeBeans);
         else
             mStoreAdapter.addData(storeBeans);
     }
 
-    @Override
-    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
-        if (bannerBeans.size() > 0) {
-            home_banner.setVisibility(View.VISIBLE);
-            home_banner.setAdapter(new HomePageBannerAdapter(reference.get(), bannerBeans));
-            home_banner.setOnBannerListener((data, position) -> {
-                HomeBannerBean bannerBean = (HomeBannerBean) data;
-                if (bannerBean.getType() == 2 && !isEmpty(bannerBean.getPage())) {
-                    if (!UserInfoUtils.getInstance().isLogin()) {
-                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
-                        onMessage(gets(R.string.please_login));
-                        return;
-                    }
-                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
-                }
-            });
-
-        } else {
-            home_banner.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {
@@ -487,23 +423,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onItemClick(View itemView, int pos) {
-        if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
-
-            boolean expan = ((CategoriesBean) mCategoryAdapter.getData().get(pos)).isSelected;
-
-            switchData(expan ? mDefaultTypeData : mAllTypeData);
-
-            ((CategoriesBean) mCategoryAdapter.getData().get(mCategoryAdapter.getData().size() - 1)).isSelected = !expan;
-
-            mCategoryAdapter.notifyDataSetChanged();
-        } else {
             CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
             categoryId = categoriesBean.getId();
             if (!location)
                 getP().checkPermissions(getRxPermissions(), true);
             else
                 getP().getNearbyStore(true, true, categoryId);
-        }
     }
 
     @Override

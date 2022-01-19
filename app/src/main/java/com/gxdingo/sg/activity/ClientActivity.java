@@ -316,22 +316,18 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         switch (v.getId()) {
             case R.id.home_page_layout:
-                ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
                 getP().checkTab(1);
                 break;
             case R.id.message_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(2);
                 break;
             case R.id.settle_in:
                 goToPage(this, ClientSettleActivity.class, null);
                 break;
             case R.id.business_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
                 getP().checkTab(0);
                 break;
             case R.id.mine_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(3);
                 break;
         }

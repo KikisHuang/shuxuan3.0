@@ -8,14 +8,14 @@
     android:paddingHorizontal="16dp"
     android:paddingBottom="6dp"
     android:alpha="0"
-    android:background="@color/main_tone">
+    android:background="@color/grayf6">
     <TextView
         android:id="@+id/location_tt_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="获取当前定位"
         android:layout_alignParentBottom="true"
-        android:textColor="@color/white"/>
+        android:textColor="@color/graye2e2e2"/>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:layout_toEndOf="@+id/location_tt_tv"
         android:layout_alignTop="@+id/location_tt_tv"
         android:layout_alignBottom="@+id/location_tt_tv"
-        android:src="@drawable/module_svg_right_arrow_white"/>
+        android:src="@drawable/module_svg_right_arrow_black"/>
 
     <ImageView
         android:id="@+id/btn_search"
@@ -31,6 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/module_svg_search_white"/>
+        android:src="@drawable/module_svg_search_blue"/>
 
 </RelativeLayout>

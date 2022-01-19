@@ -65,8 +65,6 @@ public class ClientHomeContract {
 
         void onStoresResult(boolean refresh,boolean search, List<StoreListBean.StoreBean> storeBeans);
 
-        void onBannerResult(List<HomeBannerBean> bannerBeans);
-
         void onHistoryResult(List<String> searchHistories);
 
         void onHelpDataResult(HelpBean helpBean);

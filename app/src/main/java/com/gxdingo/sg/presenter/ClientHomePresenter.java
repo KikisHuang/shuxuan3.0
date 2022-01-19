@@ -443,14 +443,9 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                         getV().onStoresResult(refresh, searchModel, storeListBean.getList());
                     }
 
-                } else {
+                } else
                     //Home首页 数据返回
                     getV().onStoresResult(refresh, searchModel, storeListBean.getList());
-
-                    //首页banner
-                    if (storeListBean.getAppHomeMiddle() != null)
-                        getV().onBannerResult(storeListBean.getAppHomeMiddle());
-                }
 
             } else if (o instanceof HelpBean) {
                 getV().onHelpDataResult((HelpBean) o);

@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:visibility="gone"
     android:id="@+id/noLocation_layout"
-    android:paddingVertical="110dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingVertical="20dp"
+    android:visibility="gone">
+
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="无法获取定位"
-        android:textSize="20sp"
-        android:textColor="@color/gray_2e"/>
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="暂无定位 | "
+        android:textColor="@color/gray99" />
 
     <TextView
         android:id="@+id/btn_empower"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginHorizontal="22dp"
-        android:layout_marginTop="@dimen/dp_40"
+        android:drawableRight="@drawable/module_svg_bg_white_green_arrow_right"
         android:gravity="center"
         android:text="去授权"
-        android:textSize="16sp"
-        android:textColor="@color/main_tone"
-        android:background="@drawable/module_shape_border_green_6r"/>
+        android:textColor="@color/main_tone" />
+
 
 </LinearLayout>
