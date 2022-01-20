@@ -9,8 +9,10 @@ import android.widget.TextView;
 import com.amap.api.maps.AMap;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.bumptech.glide.Glide;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.SelectAddressEvent;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
@@ -80,6 +82,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     private String regionPath = "";
 
     private LatLonPoint mPoint;
+    private String filePath;
 
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
@@ -218,13 +221,24 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
 
         //收货地址实体类回调
-        if (object instanceof PoiItem) {
+        if (object instanceof SelectAddressEvent) {
 
-            poiItem = (PoiItem) object;
+            SelectAddressEvent event = (SelectAddressEvent) object;
+
+            filePath = event.fliepath;
+            //todo 新增接口后上传地图截屏
+
+
+            poiItem = (PoiItem) event.poiItem;
 
             String a = poiItem.getProvinceCode();
             String b = poiItem.getAdCode();

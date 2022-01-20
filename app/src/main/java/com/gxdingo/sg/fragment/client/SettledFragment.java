@@ -1,58 +1,74 @@
-package com.gxdingo.sg.activity;
+package com.gxdingo.sg.fragment.client;
 
-import android.content.Intent;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ChatActivity;
+import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.WebActivity;
+import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.HelpBean;
-import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
-import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.ClientHomeContract;
+import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.dialog.InviteFriendsActionSheetPopupView;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
+import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
-import com.kikis.commnlibrary.bean.AddressBean;
-import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
+import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.MessageCountManager;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.umeng.socialize.UMShareListener;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
+import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
-
 /**
- * @author: Weaving
- * @date: 2021/11/15
+ * @author: Kikis
+ * @date: 2022/1/20
  * @page:
  */
-public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener {
+public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements  ClientHomeContract.ClientHomeListener {
 
-    @BindView(R.id.title_layout)
-    public TemplateTitle title_layout;
 
     @BindView(R.id.settle_in_iv)
     public ImageView settle_in_iv;
@@ -64,34 +80,19 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
         return new ClientHomePresenter(false);
     }
 
-    @Override
+        @Override
     protected boolean eventBusRegister() {
         return true;
     }
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
-    }
-
-    @Override
-    protected boolean ImmersionBar() {
-        return true;
-    }
-
-    @Override
-    protected int StatusBarColors() {
-        return R.color.white;
-    }
-
-    @Override
-    protected int NavigationBarColor() {
         return 0;
     }
 
     @Override
-    protected int activityBottomLayout() {
-        return 0;
+    protected int initContentView() {
+        return R.layout.module_activity_client_settle;
     }
 
     @Override
@@ -105,16 +106,6 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    protected boolean closeDispatchTouchEvent() {
-        return false;
-    }
-
-    @Override
-    protected int initContentView() {
-        return R.layout.module_activity_client_settle;
-    }
-
-    @Override
     protected boolean refreshEnable() {
         return false;
     }
@@ -122,6 +113,20 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     @Override
     protected boolean loadmoreEnable() {
         return false;
+    }
+
+
+    @Override
+    protected void init() {
+
+    }
+
+
+    @Override
+    protected void lazyInit() {
+        super.lazyInit();
+        getP().getSettleImage();
+        getP().getShareUrl();
     }
 
     @Override
@@ -134,14 +139,14 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     }
 
-    @OnClick({R.id.btn_become_store, R.id.btn_invitation, R.id.btn_more})
+    @OnClick({R.id.btn_become_store, R.id.btn_invitation})
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.btn_become_store:
                 if (UserInfoUtils.getInstance().isLogin())
                     getP().convertStore();
                 else
-                    getP().oauth(this);
+                    getP().oauth(reference.get());
                 break;
             case R.id.btn_invitation:
                 if (shareBean != null) {
@@ -161,25 +166,13 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
                     onMessage("没有获取到分享连接");
 
                 break;
-            case R.id.btn_more:
-                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_HDGZ_AGREEMENT_KEY}));
-
-                break;
         }
     }
 
-    @Override
-    protected void init() {
-        title_layout.setMoreText("活动规则");
-
-        title_layout.getMoreTextView().setTextColor(getc(R.color.green_dominant_tone));
-        title_layout.setTitleText("入驻平台");
-    }
 
     @Override
     protected void initData() {
-        getP().getSettleImage();
-        getP().getShareUrl();
+
     }
 
     @Override
@@ -189,6 +182,7 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public void onCategoryResult(List<CategoriesBean> categories) {
+
     }
 
     @Override

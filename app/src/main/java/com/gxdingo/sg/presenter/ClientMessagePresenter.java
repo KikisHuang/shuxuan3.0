@@ -1,5 +1,6 @@
 package com.gxdingo.sg.presenter;
 
+import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.NetworkModel;
@@ -7,7 +8,10 @@ import com.gxdingo.sg.model.WebSocketModel;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.zhouyou.http.subsciber.BaseSubscriber;
+
+import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 
 /**
  * @author: Weaving
@@ -48,6 +52,25 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
         if (mWebSocketModel != null) {
             mWebSocketModel.refreshMessageList(getContext());
         }
+    }
+
+    /**
+     * 获取未读消息数
+     */
+    @Override
+    public void getUnreadMessageNum() {
+
+        if (mWebSocketModel != null) {
+            mWebSocketModel.getUnreadMessageNumber(getContext(), data -> {
+                MessageCountManager.getInstance().setUnreadMessageNum((Integer) data);
+                resetBadger(getContext());
+
+                if (isViewAttached())
+                    getV().setUnreadMsgNum((Integer) data);
+            });
+        }
+
+
     }
 
     @Override

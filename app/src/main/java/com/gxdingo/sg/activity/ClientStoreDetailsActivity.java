@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.allen.library.CircleImageView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.blankj.utilcode.util.ToastUtils;
@@ -70,6 +72,18 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @BindView(R.id.store_photo_rv)
     public RecyclerView store_photo_rv;
+
+    @BindView(R.id.avatar_img)
+    public ImageView avatar_img;
+
+    @BindView(R.id.tag_img)
+    public ImageView tag_img;
+
+    @BindView(R.id.name_tv)
+    public TextView name_tv;
+
+    @BindView(R.id.secondary_tv)
+    public TextView secondary_tv;
 
     private BasePopupView mNavigationPopupView;
 
@@ -155,7 +169,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             finish();
         }
         title_layout.setTitleText("金源便利店");
-        title_layout.setMoreText("资质");
+//        title_layout.setMoreText("资质");
+        title_layout.setMoreImg(R.drawable.module_svg_more_8935);
         if (mapView != null)
             mapView.onCreate(savedInstanceState);
 
@@ -208,10 +223,10 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     }
 
-    @OnClick({R.id.txt_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
+    @OnClick({R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.txt_more:
+            case R.id.btn_more:
                 if (mStoreDetail != null && mStoreDetail.getLicence() != null)
                     goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                 break;
@@ -279,12 +294,15 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void initData() {
+        //todo 后期有接口了更换后修改页面显示逻辑
         getP().getStoreDetail(getRxPermissions(), storeId);
     }
 
 
     @Override
     public void onStoreDetailResult(StoreDetail storeDetail) {
+
+
         if (storeDetail == null) {
             onMessage("未获取到商家信息！");
             finish();

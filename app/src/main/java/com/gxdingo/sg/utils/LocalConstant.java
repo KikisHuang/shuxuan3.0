@@ -108,6 +108,7 @@ public class LocalConstant {
     //本地临时口令
     public static String TEMP_SHIBBOLETH = "";
     public static final int GO_TO_BUSINESS_CIRCLE = 1012;
+    public static final int GO_SETTLED = 1013;
 
     public static String AdCode = "";
 

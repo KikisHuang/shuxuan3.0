@@ -23,6 +23,7 @@ import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
+import com.gxdingo.sg.bean.SelectAddressEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -390,11 +391,13 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
              */
             mBusinessScope = (BusinessScopeEvent) object;
             stvBusinessScope.setRightString(mBusinessScope.selectedScope);
-        } else if (object instanceof PoiItem) {
+        } else if (object instanceof SelectAddressEvent) {
             /**
              * 店铺地址
              */
-            mPoiItem = (PoiItem) object;
+            SelectAddressEvent event = (SelectAddressEvent) object;
+
+            mPoiItem = (PoiItem) event.poiItem;
             stvSelectAddress.setRightString(mPoiItem.getTitle());
         }
     }

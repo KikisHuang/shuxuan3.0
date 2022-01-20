@@ -16,6 +16,7 @@
         android:orientation="vertical"
         tools:context=".activity.MainActivity">
 
+
         <FrameLayout
             android:id="@+id/map_fl"
             android:layout_width="match_parent"
@@ -26,12 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-<!--            <ImageView-->
-<!--                android:id="@+id/position_location_img"-->
-<!--                android:layout_width="38dp"-->
-<!--                android:layout_height="38dp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:src="@drawable/module_svg_location_mark"></ImageView>-->
+            <!--            <ImageView-->
+            <!--                android:id="@+id/position_location_img"-->
+            <!--                android:layout_width="38dp"-->
+            <!--                android:layout_height="38dp"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:src="@drawable/module_svg_location_mark"></ImageView>-->
 
 
             <FrameLayout
@@ -62,7 +63,6 @@
             app:layout_behavior="@string/bottom_sheet_behavior">
 
             <include layout="@layout/module_include_selected_address_bottom_sheet" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

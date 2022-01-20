@@ -21,11 +21,15 @@ public class ClientMessageContract {
         void clearUnreadMsg(String id);
 
         void refreshList();
+
+        void getUnreadMessageNum();
     }
 
     public interface ClientMessageListener{
         void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean);
 
         void clearMessageUnreadItem(String id);
+
+        void setUnreadMsgNum(Integer data);
     }
 }

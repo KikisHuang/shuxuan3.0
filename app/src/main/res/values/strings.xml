@@ -91,5 +91,8 @@
     <string name="refuse">拒绝</string>
     <string name="no_longer_remind">不再提醒</string>
     <string name="store">店铺</string>
+    <string name="notification_message">通知消息</string>
+    <string name="message_settop">置顶消息</string>
+    <string name="delete_record">删除记录</string>
 
 </resources>

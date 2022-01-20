@@ -7,6 +7,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -195,6 +196,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
         model.retrievalBoundPOI("", cityCode, latLng.latitude, latLng.longitude, clientNetworkModel.getPage(), new PoiSearch.OnPoiSearchListener() {
             @Override
             public void onPoiSearched(PoiResult poiResult, int errorCode) {
+
                 if (errorCode == 1000) {
                     if (isViewAttached()) {
                         if (isBViewAttached())
@@ -229,15 +231,11 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                     mCameraPosition = cameraPosition;
 
-                    BaseLogUtils.i("CameraPosition  latitude === " + cameraPosition.target.latitude);
-                    BaseLogUtils.i("CameraPosition  longitude === " + cameraPosition.target.longitude);
-
                     if (model != null)
                         clientNetworkModel.resetPage();
 
                     if (isBViewAttached())
                         getBV().onStarts();
-
 
                     searchBound(true, mCameraPosition.target, cityCode);
 
@@ -247,9 +245,14 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void moveCamera() {
-        if (model != null && model.getMyLocation() != null)
-            model.moveCamera(new LatLng(model.getMyLocation().getLatitude(), model.getMyLocation().getLongitude()));
+    public void moveCamera(LatLng latLng) {
+        if (model != null) {
+            if (latLng != null)
+                model.moveCamera(latLng);
+            else if (model.getMyLocation() != null)
+                model.moveCamera(new LatLng(model.getMyLocation().getLatitude(), model.getMyLocation().getLongitude()));
+        }
+
 
     }
 
@@ -289,7 +292,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                                             mClientCommonModel.clearCacheDefaultAddress();
 
                                         LocalConstant.locationSelected = aMapLocation.getPoiName();
-                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(),aMapLocation.getLongitude(),aMapLocation.getLatitude()));
+                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(), aMapLocation.getLongitude(), aMapLocation.getLatitude()));
 
                                         if (isBViewAttached())
                                             getBV().onSucceed(0);

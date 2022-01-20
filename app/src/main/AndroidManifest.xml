@@ -256,6 +256,12 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <!--消息通知页面 -->
+        <activity
+            android:name=".activity.NoticeMessageActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <!--客户端商圈页面 -->
         <activity

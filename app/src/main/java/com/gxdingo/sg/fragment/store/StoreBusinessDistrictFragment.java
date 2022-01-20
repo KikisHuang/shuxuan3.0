@@ -24,6 +24,7 @@ import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.NoticeMessageActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.activity.WebActivity;
@@ -37,6 +38,8 @@ import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
+import com.gxdingo.sg.dialog.ChatFunctionDialog;
+import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -70,12 +73,15 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
@@ -105,6 +111,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     ImageView hintImg;
     @BindView(R.id.img_back)
     ImageView img_back;
+    @BindView(R.id.more_img)
+    ImageView more_img;
     @BindView(R.id.hint_tv)
     TextView hintTv;
     @BindView(R.id.function_bt)
@@ -241,9 +249,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
         }
 
+        //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
+
         unread_iv.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
 
         img_back.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
+        more_img.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
 
         title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
 
@@ -303,7 +314,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             messages.add("2.:因疫情原因，部分地区无法配送，奖品可以直接折算现金");
 
             marqueeView.startWithList(messages);
+            marqueeView.setOnItemClickListener((position, textView) -> {
 
+                goToPage(reference.get(), NoticeMessageActivity.class, getIntentMap(new String[]{textView.getText().toString()}));
+            });
             List<String> datas = new ArrayList<>();
 
             datas.add("");
@@ -478,9 +492,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         }
     }
 
-    @OnClick({R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
+    @OnClick({R.id.more_img, R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.more_img:
+                showDialog(title_tv);
+                break;
             case R.id.img_back:
                 getActivity().finish();
                 break;
@@ -491,6 +508,23 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 startActivity(new Intent(mContext, StoreBusinessDistrictReleaseActivity.class));
                 break;
         }
+    }
+
+    private void showDialog(View view) {
+        int pos[] = {-1, -1}; //保存当前坐标的数组
+
+        view.getLocationOnScreen(pos); //获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .offsetY(pos[1])
+                .offsetX(pos[0])
+                .autoDismiss(true)
+                .hasShadowBg(false)
+                .asCustom(new PostionFunctionDialog(reference.get(), v -> {
+                    //todo 分享链接没有，投诉功能待实现
+
+                }).show());
     }
 
     /**

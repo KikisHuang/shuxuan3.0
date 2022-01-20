@@ -27,6 +27,7 @@ import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
+import com.gxdingo.sg.fragment.client.SettledFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
@@ -62,6 +63,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
@@ -86,7 +88,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private List<Fragment> mFragmentList;
 
-    @BindViews({R.id.business_layout, R.id.home_page_layout, R.id.message_layout, R.id.mine_layout})
+    @BindViews({R.id.business_layout, R.id.home_page_layout, R.id.settle_in, R.id.message_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
 
     @BindView(R.id.msg_fl)
@@ -285,6 +287,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().getUnreadMessageNum();
         } else if (type == GO_TO_BUSINESS_CIRCLE) {
             toBusinessCircle();
+        } else if (type == GO_SETTLED) {
+            getP().checkTab(2);
         }
     }
 
@@ -298,6 +302,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new StoreBusinessDistrictParentFragment());
         mFragmentList.add(new ClientHomeFragment());
+        mFragmentList.add(new SettledFragment());
         mFragmentList.add(new ClientMessageFragment());
         mFragmentList.add(new ClientMineFragment());
     }
@@ -314,21 +319,24 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         }
 
+        ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.home_page_layout || v.getId() == R.id.business_layout || v.getId() == R.id.message_layout ? R.color.grayf5 : R.color.white).init();
+
         switch (v.getId()) {
             case R.id.home_page_layout:
                 getP().checkTab(1);
                 break;
             case R.id.message_layout:
-                getP().checkTab(2);
+
+                getP().checkTab(3);
                 break;
             case R.id.settle_in:
-                goToPage(this, ClientSettleActivity.class, null);
+                getP().checkTab(2);
                 break;
             case R.id.business_layout:
                 getP().checkTab(0);
                 break;
             case R.id.mine_layout:
-                getP().checkTab(3);
+                getP().checkTab(4);
                 break;
         }
     }

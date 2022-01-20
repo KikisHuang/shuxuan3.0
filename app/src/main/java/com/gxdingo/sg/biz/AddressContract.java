@@ -43,7 +43,7 @@ public class AddressContract {
 
         void mapInit();
 
-        void moveCamera();
+        void moveCamera(LatLng latLng);
 
         void cacheAddress(AddressBean item);
 

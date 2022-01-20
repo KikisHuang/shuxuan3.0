@@ -1,12 +1,14 @@
 package com.gxdingo.sg.dialog;
 
 import android.content.Context;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.gxdingo.sg.R;
 import com.kikis.commnlibrary.biz.CustomArgsResultListener;
+import com.lxj.xpopup.core.CenterPopupView;
 import com.lxj.xpopup.core.PositionPopupView;
 
 /**
@@ -14,13 +16,14 @@ import com.lxj.xpopup.core.PositionPopupView;
  * @date: 2021/12/25
  * @page:
  */
-public class ChatFunctionDialog extends PositionPopupView {
+public class ChatFunctionDialog extends CenterPopupView {
 
     private CustomArgsResultListener customArgsResultListener;
 
-    private TextView copy_tv;
-    private TextView revocation_tv;
+    private LinearLayout copy_ll, report_ll, del_ll;
+
     private boolean isSelf;
+
     private int type = 0;
 
     public ChatFunctionDialog(@NonNull Context context, boolean self, int type, CustomArgsResultListener listener) {
@@ -38,22 +41,18 @@ public class ChatFunctionDialog extends PositionPopupView {
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        revocation_tv = findViewById(R.id.revocation_tv);
-        copy_tv = findViewById(R.id.copy_tv);
+        copy_ll = findViewById(R.id.copy_ll);
+        report_ll = findViewById(R.id.report_ll);
+        del_ll = findViewById(R.id.del_ll);
 
-        copy_tv.setVisibility(type == 0 ? VISIBLE : GONE);
+        report_ll.setVisibility(isSelf ? VISIBLE : GONE);
 
-//        revocation_tv.setVisibility(isSelf ? VISIBLE : GONE);
-
-        //todo 隐藏撤回功能
-        revocation_tv.setVisibility(GONE);
-
-        copy_tv.setOnClickListener(view -> {
+        copy_ll.setOnClickListener(view -> {
             customArgsResultListener.onResult(0);
             dismiss();
         });
 
-        revocation_tv.setOnClickListener(view -> {
+        report_ll.setOnClickListener(view -> {
             customArgsResultListener.onResult(1);
             dismiss();
         });

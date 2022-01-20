@@ -165,7 +165,6 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         super.lazyInit();
         boolean login = UserInfoUtils.getInstance().isLogin();
         if (login) {
-
             getP().getNumberUnreadComments();
         }
     }

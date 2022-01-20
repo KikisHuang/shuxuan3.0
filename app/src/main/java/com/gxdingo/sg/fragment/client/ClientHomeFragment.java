@@ -90,6 +90,7 @@ import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.REFRESH_LOCATION;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -293,7 +294,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                     getP().oauth(getContext());
                 break;
             case R.id.btn_invitation:
-                IntentUtils.goToPage(reference.get(), ClientSettleActivity.class, null);
+                sendEvent(GO_SETTLED);
+//                IntentUtils.goToPage(reference.get(), ClientSettleActivity.class, null);
                 break;
         }
     }
