@@ -52,12 +52,14 @@ import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
 import static com.gxdingo.sg.utils.LocalConstant.OtherImage;
+import static com.gxdingo.sg.utils.LocalConstant.OtherLocationInfo;
 import static com.gxdingo.sg.utils.LocalConstant.OtherLogistics;
 import static com.gxdingo.sg.utils.LocalConstant.OtherRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.OtherText;
 import static com.gxdingo.sg.utils.LocalConstant.OtherTransfer;
 import static com.gxdingo.sg.utils.LocalConstant.SelfAudio;
 import static com.gxdingo.sg.utils.LocalConstant.SelfImage;
+import static com.gxdingo.sg.utils.LocalConstant.SelfLocationInfo;
 import static com.gxdingo.sg.utils.LocalConstant.SelfLogistics;
 import static com.gxdingo.sg.utils.LocalConstant.SelfRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.SelfText;
@@ -145,11 +147,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             else
                 return OtherTransfer;
         } else if (data.getType() == 30) {
-            //todo 物流和地址的类型还没确定
+            //todo 写到了这里
             if (self)
-                return SelfLogistics;
+                return SelfLocationInfo;
             else
-                return OtherLogistics;
+                return OtherLocationInfo;
+
         } else if (data.getType() == 999) {
             //todo 物流和地址的类型还没确定
             if (self)
