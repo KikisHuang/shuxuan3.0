@@ -144,6 +144,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 return SelfTransfer;
             else
                 return OtherTransfer;
+        } else if (data.getType() == 30) {
+            //todo 物流和地址的类型还没确定
+            if (self)
+                return SelfLogistics;
+            else
+                return OtherLogistics;
         } else if (data.getType() == 999) {
             //todo 物流和地址的类型还没确定
             if (self)

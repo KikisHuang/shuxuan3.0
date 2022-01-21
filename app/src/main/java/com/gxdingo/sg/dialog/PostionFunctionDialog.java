@@ -23,7 +23,7 @@ public class PostionFunctionDialog extends PositionPopupView {
 
     private OnClickListener listener;
 
-    //0 分享 1 分享、投诉
+    //0 分享 1 分享、投诉 2 资质、分享、投诉
     private int type = 0;
 
 
@@ -48,13 +48,26 @@ public class PostionFunctionDialog extends PositionPopupView {
         super.initPopupContent();
         LinearLayout share_ll = findViewById(R.id.share_ll);
         LinearLayout report_ll = findViewById(R.id.report_ll);
+        LinearLayout certification_ll = findViewById(R.id.certification_ll);
+
+        certification_ll.setVisibility(type == 2 ? VISIBLE : GONE);
 
         if (type == 0)
             report_ll.setVisibility(GONE);
 
         if (listener != null) {
-            share_ll.setOnClickListener(v -> {listener.onClick(v);dismiss();});
-            report_ll.setOnClickListener(v -> {listener.onClick(v);dismiss();});
+            share_ll.setOnClickListener(v -> {
+                listener.onClick(v);
+                dismiss();
+            });
+            certification_ll.setOnClickListener(v -> {
+                listener.onClick(v);
+                dismiss();
+            });
+            report_ll.setOnClickListener(v -> {
+                listener.onClick(v);
+                dismiss();
+            });
         }
     }
 

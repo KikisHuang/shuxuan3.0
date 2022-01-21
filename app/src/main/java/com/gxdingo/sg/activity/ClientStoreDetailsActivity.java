@@ -25,6 +25,7 @@ import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.ClientStoreContract;
+import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.presenter.ClientStorePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -227,8 +228,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.btn_more:
-                if (mStoreDetail != null && mStoreDetail.getLicence() != null)
-                    goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
+
+                showBaseDialog();
                 break;
             case R.id.ll_navigation:
                 if (mNavigationPopupView == null) {
@@ -256,6 +257,31 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     getP().callStore(mStoreDetail.getContactNumber());
                 break;
         }
+    }
+
+    private void showBaseDialog() {
+
+        int pos[] = {-1, -1}; //保存当前坐标的数组
+
+        title_layout.findViewById(com.kikis.commnlibrary.R.id.title).getLocationOnScreen(pos);//获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .offsetY(pos[1])
+                .offsetX(pos[0])
+                .autoDismiss(true)
+                .hasShadowBg(false)
+                .asCustom(new PostionFunctionDialog(reference.get(), v -> {
+                    switch (v.getId()) {
+                        case R.id.certification_ll:
+                            if (mStoreDetail != null && mStoreDetail.getLicence() != null)
+                                goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
+                            break;
+                    }
+
+                    //todo 分享链接没有，诉投功能待实现
+
+                }, 2).show());
     }
 
 

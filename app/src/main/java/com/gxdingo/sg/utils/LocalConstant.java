@@ -34,7 +34,8 @@ public class LocalConstant {
     public static final int SelfAddressInfo = 7783;
     //自己撤回消息类型
     public static final int SelfRevocation = 7784;
-
+    //自己发送的定位地图信息类型
+    public static final int SelfLocationInfo = 7785;
 
     //他人发送的文字类型
     public static final int OtherText = 77781;
@@ -60,6 +61,8 @@ public class LocalConstant {
     //他人撤回消息类型
     public static final int OtherRevocation = 77789;
 
+    //他人发送的定位地图信息类型
+    public static final int OtherLocationInfo = 77790;
 
     //未知类型
     public static final int UNKNOWN = 666666;
