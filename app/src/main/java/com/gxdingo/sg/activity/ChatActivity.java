@@ -578,82 +578,22 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
          */
         if (object instanceof FunctionsItem) {
             FunctionsItem functionsItem = (FunctionsItem) object;
-            /**
-             * 联系商家
-             */
-            if (functionsItem.type == TYPE_STORE) {
-                //相册
-                if (functionsItem.position == 0) {
-                    getP().photoSourceClick(0);
-                }
-                //拍照
-                else if (functionsItem.position == 1) {
-                    getP().photoSourceClick(1);
-                }
-                //地址
-                else if (functionsItem.position == 2) {
-                    getP().getAddressList();
-                }
-                //转账
-                else if (functionsItem.position == 3) {
-                    showSelectTransferAccountsWayDialog();
-                }
-                //电话
-                else if (functionsItem.position == 4) {
-                    String phone = "";
 
-                    //如果地址不为空
-                    if (mAddress != null && !isEmpty(mAddress.getMobile())) {
-                        //两个商家聊天的情况下如果地址是我的，属于购买方，打电话取对方电话，如果不是我的，我属于商家，取地址的电话
-                        if (mAddress.identifier.equals(UserInfoUtils.getInstance().getIdentifier()))
-                            phone = mMessageDetails.getOtherAvatarInfo().getMobile();
-                        else
-                            phone = mAddress.getMobile();
-                    } else
-                        phone = mMessageDetails.getOtherAvatarInfo().getMobile();
-
-                    callPhone(phone);
-                }
-                //投诉
-                else if (functionsItem.position == 5) {
-                    if (mMessageDetails != null)
-                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
-//                    goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghutousu"}));
-
-                }
+            //相册
+            if (functionsItem.position == 0) {
+                getP().photoSourceClick(0);
             }
-            /**
-             * 联系用户
-             */
-            else if (functionsItem.type == TYPE_USER) {
-
-                if (functionsItem.position == 0) {
-                    //相册
-                    getP().photoSourceClick(0);
-                } else if (functionsItem.position == 1) {
-                    //拍照
-                    getP().photoSourceClick(1);
-                } else if (functionsItem.position == 2) {
-                    if (mAddress != null && !isEmpty(mAddress.getMobile()))
-                        callPhone(mAddress.getMobile());
-                    else
-                        onMessage("没有获取到电话号码");
-
-                } else if (functionsItem.position == 3) {
-                    //转账
-                    showSelectTransferAccountsWayDialog();
-                }
-            } else if (functionsItem.type == TYPE_ROLE) {
-                /**
-                 * 联系客服
-                 */
-                if (functionsItem.position == 0) {
-                    //相册
-                    getP().photoSourceClick(0);
-                } else if (functionsItem.position == 1) {
-                    //拍照
-                    getP().photoSourceClick(1);
-                }
+            //拍照
+            else if (functionsItem.position == 1) {
+                getP().photoSourceClick(1);
+            }
+            //地址
+            else if (functionsItem.position == 2) {
+                getP().getAddressList();
+            }
+            //转账
+            else if (functionsItem.position == 3) {
+                showSelectTransferAccountsWayDialog();
             }
         }
 
