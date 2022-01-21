@@ -141,11 +141,6 @@ public class IMChatContract {
         void getAddressList();
 
         /**
-         * 获取默认地址
-         */
-        void getCacheAddress();
-
-        /**
          * 撤回消息
          *
          * @param id
@@ -236,12 +231,6 @@ public class IMChatContract {
          */
         void showSelectAddressDialog(List<AddressBean> list);
 
-        /**
-         * 默认地址回调
-         *
-         * @param cacheDefaultAddress
-         */
-        void onAddressResult(AddressBean cacheDefaultAddress);
 
         /**
          * 已读语音消息回调

@@ -26,7 +26,6 @@
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="75dp"
                     android:overScrollMode="never"
                     android:scrollbars="none" />
 
@@ -45,7 +44,6 @@
                     android:textSize="14sp"
                     android:visibility="gone"></TextView>
 
-                <include layout="@layout/module_include_im_head_address" />
             </FrameLayout>
 
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>

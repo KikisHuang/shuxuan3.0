@@ -20,6 +20,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/map_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -47,7 +48,7 @@
                     android:paddingVertical="10dp">
 
                     <TextView
-                        android:id="@+id/check_info_tv"
+                        android:id="@+id/address_street_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="请您核对地址信息"
@@ -66,7 +67,7 @@
                         android:textSize="12sp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/check_info_tv" />
+                        app:layout_constraintTop_toBottomOf="@+id/address_street_tv" />
 
                     <ImageView
                         android:id="@+id/map_img"

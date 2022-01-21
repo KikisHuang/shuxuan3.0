@@ -27,6 +27,7 @@
             android:src="@mipmap/ic_launcher_round" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/map_ll"
             android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -37,12 +38,13 @@
             android:paddingVertical="10dp">
 
             <TextView
-                android:id="@+id/check_info_tv"
+                android:id="@+id/address_street_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="请您核对地址信息"
+                android:text="金源CBD现代城B座1010"
                 android:textColor="@color/graye2e2e2"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/address_tv"
@@ -56,7 +58,7 @@
                 android:textSize="12sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/check_info_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/address_street_tv" />
 
             <ImageView
                 android:id="@+id/map_img"

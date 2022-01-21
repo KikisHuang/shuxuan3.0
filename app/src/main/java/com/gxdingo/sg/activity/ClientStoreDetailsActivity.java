@@ -316,6 +316,12 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
         super.onDestroy();
         if (mapView != null)
             mapView.onDestroy();
+
+        if (mNavigationPopupView != null) {
+            mNavigationPopupView.destroy();
+            mNavigationPopupView = null;
+        }
+
     }
 
     @Override

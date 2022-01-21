@@ -134,38 +134,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @BindView(R.id.recyclerView)
     public RecyclerView recycleView;
 
-    @BindView(R.id.tv_other_side_address)
-    public TextView tvOtherSideAddress;
-
-    @BindView(R.id.tv_other_side_phone)
-    public TextView tv_other_side_phone;
-
-    @BindView(R.id.tv_other_side_nick_name)
-    public TextView tv_other_side_nick_name;
-
-    @BindView(R.id.cl_no_address_layout)
-    public ConstraintLayout clNoAddressLayout;
-
-    @BindView(R.id.tv_no_address)
-    public TextView tv_no_address;
-
-    @BindView(R.id.cl_other_side_address_layout)
-    public ConstraintLayout cl_other_side_address_layout;
 
     @BindView(R.id.rl_cancel_recording_area)
     public RelativeLayout rlCancelRecordingArea;
 
     @BindView(R.id.cl_voice_recording_layout)
     public ConstraintLayout clVoiceRecordingLayout;
-
-    @BindView(R.id.ll_navigation)
-    public LinearLayout ll_navigation;
-
-    @BindView(R.id.store_ll)
-    public FrameLayout store_ll;
-
-    @BindView(R.id.ll_location)
-    public ImageView ll_location;
 
     @BindView(R.id.iv_voice_recording_status)
     public ImageView ivVoiceRecordingStatus;
@@ -175,12 +149,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @BindView(R.id.btn_long_press_to_speak)
     public TextView btn_long_press_to_speak;
-
-    @BindView(R.id.right_arrow)
-    public TextView right_arrow;
-
-    @BindView(R.id.cv_other_side_address)
-    public CardView cv_other_side_address;
 
     private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
@@ -208,10 +176,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     //未读消息数
     private int unreadCount = 0;
-
-    private AddressBean mAddress;//收货地址;
-
-    private AddressBean mDefaultAddress;//默认收货地址;
 
     private long clicktimeDValue = 0; //按下录制的时间差
     //取消发送
@@ -290,11 +254,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
-        else {
-            cv_other_side_address.setVisibility(View.GONE);
-            FrameLayout.LayoutParams flp = (FrameLayout.LayoutParams) recycleView.getLayoutParams();
-            flp.topMargin = 0;
-        }
+
         initEmotionMainFragment();
 
         //软键盘弹出监听
@@ -325,7 +285,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void initData() {
-        getP().getCacheAddress();
         loadMore();
     }
 
@@ -416,43 +375,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
 
-    @OnClick({R.id.cl_no_address_layout, R.id.cl_other_side_address_layout, R.id.unread_count_tv, R.id.img_back, R.id.img_more})
+    @OnClick({R.id.unread_count_tv, R.id.img_back, R.id.img_more})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
 
-            case R.id.cl_no_address_layout:
-                //联系商家跳转选择地址列表
-                if (otherRole == 11)
-                    goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
-                break;
-            case R.id.cl_other_side_address_layout:
-
-                if (otherRole == 11) {
-                    if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
-                        //用户联系商家跳转选择地址列表
-                        goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
-                    else {
-                        //商家联系商家显示选择弹窗
-                        new XPopup.Builder(reference.get())
-                                .isDarkTheme(false)
-                                .isDestroyOnDismiss(true)
-                                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.select_receiving_address), gets(R.string.go_navigation)).setItemClickListener((itemv, pos) -> {
-                                    if (pos == 0)
-                                        //选择地址
-                                        goToPagePutSerializable(reference.get(), ClientAddressListActivity.class, getIntentEntityMap(new Object[]{2}));
-                                    else if (pos == 1)
-                                        showNavigationDialog();
-                                })).show();
-                    }
-
-
-                } else if (otherRole == 10)
-                    showNavigationDialog();
-
-
-                break;
             case R.id.unread_count_tv:
                 showNewMessage();
                 break;
@@ -483,18 +411,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         }
     }
 
-    /**
-     * 第三方导航选择弹窗
-     */
-    private void showNavigationDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true)
-                .isDarkTheme(false)
-                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.gaode_map), gets(R.string.baidu_map), gets(R.string.tencent_map)).setItemClickListener((itemv, pos) -> {
-                    getP().goOutSideNavigation(pos, mAddress);
-                })).show();
-    }
-
 
     @Override
     protected void onBaseEvent(Object object) {
@@ -506,12 +422,13 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 receiveNewMsg(unReadMessage);
 
         }*/
+        //地址信息消息发送事件
         if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
             if (addressBean.selectType == 2) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("id", addressBean.getId());
-                mAddress = addressBean;
+
                 getP().sendMessage(mShareUuid, 30, "", 0, map);
             }
         }
@@ -533,28 +450,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                     //判断消息发送者是否跟当前聊天
                     if (mMessageDetails.getOtherAvatarInfo().getSendIdentifier().equals(receiveIMMessageBean.getSendIdentifier())) {
-                        if (receiveIMMessageBean.getType() != 30)
-                            //一样则通过该方法显示消息
-                            receiveNewMsg(receiveIMMessageBean);
-                        else {
-                            if (receiveIMMessageBean.getDataByType() != null) {
-                                ReceiveIMMessageBean.DataByType type = receiveIMMessageBean.getDataByType();
-
-                                AddressBean addressBean = new AddressBean();
-                                addressBean.setId(type.getId());
-                                addressBean.identifier = type.getIdentifier();
-                                addressBean.setMobile(type.getMobile());
-                                addressBean.setName(type.getName());
-                                addressBean.setGender(type.getGender());
-                                addressBean.setRegionPath(type.getRegionPath());
-                                addressBean.setStreet(type.getStreet());
-                                addressBean.setDoorplate(type.getDoorplate());
-                                addressBean.setLatitude(type.getLatitude());
-                                addressBean.setLongitude(type.getLongitude());
-
-                                setAddressInfo(addressBean);
-                            }
-                        }
+                        //一样则通过该方法显示消息
+                        receiveNewMsg(receiveIMMessageBean);
                     }
 
                     //自己发送的转账消息
@@ -595,44 +492,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             else if (functionsItem.position == 3) {
                 showSelectTransferAccountsWayDialog();
             }
-        }
-
-    }
-
-    /**
-     * 打电话
-     *
-     * @param mobile
-     */
-    private void callPhone(String mobile) {
-        if (!isEmpty(mobile)) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:" + mobile));
-            startActivity(intent);
-        } else
-            onMessage("没有获取到电话号码");
-    }
-
-    /**
-     * 设置地址信息
-     */
-    private void setAddressInfo(AddressBean addressInfo) {
-
-        cl_other_side_address_layout.setVisibility(View.VISIBLE);
-        clNoAddressLayout.setVisibility(View.GONE);
-
-        if (addressInfo != null) {
-            mAddress = addressInfo;
-
-            if (!isEmpty(addressInfo.getStreet()))
-                tvOtherSideAddress.setText(addressInfo.getStreet() + " " + addressInfo.getDoorplate());
-
-            if (!isEmpty(addressInfo.getMobile()))
-                tv_other_side_phone.setText(addressInfo.getMobile());
-
-            if (!isEmpty(addressInfo.getName()))
-                tv_other_side_nick_name.setText(addressInfo.getName());
         }
 
     }
@@ -727,7 +586,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
         try {
-            //地址类型
+         /*   //地址类型
             if (receiveIMMessageBean.getType() == 30) {
                 ReceiveIMMessageBean.DataByType type = receiveIMMessageBean.getDataByType();
 
@@ -743,7 +602,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 addressBean.setLatitude(type.getLatitude());
                 addressBean.setLongitude(type.getLongitude());
                 setAddressInfo(addressBean);
-            }
+            }*/
 
             mChatDatas.add(receiveIMMessageBean);
             mAdapter.notifyDataSetChanged();
@@ -1088,6 +947,16 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         });
     }
 
+    /**
+     * 定位地图信息点击事件
+     *
+     * @param pos
+     */
+    @Override
+    public void onLocationMapClick(int pos) {
+        goToPagePutSerializable(reference.get(), AddressMapInfoActivity.class, getIntentEntityMap(new Object[]{mAdapter.getData().get(pos)}));
+    }
+
 
     /**
      * 清除语音未读
@@ -1138,19 +1007,25 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     public void onLongClickChatItem(View view, int position, boolean isSelf) {
 
         ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
-        if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() == 0) {
+        if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() != 21 || ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() != 20) {
             new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                     .autoDismiss(true)
                     .hasShadowBg(false)
-                    .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType(), args -> {
+                    .asCustom(new ChatFunctionDialog(reference.get(), isSelf, ((ReceiveIMMessageBean) mAdapter.getData().get(position)), args -> {
                         int type = (int) args[0];
 
                         if (type == 0) {
                             copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
                             onMessage("已复制到剪贴板");
-                        } else
+                        } else if (type == 1) {
+                            //撤回
                             getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
+                        } else if (type == 2) {
+                            //todo 语音转文字功能
+
+
+                        }
 
                     }).show());
         }
@@ -1199,57 +1074,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     title_layout.setTitleText(imChatHistoryListBean.getOtherAvatarInfo().getSendNickname());//标题设置为对方昵称
                 }
                 moveTo(mChatDatas.size() - 1);
-
-                cl_other_side_address_layout.setVisibility(imChatHistoryListBean.getAddress() != null ? View.VISIBLE : View.GONE);
-                clNoAddressLayout.setVisibility(imChatHistoryListBean.getAddress() == null ? View.VISIBLE : View.GONE);
-
-
-                //用户联系商家不显示布局
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
-                    store_ll.setVisibility(View.GONE);
-                else
-                    store_ll.setVisibility(otherRole == 11 || otherRole == 10 ? View.VISIBLE : View.GONE);
-
-                //如果自己是商家、并且联系人也是商家
-                ll_location.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 11 ? View.VISIBLE : View.GONE);
-
-                //如果自己是商家、并且联系人是用户显示导航
-                ll_navigation.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 11 && otherRole == 10 ? View.VISIBLE : View.GONE);
-
-
-                //用户联系商家
-                right_arrow.setVisibility(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 && otherRole == 11 ? View.VISIBLE : View.GONE);
-
-                mAddress = imChatHistoryListBean.getAddress();
-
-                if (imChatHistoryListBean.getAddress() != null) {
-
-                    if (!isEmpty(imChatHistoryListBean.getAddress().getStreet()))
-                        tvOtherSideAddress.setText(imChatHistoryListBean.getAddress().getStreet() + " " + imChatHistoryListBean.getAddress().getDoorplate());
-
-                    if (!isEmpty(imChatHistoryListBean.getAddress().getMobile()))
-                        tv_other_side_phone.setText(imChatHistoryListBean.getAddress().getMobile());
-
-                    if (!isEmpty(imChatHistoryListBean.getAddress().getName()))
-                        tv_other_side_nick_name.setText(imChatHistoryListBean.getAddress().getName());
-
-                } else {
-                    //对方角色。10=联系用户 11=联系商家 12=联系客服
-                    //联系用户
-                    if (otherRole == 10)
-                        tv_no_address.setText("对方还没有添加收货地址");
-                    else if (otherRole == 11) {
-                        //联系商家如果有默认地址信息就发送
-                        if (mDefaultAddress == null)
-                            tv_no_address.setText("没有收货地址去添加");
-                        else {
-                            mAddress = mDefaultAddress;
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("id", mAddress.getId());
-                            getP().sendMessage(mShareUuid, 30, "", 0, map);
-                        }
-                    }
-                }
 
             } else {
                 if (imChatHistoryListBean.getList() != null) {
@@ -1339,17 +1163,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(new IMSelectSendAddressPopupView(this, list, new IMSelectSendAddressPopupView.OnSendAddressListener() {
-                    @Override
-                    public void address(Object object) {
+                .asCustom(new IMSelectSendAddressPopupView(this, list, object -> {
 
-                    }
                 }).show());
-    }
-
-    @Override
-    public void onAddressResult(AddressBean cacheDefaultAddress) {
-        mDefaultAddress = cacheDefaultAddress;
     }
 
     /**

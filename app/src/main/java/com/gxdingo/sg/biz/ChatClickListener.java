@@ -7,6 +7,8 @@ public interface ChatClickListener {
 
     void onAudioClick(String content,  boolean isPlay,int pos);
 
+    void onLocationMapClick(int pos);
+
     void clearUnread(int position, long id);
 
     void onTransferClick(int position, long id);

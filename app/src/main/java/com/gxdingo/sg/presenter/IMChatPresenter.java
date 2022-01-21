@@ -657,15 +657,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     }
 
-    /**
-     * 获取默认地址
-     */
-    @Override
-    public void getCacheAddress() {
-        if (commonModel != null)
-            getV().onAddressResult(commonModel.getCacheDefaultAddress());
-
-    }
 
     /**
      * 撤回消息

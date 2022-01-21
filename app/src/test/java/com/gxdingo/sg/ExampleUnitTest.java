@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 import static com.blankj.utilcode.util.RegexUtils.isMobileExact;
 import static com.blankj.utilcode.util.TimeUtils.date2String;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
@@ -44,6 +45,11 @@ public class ExampleUnitTest {
 
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
+
+        long sendT = 1642749435000l;
+        long nowT = getNowMills();
+
+        System.out.println(" time === " + (nowT - sendT));
 
 
     }

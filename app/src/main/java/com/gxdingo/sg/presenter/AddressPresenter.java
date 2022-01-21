@@ -7,7 +7,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
-import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -19,6 +18,7 @@ import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.SelectAddressModel;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
@@ -32,9 +32,17 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.ClientLocalConstant.ADDADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DELADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -318,6 +326,48 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                 }
             });
         }
+    }
+
+    /**
+     * 调用外部导航
+     *
+     * @param pos
+     * @param mDataByType
+     */
+    @Override
+    public void goOutSideNavigation(int pos, ReceiveIMMessageBean.DataByType mDataByType) {
+
+        switch (pos) {
+            case 0:
+                if (isAvilible(getContext(), PN_GAODE_MAP))
+                    goToGaoDeMap(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
+                break;
+            case 1:
+                if (isAvilible(getContext(), PN_BAIDU_MAP))
+                    goToBaiduActivity(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
+                break;
+            case 2:
+                if (isAvilible(getContext(), PN_TENCENT_MAP))
+                    goToTencentMap(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
+                break;
+
+        }
+    }
+
+    @Override
+    public void callPhone(ReceiveIMMessageBean.DataByType mDataByType) {
+        if (mClientCommonModel != null) {
+            if (!isEmpty(mDataByType.getMobile()))
+                mClientCommonModel.goCallPage(getContext(), mDataByType.getMobile());
+            onMessage(gets(R.string.no_get__mobile_phone_number));
+        }
+
     }
 
     @Override

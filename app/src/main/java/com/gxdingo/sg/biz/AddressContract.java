@@ -6,6 +6,7 @@ import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -48,6 +49,10 @@ public class AddressContract {
         void cacheAddress(AddressBean item);
 
         void getLocationInfo(RxPermissions rxPermissions, boolean b);
+
+        void goOutSideNavigation(int pos, ReceiveIMMessageBean.DataByType mDataByType);
+
+        void callPhone(ReceiveIMMessageBean.DataByType mDataByType);
     }
 
     public interface AddressListener {

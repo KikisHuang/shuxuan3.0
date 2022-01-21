@@ -94,5 +94,8 @@
     <string name="notification_message">通知消息</string>
     <string name="message_settop">置顶消息</string>
     <string name="delete_record">删除记录</string>
+    <string name="turn_the_text">转文字</string>
+    <string name="address_info">地址信息</string>
+    <string name="no_get__mobile_phone_number">没有获取到手机号码</string>
 
 </resources>

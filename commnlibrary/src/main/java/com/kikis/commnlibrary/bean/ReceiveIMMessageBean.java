@@ -19,6 +19,7 @@ public class ReceiveIMMessageBean implements Serializable {
     private String content;//消息内容
     private int voiceDuration;//语音时长
     public int recipientRead;//语音是否未读
+    public String voiceText = "";
     private String createTime;//创建时间 (发送时间)
     private SubscribeListVO subscribeListVO;//订阅详情
 
@@ -101,7 +102,6 @@ public class ReceiveIMMessageBean implements Serializable {
     }
 
 
-
     /**
      * 订阅详情
      */
@@ -173,7 +173,7 @@ public class ReceiveIMMessageBean implements Serializable {
     }
 
 
-   public class DataByType {
+    public class DataByType implements Serializable {
 
         @SerializedName("id")
         private int id;

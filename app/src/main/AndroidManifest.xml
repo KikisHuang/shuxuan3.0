@@ -298,6 +298,13 @@
 
         </activity>
 
+        <!--地址信息页面 -->
+        <activity
+            android:name=".activity.AddressMapInfoActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
 
         <!--客户端账户安全页面 -->
         <activity
