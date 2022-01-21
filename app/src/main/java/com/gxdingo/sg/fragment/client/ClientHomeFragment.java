@@ -229,19 +229,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            categoryId = 0;
-            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
-
-        }
-    }
-
-    @Override
     protected void lazyInit() {
         super.lazyInit();
 
+        categoryId = 0;
+        getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
     }
 
     @Override
