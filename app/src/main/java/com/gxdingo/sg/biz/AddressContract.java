@@ -5,6 +5,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -53,6 +54,8 @@ public class AddressContract {
         void goOutSideNavigation(int pos, ReceiveIMMessageBean.DataByType mDataByType);
 
         void callPhone(ReceiveIMMessageBean.DataByType mDataByType);
+
+        void getDistance(double latitude, double longitude);
     }
 
     public interface AddressListener {
@@ -89,6 +92,8 @@ public class AddressContract {
         void searchResult(boolean refresh, List<PoiItem> poiItems);
 
         AMap getAMap();
+
+        void onDistanceResult(ItemDistanceBean bean);
     }
 
     public interface AddressCompileModelListener {

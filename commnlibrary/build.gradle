@@ -116,9 +116,6 @@ dependencies {
     //通用适配器
     api rootProject.ext.dependencies.baseRecyclerAdapter
 
-    //跑马灯
-    api 'com.sunfusheng:MarqueeView:1.4.0'
-
     //相册、拍照库
 //    api rootProject.ext.dependencies.takephoto_library
 

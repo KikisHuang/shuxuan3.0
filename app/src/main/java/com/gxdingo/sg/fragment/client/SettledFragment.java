@@ -1,66 +1,30 @@
 package com.gxdingo.sg.fragment.client;
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.ChatActivity;
-import com.gxdingo.sg.activity.ClientActivity;
-import com.gxdingo.sg.activity.WebActivity;
-import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.CategoriesBean;
-import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
-import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.dialog.InviteFriendsActionSheetPopupView;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
-import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
-import com.kikis.commnlibrary.utils.MessageCountManager;
-import com.kikis.commnlibrary.utils.RxUtil;
-import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
-import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
-import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
-import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Kikis

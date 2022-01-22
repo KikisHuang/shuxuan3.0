@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="295dp"
+    android:layout_width="315dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center_horizontal"
@@ -33,17 +33,16 @@
                 android:id="@+id/title_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="分享到"
+                android:text="发送给"
                 android:textColor="@color/graye2e2e2"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="MissingConstraints" />
 
-
             <ImageView
                 android:id="@+id/recipient_avatar_img"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:src="@mipmap/ic_launcher"
                 app:layout_constraintTop_toBottomOf="@+id/title_tv"
@@ -97,8 +96,8 @@
             <ImageView
                 android:id="@+id/map_img"
                 android:layout_width="match_parent"
-                android:layout_height="83dp"
-                android:layout_marginTop="5dp"
+                android:layout_height="135dp"
+                android:layout_marginTop="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_bg"
                 app:layout_constraintTop_toBottomOf="@+id/address_tv"
@@ -153,7 +152,6 @@
                 app:layout_constraintLeft_toRightOf="@+id/phone_tag_tv"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/phone_tag_tv" />
-
 
             <TextView
                 android:id="@+id/cancel_tv"

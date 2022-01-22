@@ -16,6 +16,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientAddressAdapter;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -280,6 +281,11 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     @Override
     public AMap getAMap() {
         return null;
+    }
+
+    @Override
+    public void onDistanceResult(ItemDistanceBean bean) {
+
     }
 
     @Override

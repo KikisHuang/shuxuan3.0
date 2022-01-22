@@ -6,6 +6,7 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Weaving
@@ -23,6 +24,8 @@ public class ClientMessageContract {
         void refreshList();
 
         void getUnreadMessageNum();
+
+        void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params);
     }
 
     public interface ClientMessageListener{

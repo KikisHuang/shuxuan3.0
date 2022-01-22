@@ -1,6 +1,7 @@
 package com.gxdingo.sg.presenter;
 
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.NetworkModel;
@@ -10,6 +11,8 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.zhouyou.http.subsciber.BaseSubscriber;
+
+import java.util.Map;
 
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 
@@ -26,15 +29,15 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
     private WebSocketModel mWebSocketModel;
 
     public ClientMessagePresenter() {
-        networkModel =new NetworkModel(this);
+        networkModel = new NetworkModel(this);
 
         mWebSocketModel = new WebSocketModel(this);
     }
 
     @Override
     public void getSubscribesMessage(boolean refresh) {
-        if (networkModel!=null)
-            mWebSocketModel.getMessageSubscribesList(getContext(),refresh, "");
+        if (networkModel != null)
+            mWebSocketModel.getMessageSubscribesList(getContext(), refresh, "");
 //        networkModel.getMessageSubscribesList(getContext(),refresh);
     }
 
@@ -71,6 +74,28 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
         }
 
 
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param shareUuid
+     * @param type
+     * @param content
+     * @param voiceDuration
+     * @param params
+     */
+    @Override
+    public void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params) {
+        if (mWebSocketModel != null) {
+            SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
+            mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, receiveIMMessageBean -> {
+                if (isBViewAttached()){
+                    onMessage("转发成功");
+                    getBV().onSucceed(100);
+                }
+            });
+        }
     }
 
     @Override

@@ -45,13 +45,13 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
  *
  * @author JM
  */
-public class StoreHomeIMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.SubscribesMessage, BaseViewHolder> {
+public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.SubscribesMessage, BaseViewHolder> {
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
     private int role = 0;
 
-    public StoreHomeIMMessageAdapter() {
+    public IMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
 
         DaoUtilsStore mStore = DaoUtilsStore.getInstance();

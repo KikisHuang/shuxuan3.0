@@ -7,8 +7,11 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
+import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
@@ -20,6 +23,7 @@ import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.SelectAddressModel;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -365,7 +369,37 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
         if (mClientCommonModel != null) {
             if (!isEmpty(mDataByType.getMobile()))
                 mClientCommonModel.goCallPage(getContext(), mDataByType.getMobile());
-            onMessage(gets(R.string.no_get__mobile_phone_number));
+            else
+                onMessage(gets(R.string.no_get__mobile_phone_number));
+        }
+
+    }
+
+    /**
+     * 获取距离
+     *
+     * @param latitude
+     * @param longitude
+     */
+    @Override
+    public void getDistance(double latitude, double longitude) {
+
+        if (model != null) {
+            model.location(getContext(), aMapLocation -> {
+                if (aMapLocation.getErrorCode() == 0) {
+                    new NetworkModel(this).distanceSearch(getContext(), aMapLocation.getLongitude(), aMapLocation.getLatitude(), latitude, longitude, new CustomResultListener() {
+                        @Override
+                        public void onResult(Object o) {
+                            ItemDistanceBean bean = (ItemDistanceBean) o;
+
+                            if (isViewAttached())
+                                getV().onDistanceResult(bean);
+
+                        }
+                    });
+
+                }
+            });
         }
 
     }

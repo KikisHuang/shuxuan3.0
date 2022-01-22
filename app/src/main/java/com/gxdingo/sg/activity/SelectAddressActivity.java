@@ -36,6 +36,7 @@ import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.SelectAddressAdapter;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.SelectAddressEvent;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
@@ -455,6 +456,11 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
     @Override
     public AMap getAMap() {
         return mapView.getMap();
+    }
+
+    @Override
+    public void onDistanceResult(ItemDistanceBean bean) {
+
     }
 
     @Override

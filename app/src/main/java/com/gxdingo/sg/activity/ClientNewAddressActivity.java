@@ -12,6 +12,7 @@ import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.SelectAddressEvent;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
@@ -395,6 +396,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @Override
     public AMap getAMap() {
         return null;
+    }
+
+    @Override
+    public void onDistanceResult(ItemDistanceBean bean) {
+
     }
 
     @Override

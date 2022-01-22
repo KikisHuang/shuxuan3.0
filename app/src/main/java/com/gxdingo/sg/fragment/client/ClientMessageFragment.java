@@ -17,10 +17,9 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
-import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.adapter.IMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.biz.ClientMessageContract;
-import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.dialog.ChatListFunctionDialog;
 import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.kikis.commnlibrary.utils.MessageCountManager;
@@ -30,13 +29,11 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
-import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,8 +45,6 @@ import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
-import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -75,7 +70,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     public View nodata_layout;
 
 
-    private StoreHomeIMMessageAdapter imMessageAdapter;
+    private IMMessageAdapter imMessageAdapter;
 
     @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
@@ -134,7 +129,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void init() {
-        imMessageAdapter = new StoreHomeIMMessageAdapter();
+        imMessageAdapter = new IMMessageAdapter();
         recyclerView.setAdapter(imMessageAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         imMessageAdapter.setOnItemClickListener(this);

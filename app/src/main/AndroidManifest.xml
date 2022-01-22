@@ -305,6 +305,13 @@
 
         </activity>
 
+        <!--消息转发页面 -->
+        <activity
+            android:name=".activity.ForwardListActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
 
         <!--客户端账户安全页面 -->
         <activity

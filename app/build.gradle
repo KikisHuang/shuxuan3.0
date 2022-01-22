@@ -178,6 +178,11 @@ dependencies {
     //greendao
     implementation rootProject.ext.dependencies.greendao
 
+
+    //跑马灯
+    api 'com.sunfusheng:MarqueeView:1.4.0'
+
+
     //九宫格控件
     api project(':ninegridview')
     //like bt

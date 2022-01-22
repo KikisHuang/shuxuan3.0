@@ -52,8 +52,7 @@ public class PostionFunctionDialog extends PositionPopupView {
 
         certification_ll.setVisibility(type == 2 ? VISIBLE : GONE);
 
-        if (type == 0)
-            report_ll.setVisibility(GONE);
+        report_ll.setVisibility(type == 0 ? GONE : VISIBLE);
 
         if (listener != null) {
             share_ll.setOnClickListener(v -> {
