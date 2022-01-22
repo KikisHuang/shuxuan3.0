@@ -112,7 +112,8 @@ dependencies {
     implementation(name: 'crashshield-2.1.2-release', ext: 'aar')
     implementation(name: 'logger-2.1.2-release', ext: 'aar')
     implementation(name: 'main-2.1.2-release', ext: 'aar')
-
+    //阿里云录音文件识别极速版
+    implementation(name: 'nuisdk-release', ext: 'aar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

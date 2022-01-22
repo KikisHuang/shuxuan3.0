@@ -1022,9 +1022,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                             //撤回
                             getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
                         } else if (type == 2) {
-                            //todo 语音转文字功能
-
-
+//                            getP().checkReadWritePermission(getRxPermissions(),((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), position);
+                            getP().voiceToText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), position);
                         }
 
                     }).show());
@@ -1034,15 +1033,29 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     }
 
     /**
-     * +      * 消息撤回成功
-     * +      *
-     * +      * @param position
-     * +
+     * 消息撤回成功
+     * @param position
+     *
      */
     @Override
     public void onMessageRevocation(int position) {
         mChatDatas.get(position).setStatus(1);
         mAdapter.notifyItemChanged(position);
+    }
+
+    /**
+     * 识别内容回调
+     *
+     * @param obj
+     * @param pos
+     */
+    @Override
+    public void onIdentifiedContentResult(Object obj, int pos) {
+
+        if (pos <= mChatDatas.size() - 1 && obj != null && mChatDatas.get(pos).getType() == 11) {
+            mChatDatas.get(pos).voiceText = (String) obj;
+            mAdapter.notifyItemChanged(pos);
+        }
     }
 
 

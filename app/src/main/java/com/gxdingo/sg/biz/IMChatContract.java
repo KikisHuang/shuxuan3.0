@@ -157,6 +157,23 @@ public class IMChatContract {
          * 检测草稿
          */
         void checkDraft();
+
+        /**
+         * 语音转文字
+         *
+         * @param content
+         * @param position
+         */
+        void voiceToText(String content, int position);
+
+        /**
+         * 检测读写权限
+         *
+         * @param rxPermissions
+         * @param content
+         * @param position
+         */
+        void checkReadWritePermission(RxPermissions rxPermissions, String content, int position);
     }
 
     public interface IMChatListener {
@@ -213,6 +230,7 @@ public class IMChatContract {
 
         /**
          * 获取发送者 Identifier
+         *
          * @return
          */
         String getSendIdentifier();
@@ -246,5 +264,13 @@ public class IMChatContract {
          * @param position
          */
         void onMessageRevocation(int position);
+
+        /**
+         * 识别内容回调
+         *
+         * @param obj
+         * @param arg1
+         */
+        void onIdentifiedContentResult(Object obj, int arg1);
     }
 }

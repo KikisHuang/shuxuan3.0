@@ -9,9 +9,17 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.alibaba.idst.nui.CommonUtils;
+import com.alibaba.idst.nui.Constants;
+import com.alibaba.idst.nui.INativeFileTransCallback;
+import com.alibaba.idst.nui.NativeNui;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AliASRBean;
+import com.gxdingo.sg.bean.DialogParam;
+import com.gxdingo.sg.bean.NlsConfig;
+import com.gxdingo.sg.bean.ParamsBean;
 import com.gxdingo.sg.biz.AudioModelListener;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -31,6 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.text.TextUtils.isEmpty;
 import static anetwork.channel.monitor.Monitor.stop;
@@ -70,9 +81,19 @@ public class AudioModel {
 
     public static AudioModel instance;
 
+    //阿里云录音文件识别实例
+    private NativeNui nui_instance = new NativeNui();
+
+    private List<String> task_list = new ArrayList<String>();
+
+    private int MAX_TASKS = 1;
+
+    private Handler mHandler;
+
     private AudioModel() {
         mHanderThread = new HandlerThread("process_thread");
         mHanderThread.start();
+        mHandler = new Handler(mHanderThread.getLooper());
     }
 
     public static AudioModel getInstance() {
@@ -272,4 +293,121 @@ public class AudioModel {
             LogUtils.i("删除录音失败");
     }
 
+    /**
+     * 初始化aliyun实例
+     *
+     * @param context
+     * @param iNativeFileTransCallback
+     */
+    public void initAliyunNui(Context context, String token, INativeFileTransCallback iNativeFileTransCallback) {
+
+        //这里主动调用完成SDK配置文件的拷贝
+        if (CommonUtils.copyAssetsData(context)) {
+            Log.i(TAG, "copy assets data done");
+        } else {
+            Log.i(TAG, "copy assets failed");
+            return;
+        }
+        //获取工作路径
+        String assets_path = CommonUtils.getModelPath(context);
+        LogUtils.i("use workspace " + assets_path);
+
+        String debug_path = context.getExternalCacheDir().getAbsolutePath() + "/debug_" + System.currentTimeMillis();
+        boolean create = createOrExistsDir(debug_path);
+
+        //初始化SDK，注意用户需要在Auth.getAliYunTicket中填入相关ID信息才可以使用。
+        int ret = nui_instance.initialize(iNativeFileTransCallback, genInitParams(assets_path, "", token), Constants.LogLevel.LOG_LEVEL_VERBOSE);
+
+      /*  if (ret == Constants.NuiResultCode.SUCCESS) {
+            mInit = true;
+        }*/
+
+        //设置相关识别参数，具体参考API文档
+        nui_instance.setParams(genParams());
+    }
+
+
+    private String genInitParams(String workpath, String debugpath, String token) {
+        String str = "";
+
+        ParamsBean paramsBean = new ParamsBean(LocalConstant.VOICE_APPKEY, token, "https://nls-gateway.cn-shanghai.aliyuncs.com/stream/v1/FlashRecognizer", getUniqueDeviceId(), workpath, debugpath);
+
+        str = GsonUtil.gsonToStr(paramsBean);
+
+        LogUtils.i("InsideUserContext:" + str);
+        return str;
+    }
+
+    private String genParams() {
+        String params = "";
+        try {
+            JSONObject nls_config = new JSONObject();
+
+            JSONObject tmp = new JSONObject();
+            tmp.put("nls_config", nls_config);
+//            如果有HttpDns则可进行设置
+//            tmp.put("direct_ip", Utils.getDirectIp());
+            params = tmp.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
+    }
+
+    /**
+     * 获取语音识别text ，将数组拼为text
+     *
+     * @param context
+     * @param sentences
+     */
+    public void getASRText(Context context, List<AliASRBean.FlashResultBean.SentencesBean> sentences, CustomResultListener customResultListener) {
+
+        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (AliASRBean.FlashResultBean.SentencesBean data : sentences) {
+                stringBuilder.append(data.getText());
+            }
+            e.onNext(stringBuilder.toString());
+            e.onComplete();
+        }), (LifecycleProvider) context).subscribe(o -> {
+            if (customResultListener != null)
+                customResultListener.onResult(o);
+
+        });
+    }
+
+    /**
+     * 阿里云语音识别
+     *
+     * @param mVoiceUrl
+     */
+    public void aliYunStartFileTranscriber(String mVoiceUrl) {
+
+        mHandler.post(() -> {
+            synchronized (task_list) {
+                task_list.clear();
+                for (int i = 0; i < MAX_TASKS; i++) {
+                    byte[] task_id = new byte[32];
+                    int ret = nui_instance.startFileTranscriber(genDialogParams(mVoiceUrl), task_id);
+                    String taskId = new String(task_id);
+                    task_list.add(taskId);
+                    LogUtils.i("start task id " + taskId + " done with " + ret);
+                }
+            }
+        });
+    }
+
+
+    private String genDialogParams(CharSequence mVoiceUrl) {
+        String params = "";
+
+        NlsConfig config = new NlsConfig("aac");
+
+        LogUtils.w("识别语音路径  ====  " + mVoiceUrl);
+
+        DialogParam dialogParam = new DialogParam((String) mVoiceUrl, config);
+        params = GsonUtil.gsonToStr(dialogParam);
+        LogUtils.i("dialog params: " + params);
+        return params;
+    }
 }

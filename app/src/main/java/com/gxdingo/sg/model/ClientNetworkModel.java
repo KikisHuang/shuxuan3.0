@@ -77,6 +77,7 @@ import static com.gxdingo.sg.http.ClientApi.TASK_COMPLETE;
 import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
 import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
 import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
+import static com.gxdingo.sg.http.ClientApi.VOICE_TOKEN;
 import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
 import static com.gxdingo.sg.http.ClientApi.WALLET_UNBINDING;
 import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
@@ -1810,5 +1811,53 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
+    }
+
+    /**
+     * 获取语音token
+     *
+     * @param context
+     */
+    public void getVoiceToken(Context context, CustomResultListener customResultListener) {
+
+//        if (netWorkListener != null)
+//            netWorkListener.onStarts();
+
+
+        Observable<UserBean> observable = HttpClient.post(VOICE_TOKEN)
+                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+                if (customResultListener != null)
+                    customResultListener.onResult(null);
+
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
+
+                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+
+                    if (customResultListener != null)
+                        customResultListener.onResult(userBean.getToken());
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
     }
 }

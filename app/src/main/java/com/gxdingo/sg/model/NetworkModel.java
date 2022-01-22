@@ -37,9 +37,13 @@ import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
+import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.callback.DownloadProgressCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
+import com.zhouyou.http.request.DownloadRequest;
+import com.zhouyou.http.subsciber.DownloadSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,9 +51,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
@@ -69,12 +76,14 @@ import static com.gxdingo.sg.http.Api.USER_LOGOUT;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
+import static com.gxdingo.sg.utils.LocalConstant.AAC;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.StoreLocalConstant.INVITATION_CODE;
+import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.oneDecimal;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -913,6 +922,24 @@ public class NetworkModel {
 
     }
 
+
+    /**
+     * 下载文件
+     *  @param path
+     * @param callBack
+     * @param mDownloadDisp
+     * @param filePath
+     * @param fileName
+     */
+    public void downloadFile(String path, DownloadProgressCallBack callBack, Disposable mDownloadDisp, String filePath, String fileName) {
+
+        DownloadRequest request = EasyHttp.downLoad(path)
+                .savePath(filePath)
+                .saveName(fileName);//不设置默认名字是时间戳生成的
+
+        mDownloadDisp = request.execute(callBack);
+    }
+
     /**
      * 数据处理
      */
@@ -1218,7 +1245,7 @@ public class NetworkModel {
         map.put("side", side);
         map.put("imageUrl", imgUrl);
 
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         Observable<IdCardOCRBean> observable = HttpClient.post(EXTRA_IDCARDOCR, map)
@@ -1233,11 +1260,10 @@ public class NetworkModel {
                 BaseLogUtils.e(e);
                 customResultListener.onResult(null);
 
-                if (netWorkListener != null){
+                if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
 
 
             }

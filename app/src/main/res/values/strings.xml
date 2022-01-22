@@ -65,6 +65,7 @@
     <string name="not_get_voice_player_url">没有获取到音频播放路径</string>
     <string name="audio_play_error">音频播放异常</string>
     <string name="please_get_recording_permissions">请获取录音权限</string>
+    <string name="please_get_read_write_permissions">请获文件取读写权限</string>
     <string name="payment_succeed" />
     <string name="service_agreement_and_privacy_policy">服务协议和隐私政策</string>
     <string name="not_to_use">暂不使用</string>
@@ -97,5 +98,6 @@
     <string name="turn_the_text">转文字</string>
     <string name="address_info">地址信息</string>
     <string name="no_get__mobile_phone_number">没有获取到手机号码</string>
+    <string name="speech_recognition_failure">语音识别失败</string>
 
 </resources>
