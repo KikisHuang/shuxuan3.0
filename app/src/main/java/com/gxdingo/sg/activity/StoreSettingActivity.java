@@ -37,7 +37,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
- * @date: 2021/11/10
+ * @date: 2022/1/22
  * @page:
  */
 public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.StoreSettingsPresenter> implements StoreSettingsContract.StoreSettingsListener {
@@ -132,7 +132,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
 
     @Override
     protected void init() {
-        title_layout.setTitleText("店铺设置");
+        title_layout.setTitleText("信息管理");
     }
 
     @Override

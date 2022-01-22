@@ -166,14 +166,6 @@ public class IMChatContract {
          */
         void voiceToText(String content, int position);
 
-        /**
-         * 检测读写权限
-         *
-         * @param rxPermissions
-         * @param content
-         * @param position
-         */
-        void checkReadWritePermission(RxPermissions rxPermissions, String content, int position);
     }
 
     public interface IMChatListener {

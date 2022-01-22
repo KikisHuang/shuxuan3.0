@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         app:cardCornerRadius="6dp"
-        app:cardElevation="2dp"
+        app:cardElevation="1dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

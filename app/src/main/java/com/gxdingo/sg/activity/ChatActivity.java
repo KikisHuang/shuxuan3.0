@@ -1022,7 +1022,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                             //撤回
                             getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
                         } else if (type == 2) {
-//                            getP().checkReadWritePermission(getRxPermissions(),((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), position);
                             getP().voiceToText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), position);
                         }
 

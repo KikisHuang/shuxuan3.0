@@ -4,316 +4,441 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/module_gradient_client_user_home">
+    android:background="@color/grayf6">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dp_10">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/btn_scan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:src="@drawable/module_svg_scan"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="-5dp"
+                android:background="@drawable/bg_mine_top" />
 
-            <TextView
-                android:id="@+id/username_stv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:textColor="#262626"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@+id/avatar_cimg"
-                app:layout_constraintStart_toEndOf="@+id/avatar_cimg"
-                app:layout_constraintTop_toTopOf="@+id/avatar_cimg"
-                tools:text="Siwuliu" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/capital_panel_cl"
                 android:layout_width="match_parent"
-                android:layout_height="136dp"
-                android:layout_marginTop="13dp"
-                android:background="@drawable/module_bg_mine_capital"
-                app:layout_constraintTop_toBottomOf="@+id/username_stv">
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dp_10">
 
-                <TextView
-                    android:id="@+id/my_balance_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="23dp"
-                    android:text="我的余额"
-                    android:textColor="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
+                <ImageView
+                    android:id="@+id/btn_qr_code"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="15dp"
+                    android:src="@drawable/module_svg_qr_code_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/check_bill_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/module_bg_shape_check_bill"
-                    android:paddingHorizontal="3dp"
-                    android:paddingVertical="1dp"
-                    android:text="查看账单"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/my_balance_text"
-                    app:layout_constraintStart_toEndOf="@+id/my_balance_text"
-                    app:layout_constraintTop_toTopOf="@+id/my_balance_text" />
-
-
-                <RelativeLayout
-                    android:id="@+id/balance_rl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:clipChildren="false"
-                    app:layout_constraintStart_toStartOf="@+id/my_balance_text"
-                    app:layout_constraintTop_toBottomOf="@+id/my_balance_text">
-
-                    <TextView
-                        android:id="@+id/rmb_symbol"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@+id/balance_tv"
-                        android:text="￥"
-                        android:textColor="@color/white" />
-
-                    <TextView
-                        android:id="@+id/balance_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/rmb_symbol"
-                        android:text="0.00"
-                        android:textColor="@color/white"
-                        android:textSize="26sp" />
-
-
-                </RelativeLayout>
-
-                <com.allen.library.SuperTextView
-                    android:id="@+id/btn_cash"
-                    android:layout_width="75dp"
-                    android:layout_height="23dp"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintStart_toStartOf="@+id/balance_rl"
-                    app:layout_constraintTop_toBottomOf="@+id/balance_rl"
-                    app:sBackgroundDrawableRes="@drawable/module_shape_bg_light_green_11r"
-                    app:sDividerLineType="none"
-                    app:sLeftTextColor="@color/white"
-                    app:sLeftTextSize="12sp"
-                    app:sLeftTextString="去提现"
-                    app:sLeftViewMarginRight="@dimen/dp_10"
-                    app:sRightIconMarginRight="6dp"
-                    app:sRightIconRes="@drawable/module_svg_bg_white_green_arrow_right" />
-
-
-                <com.allen.library.SuperTextView
-                    android:id="@+id/check_internal_stv"
-                    android:layout_width="70dp"
-                    android:layout_height="23dp"
-                    android:layout_marginStart="2dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/btn_cash"
-                    app:layout_constraintEnd_toEndOf="@+id/internal_tv"
-                    app:layout_constraintTop_toTopOf="@+id/btn_cash"
-                    app:sDividerLineType="none"
-                    app:sLeftTextColor="@color/white"
-                    app:sLeftTextSize="12sp"
-                    app:sLeftTextString="去查看"
-                    app:sLeftViewMarginRight="0dp"
-                    app:sRightIconMarginRight="0dp"
-                    app:sRightIconRes="@drawable/module_svg_bg_white_green_arrow_right" />
-
+                <ImageView
+                    android:id="@+id/btn_scan"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/module_svg_scan"
+                    app:layout_constraintBottom_toBottomOf="@+id/btn_qr_code"
+                    app:layout_constraintRight_toLeftOf="@+id/btn_qr_code"
+                    app:layout_constraintTop_toTopOf="@+id/btn_qr_code" />
 
                 <TextView
-                    android:id="@+id/internal_text"
+                    android:id="@+id/username_stv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
-                    android:text="可用积分"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/my_balance_text" />
-
-                <TextView
-                    android:id="@+id/internal_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="@color/white"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/graye2e2e2"
                     android:textSize="20sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/balance_rl"
-                    app:layout_constraintEnd_toEndOf="@+id/internal_text"
-                    app:layout_constraintTop_toTopOf="@+id/balance_rl" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_qr_code"
+                    tools:text="金源便利店" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/module_svg_right_arrow_8934"
+                    app:layout_constraintBottom_toBottomOf="@+id/username_stv"
+                    app:layout_constraintStart_toEndOf="@+id/username_stv"
+                    app:layout_constraintTop_toTopOf="@+id/username_stv" />
+
+
+                <TextView
+                    android:id="@+id/secondary_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="商店 | 送水 08:30-21:30"
+                    android:textColor="@color/graya9a9a9"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/username_stv"
+                    app:layout_constraintTop_toBottomOf="@+id/username_stv" />
+
+                <ImageView
+                    android:id="@+id/authentication_img"
+                    android:layout_width="74dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/module_svg_authentication"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/secondary_tv" />
+
+                <ImageView
+                    android:id="@+id/real_name_img"
+                    android:layout_width="74dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/module_svg_real_name"
+                    app:layout_constraintLeft_toRightOf="@+id/authentication_img"
+                    app:layout_constraintTop_toBottomOf="@+id/secondary_tv" />
+
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/avatar_cimg"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="60dp"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/module_svg_client_default_avatar"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/capital_panel_cl"
+                    android:layout_width="match_parent"
+                    android:layout_height="136dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/module_bg_mine_capital"
+                    app:layout_constraintTop_toBottomOf="@+id/authentication_img">
+
+                    <TextView
+                        android:id="@+id/my_balance_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="23dp"
+                        android:drawableRight="@drawable/module_svg_right_arrow_green"
+                        android:drawablePadding="10dp"
+                        android:text="我的余额"
+                        android:textColor="#2D5528"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <RelativeLayout
+                        android:id="@+id/balance_rl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:clipChildren="false"
+                        app:layout_constraintStart_toStartOf="@+id/my_balance_text"
+                        app:layout_constraintTop_toBottomOf="@+id/my_balance_text">
+
+                        <TextView
+                            android:id="@+id/rmb_symbol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/balance_tv"
+                            android:text="￥"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/balance_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/rmb_symbol"
+                            android:text="0.00"
+                            android:textColor="@color/white"
+                            android:textSize="26sp" />
+
+
+                    </RelativeLayout>
+
+                    <com.allen.library.SuperTextView
+                        android:id="@+id/btn_cash"
+                        android:layout_width="75dp"
+                        android:layout_height="23dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="@+id/balance_rl"
+                        app:layout_constraintTop_toBottomOf="@+id/balance_rl"
+                        app:sDividerLineType="none"
+                        app:sLeftTextColor="@color/white"
+                        app:sLeftTextSize="12sp"
+                        app:sLeftTextString="去提现"
+                        app:sLeftViewMarginRight="@dimen/dp_10"
+                        app:sRightIconMarginRight="6dp"
+                        app:sRightIconRes="@drawable/module_svg_bg_green_white_arrow_right" />
+
+
+                    <com.allen.library.SuperTextView
+                        android:id="@+id/check_internal_stv"
+                        android:layout_width="70dp"
+                        android:layout_height="23dp"
+                        android:layout_marginStart="2dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_cash"
+                        app:layout_constraintEnd_toEndOf="@+id/internal_tv"
+                        app:layout_constraintTop_toTopOf="@+id/btn_cash"
+                        app:sDividerLineType="none"
+                        app:sLeftTextColor="@color/white"
+                        app:sLeftTextSize="12sp"
+                        app:sLeftTextString="去查看"
+                        app:sLeftViewMarginRight="0dp"
+                        app:sRightIconMarginRight="0dp"
+                        app:sRightIconRes="@drawable/module_svg_bg_green_white_arrow_right" />
+
+
+                    <TextView
+                        android:id="@+id/internal_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="32dp"
+                        android:text="可用积分"
+                        android:textColor="#2D5528"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/my_balance_text" />
+
+                    <TextView
+                        android:id="@+id/internal_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/balance_rl"
+                        app:layout_constraintEnd_toEndOf="@+id/internal_text"
+                        app:layout_constraintTop_toTopOf="@+id/balance_rl" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/avatar_cimg"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="30dp"
-                android:src="@drawable/module_svg_client_default_avatar"
-                app:civ_border_color="@color/white"
-                app:civ_border_width="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        </FrameLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/coupon_img"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="-5dp"
+            android:background="@drawable/bg_mine_coupon" />
 
-
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/activity_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="@dimen/dp20"
-            android:orientation="horizontal">
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="5dp"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <LinearLayout
-                android:id="@+id/ll_address_manage"
-                android:layout_width="0dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_recycler"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_address_manage" />
+        </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="地址管理"
-                    android:textColor="#1F1F1F" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_account_security"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_account_security" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="账户安全"
-                    android:textColor="#1F1F1F" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_contract_server"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_contract_server" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="联系客服"
-                    android:textColor="#1F1F1F" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_about_us"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/module_svg_client_about_us" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="7dp"
-                    android:text="关于我们"
-                    android:textColor="#1F1F1F" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <com.allen.library.SuperTextView
-            android:id="@+id/fill_invitation_code_stv"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:sDividerLineType="none"
-            app:sLeftIconMarginLeft="27dp"
-            app:sLeftIconRes="@drawable/module_svg_fill_invitation_code"
-            app:sLeftTextColor="#1F1F1F"
-            app:sLeftTextSize="16sp"
-            app:sLeftTextString="填写邀请码"
-            app:sRightIconMarginRight="20dp"
-            app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.allen.library.SuperTextView
-            android:id="@+id/private_protocol_stv"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:sDividerLineType="none"
-            app:sLeftIconHeight="19dp"
-            app:sLeftIconMarginLeft="27dp"
-            app:sLeftIconRes="@mipmap/ic_client_private_protocol"
-            app:sLeftIconWidth="17dp"
-            app:sLeftTextColor="#1F1F1F"
-            app:sLeftTextSize="16sp"
-            app:sLeftTextString="隐私协议"
-            app:sRightIconMarginRight="20dp"
-            app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.allen.library.SuperTextView
-            android:id="@+id/logout_stv"
+                <com.allen.library.SuperTextView
+                    android:id="@+id/address_manage_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sBottomDividerLineMarginLR="20dp"
+                    app:sDividerLineColor="@color/grayf6"
+                    app:sDividerLineHeight="0.5dp"
+                    app:sDividerLineType="bottom"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_address_manage"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="地址管理"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+
+                <com.allen.library.SuperTextView
+                    android:id="@+id/account_security_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sDividerLineType="none"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_account_security"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="账户安全"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/fill_invitation_code_cardview"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:sDividerLineType="none"
-            app:sLeftIconHeight="19dp"
-            app:sLeftIconMarginLeft="27dp"
-            app:sLeftIconRes="@mipmap/ic_client_logoutl"
-            app:sLeftIconWidth="17dp"
-            app:sLeftTextColor="#1F1F1F"
-            app:sLeftTextSize="16sp"
-            app:sLeftTextString="退出登录"
-            app:sRightIconMarginRight="20dp"
-            app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.allen.library.SuperTextView
+                android:id="@+id/fill_invitation_code_stv"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:sDividerLineType="none"
+                app:sLeftIconMarginLeft="25dp"
+                app:sLeftIconRes="@drawable/module_svg_fill_invitation_code"
+                app:sLeftTextColor="#1F1F1F"
+                app:sLeftTextSize="16sp"
+                app:sLeftTextString="填写邀请码"
+                app:sLeftViewMarginLeft="@dimen/dp20"
+                app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.allen.library.SuperTextView
+                    android:id="@+id/auth_info_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sBottomDividerLineMarginLR="20dp"
+                    app:sDividerLineColor="@color/grayf6"
+                    app:sDividerLineHeight="0.5dp"
+                    app:sDividerLineType="bottom"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_auth_info"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="认证信息"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+                <com.allen.library.SuperTextView
+                    android:id="@+id/settle_protocol_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sBottomDividerLineMarginLR="20dp"
+                    app:sDividerLineColor="@color/grayf6"
+                    app:sDividerLineHeight="0.5dp"
+                    app:sDividerLineType="bottom"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_private_protocol"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="树选协议"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+                <com.allen.library.SuperTextView
+                    android:id="@+id/contract_server_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sBottomDividerLineMarginLR="20dp"
+                    app:sDividerLineColor="@color/grayf6"
+                    app:sDividerLineHeight="0.5dp"
+                    app:sDividerLineType="bottom"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_auth_info"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="联系客服"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+                <com.allen.library.SuperTextView
+                    android:id="@+id/about_us_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sBottomDividerLineMarginLR="20dp"
+                    app:sDividerLineColor="@color/grayf6"
+                    app:sDividerLineHeight="0.5dp"
+                    app:sDividerLineType="bottom"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_store_auth_info"
+                    app:sLeftTextColor="#1F1F1F"
+                    app:sLeftTextSize="15sp"
+                    app:sLeftTextString="关于我们"
+                    app:sLeftViewMarginLeft="@dimen/dp20"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.allen.library.SuperTextView
+                android:id="@+id/logout_stv"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:sDividerLineType="none"
+                app:sLeftIconHeight="19dp"
+                app:sLeftIconMarginLeft="25dp"
+                app:sLeftIconRes="@drawable/module_svg_store_logout"
+                app:sLeftIconWidth="17dp"
+                app:sLeftTextColor="#1F1F1F"
+                app:sLeftTextSize="16sp"
+                app:sLeftTextString="退出登录"
+                app:sLeftViewMarginLeft="@dimen/dp20"
+                app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
+
+        </androidx.cardview.widget.CardView>
+
 
         <com.youth.banner.Banner
             android:id="@+id/mine_banner"
@@ -327,7 +452,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10" />
-
 
     </LinearLayout>
 

@@ -3,12 +3,15 @@ package com.gxdingo.sg.fragment.client;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +23,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ClientAccountRecordActivity;
@@ -30,9 +34,12 @@ import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
+import com.gxdingo.sg.activity.StoreAuthInfoActivity;
+import com.gxdingo.sg.activity.StoreSettingActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCouponAdapter;
 import com.gxdingo.sg.adapter.HomePageBannerAdapter;
+import com.gxdingo.sg.adapter.MineActivityAdapter;
 import com.gxdingo.sg.adapter.MineBannerAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientMineBean;
@@ -45,14 +52,21 @@ import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.view.GridRecyclerDecoration;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.crashreport.biz.UserInfoBean;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
 import com.youth.banner.holder.BannerImageHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -65,6 +79,8 @@ import static com.gxdingo.sg.http.ClientApi.WEB_URL;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -76,7 +92,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener, OnItemChildClickListener {
+public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.ClientMinePresenter> implements ClientMineContract.ClientMineListener, OnItemClickListener, OnItemChildClickListener {
 
 
     @BindView(R.id.avatar_cimg)
@@ -91,18 +107,24 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.internal_tv)
     public TextView internal_tv;
 
-    @BindView(R.id.fill_invitation_code_stv)
-    public SuperTextView fill_invitation_code_stv;
-
     @BindView(R.id.mine_banner)
     public Banner mine_banner;
 
     @BindView(R.id.cash_coupon_rv)
     public RecyclerView cash_coupon_rv;
 
+    @BindView(R.id.activity_recycler)
+    public RecyclerView activity_recycler;
+
+    @BindView(R.id.fill_invitation_code_cardview)
+    public CardView fill_invitation_code_cardview;
+
     private ClientCouponAdapter mAdapter;
+    private MineActivityAdapter mAcAdapter;
 
     private String integralLink = "";
+
+    private BasePopupView mPhotoPopupView;
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -150,7 +172,21 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         mAdapter = new ClientCouponAdapter();
         cash_coupon_rv.setAdapter(mAdapter);
         cash_coupon_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
-        mAdapter.setOnItemChildClickListener(this);
+
+        mAcAdapter = new MineActivityAdapter();
+        activity_recycler.setAdapter(mAcAdapter);
+        activity_recycler.setLayoutManager(new GridLayoutManager(reference.get(), 2));
+//        activity_recycler.addItemDecoration(new GridRecyclerDecoration(1, getc(R.color.grayf6)));
+        mAcAdapter.setOnItemClickListener(this);
+
+        List<String> arrayList = new ArrayList<>();
+
+        arrayList.add("");
+        arrayList.add("");
+        arrayList.add("");
+        arrayList.add("");
+
+        mAcAdapter.setList(arrayList);
 
     }
 
@@ -186,7 +222,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             userBean.setInviterId(1);
             UserInfoUtils.getInstance().saveUserInfo(userBean);
 
-            fill_invitation_code_stv.setVisibility(View.GONE);
+            fill_invitation_code_cardview.setVisibility(View.GONE);
             getP().getUserInfo();
         }
 
@@ -233,40 +269,54 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         }
     }
 
-    @OnClick({R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.check_bill_tv, R.id.btn_cash, R.id.ll_address_manage, R.id.ll_account_security
-            , R.id.ll_contract_server, R.id.ll_about_us, R.id.fill_invitation_code_stv, R.id.private_protocol_stv, R.id.logout_stv})
+    @OnClick({R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
+            , R.id.contract_server_stv, R.id.about_us_stv, R.id.fill_invitation_code_stv, R.id.settle_protocol_stv, R.id.logout_stv})
     public void onClickViews(View v) {
         switch (v.getId()) {
+            case R.id.auth_info_stv:
+                goToPage(getContext(), StoreAuthInfoActivity.class, null);
+                break;
             case R.id.btn_scan:
                 getP().scan(getRxPermissions());
                 break;
             case R.id.avatar_cimg:
-            case R.id.username_stv:
-                ShareAnimaStartPages(getContext(), avatar_cimg, "userAvatar", ClientPersonalDataActivity.class, null);
+                if (mPhotoPopupView == null) {
+                    mPhotoPopupView = new XPopup.Builder(reference.get())
+                            .isDarkTheme(false)
+                            .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
+                                getP().photoItemClick(pos);
+                            })).show();
+                } else
+                    mPhotoPopupView.show();
+
                 break;
-            case R.id.check_bill_tv:
+            case R.id.secondary_tv:
+            case R.id.username_stv:
+                goToPage(getContext(), StoreSettingActivity.class, null);
+                break;
+            case R.id.my_balance_text:
                 goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
             case R.id.btn_cash:
                 goToPage(getContext(), ClientCashActivity.class, getIntentMap(new String[]{balance_tv.getText().toString()}));
                 break;
-            case R.id.ll_address_manage:
+            case R.id.address_manage_stv:
                 goToPage(getContext(), ClientAddressListActivity.class, null);
                 break;
-            case R.id.ll_account_security:
+            case R.id.account_security_stv:
                 goToPage(getContext(), ClientAccountSecurityActivity.class, null);
                 break;
-            case R.id.ll_contract_server:
+            case R.id.contract_server_stv:
                 String url = WEB_URL + ClientApi.SERVER_URL;
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
                 break;
-            case R.id.ll_about_us:
+            case R.id.about_us_stv:
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about our"}));
                 break;
             case R.id.fill_invitation_code_stv:
                 goToPage(getContext(), ClientFillInvitationCodeActivity.class, null);
                 break;
-            case R.id.private_protocol_stv:
+            case R.id.settle_protocol_stv:
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanyonghuxieyi"}));
 //                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true,0, CLIENT_PRIVACY_AGREEMENT_KEY}));
                 break;
@@ -291,12 +341,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     public void changeAvatar(Object o) {
-
+        String a = (String) o;
+        Glide.with(reference.get()).load(TextUtils.isEmpty(a) ? R.drawable.module_svg_client_default_avatar : a).apply(GlideUtils.getInstance().getCircleCrop()).into(avatar_cimg);
     }
 
     private void checkShowFillCode() {
         if (UserInfoUtils.getInstance().getUserInfo().getInviterId() != 0)
-            fill_invitation_code_stv.setVisibility(View.GONE);
+            fill_invitation_code_cardview.setVisibility(View.GONE);
     }
 
     @Override
@@ -356,5 +407,19 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
         goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mPhotoPopupView != null) {
+            mPhotoPopupView.destroy();
+            mPhotoPopupView = null;
+        }
     }
 }

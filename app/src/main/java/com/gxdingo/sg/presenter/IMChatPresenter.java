@@ -863,37 +863,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         }
     }
 
-    @Override
-    public void checkReadWritePermission(RxPermissions rxPermissions, String content, int position) {
-
-        if (commonModel != null) {
-            commonModel.checkPermission(rxPermissions, new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, new PermissionsListener() {
-                @Override
-                public void onNext(boolean value) {
-
-                    if (isBViewAttached()) {
-                        if (!value)
-                            getBV().onMessage(gets(R.string.please_get_read_write_permissions));
-                        else
-                            voiceToText(content, position);
-
-                    }
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
-        }
-
-    }
-
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 100) {

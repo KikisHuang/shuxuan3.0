@@ -319,7 +319,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         }
 
-        ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.home_page_layout || v.getId() == R.id.business_layout || v.getId() == R.id.message_layout ? R.color.grayf5 : R.color.white).init();
+        if (v.getId() == R.id.mine_layout)
+            ImmersionBar.with(reference.get()).init();
+        else
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.home_page_layout || v.getId() == R.id.business_layout || v.getId() == R.id.message_layout ? R.color.grayf5 : R.color.white).init();
+
 
         switch (v.getId()) {
             case R.id.home_page_layout:
