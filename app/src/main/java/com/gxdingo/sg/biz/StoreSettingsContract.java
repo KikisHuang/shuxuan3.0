@@ -34,6 +34,8 @@ public class StoreSettingsContract {
         void deliveryScope(String scope);
 
         void getAuthInfo();
+
+        void updateBusinessStatus(int code);
     }
 
     public interface StoreSettingsListener{
@@ -43,5 +45,7 @@ public class StoreSettingsContract {
         void onQRResult(StoreQRCodeBean qrCodeBean);
 
         void onDistanceResult(List<DistanceBean> distanceBeans);
+
+        void changeBusinessStatus(int status);
     }
 }

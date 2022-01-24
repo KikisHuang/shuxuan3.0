@@ -254,7 +254,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
         if (isEmpty(cashInfoBean.getAlipay())) {
             binding_ali_stv.setRightString("去绑定");
-            binding_ali_stv.setRightTextColor(getc(R.color.blue_text));
+            binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
         } else {
             binding_ali_stv.setRightString("解绑");
             binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
@@ -262,7 +262,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
         if (isEmpty(cashInfoBean.getWechat())) {
             binding_wechat_stv.setRightString("去绑定");
-            binding_wechat_stv.setRightTextColor(getc(R.color.blue_text));
+            binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));
         } else {
             binding_wechat_stv.setRightString("解绑");
             binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));

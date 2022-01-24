@@ -120,10 +120,10 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
         return R.layout.module_activity_address_list;
     }
 
-    @OnClick({R.id.txt_more, R.id.current_location_tv, R.id.location_name_tv})
+    @OnClick({R.id.add_new_address_tv, R.id.current_location_tv, R.id.location_name_tv})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.txt_more:
+            case R.id.add_new_address_tv:
                 goToPage(this, ClientNewAddressActivity.class, null);
                 break;
             case R.id.current_location_tv:
@@ -149,7 +149,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     protected void init() {
         selectType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
         title_layout.setTitleText(gets(R.string.receiving_address));
-        title_layout.setMoreText(gets(R.string.add_address));
+
         mAdapter = new ClientAddressAdapter();
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
@@ -243,15 +243,6 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return null;
-    }
-
-    @Override
-    public int getGender() {
-        return 0;
-    }
 
     @Override
     public LatLonPoint getPoint() {

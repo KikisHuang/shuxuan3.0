@@ -1039,7 +1039,7 @@ public class ClientNetworkModel {
 
         map.put(Constant.NAME, contact);
 
-        map.put(Constant.GENDER, String.valueOf(gender));
+        //map.put(Constant.GENDER, String.valueOf(gender));
 
         map.put(ClientLocalConstant.REGIONPATH, regionPath);
 
@@ -1047,7 +1047,7 @@ public class ClientNetworkModel {
 
         map.put(ClientLocalConstant.DOORPLATE, doorplate);
 
-        map.put(LocalConstant.TAG, labelString);
+        //map.put(LocalConstant.TAG, labelString);
 
         map.put(LocalConstant.LATITUDE, String.valueOf(point.getLatitude()));
 

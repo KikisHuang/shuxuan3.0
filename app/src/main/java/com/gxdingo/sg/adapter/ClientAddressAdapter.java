@@ -30,7 +30,6 @@ public class ClientAddressAdapter extends BaseQuickAdapter<AddressBean, BaseView
         TextView tv_receiver = baseViewHolder.getView(R.id.tv_receiver);
         TextView tv_phone_number = baseViewHolder.getView(R.id.tv_phone_number);
         TextView tv_address = baseViewHolder.getView(R.id.tv_address);
-        TextView tv_label = baseViewHolder.getView(R.id.tv_label);
 
         tv_receiver.setText(!isEmpty(addressBean.getName()) ? addressBean.getName() : "");
 
@@ -38,18 +37,5 @@ public class ClientAddressAdapter extends BaseQuickAdapter<AddressBean, BaseView
 
         tv_address.setText(addressBean.getStreet() +" "+ addressBean.getDoorplate());
 
-        tv_label.setText(!isEmpty(addressBean.getTag()) ? addressBean.getTag() : "");
-
-//        switch (addressBean.getTag()) {
-//            case "公司":
-//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_black));
-//                break;
-//            case "家":
-//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_green));
-//                break;
-//            case "学校":
-//                tv_label.setBackground(getd(R.drawable.module_shape_address_label_blue));
-//                break;
-//        }
     }
 }

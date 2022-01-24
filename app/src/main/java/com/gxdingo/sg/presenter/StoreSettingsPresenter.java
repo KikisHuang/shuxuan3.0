@@ -209,6 +209,19 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
     }
 
     @Override
+    public void updateBusinessStatus(int status) {
+
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateBusinessStatus(getContext(), status, o -> {
+
+
+                if (isViewAttached())
+                    getV().changeBusinessStatus(status);
+            });
+
+    }
+
+    @Override
     public void onResult(List<LocalMedia> result) {
         String url = getPhotoUrl(result.get(0));
 

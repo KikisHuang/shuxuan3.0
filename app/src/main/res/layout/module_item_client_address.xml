@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10">
+    android:background="@color/white"
+    android:paddingHorizontal="@dimen/dp20"
+    android:paddingVertical="@dimen/dp15">
 
     <TextView
         android:id="@+id/tv_receiver"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="12dp"
-        android:textColor="@color/text_secondary4"
+        android:textColor="@color/graye2e2e2"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,77 +22,36 @@
         android:id="@+id/tv_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:textColor="@color/text_secondary4"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/graye2e2e2"
         app:layout_constraintBottom_toBottomOf="@+id/tv_receiver"
         app:layout_constraintStart_toEndOf="@+id/tv_receiver"
         app:layout_constraintTop_toTopOf="@+id/tv_receiver"
         tools:text="13764645588" />
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/tv_default"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="18dp"-->
-    <!--        android:text="默认"-->
-    <!--        android:textColor="@color/pink_dominant_tone"-->
-    <!--        android:textSize="12sp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="@+id/tv_phone_number"-->
-    <!--        app:layout_constraintStart_toEndOf="@+id/tv_phone_number"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/tv_phone_number" />-->
-    <TextView
-        android:id="@+id/tv_label"
-        android:layout_width="32dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/module_shape_address_label_green"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/tv_receiver"
-        app:layout_constraintTop_toBottomOf="@+id/tv_receiver"
-        tools:text="家" />
 
     <TextView
         android:id="@+id/tv_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="20dp"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="#8A97CE"
-        app:layout_constraintEnd_toStartOf="@+id/btn_edit"
-        app:layout_constraintStart_toEndOf="@+id/tv_label"
-        app:layout_constraintTop_toTopOf="@+id/tv_label"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_label"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/graya9a9a9"
+        app:layout_constraintStart_toStartOf="@+id/tv_receiver"
+        app:layout_constraintTop_toBottomOf="@+id/tv_phone_number"
         tools:text="金源CBD现代城A座13楼1301室" />
 
     <TextView
         android:id="@+id/btn_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
-        android:paddingHorizontal="10dp"
         android:text="@string/text_edit"
-        android:textColor="#202D3B"
+        android:textColor="@color/graya9a9a9"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!--    <view-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="1dp"-->
-    <!--        android:layout_marginTop="13dp"-->
-    <!--        android:background="#EEF0FA"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/tv_label"/>-->
-
-    <View
-        android:id="@+id/vertical_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="13dp"
-        android:background="#EEF0FA"
-        app:layout_constraintTop_toBottomOf="@+id/tv_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

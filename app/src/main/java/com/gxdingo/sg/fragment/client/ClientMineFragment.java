@@ -31,6 +31,7 @@ import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientCashActivity;
 import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
+import com.gxdingo.sg.activity.ClientCouponListActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
@@ -107,19 +108,12 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.internal_tv)
     public TextView internal_tv;
 
-    @BindView(R.id.mine_banner)
-    public Banner mine_banner;
-
-    @BindView(R.id.cash_coupon_rv)
-    public RecyclerView cash_coupon_rv;
-
     @BindView(R.id.activity_recycler)
     public RecyclerView activity_recycler;
 
     @BindView(R.id.fill_invitation_code_cardview)
     public CardView fill_invitation_code_cardview;
 
-    private ClientCouponAdapter mAdapter;
     private MineActivityAdapter mAcAdapter;
 
     private String integralLink = "";
@@ -168,10 +162,6 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     protected void init() {
-
-        mAdapter = new ClientCouponAdapter();
-        cash_coupon_rv.setAdapter(mAdapter);
-        cash_coupon_rv.setLayoutManager(new LinearLayoutManager(reference.get()));
 
         mAcAdapter = new MineActivityAdapter();
         activity_recycler.setAdapter(mAcAdapter);
@@ -269,10 +259,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         }
     }
 
-    @OnClick({R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
+    @OnClick({R.id.coupon_img,R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
             , R.id.contract_server_stv, R.id.about_us_stv, R.id.fill_invitation_code_stv, R.id.settle_protocol_stv, R.id.logout_stv})
     public void onClickViews(View v) {
         switch (v.getId()) {
+            case R.id.coupon_img:
+                goToPage(reference.get(), ClientCouponListActivity.class, null);
+                break;
             case R.id.auth_info_stv:
                 goToPage(getContext(), StoreAuthInfoActivity.class, null);
                 break;
@@ -370,37 +363,21 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         if (!isEmpty(mineBean.integral))
             internal_tv.setText(mineBean.integral);
 
-
-        if (mineBean.getAdsList() != null) {
-
-            mine_banner.setAdapter(new MineBannerAdapter(reference.get(), mineBean.getAdsList()) {
-            });
-        }
-
-        if (mineBean.getCouponList() != null)
-            mAdapter.setList(mineBean.getCouponList());
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (mine_banner != null)
-            mine_banner.start();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mine_banner != null)
-            mine_banner.stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mine_banner != null)
-            mine_banner.destroy();
     }
 
     @Override

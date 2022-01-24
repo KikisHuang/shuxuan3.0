@@ -77,10 +77,6 @@ public class AddressContract {
 
         String getRegionPath();
 
-        String getLabelString();
-
-        int getGender();
-
         LatLonPoint getPoint();
 
         void showDelDialog();

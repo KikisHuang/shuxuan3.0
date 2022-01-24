@@ -34,8 +34,8 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
- * @author: Weaving
- * @date: 2021/10/15
+ * @author: kikis
+ * @date: 2022/1/24
  * @page:
  */
 public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.AddressPresenter> implements AddressContract.AddressListener {
@@ -52,20 +52,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @BindView(R.id.et_contacts)
     public TextView et_contacts;
 
-    @BindView(R.id.iv_sir)
-    public ImageView iv_sir;
-
-    @BindView(R.id.iv_lady)
-    public ImageView iv_lady;
-
     @BindView(R.id.et_mobile)
     public TextView et_mobile;
 
     @BindView(R.id.save_tv)
     public TextView save_tv;
-
-    @BindView(R.id.labels)
-    public LabelsView labels;
 
     @BindView(R.id.del_tv)
     public TextView del_tv;
@@ -77,12 +68,10 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     //类型 1新增 2修改
     private boolean isAdd = false;
 
-    //是否女生
-    private boolean mLady = false;
-
     private String regionPath = "";
 
     private LatLonPoint mPoint;
+
     private String filePath;
 
     @Override
@@ -153,8 +142,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @Override
     protected void init() {
 
-        title_layout.setMoreText(gets(R.string.cancel));
-
         isAdd = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
 
         addressBean = (AddressBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 1);
@@ -173,12 +160,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
         del_tv.setVisibility(isAdd ? View.GONE : View.VISIBLE);
 
-        List<String> label = new ArrayList<>();
-        label.add("家");
-        label.add("公司");
-        label.add("学校");
-
-        labels.setLabels(label);
 
         et_mobile.addTextChangedListener(Watcher);
         et_house_number.addTextChangedListener(Watcher);
@@ -193,7 +174,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         getP().checkCompileInfo();
     }
 
-    @OnClick({R.id.txt_more, R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
+    @OnClick({ R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address,})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -204,19 +185,12 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             case R.id.save_tv:
                 getP().compileOrAdd(isAdd);
                 break;
-            case R.id.txt_more:
             case R.id.title_back:
                 finish();
                 break;
             case R.id.cl_receive_address:
 
                 goToPage(this, SelectAddressActivity.class, null);
-                break;
-            case R.id.ll_selected_sir:
-                selectGender(false);
-                break;
-            case R.id.ll_selected_lady:
-                selectGender(true);
                 break;
         }
     }
@@ -255,12 +229,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         }
     }
 
-    private void selectGender(boolean lady) {
-        mLady = lady;
-        iv_lady.setImageResource(lady ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-        iv_sir.setImageResource(lady ? R.drawable.module_svg_uncheck : R.drawable.module_svg_check);
-    }
-
     TextWatcher Watcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -295,20 +263,9 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             et_contacts.setText(bean.getName());
 
 
-        iv_sir.setImageResource(bean.getGender() == 1 ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-
-        iv_lady.setImageResource(bean.getGender() == 2 ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-
         if (!isEmpty(bean.getMobile()))
             et_mobile.setText(bean.getMobile());
 
-
-        if (labels.getLabels().get(0).equals(bean.getTag()))
-            labels.setSelects(0);
-        else if (labels.getLabels().get(1).equals(bean.getTag()))
-            labels.setSelects(1);
-        else if (labels.getLabels().get(2).equals(bean.getTag()))
-            labels.setSelects(2);
     }
 
     @Override
@@ -352,15 +309,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         return regionPath;
     }
 
-    @Override
-    public String getLabelString() {
-        return (String) labels.getLabels().get(labels.getSelectLabels().get(0));
-    }
-
-    @Override
-    public int getGender() {
-        return mLady ? 2 : 1;
-    }
 
     @Override
     public LatLonPoint getPoint() {

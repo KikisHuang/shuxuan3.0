@@ -331,15 +331,6 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return null;
-    }
-
-    @Override
-    public int getGender() {
-        return 0;
-    }
 
     @Override
     public LatLonPoint getPoint() {

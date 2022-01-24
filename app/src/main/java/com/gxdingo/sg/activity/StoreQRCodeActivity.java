@@ -170,4 +170,9 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
     public void onDistanceResult(List<DistanceBean> distanceBeans) {
 
     }
+
+    @Override
+    public void changeBusinessStatus(int status) {
+
+    }
 }

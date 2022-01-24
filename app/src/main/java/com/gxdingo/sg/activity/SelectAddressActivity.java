@@ -61,6 +61,7 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED;
 import static com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED;
+import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -296,7 +297,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
                     return;
                 }
                 try {
-                    String path = Environment.getExternalStorageDirectory() + "/shuxuan_mapScreenShop_"
+                    String path = getPath() + "/shuxuan_mapScreenShop_"
                             + sdf.format(new Date()) + ".png";
 
                     FileOutputStream fos = new FileOutputStream(path);
@@ -398,15 +399,6 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return null;
-    }
-
-    @Override
-    public int getGender() {
-        return 0;
-    }
 
     @Override
     public LatLonPoint getPoint() {

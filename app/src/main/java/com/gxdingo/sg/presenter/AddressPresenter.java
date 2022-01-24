@@ -90,7 +90,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
         if (!isViewAttached() || clientNetworkModel == null)
             return;
 
-        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), getV().getLabelString(), getV().getPoint(), getV().getGender(), getV().getRegionPath());
+        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), "", getV().getPoint(), 0, getV().getRegionPath());
 
     }
 
