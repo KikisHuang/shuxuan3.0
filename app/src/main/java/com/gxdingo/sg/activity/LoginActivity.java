@@ -343,6 +343,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
             store_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
             store_login_tv.setTextColor(getc(R.color.white));
         }
+        //发送事件修改一键登录页的切换状态
         sendEvent(new IdSwitchEvent(isUserId));
 
     }
