@@ -687,7 +687,6 @@ public class ClientNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-                    resetPage();
                 }
 
             }
@@ -803,10 +802,18 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getBankList(Context context, boolean refresh) {
+    public void getBankList(Context context, boolean refresh, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
 
 
-        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
+        if (refresh)
+            resetPage();
+
+        map.put(LocalConstant.CURRENT, String.valueOf(getPage()));
+
+
+        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO, map)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });
@@ -827,13 +834,17 @@ public class ClientNetworkModel {
             @Override
             public void onNext(ClientCashInfoBean cashInfoBean) {
 
+                if (customResultListener != null)
+                    customResultListener.onResult(cashInfoBean.getBankList());
+                else {
+                    if (netWorkListener != null)
+                        netWorkListener.onData(refresh, cashInfoBean);
+                }
+
                 if (netWorkListener != null) {
-                    netWorkListener.onData(refresh, cashInfoBean);
                     netWorkListener.onAfters();
                     pageNext(refresh, cashInfoBean.getBankList().size());
                 }
-
-
             }
         };
 
@@ -866,6 +877,7 @@ public class ClientNetworkModel {
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
 
         map.put(ClientLocalConstant.AMOUNT, amount);
+
         if (type == 0 && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
 
@@ -884,15 +896,19 @@ public class ClientNetworkModel {
                 if (e.getCode() == 601)
                     goToPage(context, ClientSettingPayPwd1Activity.class, null);
 
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
-
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                netWorkListener.onSucceed(1);
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(1);
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage("提现申请已提交");
+                }
             }
         };
 

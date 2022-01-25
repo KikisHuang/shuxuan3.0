@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
@@ -13,12 +13,12 @@ import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
-import com.gxdingo.sg.utils.pay.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.tencent.bugly.beta.Beta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,9 +29,7 @@ import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -282,6 +280,11 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @Override
     public int getType() {
         return 0;
+    }
+
+    @Override
+    public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
     }
 
 }

@@ -223,19 +223,23 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onLocationMapClick(position);
             });
 
-            if (!isEmpty(data.getDataByType().getDoorplate()))
-                addressaddress_street_tv_tv.setText(data.getDataByType().getDoorplate());
+            if (data.getDataByType()!=null){
 
-            if (!isEmpty(data.getDataByType().getStreet()))
-                address_tv.setText(data.getDataByType().getStreet());
+                if (!isEmpty(data.getDataByType().getDoorplate()))
+                    addressaddress_street_tv_tv.setText(data.getDataByType().getDoorplate());
 
-            if (!isEmpty(data.getDataByType().getName()))
-                name_tv.setText(data.getDataByType().getName());
+                if (!isEmpty(data.getDataByType().getStreet()))
+                    address_tv.setText(data.getDataByType().getStreet());
 
-            if (!isEmpty(data.getDataByType().getMobile()))
-                phone_tv.setText(data.getDataByType().getMobile());
+                if (!isEmpty(data.getDataByType().getName()))
+                    name_tv.setText(data.getDataByType().getName());
 
-            //todo 还缺少一个map地图的字段
+                if (!isEmpty(data.getDataByType().getMobile()))
+                    phone_tv.setText(data.getDataByType().getMobile());
+
+                //todo 还缺少一个map地图的字段
+            }
+
         }
 
         //文字类型

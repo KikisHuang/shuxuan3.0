@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/bankcard_stv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="false"
+        app:sCenterMaxEms="12"
+        app:sCenterViewGravity="left_center"
+        app:sDividerLineType="none"
+        app:sLeftIconHeight="26dp"
+        app:sLeftIconMarginLeft="20dp"
+        app:sLeftIconRes="@drawable/module_svg_bankcard_pay_icon"
+        app:sLeftIconWidth="26dp"
+        app:sLeftTextColor="@color/graye2e2e2"
+        app:sLeftTextSize="14sp"
+        app:sLeftTextString="银行卡" />
+
+</LinearLayout>

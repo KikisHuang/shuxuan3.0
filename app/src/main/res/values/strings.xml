@@ -99,5 +99,6 @@
     <string name="address_info">地址信息</string>
     <string name="no_get__mobile_phone_number">没有获取到手机号码</string>
     <string name="speech_recognition_failure">语音识别失败</string>
+    <string name="upload_authentication_video">上传认证视频</string>
 
 </resources>

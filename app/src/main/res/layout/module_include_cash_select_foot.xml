@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/add_bakcard_stv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:sCenterMaxEms="12"
+        app:sDividerLineType="none"
+        app:sCenterTextSize="12sp"
+        app:sCenterViewGravity="left_center"
+        app:sLeftIconMarginLeft="20dp"
+        app:sLeftIconRes="@drawable/module_svg_add_bankcard"
+        app:sLeftTextColor="@color/graye2e2e2"
+        app:sLeftTextSize="14sp"
+        app:sLeftTextString="添加银行卡"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
+        app:sRightTextColor="#2E2E2E"
+        app:sRightTextSize="14sp" />
+
+
+</LinearLayout>

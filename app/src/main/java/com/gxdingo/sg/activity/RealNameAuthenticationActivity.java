@@ -52,14 +52,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.front_img)
-    public ImageView front_img;
-
-    @BindView(R.id.front_check_img)
-    public ImageView front_check_img;
-
-    @BindView(R.id.front_upload_ll)
-    public LinearLayout front_upload_ll;
 
     @BindView(R.id.bottom_cl)
     public ConstraintLayout bottom_cl;
@@ -70,17 +62,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @BindView(R.id.idcard_edt)
     public EditText idcard_edt;
 
-    @BindView(R.id.back_img)
-    public ImageView back_img;
-
-    @BindView(R.id.back_check_img)
-    public ImageView back_check_img;
-
-    @BindView(R.id.back_upload_ll)
-    public LinearLayout back_upload_ll;
-
-    @BindView(R.id.hint3)
-    public TextView hint3;
 
     @BindView(R.id.submit_bt)
     public Button submit_bt;
@@ -161,29 +142,17 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
 
         int width = ScreenUtils.getScreenWidth(reference.get()) / 2 - dp2px(44);
 
-        front_img.getLayoutParams().height = width * 10 / 16;
-
-        back_img.getLayoutParams().height = width * 10 / 16;
     }
 
 
-    @OnClick({R.id.submit_bt, R.id.front_img, R.id.back_img, R.id.front_upload_ll, R.id.back_upload_ll})
+    @OnClick({R.id.submit_bt, R.id.upload_video_bt})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
 
-            case R.id.front_img:
-                showAlbumDialog(0);
-                break;
-            case R.id.back_img:
-                showAlbumDialog(1);
-                break;
-            case R.id.front_upload_ll:
-                showAlbumDialog(0);
-                break;
-            case R.id.back_upload_ll:
-                showAlbumDialog(1);
+            case R.id.upload_video_bt:
+                showAlbumDialog();
                 break;
             case R.id.submit_bt:
                 if (submit_bt.isSelected())
@@ -197,14 +166,13 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     /**
      * 显示相册、拍照选择弹窗
      *
-     * @param type
      */
-    private void showAlbumDialog(int type) {
+    private void showAlbumDialog() {
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true)
                 .isDarkTheme(false)
                 .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
-                    getP().photoItemClick(pos, type);
+                    getP().photoItemClick(pos);
                 })).show();
     }
 
@@ -221,39 +189,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     }
 
     @Override
-    public void upLoadSucceed(String path, int selectedType) {
-
-        if (selectedType == 0) {
-            front_upload_ll.setVisibility(View.GONE);
-            front_check_img.setVisibility(View.VISIBLE);
-            front_img.setVisibility(View.VISIBLE);
-
-        } else {
-            back_upload_ll.setVisibility(View.GONE);
-            back_check_img.setVisibility(View.VISIBLE);
-            back_img.setVisibility(View.VISIBLE);
-        }
-
-        Glide.with(reference.get()).load(path).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(selectedType == 0 ? front_img : back_img);
-
-    }
-
-    @Override
-    public void onOCRInfoResult(IdCardOCRBean data) {
-
-        hint3.setVisibility(View.VISIBLE);
-
-        if (data != null && data.getFrontResult() != null && !isEmpty(data.getFrontResult().getIdnumber())) {
-            bottom_cl.setVisibility(View.VISIBLE);
-            if (!isEmpty(data.getFrontResult().getName()))
-                name_edt.setText(data.getFrontResult().getName());
-
-            if (!isEmpty(data.getFrontResult().getIdnumber()))
-                idcard_edt.setText(data.getFrontResult().getIdnumber());
-        }
-    }
-
-    @Override
     public String getIdCardName() {
         return name_edt.getText().toString();
     }
@@ -263,26 +198,7 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
         return idcard_edt.getText().toString();
     }
 
-    @Override
-    public void changeButtonStatus() {
-        submit_bt.setSelected(true);
-    }
 
-    @Override
-    public void onOCRFailed(int type) {
-        if (type == 0) {
-            front_upload_ll.setVisibility(View.VISIBLE);
-            front_check_img.setVisibility(View.GONE);
-            front_img.setVisibility(View.INVISIBLE);
-        } else {
-            back_upload_ll.setVisibility(View.VISIBLE);
-            back_check_img.setVisibility(View.GONE);
-            back_img.setVisibility(View.INVISIBLE);
-        }
-        if (back_img.getVisibility() == View.INVISIBLE && front_img.getVisibility() == View.INVISIBLE)
-            hint3.setVisibility(View.GONE);
-
-    }
 
 
     @Override

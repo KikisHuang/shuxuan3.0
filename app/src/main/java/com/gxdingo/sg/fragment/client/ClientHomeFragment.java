@@ -228,6 +228,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     protected void lazyInit() {
         super.lazyInit();
         categoryId = 0;
+        mCategoryAdapter.setCategoryId(categoryId);
+        mCategoryAdapter.notifyDataSetChanged();
         getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
     }
 
@@ -374,7 +376,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onCategoryResult(List<CategoriesBean> categories) {
-        if (mCategoryAdapter!=null){
+        if (mCategoryAdapter != null) {
             mCategoryAdapter.clear();
             mCategoryAdapter.addDataAll(categories);
         }
@@ -417,12 +419,14 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onItemClick(View itemView, int pos) {
-            CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
-            categoryId = categoriesBean.getId();
-            if (!location)
-                getP().checkPermissions(getRxPermissions(), true);
-            else
-                getP().getNearbyStore(true, true, categoryId);
+        CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
+        categoryId = categoriesBean.getId();
+        mCategoryAdapter.setCategoryId(categoryId);
+        mCategoryAdapter.notifyDataSetChanged();
+        if (!location)
+            getP().checkPermissions(getRxPermissions(), true);
+        else
+            getP().getNearbyStore(true, true, categoryId);
     }
 
     @Override

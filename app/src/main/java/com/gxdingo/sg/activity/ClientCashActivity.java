@@ -1,15 +1,18 @@
 package com.gxdingo.sg.activity;
 
+import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
-import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -18,26 +21,32 @@ import com.gxdingo.sg.biz.OnAccountSelectListener;
 import com.gxdingo.sg.biz.PayPasswordListener;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.dialog.ClientCashSelectDialog;
+import com.gxdingo.sg.dialog.OneSentenceHintPopupView;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.gxdingo.sg.view.RegexEditText;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.utils.BigDecimalUtils;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GlideUtils;
+import com.kikis.commnlibrary.utils.MessageCountManager;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.core.CenterPopupView;
-import com.tencent.smtt.sdk.WebView;
-import com.umeng.commonsdk.debug.E;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
@@ -55,15 +64,16 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.cash_account_stv)
-    public SuperTextView cash_account_stv;
+    @BindView(R.id.methods_name_tv)
+    public TextView methods_name_tv;
+
+    @BindView(R.id.methods_icon_img)
+    public ImageView methods_icon_img;
 
     @BindView(R.id.et_cash_amount)
     public RegexEditText et_cash_amount;
 
-    @BindView(R.id.content_tv)
-    public TextView content_tv;
-
+    private String mBottomExplain = "";
     private String amount = "0.0";
 
     //0銀行卡 10微信 20支付寶
@@ -77,6 +87,9 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     //显示认证状态弹窗
     private boolean showAuthenticationStatusDialog = false;
+
+    private ClientCashSelectDialog clientCashSelectDialog;
+
 
     @Override
     protected ClientAccountSecurityContract.ClientAccountSecurityPresenter createPresenter() {
@@ -147,14 +160,19 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     protected void init() {
         title_layout.setTitleText(gets(R.string.balance_cash));
         et_cash_amount.addTextChangedListener(textWatcher);
+        title_layout.setMoreText("说明");
         amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
         et_cash_amount.setHint("可转出到卡" + amount + "元");
+        et_cash_amount.setText(amount + "");
+        et_cash_amount.setSelection(et_cash_amount.getText().toString().length());
         et_cash_amount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_VARIATION_NORMAL);
-        clickInterval  = 500;
+        clickInterval = 500;
     }
 
     @Override
     protected void initData() {
+
+
         getP().getCashInfo();
     }
 
@@ -165,49 +183,23 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     }
 
-    @OnClick({R.id.cash_account_stv, R.id.btn_all, R.id.btn_confirm})
+    @OnClick({R.id.btn_more, R.id.cash_account_cl, R.id.btn_confirm})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.cash_account_stv:
-                if (cashInfoBean != null) {
+            case R.id.btn_more:
+                if (!isEmpty(mBottomExplain)) {
                     new XPopup.Builder(reference.get())
                             .isDarkTheme(false)
-                            .asCustom(new ClientCashSelectDialog(reference.get(), cashInfoBean, new OnAccountSelectListener() {
-                                @Override
-                                public void onSelected(BottomPopupView dialog, String account, int type, int bankCardId) {
-                                    if (bankCardId > 0) {
-                                        mBankCardId = bankCardId;
-                                        dialog.dismiss();
-                                        cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
-                                        cash_account_stv.setLeftString(gets(R.string.back_card));
-                                        mtype = 0;
-                                        return;
-                                    }
-                                    if (isEmpty(account)) {
-                                        if (type == 0)
-                                            getP().bindAli();
-                                        else if (type == 1)
-                                            getP().bindWechat();
-                                    } else {
-                                        if (type == 0) {
-                                            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
-                                            cash_account_stv.setLeftString(gets(R.string.alipay));
-                                            mtype = 20;
-                                        } else if (type == 1) {
-                                            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
-                                            cash_account_stv.setLeftString(gets(R.string.wechat));
-                                            mtype = 10;
-                                        }
-                                        dialog.dismiss();
-                                    }
-                                }
-                            }))
+                            .hasShadowBg(true)
+                            .asCustom(new OneSentenceHintPopupView(reference.get(), mBottomExplain))
                             .show();
                 }
-
                 break;
-            case R.id.btn_all:
-                et_cash_amount.setText(amount);
+            case R.id.cash_account_cl:
+                if (cashInfoBean != null) {
+                    showCashSelectDialog();
+                }
+
                 break;
             case R.id.btn_confirm:
 
@@ -239,6 +231,68 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         }
     }
 
+    private void showCashSelectDialog() {
+        if (clientCashSelectDialog == null) {
+            cashInfoBean.setIsShowWechat(1);
+            clientCashSelectDialog = new ClientCashSelectDialog(reference.get(), cashInfoBean, new OnAccountSelectListener() {
+                @Override
+                public void onSelected(String account, int type, int bankCardId, String cardName, String icon) {
+
+
+                    if (type == 998) {
+                        if (isEmpty(account))
+                            getP().bindAli();
+                        else {
+                            mBankCardId = bankCardId;
+                            //支付宝
+                            methods_name_tv.setText("支付宝");
+                            Glide.with(reference.get()).load(R.drawable.module_svg_alipay_icon).into(methods_icon_img);
+                            mtype = 20;
+                            if (clientCashSelectDialog != null)
+                                clientCashSelectDialog.dismiss();
+                        }
+
+                    } else if (type == 999) {
+                        if (isEmpty(account))
+                            getP().bindWechat();
+                        else {
+
+                            mBankCardId = bankCardId;
+                            methods_name_tv.setText("微信");
+                            Glide.with(reference.get()).load(R.drawable.module_svg_wechat_pay_icon).into(methods_icon_img);
+                            mtype = 10;
+                            if (clientCashSelectDialog != null)
+                                clientCashSelectDialog.dismiss();
+                        }
+
+                    } else if (type == 2) {
+                        mBankCardId = bankCardId;
+                        //银行卡
+                        methods_name_tv.setText(cardName);
+                        Glide.with(reference.get()).load(icon).into(methods_icon_img);
+                        mtype = 0;
+
+                        if (clientCashSelectDialog != null)
+                            clientCashSelectDialog.dismiss();
+                    } else if (type == 3) {
+                        //刷新
+                        getP().getCardList(true);
+                    } else if (type == 4) {
+                        //加载更多
+                        getP().getCardList(false);
+                    }
+                }
+            });
+
+            new XPopup.Builder(reference.get())
+                    .isDarkTheme(false)
+                    .asCustom(clientCashSelectDialog)
+                    .show();
+        } else
+            clientCashSelectDialog.show();
+
+    }
+
 
     /**
      * 显示认证状态弹窗
@@ -262,16 +316,25 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, cashInfoBean.rejectReason, status -> {
                     if (!checkClickInterval(123))
                         return;
-                        if (cashInfoBean.authStatus == 2)
-                            getP().getCashInfo();
-                        else if (cashInfoBean.authStatus == 3)
-                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                        else if (cashInfoBean.authStatus == 1) {
-                            //认证成功无需操作
-                        }
+                    if (cashInfoBean.authStatus == 2)
+                        getP().getCashInfo();
+                    else if (cashInfoBean.authStatus == 3)
+                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                    else if (cashInfoBean.authStatus == 1) {
+                        //认证成功无需操作
+                    }
                 }).show());
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (clientCashSelectDialog != null) {
+            clientCashSelectDialog.destroy();
+            clientCashSelectDialog = null;
+        }
+    }
 
     private void showPayPswDialog() {
         new XPopup.Builder(reference.get())
@@ -319,25 +382,52 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
         if (showAuthenticationStatusDialog)
             showAuthenticationStatusDialog();
+        int bankCardId = SPUtils.getInstance().getInt(LocalConstant.CASH_SELECTED_ID_KEY, 0);
 
-        if (!isEmpty(cashInfoBean.getAlipay()) && cashInfoBean.getIsShowAlipay() == 1) {
-            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_alipay_icon));
-            cash_account_stv.setLeftString(gets(R.string.alipay));
+        if (bankCardId == 998 && !isEmpty(cashInfoBean.getAlipay()) && cashInfoBean.getIsShowAlipay() == 1) {
+            methods_name_tv.setText("支付宝");
+            Glide.with(reference.get()).load(R.drawable.module_svg_alipay_icon).into(methods_icon_img);
             mtype = 20;
-        } else if (!isEmpty(cashInfoBean.getWechat()) && cashInfoBean.getIsShowWechat() == 1) {
-            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_wechat_pay_icon));
-            cash_account_stv.setLeftString(gets(R.string.wechat));
+        } else if (bankCardId == 999 && !isEmpty(cashInfoBean.getWechat()) && cashInfoBean.getIsShowWechat() == 1) {
+            methods_name_tv.setText("微信");
+            Glide.with(reference.get()).load(R.drawable.module_svg_wechat_pay_icon).into(methods_icon_img);
             mtype = 10;
         } else if (cashInfoBean.getBankList() != null && cashInfoBean.getBankList().size() > 0 && cashInfoBean.getIsShowBank() == 1) {
-            cash_account_stv.setLeftIcon(getd(R.drawable.module_svg_bankcard_pay_icon));
-            cash_account_stv.setLeftString(gets(R.string.back_card));
-            mBankCardId = cashInfoBean.getBankList().get(0).getId();
-            mtype = 0;
-        } else {
-            cash_account_stv.setLeftString("选择提现账户");
+            RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                for (int i = 0; i < cashInfoBean.getBankList().size(); i++) {
+                    BankcardBean data = cashInfoBean.getBankList().get(i);
+                    if (data.getId() == bankCardId) {
+                        e.onNext(i);
+                        break;
+                    }
+                }
+                e.onComplete();
+            }), (BaseActivity) reference.get()).subscribe(o -> {
+                int pos = (int) o;
+
+                if (!isEmpty(cashInfoBean.getBankList().get(pos).getNumber())) {
+                    String num = cashInfoBean.getBankList().get(pos).getNumber().substring(cashInfoBean.getBankList().get(pos).getNumber().length() - 4, cashInfoBean.getBankList().get(pos).getNumber().length());
+                    methods_name_tv.setText(cashInfoBean.getBankList().get(pos).getCardName() + "(" + num + ")");
+                }
+                mtype = 0;
+                Glide.with(reference.get()).load(cashInfoBean.getBankList().get(pos).getIcon()).into(methods_icon_img);
+            });
+
         }
+
         if (!isEmpty(cashInfoBean.getExplain()))
-            content_tv.setText(cashInfoBean.getExplain());
+            mBottomExplain = cashInfoBean.getExplain();
+    }
+
+
+    /**
+     * @param @param drw
+     * @return void
+     * @desc 设置左边图标
+     */
+    public void setAlertLeftIcon(TextView tv, Drawable drw) {
+        drw.setBounds(0, 0, drw.getMinimumWidth(), drw.getMinimumHeight());
+        tv.setCompoundDrawables(drw, null, null, null);
     }
 
     @Override
@@ -353,6 +443,14 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @Override
     public int getType() {
         return mtype;
+    }
+
+    @Override
+    public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+        if (clientCashSelectDialog != null) {
+            clientCashSelectDialog.setData(list, b);
+        }
+
     }
 
     private TextWatcher textWatcher = new TextWatcher() {

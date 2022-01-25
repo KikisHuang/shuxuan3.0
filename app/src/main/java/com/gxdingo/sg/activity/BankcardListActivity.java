@@ -59,10 +59,10 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     private boolean isCash;
 
     @OnClick(R.id.txt_more)
-    public void OnClickViews(View v){
-        switch (v.getId()){
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
             case R.id.txt_more:
-                goToPage(this,AddBankcardActivity.class,null);
+                goToPage(this, AddBankcardActivity.class, null);
                 break;
         }
     }
@@ -150,8 +150,8 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
         templateTitle.setTitleText("我的银行卡");
         templateTitle.setMoreText("添加");
         templateTitle.setMoreTextColor(getc(R.color.blue_text));
-        isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE+0,false);
-        isCash= getIntent().getBooleanExtra(Constant.SERIALIZABLE+1,false);
+        isSelect = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
+        isCash = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 1, false);
         mAdapter = new BankcardAdapter(1);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
@@ -172,8 +172,11 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     }
 
     @Override
-    public void onDataResult(List<BankcardBean> bankcardBeans) {
-        mAdapter.setList(bankcardBeans);
+    public void onDataResult(List<BankcardBean> bankcardBeans, boolean refresh) {
+        if (refresh)
+            mAdapter.setList(bankcardBeans);
+        else
+            mAdapter.addData(bankcardBeans);
     }
 
     @Override
@@ -214,7 +217,7 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         BankcardBean item = (BankcardBean) adapter.getItem(position);
-        goToPagePutSerializable(this,UnbindBankcardActivity.class,getIntentEntityMap(new Object[]{item}));
+        goToPagePutSerializable(this, UnbindBankcardActivity.class, getIntentEntityMap(new Object[]{item}));
     }
 
     @Override
@@ -223,6 +226,6 @@ public class BankcardListActivity extends BaseMvpActivity<BankcardContract.Bankc
         BankcardBean item = (BankcardBean) adapter.getItem(position);
         item.setCash(true);
         sendEvent(item);
-        if (!isCash)finish();
+        if (!isCash) finish();
     }
 }

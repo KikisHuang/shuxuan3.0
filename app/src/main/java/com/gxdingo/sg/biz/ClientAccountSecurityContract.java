@@ -1,11 +1,12 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,8 @@ public class ClientAccountSecurityContract {
         void cash(String pwd);
 
         void loginOff();
+
+        void getCardList(boolean b);
     }
 
     public interface ClientAccountSecurityListener{
@@ -53,6 +56,8 @@ public class ClientAccountSecurityContract {
         long getBackCardId();
 
         int getType();
+
+        void onDataResult(ArrayList<BankcardBean> list, boolean b);
 
 //        void setUserPhone(String phone);
 //

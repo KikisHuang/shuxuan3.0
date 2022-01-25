@@ -90,7 +90,7 @@
         app:sLeftTextColor="#2E2E2E"
         app:sLeftTextSize="14sp"
         app:sLeftTextString="注销账户"
-        app:sLeftViewMarginLeft="15dp"
+        app:sLeftViewMarginLeft="20dp"
         app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"
         app:sRightTextColor="#ACACAC"
         app:sRightTextSize="12sp"

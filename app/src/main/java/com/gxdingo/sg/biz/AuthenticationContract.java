@@ -13,28 +13,18 @@ public class AuthenticationContract {
 
     public interface AuthenticationPresenter extends MvpPresenter<BasicsListener, AuthenticationListener> {
 
-        void photoItemClick(int pos, int type);
+        void photoItemClick(int pos);
 
         void submitAuthenticationInfo();
     }
 
     public interface AuthenticationListener {
 
-        void upLoadSucceed(String path, int selectedType);
-
-        /**
-         * 识别信息返回
-         *
-         * @param data
-         */
-        void onOCRInfoResult(IdCardOCRBean data);
 
         String getIdCardName();
 
         String getIdCardNumber();
 
-        void changeButtonStatus();
 
-        void onOCRFailed(int type);
     }
 }

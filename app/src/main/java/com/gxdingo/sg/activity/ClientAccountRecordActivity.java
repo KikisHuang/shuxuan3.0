@@ -8,25 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
-import com.gxdingo.sg.biz.ClientMineContract;
-import com.gxdingo.sg.biz.ClientPickerDateListener;
 import com.gxdingo.sg.dialog.SelectDateDialog;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
-import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BottomPopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -38,7 +33,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.blankj.utilcode.util.TimeUtils.getNowDate;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -248,6 +242,11 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     @Override
     public int getType() {
         return 0;
+    }
+
+    @Override
+    public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
     }
 
     @Override

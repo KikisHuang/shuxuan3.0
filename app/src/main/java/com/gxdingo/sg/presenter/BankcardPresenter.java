@@ -10,10 +10,6 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
-import anetwork.channel.NetworkListener;
-
-import static android.text.TextUtils.isEmpty;
-
 /**
  * @author: Weaving
  * @date: 2021/10/22
@@ -39,7 +35,7 @@ public class BankcardPresenter extends BaseMvpPresenter<BasicsListener, Bankcard
     @Override
     public void getCardList(boolean refresh) {
         if (clientNetworkModel!=null)
-            clientNetworkModel.getBankList(getContext(),refresh);
+            clientNetworkModel.getBankList(getContext(),refresh,null);
     }
 
 
@@ -87,9 +83,9 @@ public class BankcardPresenter extends BaseMvpPresenter<BasicsListener, Bankcard
     @Override
     public void onData(boolean refresh, Object o) {
         if (o instanceof ClientCashInfoBean){
-            getV().onDataResult(((ClientCashInfoBean)o).getBankList());
+            getV().onDataResult(((ClientCashInfoBean)o).getBankList(),refresh);
         }else if (o instanceof BankcardListBean)
-            getV().onDataResult(((BankcardListBean)o).getList());
+            getV().onDataResult(((BankcardListBean)o).getList(), refresh);
     }
 
     @Override
