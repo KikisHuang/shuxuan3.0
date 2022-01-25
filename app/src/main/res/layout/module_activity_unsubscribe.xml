@@ -113,6 +113,7 @@
             android:background="@drawable/module_shape_bg_green_6r"
             android:gravity="center"
             android:text="开始注销"
+            android:layout_marginEnd="5dp"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
@@ -121,6 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_weight="1"
+            android:layout_marginStart="5dp"
             android:background="@drawable/module_shape_bg_gray_f6_6r"
             android:gravity="center"
             android:text="@string/cancel"
