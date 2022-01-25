@@ -118,12 +118,13 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 Beta.checkUpgrade(true, false);
                 break;
             case R.id.cancel_account_stv:
-                new XPopup.Builder(reference.get())
+                goToPage(reference.get(), UnsubscribeActivity.class, null);
+                /*  new XPopup.Builder(reference.get())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isDarkTheme(false)
                         .dismissOnTouchOutside(false)
                         .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.confirm_logoff), "账号注销后无法恢复，请谨慎操作", () -> getP().loginOff()))
-                        .show();
+                        .show();*/
                 break;
         }
     }

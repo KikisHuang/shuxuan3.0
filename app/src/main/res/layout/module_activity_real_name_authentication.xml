@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp10"
-            android:text="请拍摄时朗读4位验证数字：8868"
+            android:text="拍摄时请根据屏幕小提示操作"
             android:textColor="@color/graya9a9a9"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -192,7 +192,7 @@
             android:layout_marginBottom="@dimen/dp10"
             android:background="@drawable/module_border_upload_video_bg"
             android:stateListAnimator="@null"
-            android:text="@string/upload_authentication_video"
+            android:text="@string/face_identification"
             android:textColor="@color/graye2e2e2"
             app:layout_constraintBottom_toTopOf="@+id/submit_bt" />
 
@@ -204,7 +204,7 @@
             android:layout_marginBottom="25dp"
             android:background="@drawable/module_shape_bg_green_6r"
             android:stateListAnimator="@null"
-            android:text="@string/submit"
+            android:text="@string/start_certification"
             android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent" />
