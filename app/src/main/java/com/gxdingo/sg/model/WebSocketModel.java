@@ -29,6 +29,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.http.Api.CHAT_SETTOP;
 import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
 import static com.gxdingo.sg.http.Api.GET_TRANSFER;
 import static com.gxdingo.sg.http.Api.IM_URL;
@@ -653,6 +654,51 @@ public class WebSocketModel {
                     customResultListener.onResult(normalBean);
             }
         };
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+
+    /**
+     * 聊天置顶
+     */
+    public void chatSetTop(Context context, String id, int sort, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("id", id);
+
+        map.put("sort", String.valueOf(sort));
+
+        PostRequest request = HttpClient.imPost(IM_URL +CHAT_SETTOP, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult("ok");
+                }
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(normalBean.msg);
+            }
+        };
+
         observable.subscribe(subscriber);
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);

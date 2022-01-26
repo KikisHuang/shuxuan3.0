@@ -11,6 +11,7 @@ import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.UserBean;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.biz.OnCodeListener;
 import com.gxdingo.sg.model.NetworkModel;
@@ -73,8 +74,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private List<String> searchHistory;
 
-    private double lon, lat;
-
     private boolean searchModel;
 
     private String helpCode;
@@ -114,9 +113,9 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                     if (search)
                                         getV().setDistrict(aMapLocation.getPoiName());
 
-                                    lat = aMapLocation.getLatitude();
+                                    LocalConstant.lat = aMapLocation.getLatitude();
 
-                                    lon = aMapLocation.getLongitude();
+                                    LocalConstant.lon = aMapLocation.getLongitude();
 
                                     LocalConstant.AdCode = aMapLocation.getAdCode();
 
@@ -165,7 +164,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void getNearbyStore(boolean refresh, boolean search, int categoryId) {
         searchModel = search;
         if (clientNetworkModel != null)
-            clientNetworkModel.getStoreList(getContext(), refresh, lon, lat, categoryId, "");
+            clientNetworkModel.getStoreList(getContext(), refresh, LocalConstant.lon, LocalConstant.lat, categoryId, "");
     }
 
     @Override
@@ -173,15 +172,15 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
         if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
-            lon = addressBean.getLongitude();
-            lat = addressBean.getLatitude();
+            LocalConstant.lon = addressBean.getLongitude();
+            LocalConstant.lat = addressBean.getLatitude();
             if (isViewAttached())
                 getV().setDistrict(addressBean.getStreet());
         } else if (object instanceof changeLocationEvent) {
             changeLocationEvent changeLocationEvent = (com.gxdingo.sg.bean.changeLocationEvent) object;
 
-            lon = changeLocationEvent.longitude;
-            lat = changeLocationEvent.latitude;
+            LocalConstant.lon = changeLocationEvent.longitude;
+            LocalConstant.lat = changeLocationEvent.latitude;
             if (isViewAttached())
                 getV().setDistrict(changeLocationEvent.name);
         }
@@ -245,7 +244,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                 return;
             }
             saveSearch(content);
-            clientNetworkModel.getStoreList(getContext(), refresh, lon, lat, 0, content);
+            clientNetworkModel.getStoreList(getContext(), refresh, LocalConstant.lon, LocalConstant.lat, 0, content);
         }
 
     }
@@ -316,8 +315,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void search(AddressBean addressBean, String content) {
-        lon = addressBean.getLongitude();
-        lat = addressBean.getLatitude();
+        LocalConstant.lon = addressBean.getLongitude();
+        LocalConstant.lat = addressBean.getLatitude();
         if (isViewAttached())
             getV().setDistrict(addressBean.getStreet());
         search(true, true, content);

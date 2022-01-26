@@ -223,7 +223,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onLocationMapClick(position);
             });
 
-            if (data.getDataByType()!=null){
+            if (data.getDataByType() != null) {
 
                 if (!isEmpty(data.getDataByType().getDoorplate()))
                     addressaddress_street_tv_tv.setText(data.getDataByType().getDoorplate());
@@ -237,7 +237,8 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 if (!isEmpty(data.getDataByType().getMobile()))
                     phone_tv.setText(data.getDataByType().getMobile());
 
-                //todo 还缺少一个map地图的字段
+                Glide.with(mContext).load(!isEmpty(data.getDataByType().locationImage)?data.getDataByType().locationImage:R.drawable.bg_location_default).into(map_img);
+
             }
 
         }

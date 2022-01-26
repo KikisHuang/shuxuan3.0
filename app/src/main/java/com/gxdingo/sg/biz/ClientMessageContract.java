@@ -1,11 +1,9 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +24,8 @@ public class ClientMessageContract {
         void getUnreadMessageNum();
 
         void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params);
+
+        void setTop(String shareUuid, int sort, int pos);
     }
 
     public interface ClientMessageListener{
@@ -34,5 +34,7 @@ public class ClientMessageContract {
         void clearMessageUnreadItem(String id);
 
         void setUnreadMsgNum(Integer data);
+
+        void onSetTopResult(int pos);
     }
 }

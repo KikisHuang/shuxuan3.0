@@ -312,7 +312,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (!checkClickInterval(v.getId()))
             return;
 
-        if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
+        if ((v.getId() != R.id.home_page_layout || v.getId() != R.id.business_layout) && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
 

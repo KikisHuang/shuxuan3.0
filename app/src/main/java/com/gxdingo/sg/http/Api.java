@@ -172,6 +172,10 @@ public class Api {
      * * 消息内容未读状态改成已读
      */
     public static final String MESSAGE_WITHDRAW = HIERARCHY + "mps/message/withdraw";
+    /**
+     * * 置顶取消置顶
+     */
+    public static final String CHAT_SETTOP = HIERARCHY + "mps/subscribe/top";
 
     /**
      * 阿里云身份证时别

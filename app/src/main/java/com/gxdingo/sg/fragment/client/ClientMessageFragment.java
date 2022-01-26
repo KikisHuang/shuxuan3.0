@@ -241,6 +241,20 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             unread_msg_num.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onSetTopResult(int pos) {
+        if (pos <= imMessageAdapter.getData().size() - 1) {
+            imMessageAdapter.getData().get(pos).sort = imMessageAdapter.getData().get(pos).sort > 0 ? 0 : 1;
+
+//            ArrayList<SubscribesListBean.SubscribesMessage> datas = (ArrayList<SubscribesListBean.SubscribesMessage>) imMessageAdapter.getData();
+
+            imMessageAdapter.getData().add(0, imMessageAdapter.getData().remove(pos));
+//            imMessageAdapter.setList(datas);
+
+            imMessageAdapter.notifyDataSetChanged();
+        }
+    }
+
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -276,18 +290,13 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
                 .hasShadowBg(false)
                 .asCustom(new ChatListFunctionDialog(reference.get(), v -> {
 
-                    //todo 置顶删除接口逻辑未完成
+                    //todo 删除接口逻辑未完成
                     if (v.getId() == R.id.del_ll) {
 
 
-                    } else if (v.getId() == R.id.settop_ll) {
-                        //假实现
-                        ArrayList<SubscribesListBean.SubscribesMessage> datas = (ArrayList<SubscribesListBean.SubscribesMessage>) imMessageAdapter.getData();
-
-                        datas.add(0, datas.remove(position));
-                        imMessageAdapter.setList(datas);
-                    }
-
+                    } else if (v.getId() == R.id.settop_ll)
+                        //置顶
+                        getP().setTop(imMessageAdapter.getData().get(position).id, imMessageAdapter.getData().get(position).sort > 0 ? 0 : 1, position);
 
                 }).show());
         return false;

@@ -1,6 +1,7 @@
 package com.gxdingo.sg.adapter;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
@@ -69,12 +70,15 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
         TextView draft_tag_tv = baseViewHolder.findView(R.id.draft_tag_tv);
+        ImageView settop_img = baseViewHolder.findView(R.id.settop_img);
 
 
         if (role == 0 && UserInfoUtils.getInstance().getUserInfo() != null)
             role = UserInfoUtils.getInstance().getUserInfo().getRole();
 
         store_tab_tv.setVisibility(role == 11 ? View.VISIBLE : View.GONE);
+
+        settop_img.setVisibility(subscribesMessage.sort > 0 ? View.VISIBLE : View.GONE);
 
         if (role == 11) {
             if (subscribesMessage.getSendUserRole() == 10) {

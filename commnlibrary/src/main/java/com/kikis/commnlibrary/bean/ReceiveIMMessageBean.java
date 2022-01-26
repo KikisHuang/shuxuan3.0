@@ -212,6 +212,8 @@ public class ReceiveIMMessageBean implements Serializable {
         @SerializedName("nickname")
         private String nickname;
 
+        public String locationImage;
+
         public int getId() {
             return id;
         }

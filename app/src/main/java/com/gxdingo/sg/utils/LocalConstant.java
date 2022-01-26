@@ -114,6 +114,8 @@ public class LocalConstant {
     public static final int GO_SETTLED = 1013;
 
     public static String AdCode = "";
+    public static double lat = 0;
+    public static double lon = 0;
 
     //第一次登录标识符
     public static final String FIRST_LOGIN_KEY = "shugou_first_login_key";

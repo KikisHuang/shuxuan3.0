@@ -61,10 +61,12 @@ import okhttp3.ResponseBody;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.gxdingo.sg.http.Api.CHAT_SETTOP;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
 import static com.gxdingo.sg.http.Api.EXTRA_CERTIFICATION;
 import static com.gxdingo.sg.http.Api.EXTRA_IDCARDOCR;
+import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.INVITATIONCODE;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
@@ -925,7 +927,8 @@ public class NetworkModel {
 
     /**
      * 下载文件
-     *  @param path
+     *
+     * @param path
      * @param callBack
      * @param mDownloadDisp
      * @param filePath
@@ -1330,4 +1333,6 @@ public class NetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
+
 }

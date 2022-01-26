@@ -241,6 +241,11 @@ public class ForwardListActivity extends BaseMvpActivity<ClientMessageContract.C
     }
 
     @Override
+    public void onSetTopResult(int pos) {
+
+    }
+
+    @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
         return new ClientMessagePresenter();
     }

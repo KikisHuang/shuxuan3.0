@@ -1,6 +1,5 @@
 package com.gxdingo.sg.presenter;
 
-import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -90,12 +89,32 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
         if (mWebSocketModel != null) {
             SendIMMessageBean sendIMMessageBean = new SendIMMessageBean(shareUuid, type, content, voiceDuration, params);
             mWebSocketModel.sendMessage(getContext(), sendIMMessageBean, receiveIMMessageBean -> {
-                if (isBViewAttached()){
+                if (isBViewAttached()) {
                     onMessage("转发成功");
                     getBV().onSucceed(100);
                 }
             });
         }
+    }
+
+    /**
+     * 置顶
+     *
+     * @param shareUuid
+     * @param sort
+     * @param pos
+     */
+    @Override
+    public void setTop(String shareUuid, int sort, int pos) {
+
+        if (mWebSocketModel != null) {
+            mWebSocketModel.chatSetTop(getContext(), shareUuid, sort, result -> {
+                if (isViewAttached())
+                    getV().onSetTopResult(pos);
+
+            });
+        }
+
     }
 
     @Override
