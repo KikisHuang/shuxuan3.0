@@ -34,6 +34,7 @@ import static com.gxdingo.sg.http.Api.GET_CHAT_HISTORY_LIST;
 import static com.gxdingo.sg.http.Api.GET_TRANSFER;
 import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.MESSAGE_CLEAR_ALL;
+import static com.gxdingo.sg.http.Api.MESSAGE_DELETE;
 import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
@@ -716,6 +717,50 @@ public class WebSocketModel {
 
 
         PostRequest request = HttpClient.imPost(IM_URL + SUBSCRIBE_DELETE, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult("ok");
+                }
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(normalBean.msg);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 聊天消息删除
+     *
+     * @param sid 消息id
+     */
+    public void messageDel(Context context, String sid, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.CONTENTID, sid);
+
+        PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_DELETE, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
 
         Observable<NormalBean> observable = request

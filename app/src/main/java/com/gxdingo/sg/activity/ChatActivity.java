@@ -1016,13 +1016,18 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         int type = (int) args[0];
 
                         if (type == 0) {
+                            //复制
                             copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
                             onMessage("已复制到剪贴板");
                         } else if (type == 1) {
                             //撤回
                             getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
                         } else if (type == 2) {
+                            //语音转文字
                             getP().voiceToText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), position);
+                        } else if (type == 3) {
+                            //删除
+                            getP().delMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
                         }
 
                     }).show());
@@ -1033,8 +1038,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     /**
      * 消息撤回成功
-     * @param position
      *
+     * @param position
      */
     @Override
     public void onMessageRevocation(int position) {
@@ -1054,6 +1059,20 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         if (pos <= mChatDatas.size() - 1 && obj != null && mChatDatas.get(pos).getType() == 11) {
             mChatDatas.get(pos).voiceText = (String) obj;
             mAdapter.notifyItemChanged(pos);
+        }
+    }
+
+    /**
+     * 消息删除
+     *
+     * @param position
+     */
+    @Override
+    public void onMessageDelete(int position) {
+        if (mAdapter != null) {
+            mChatDatas.remove(position);
+            mAdapter.notifyDataSetChanged();
+            sendEvent(LocalConstant.DELETE_MESSAGE_CONTENT);
         }
     }
 

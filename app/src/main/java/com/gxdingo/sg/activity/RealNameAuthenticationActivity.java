@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
+import com.esandinfo.livingdetection.EsLivingDetectionManager;
+import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.IdSwitchEvent;
@@ -66,6 +68,12 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @BindView(R.id.submit_bt)
     public Button submit_bt;
 
+    private EsLivingDetectionManager manager;
+
+   // @param livingType 认证类型  1：远近，2：眨眼，3：摇头，4: 点头，5:张嘴，6：炫彩活体
+   //  支持多动作，如传入12表示先做远近活体，后做眨眼活体，一次最多支持4组动作
+    //2眨眼、3摇头、4点头、5张嘴
+    private int livingType = 23;
 
     @Override
     protected AuthenticationContract.AuthenticationPresenter createPresenter() {
@@ -135,6 +143,9 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.real_name_authentication));
+        manager = new EsLivingDetectionManager(reference.get());
+        EsLivingDetectResult result = manager.verifyInit(livingType);
+
     }
 
     @Override
@@ -165,7 +176,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
 
     /**
      * 显示相册、拍照选择弹窗
-     *
      */
     private void showAlbumDialog() {
         new XPopup.Builder(reference.get())
@@ -197,8 +207,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     public String getIdCardNumber() {
         return idcard_edt.getText().toString();
     }
-
-
 
 
     @Override

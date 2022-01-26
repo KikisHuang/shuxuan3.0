@@ -29,6 +29,11 @@ allprojects {
         flatDir {
             dirs 'libs'
         }
+
+        maven {
+            name '一砂私服'
+            url 'http://mvn.esandinfo.com:6020/repository/maven-public/'
+        }
         google()
         jcenter()
 

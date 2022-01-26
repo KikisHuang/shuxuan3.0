@@ -1,6 +1,7 @@
 package com.gxdingo.sg.dialog;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,6 +59,7 @@ public class ChatFunctionDialog extends CenterPopupView {
 
         turn_the_text_ll.setVisibility(type == 11 ? VISIBLE : GONE);
 
+
         //自己发送的
         if (isSelf) {
             long nowTime = getNowMills();
@@ -73,17 +75,28 @@ public class ChatFunctionDialog extends CenterPopupView {
         } else
             report_ll.setVisibility(GONE);
 
+
+
+        del_ll.setOnClickListener(v -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(3);
+            dismiss();
+        });
+
         copy_ll.setOnClickListener(view -> {
-            customArgsResultListener.onResult(0);
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(0);
             dismiss();
         });
 
         report_ll.setOnClickListener(view -> {
-            customArgsResultListener.onResult(1);
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(1);
             dismiss();
         });
         turn_the_text_ll.setOnClickListener(view -> {
-            customArgsResultListener.onResult(2);
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(2);
             dismiss();
         });
     }

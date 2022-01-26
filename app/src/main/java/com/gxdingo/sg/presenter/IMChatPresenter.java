@@ -863,6 +863,15 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         }
     }
 
+    @Override
+    public void delMessage(long id, int position) {
+
+        if (mWebSocketModel != null)
+            mWebSocketModel.messageDel(getContext(), String.valueOf(id), t -> {
+                getV().onMessageDelete(position);
+            });
+    }
+
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == 100) {

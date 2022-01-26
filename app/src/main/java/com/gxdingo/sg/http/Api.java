@@ -177,9 +177,13 @@ public class Api {
      */
     public static final String CHAT_SETTOP = HIERARCHY + "mps/subscribe/top";
     /**
-     * 订阅列表删除
+     * 订阅列表消息删除
      */
     public static final String SUBSCRIBE_DELETE = HIERARCHY + "mps/subscribe/delete";
+    /**
+     * 消息删除
+     */
+    public static final String MESSAGE_DELETE = HIERARCHY + "mps/message/delete";
 
     /**
      * 阿里云身份证时别

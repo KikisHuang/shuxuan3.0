@@ -76,6 +76,7 @@ public class LocalConstant {
     public static final int WECHAT_LOGIN_EVENT = 934946;
     public static final int NOTIFY_MSG_LIST_ADAPTER = 4545;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
+    public static final int DELETE_MESSAGE_CONTENT = 7775;
     public static final int CLIENT_REFRESH_USER_HOME = 40;
     public static final int QUITLOGINPAGE = 404;
     //显示商圈未读消息dot
@@ -139,6 +140,8 @@ public class LocalConstant {
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
     public static final String CERTFLAG = "certFlag";
+
+    public static final String CONTENTID = "contentId";
 
     public static String locationSelected = "";
 
@@ -229,6 +232,7 @@ public class LocalConstant {
     public static final String TYPE = "type";
     public static final String REPLY = "reply";
     public static final String CROSSTOKEN = "crossToken";
+
     public static final String NEWS = "news";
     public static final String LAST_ID = "last_id";
     public static final String EXEC = "exec";

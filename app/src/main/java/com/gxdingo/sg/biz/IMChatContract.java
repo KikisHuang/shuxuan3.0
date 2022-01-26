@@ -166,6 +166,13 @@ public class IMChatContract {
          */
         void voiceToText(String content, int position);
 
+        /**
+         * 删除消息
+         *
+         * @param id
+         * @param position
+         */
+        void delMessage(long id, int position);
     }
 
     public interface IMChatListener {
@@ -264,5 +271,12 @@ public class IMChatContract {
          * @param arg1
          */
         void onIdentifiedContentResult(Object obj, int arg1);
+
+        /**
+         * 消息删除回调
+         *
+         * @param position
+         */
+        void onMessageDelete(int position);
     }
 }
