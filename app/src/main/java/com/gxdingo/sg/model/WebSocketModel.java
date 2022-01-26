@@ -38,6 +38,7 @@ import static com.gxdingo.sg.http.Api.MESSAGE_READ;
 import static com.gxdingo.sg.http.Api.MESSAGE_SEND;
 import static com.gxdingo.sg.http.Api.MESSAGE_SUBSCRIBES;
 import static com.gxdingo.sg.http.Api.MESSAGE_WITHDRAW;
+import static com.gxdingo.sg.http.Api.SUBSCRIBE_DELETE;
 import static com.gxdingo.sg.http.Api.SUM_UNREAD;
 import static com.gxdingo.sg.http.Api.TRANSFER;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
@@ -671,7 +672,50 @@ public class WebSocketModel {
 
         map.put("sort", String.valueOf(sort));
 
-        PostRequest request = HttpClient.imPost(IM_URL +CHAT_SETTOP, map);
+        PostRequest request = HttpClient.imPost(IM_URL + CHAT_SETTOP, map);
+        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        Observable<NormalBean> observable = request
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                BaseLogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult("ok");
+                }
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(normalBean.msg);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    /**
+     * 聊天订阅列表删除
+     */
+    public void chatSubDel(Context context, String sid, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.SUBSCRIBEID, sid);
+
+
+        PostRequest request = HttpClient.imPost(IM_URL + SUBSCRIBE_DELETE, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
 
         Observable<NormalBean> observable = request

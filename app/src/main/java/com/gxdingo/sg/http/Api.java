@@ -176,6 +176,10 @@ public class Api {
      * * 置顶取消置顶
      */
     public static final String CHAT_SETTOP = HIERARCHY + "mps/subscribe/top";
+    /**
+     * 订阅列表删除
+     */
+    public static final String SUBSCRIBE_DELETE = HIERARCHY + "mps/subscribe/delete";
 
     /**
      * 阿里云身份证时别

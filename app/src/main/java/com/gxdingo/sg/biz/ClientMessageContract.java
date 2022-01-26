@@ -26,6 +26,8 @@ public class ClientMessageContract {
         void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params);
 
         void setTop(String shareUuid, int sort, int pos);
+
+        void listChatDel(String shareUuid, int position);
     }
 
     public interface ClientMessageListener{
@@ -36,5 +38,7 @@ public class ClientMessageContract {
         void setUnreadMsgNum(Integer data);
 
         void onSetTopResult(int pos);
+
+        void onSubDel(int position);
     }
 }

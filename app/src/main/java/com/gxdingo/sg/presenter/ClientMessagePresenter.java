@@ -117,6 +117,23 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
 
     }
 
+    /**
+     * 订阅列表删除
+     * @param shareUuid
+     * @param position
+     */
+    @Override
+    public void listChatDel(String shareUuid, int position) {
+
+        if (mWebSocketModel != null) {
+            mWebSocketModel.chatSubDel(getContext(), shareUuid, result -> {
+                if (isViewAttached())
+                    getV().onSubDel(position);
+
+            });
+        }
+    }
+
     @Override
     public void onSucceed(int type) {
         if (isBViewAttached())
