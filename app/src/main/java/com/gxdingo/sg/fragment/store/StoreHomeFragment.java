@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -195,20 +196,15 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (getP() != null) {
-            if (!hidden) {
-                categoryId = 0;
-                //填写了入驻信息才查询附近商家
-                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
-                if (userBean != null && userBean.getStore() != null && userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
-                    getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
+    protected void lazyInit() {
+        super.lazyInit();
+        categoryId = 0;
+        //填写了入驻信息才查询附近商家
+        UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+        if (userBean != null && userBean.getStore() != null && userBean.getStore().getId() != 0 && userBean.getStore().getStatus() != 0 && userBean.getStore().getStatus() != 20)
+            getContentView().post(() -> getP().getNearbyStore(true, true, categoryId));
 
-            }
-        }
     }
-
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
