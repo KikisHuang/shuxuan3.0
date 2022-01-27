@@ -41,6 +41,8 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.proguard.C;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 

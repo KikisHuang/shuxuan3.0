@@ -44,6 +44,16 @@ public class UserBean implements Serializable {
     private String nickname;
     private String avatar;
     private Integer gender;
+    private Integer authenticationStatus;
+
+    public Integer getAuthenticationStatus() {
+        return authenticationStatus;
+    }
+
+    public void setAuthenticationStatus(Integer authenticationStatus) {
+        this.authenticationStatus = authenticationStatus;
+    }
+
     private Integer status;
     private Integer inviterId;
     private Integer isFirstLogin;

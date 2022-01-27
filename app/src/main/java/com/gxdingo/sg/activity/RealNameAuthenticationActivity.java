@@ -15,7 +15,9 @@ import com.blankj.utilcode.util.LogUtils;
 import com.bumptech.glide.Glide;
 import com.esandinfo.livingdetection.EsLivingDetectionManager;
 import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
+import com.esandinfo.livingdetection.util.AppExecutors;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AuthenticationBean;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -40,6 +42,7 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
@@ -68,12 +71,6 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @BindView(R.id.submit_bt)
     public Button submit_bt;
 
-    private EsLivingDetectionManager manager;
-
-   // @param livingType 认证类型  1：远近，2：眨眼，3：摇头，4: 点头，5:张嘴，6：炫彩活体
-   //  支持多动作，如传入12表示先做远近活体，后做眨眼活体，一次最多支持4组动作
-    //2眨眼、3摇头、4点头、5张嘴
-    private int livingType = 23;
 
     @Override
     protected AuthenticationContract.AuthenticationPresenter createPresenter() {
@@ -143,49 +140,28 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
     @Override
     protected void init() {
         title_layout.setTitleText(gets(R.string.real_name_authentication));
-        manager = new EsLivingDetectionManager(reference.get());
-        EsLivingDetectResult result = manager.verifyInit(livingType);
+
 
     }
 
     @Override
     protected void initData() {
 
-        int width = ScreenUtils.getScreenWidth(reference.get()) / 2 - dp2px(44);
 
     }
 
 
-    @OnClick({R.id.submit_bt, R.id.upload_video_bt})
+    @OnClick({R.id.submit_bt})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
-
-            case R.id.upload_video_bt:
-                showAlbumDialog();
-                break;
             case R.id.submit_bt:
-                if (submit_bt.isSelected())
-                    getP().submitAuthenticationInfo();
-
+                getP().verifyInit();
                 break;
 
         }
     }
-
-    /**
-     * 显示相册、拍照选择弹窗
-     */
-    private void showAlbumDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true)
-                .isDarkTheme(false)
-                .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
-                    getP().photoItemClick(pos);
-                })).show();
-    }
-
 
     @Override
     protected void onBaseEvent(Object object) {
@@ -208,11 +184,34 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
         return idcard_edt.getText().toString();
     }
 
+    /**
+     * 显示认证状态弹窗
+     *
+     * @param data
+     */
+    @Override
+    public void onShowAuthenticationStatusDialog(AuthenticationBean data) {
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), data, status -> {
+
+                    if (status == 1){
+                        sendEvent(LocalConstant.AUTHENTICATION_SUCCEEDS);
+                        finish();
+                    }
+
+
+                }).show());
+
+    }
+
 
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
-        sendEvent(LocalConstant.AUTHENTICATION_SUCCEEDS);
         finish();
     }
 }

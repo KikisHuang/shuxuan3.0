@@ -42,6 +42,8 @@ import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
 import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
 import static com.gxdingo.sg.http.StoreApi.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.lat;
+import static com.gxdingo.sg.utils.LocalConstant.lon;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 public class BusinessDistrictModel {
@@ -134,7 +136,7 @@ public class BusinessDistrictModel {
     /**
      * 获取商圈列表
      */
-    public void getBusinessDistrict(Context context, boolean refresh, int storeId) {
+    public void getBusinessDistrict(Context context, boolean refresh, String circleUserIdentifier) {
         if (refresh)
             resetPage();//重置页码
 
@@ -142,14 +144,22 @@ public class BusinessDistrictModel {
         map.put(StoreLocalConstant.CURRENT, String.valueOf(mPage));
         map.put(StoreLocalConstant.SIZE, String.valueOf(mPageSize));
 
+        if (lat != 0 && lon != 0) {
+            map.put(StoreLocalConstant.LONGITUDE, String.valueOf(lon));
+            map.put(StoreLocalConstant.LATITUDE, String.valueOf(lat));
+        }
+
+
         if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.AdCode))
             map.put("area", LocalConstant.AdCode);
 
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
-            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
 
-        if (storeId > 0)
-            map.put("storeId", String.valueOf(storeId));
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getIdentifier()))
+            map.put("identifier", UserInfoUtils.getInstance().getIdentifier());
+
+
+        if (!isEmpty(circleUserIdentifier))
+            map.put("circleUserIdentifier", circleUserIdentifier);
 
         if (netWorkListener != null)
             netWorkListener.onStarts();

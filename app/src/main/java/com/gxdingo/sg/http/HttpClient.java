@@ -65,7 +65,6 @@ public class HttpClient {
     public static PostRequest post(String url, Map<String, String> map) {
 
         PostRequest request = EasyHttp.post(url);
-
         String timeStamp = getCurrentTimeUTCM();
 
         Map<String, String> signMap = new HashMap<>();
@@ -80,7 +79,6 @@ public class HttpClient {
 
         request.headers(LocalConstant.TIMESTAMP, timeStamp)
                 .headers(LocalConstant.SIGN, sign);
-
         if (UserInfoUtils.getInstance().isLogin()) {
             request.headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken());
             request.headers(Constant.EMASID, UserInfoUtils.getInstance().getEMAS());
@@ -130,7 +128,6 @@ public class HttpClient {
 
             BaseLogUtils.d(" USERIDENTIFIER === " + timeStamp);
         }
-
         for (Map.Entry<String, String> entry : map.entrySet()) {
             try {
                 request.params(entry.getKey(), entry.getValue());

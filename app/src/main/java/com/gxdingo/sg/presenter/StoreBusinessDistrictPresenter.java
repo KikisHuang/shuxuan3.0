@@ -2,15 +2,19 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 
-import com.gxdingo.sg.R;
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
+import com.gxdingo.sg.model.CommonModel;
+import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -19,6 +23,7 @@ import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.lzy.ninegrid.ImageInfo;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhouyou.http.subsciber.BaseSubscriber;
@@ -29,6 +34,8 @@ import java.util.Iterator;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 
@@ -43,10 +50,14 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     private ClientNetworkModel clientNetworkModel;
 
     private BusinessDistrictModel businessDistrictModel;
+    private CommonModel commonModel;
+    private NetworkModel mNetWorkModel;
+
 
     public StoreBusinessDistrictPresenter() {
         businessDistrictModel = new BusinessDistrictModel(this);
-
+        commonModel = new CommonModel();
+        mNetWorkModel = new NetworkModel(this);
         clientNetworkModel = new ClientNetworkModel(this);
     }
 
@@ -162,8 +173,9 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      * 获取商圈列表
      */
     @Override
-    public void getBusinessDistrictList(boolean refresh, int storeId) {
-        businessDistrictModel.getBusinessDistrict(getContext(), refresh, storeId);
+    public void getBusinessDistrictList(boolean refresh, String circleUserIdentifier) {
+        businessDistrictModel.getBusinessDistrict(getContext(), refresh, circleUserIdentifier);
+
     }
 
     /**
@@ -317,6 +329,46 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
         }, url, content, content, imgUrl, SHARE_MEDIA.WEIXIN_CIRCLE);
 
 
+    }
+
+    @Override
+    public void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier) {
+        if (commonModel != null) {
+            commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
+                @Override
+                public void onNext(boolean value) {
+                    if (isViewAttached() && isBViewAttached()) {
+                        //有定位权限先获取定位，没有则直接获取商圈列表
+                        if (value) {
+                            mNetWorkModel.location(getContext(), aMapLocation -> {
+                                if (aMapLocation.getErrorCode() == 0) {
+                                    LocalConstant.lat = aMapLocation.getLatitude();
+
+                                    LocalConstant.lon = aMapLocation.getLongitude();
+                                    //获取商圈列表
+                                    getBusinessDistrictList(true, mcircleUserIdentifier);
+                                } else
+                                    LogUtils.e("(aMapLocation.getErrorCode() == " + aMapLocation.getErrorCode());
+                            });
+
+                        } else
+                            getBusinessDistrictList(true, mcircleUserIdentifier);
+
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+
+                }
+            });
+        }
     }
 
     /**

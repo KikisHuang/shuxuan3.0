@@ -85,9 +85,6 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     private PasswordLayout mPasswordLayout;
 
-    //显示认证状态弹窗
-    private boolean showAuthenticationStatusDialog = false;
-
     private ClientCashSelectDialog clientCashSelectDialog;
 
 
@@ -185,6 +182,7 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     @OnClick({R.id.btn_more, R.id.cash_account_cl, R.id.btn_confirm})
     public void onClickViews(View v) {
+        checkClickInterval(v.getId());
         switch (v.getId()) {
             case R.id.btn_more:
                 if (!isEmpty(mBottomExplain)) {
@@ -199,7 +197,6 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 if (cashInfoBean != null) {
                     showCashSelectDialog();
                 }
-
                 break;
             case R.id.btn_confirm:
 
@@ -221,9 +218,14 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                             showPayPswDialog();
                         else
                             onMessage("请选择提现方式");
-                    } else
-                        showAuthenticationStatusDialog();
-
+                    } else {
+                        //未认证状态直接跳转认证页面
+                        if (cashInfoBean.authStatus == 0) {
+                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                            onMessage("请先填写实名认证信息");
+                            return;
+                        }
+                    }
                 }
 
 
@@ -294,39 +296,6 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     }
 
 
-    /**
-     * 显示认证状态弹窗
-     */
-    private void showAuthenticationStatusDialog() {
-
-        //未认证状态直接跳转认证页面
-        if (cashInfoBean.authStatus == 0) {
-            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-            onMessage("请先填写实名认证信息");
-            return;
-        }
-
-        if (!showAuthenticationStatusDialog)
-            showAuthenticationStatusDialog = true;
-
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .autoDismiss(true)
-                .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), cashInfoBean.authStatus, cashInfoBean.authImage, cashInfoBean.rejectReason, status -> {
-                    if (!checkClickInterval(123))
-                        return;
-                    if (cashInfoBean.authStatus == 2)
-                        getP().getCashInfo();
-                    else if (cashInfoBean.authStatus == 3)
-                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                    else if (cashInfoBean.authStatus == 1) {
-                        //认证成功无需操作
-                    }
-                }).show());
-    }
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -358,10 +327,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == AUTHENTICATION_SUCCEEDS) {
-            showAuthenticationStatusDialog = false;
+        if (type == AUTHENTICATION_SUCCEEDS)
             getP().getCashInfo();
-        }
 
     }
 
@@ -380,8 +347,6 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
     public void onCashInfoResult(ClientCashInfoBean cashInfoBean) {
         this.cashInfoBean = cashInfoBean;
 
-        if (showAuthenticationStatusDialog)
-            showAuthenticationStatusDialog();
         int bankCardId = SPUtils.getInstance().getInt(LocalConstant.CASH_SELECTED_ID_KEY, 0);
 
         if (bankCardId == 998 && !isEmpty(cashInfoBean.getAlipay()) && cashInfoBean.getIsShowAlipay() == 1) {

@@ -61,12 +61,14 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.plugins.RxJavaPlugins;
 
 import static cc.shinichi.library.tool.file.FileUtil.createOrExistsDir;
 import static com.blankj.utilcode.util.AppUtils.getAppName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
+import static com.esandinfo.livingdetection.EsLivingDetectionManager.Init;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.IM_OFFICIAL_URL;
@@ -145,6 +147,8 @@ public class MyApplication extends Application {
         tntX5Init();
         initCloudChannel(this);
         nineGridLayout();
+        //人脸检测sdk初始化
+        Init();
     }
 
     @Override
@@ -162,7 +166,6 @@ public class MyApplication extends Application {
         if (!SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true))
             init();
     }
-
 
 
     private void xPopupInit() {
@@ -378,7 +381,6 @@ public class MyApplication extends Application {
             //商家端
             Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
             Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-
         }
         Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTPS + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
         //H5客服
@@ -421,9 +423,9 @@ public class MyApplication extends Application {
                 // 最后的true表示是否打印内部异常，一般打开方便调试错误
                 .debug("Http - Logcat", isUat ? true : isDebug)
                 //如果使用默认的60秒,以下三行也不需要设置
-                .setReadTimeOut(60 * 1000)
-                .setWriteTimeOut(60 * 100)
-                .setConnectTimeout(60 * 100)
+                .setReadTimeOut(20 * 1000)
+//                .setWriteTimeOut(60 * 100)
+                .setConnectTimeout(10 * 1000)
                 //可以设置https的证书,以下几种方案根据需要自己设置
                 //可以全局统一设置超时重连次数,默认为3次,那么最差的情况会请求4次(一次原始请求,三次重连请求),
                 //不需要可以设置为0

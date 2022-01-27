@@ -12,6 +12,8 @@ import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.List;
 
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
+
 
 /**
  * Created by Kikis on 2021/12/10.
@@ -43,12 +45,11 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
             case STORE_BUSINESS_DISTRICT_TAB: {
                 args.putInt(Constant.PARAMAS + 0, position + 1);
                 if (position == 1) {
-                    //todo 后期接口有了，按接口改为不需要id和token的方式
-                    //我的商圈，传店铺id
-                    if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore() != null && UserInfoUtils.getInstance().getUserInfo().getStore().getId() > 0)
-                        args.putInt(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getStore().getId());
+                    //todo 未登录时状态判断
+                    if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getIdentifier()))
+                        //我的商圈，传自己的Identifier
+                        args.putString(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getIdentifier());
                 }
-
                 return StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, args);
             }
 

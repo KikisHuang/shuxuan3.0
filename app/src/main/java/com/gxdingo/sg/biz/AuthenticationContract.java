@@ -1,5 +1,7 @@
 package com.gxdingo.sg.biz;
 
+import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
+import com.gxdingo.sg.bean.AuthenticationBean;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
@@ -15,7 +17,8 @@ public class AuthenticationContract {
 
         void photoItemClick(int pos);
 
-        void submitAuthenticationInfo();
+        void verifyInit();
+
     }
 
     public interface AuthenticationListener {
@@ -26,5 +29,6 @@ public class AuthenticationContract {
         String getIdCardNumber();
 
 
+        void onShowAuthenticationStatusDialog(AuthenticationBean data);
     }
 }

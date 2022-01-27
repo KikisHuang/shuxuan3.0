@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ChatActivity;
@@ -38,7 +34,6 @@ import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
-import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
@@ -51,7 +46,6 @@ import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
-import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.utils.StringUtils;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -75,7 +69,6 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -84,7 +77,6 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
-import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * 商家端商圈
@@ -143,7 +135,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     private int mType = 0;
 
     //客户端查询单独商家商圈所需id
-    private int mStoreId = 0;
+    private String mcircleUserIdentifier = "";
 
     private Disposable mDisposable;
     //活动倒计时
@@ -246,7 +238,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
         if (args != null) {
             mType = args.getInt(Constant.PARAMAS + 0, 0);
             //客户端查询单独商家商圈所需id, mType为3时才会有该值
-            mStoreId = args.getInt(Constant.SERIALIZABLE + 0, 0);
+            mcircleUserIdentifier = args.getString(Constant.SERIALIZABLE + 0);
         }
 
         //页面进入类型 0客户端浏览商圈 1商家端浏览全部商圈 2商家端浏览自己的商圈 3单独浏览一个商家的商圈
@@ -350,8 +342,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
-                //获取商圈列表
-                getP().getBusinessDistrictList(true, mStoreId);
+                getP().checkLocationPermission(getRxPermissions(),mcircleUserIdentifier);
             }
 
         }
@@ -448,7 +439,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 //获取商圈评论未读数量
                 getP().getNumberUnreadComments();
             //获取商圈列表
-            getP().getBusinessDistrictList(true, mStoreId);
+            getP().getBusinessDistrictList(true, mcircleUserIdentifier);
             isFirstLoad = false;
         } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
             forceStopRecyclerViewScroll(recyclerView);
@@ -467,7 +458,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         //获取商圈列表
-        getP().getBusinessDistrictList(true, mStoreId);
+        getP().getBusinessDistrictList(true, mcircleUserIdentifier);
     }
 
     /**
@@ -476,7 +467,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         //获取商圈列表
-        getP().getBusinessDistrictList(false, mStoreId);
+        getP().getBusinessDistrictList(false, mcircleUserIdentifier);
     }
 
     @Override

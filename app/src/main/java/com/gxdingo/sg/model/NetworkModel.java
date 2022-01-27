@@ -10,11 +10,15 @@ import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
+import com.esandinfo.livingdetection.util.MyLog;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.StoreActivity;
+import com.gxdingo.sg.bean.AliVerifyBean;
+import com.gxdingo.sg.bean.AuthenticationBean;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
@@ -27,6 +31,7 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
@@ -42,6 +47,7 @@ import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.callback.DownloadProgressCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
+import com.zhouyou.http.model.HttpHeaders;
 import com.zhouyou.http.request.DownloadRequest;
 import com.zhouyou.http.subsciber.DownloadSubscriber;
 
@@ -49,18 +55,28 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.gxdingo.sg.http.Api.ALICLOUDAPI_VERIFY;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_INIT;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY2;
 import static com.gxdingo.sg.http.Api.CHAT_SETTOP;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
@@ -78,9 +94,11 @@ import static com.gxdingo.sg.http.Api.USER_LOGOUT;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
+import static com.gxdingo.sg.http.HttpClient.getCurrentTimeUTCM;
 import static com.gxdingo.sg.utils.LocalConstant.AAC;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.GLOBAL_SIGN;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
@@ -1334,5 +1352,236 @@ public class NetworkModel {
             netWorkListener.onDisposable(subscriber);
     }
 
+
+    /**
+     * 活体实名认证接口初始化
+     *
+     * @param data
+     * @param idCardName
+     * @param idCardNumber
+     */
+    public void RPauthInit(Context context, String data, String idCardName, String idCardNumber, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("initMsg", data);
+
+        map.put("certName", idCardName);
+        map.put("certNo", idCardNumber);
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_INIT, map)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean authenticationBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(authenticationBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void AliRPauth(Context context, EsLivingDetectResult result1, CustomResultListener customResultListener) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("token", result1.getToken());
+
+        map.put("verifyMsg", result1.getData());
+
+/*        FormBody body;
+        FormBody.Builder bodyBuilder = new FormBody.Builder()
+                .add("token", result1.getToken())
+                .add("verifyMsg", result1.getData());
+
+        body = bodyBuilder.build();*/
+
+        HttpHeaders headers = new HttpHeaders();
+
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 0529cdbf24174f839acd89d6eafbf99c
+        headers.put("Authorization", "APPCODE " + "a0b80eedd699448e82a1f1f7250deb31");
+//        headers.put("Authorization", "APPCODE " + "0529cdbf24174f839acd89d6eafbf99c");
+        //根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同
+        headers.put("X-Ca-Nonce", UUID.randomUUID().toString());
+
+        Observable<String> observable = HttpClient.post(ALICLOUDAPI_VERIFY, map).headers(headers)
+                .execute(String.class);
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<String>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(String s) {
+
+                AliVerifyBean data = GsonUtil.GsonToBean(s, AliVerifyBean.class);
+                if (customResultListener != null) {
+                    customResultListener.onResult(data);
+                }
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void RPauth(Context context, AliVerifyBean result1, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        if (!isEmpty(result1.getCode()))
+            map.put("code", result1.getCode());
+        if (!isEmpty(result1.getMsg()))
+            map.put("msg", result1.getMsg());
+        if (!isEmpty(result1.getBizId()))
+            map.put("bizId", result1.getBizId());
+        if (!isEmpty(result1.getRequestId()))
+            map.put("requestId", result1.getRequestId());
+        if (!isEmpty(result1.getLivingType()))
+            map.put("livingType", result1.getLivingType());
+        if (!isEmpty(result1.getCertName()))
+            map.put("certName", result1.getCertName());
+        if (!isEmpty(result1.getCertNo()))
+            map.put("certNo", result1.getCertNo());
+        if (!isEmpty(result1.getBestImg()))
+            map.put("bestImg", result1.getBestImg());
+        if (!isEmpty(result1.getPass()))
+            map.put("pass", result1.getPass());
+//        map.put("rxfs", result1.getRxfs());
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_VERIFY, map)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean s) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(s);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void RPauth2(Context context, EsLivingDetectResult result1, CustomResultListener customResultListener) {
+
+/*        Map<String, String> map = getJsonMap();
+
+        map.put("token", result1.getToken());
+
+        map.put("verifyMsg", result1.getData());*/
+
+        FormBody body;
+        FormBody.Builder bodyBuilder = new FormBody.Builder()
+                .add("token", result1.getToken())
+                .add("verifyMsg", result1.getData());
+
+        body = bodyBuilder.build();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+        headers.put("Authorization", "APPCODE " + "0529cdbf24174f839acd89d6eafbf99c");
+        //根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同
+        headers.put("X-Ca-Nonce", UUID.randomUUID().toString());
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_VERIFY2).requestBody(body)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean s) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(s);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
 
 }

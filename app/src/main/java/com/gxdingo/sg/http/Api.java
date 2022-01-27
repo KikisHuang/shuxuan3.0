@@ -10,7 +10,7 @@ public class Api {
     public static String URL;
 
     //uat服务器开关 ，***打包上线正式服请关闭此开关***
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
 
     public static final String SM = ":";
 
@@ -194,6 +194,23 @@ public class Api {
      * 实名认证
      */
     public static final String EXTRA_CERTIFICATION = HIERARCHY + "extra/certification";
+
+    /**
+     * 活体实名认证接口初始化
+     */
+    public static final String AUTHENTICATION_INIT = HIERARCHY + "extra/living/authentication/init";
+    /**
+     * 活体实名认证1
+     */
+    public static final String AUTHENTICATION_VERIFY = HIERARCHY + "extra/living/authentication";
+    /**
+     * 活体实名认证2
+     */
+    public static final String AUTHENTICATION_VERIFY2 = HIERARCHY + "extra/living/authentication/verify";
+    /**
+     * 阿里云 获取认证结果
+     */
+    public static final String ALICLOUDAPI_VERIFY = HIERARCHY + "https://apprpv.market.alicloudapi.com/verify";
 
 
 }
