@@ -1,5 +1,6 @@
 package com.gxdingo.sg.biz;
 
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
@@ -25,6 +26,17 @@ public class StoreBusinessDistrictReleaseContract {
          * 提交商圈信息
          */
         void releaseBusinessDistrict(String content, List<String> images);
+
+        /**
+         * 获取标签列表
+         */
+        void getLabelList();
+
+        /**
+         * 标签选中
+         * @param position
+         */
+        void labelCheck(int position);
     }
 
     public interface StoreBusinessDistrictReleaseListener {
@@ -39,5 +51,16 @@ public class StoreBusinessDistrictReleaseContract {
          * 发布商圈信息成功
          */
         void releaseBusinessDistrictSuccess(String msg);
+
+        /**
+         * 标签数据回调
+         *
+         * @param o
+         */
+        void onLabelResult(List<BusinessDistrictListBean.Labels> o);
+
+        List<BusinessDistrictListBean.Labels> getLabelsData();
+
+        void refreshLabelAdapter(int position);
     }
 }

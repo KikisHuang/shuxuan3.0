@@ -33,8 +33,6 @@ import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -43,7 +41,7 @@ import io.reactivex.schedulers.Schedulers;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -173,7 +171,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED) {
+        if (type == LOGIN_SUCCEED) {
             getP().getSubscribesMessage(true);
         } else if (type == NOTIFY_MSG_LIST_ADAPTER)
             imMessageAdapter.notifyDataSetChanged();

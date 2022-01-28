@@ -1,8 +1,6 @@
 package com.gxdingo.sg.http;
 
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.biz.ProgressListener;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
@@ -19,30 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.gxdingo.sg.http.Api.HTTP;
-import static com.gxdingo.sg.http.Api.HTTPS;
-import static com.gxdingo.sg.http.Api.L;
-import static com.gxdingo.sg.http.Api.OFFICIAL_OSS_UPLOAD_URL;
 import static com.gxdingo.sg.http.Api.OSS_URL;
-import static com.gxdingo.sg.http.Api.SM;
-import static com.gxdingo.sg.http.Api.TEST_OSS_UPLOAD_URL;
 import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
-import static com.gxdingo.sg.http.ClientApi.UAT_URL;
-import static com.gxdingo.sg.http.StoreApi.STORE_PORT;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_OFFICIAL_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.GLOBAL_SIGN;
 import static com.gxdingo.sg.utils.LocalConstant.IM_SIGN;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.OSS_SIGN_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_UAT_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_OSS_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.UAT_OSS_KEY;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
 /**
  * @author: Kikis
@@ -231,57 +213,6 @@ public class HttpClient {
 
         }
         return request;
-    }
-
-    /**
-     * 切换全局url
-     *
-     * @param isUser
-     */
-    public static void switchGlobalUrl(boolean isUser) {
-
-        //全局url初始化
-        if (isUser) {
-            //客户端
-            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-
-            Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-
-            //客户端 key
-            LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        } else {
-            //商家端
-            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-
-            Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-            //商家端 key
-            LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        }
-
-        SPUtils.getInstance().put(LOGIN_WAY, isUser);
-/*
-
-        //正式环境测试
-        if (isUser) {
-            //客户端
-            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
-            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
-                //客户端
-                LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
-        } else {
-            //商家端
-            Api.URL = HTTPS + StoreApi.OFFICIAL_URL;
-            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
-                //商家端
-                LocalConstant.GLOBAL_SIGN = STORE_OFFICIAL_HTTP_KEY;
-        }
-*/
-
-        //以下设置的所有参数是全局参数,同样的参数可以在请求的时候再设置一遍,那么对于该请求来讲,请求中的参数会覆盖全局参数
-        EasyHttp.getInstance()
-                //可以全局统一设置全局URL
-                .setBaseUrl(Api.URL);//设置全局URL  url只能是域名 或者域名+端口号
-
     }
 
 

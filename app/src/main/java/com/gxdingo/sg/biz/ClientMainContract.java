@@ -22,7 +22,7 @@ public class ClientMainContract {
 
         void checkTab(int tab);
 
-        void oneKeyLogin(String code, boolean isUser);
+        void oneKeyLogin(String code );
 
         void aliLogin();
 

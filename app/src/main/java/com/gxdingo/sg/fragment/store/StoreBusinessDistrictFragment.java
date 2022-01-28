@@ -331,20 +331,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void lazyInit() {
         super.lazyInit();
-        boolean login = UserInfoUtils.getInstance().isLogin();
-        if (login) {
-          /*  //只有用户端商圈获取未读消息
-            if (mType == 0)
-                getP().getNumberUnreadComments();*/
 
-            if (mType != 3)
-                getP().getNumberUnreadComments();
-
-            if (isFirstLoad) {
-                isFirstLoad = !isFirstLoad;
-                getP().checkLocationPermission(getRxPermissions(),mcircleUserIdentifier);
-            }
-
+        if (isFirstLoad) {
+            isFirstLoad = !isFirstLoad;
+            getP().checkLocationPermission(getRxPermissions(), mcircleUserIdentifier);
         }
     }
 
@@ -434,7 +424,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     protected void onTypeEvent(Integer type) {
         //刷新商圈列表
         if (type == StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST
-                || type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == SOTRE_REVIEW_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED) {
+                || type == LocalConstant.LOGIN_SUCCEED || type == SOTRE_REVIEW_SUCCEED) {
             if (mType != 3)
                 //获取商圈评论未读数量
                 getP().getNumberUnreadComments();
@@ -635,9 +625,13 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
-                if (mType != 3)
-                    //刷新未读消息
-                    getP().getNumberUnreadComments();
+
+                boolean login = UserInfoUtils.getInstance().isLogin();
+                if (login) {
+                    //不是浏览别人的商圈类型，就获取消息数
+                    if (mType != 3)
+                        getP().getNumberUnreadComments();
+                }
                 mAdapter.setList(bean.getList());
             } else {
                 mAdapter.addData(bean.getList());

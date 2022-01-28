@@ -4,33 +4,16 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.amap.api.location.AMapLocationClient;
-import com.blankj.utilcode.util.SPUtils;
-import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
-import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
-import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.ReLoginBean;
-import com.lxj.xpopup.XPopup;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
-import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
 
 /**
  * @author: Kikis
@@ -139,16 +122,13 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                     getP().oauthWeChatLogin(event.code);
             }
 
-        }else if (object instanceof IdSwitchEvent){
-            IdSwitchEvent event = (IdSwitchEvent) object;
-            getP().switchId(event.isUser);
         }
     }
 
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED || type == LocalConstant.STORE_LOGIN_SUCCEED || type == QUITLOGINPAGE){
+        if (type == LocalConstant.LOGIN_SUCCEED || type == QUITLOGINPAGE){
             if (type!=QUITLOGINPAGE)
                 getP().quitlogin();
 

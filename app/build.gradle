@@ -122,7 +122,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     //人脸识别
-    implementation 'com.esandinfo.livingdetecton:esfaceauth:1.4.4@aar'
+    implementation 'com.esandinfo.livingdetecton:esfaceauth:1.4.10@aar'
 
     //自用工具包
     implementation project(path: ':commnlibrary')

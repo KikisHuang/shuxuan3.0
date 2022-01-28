@@ -36,8 +36,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
-import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_HDGZ_AGREEMENT_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;

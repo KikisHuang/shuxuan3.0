@@ -1,50 +1,26 @@
 package com.gxdingo.sg.activity;
 
-import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.bumptech.glide.Glide;
-import com.esandinfo.livingdetection.EsLivingDetectionManager;
-import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
-import com.esandinfo.livingdetection.util.AppExecutors;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AuthenticationBean;
-import com.gxdingo.sg.bean.IdCardOCRBean;
-import com.gxdingo.sg.bean.IdSwitchEvent;
-import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.AuthenticationContract;
-import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
-import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.presenter.AuthenticationPresenter;
-import com.gxdingo.sg.presenter.LoginPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
-import com.kikis.commnlibrary.utils.GlideUtils;
-import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
-import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis

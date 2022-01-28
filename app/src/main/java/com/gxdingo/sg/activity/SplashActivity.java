@@ -19,7 +19,6 @@ import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -116,9 +115,7 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
             AMapLocationClient.updatePrivacyShow(this, true, true);
             AMapLocationClient.updatePrivacyAgree(this, true);
 
-            boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-            Class clas = isUser ? ClientActivity.class : StoreActivity.class;
-            goToPage(reference.get(), clas, null);
+            goToPage(reference.get(), ClientActivity.class, null);
 
             finish();
         }

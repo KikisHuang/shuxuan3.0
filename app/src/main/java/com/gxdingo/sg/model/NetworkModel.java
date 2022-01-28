@@ -11,7 +11,6 @@ import com.amap.api.services.route.DistanceSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
-import com.esandinfo.livingdetection.util.MyLog;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
@@ -22,8 +21,8 @@ import com.gxdingo.sg.bean.AuthenticationBean;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
+import com.gxdingo.sg.bean.LabelListBean;
 import com.gxdingo.sg.bean.NormalBean;
-import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
@@ -31,7 +30,6 @@ import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.MyBaseSubscriber;
@@ -49,26 +47,19 @@ import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 import com.zhouyou.http.model.HttpHeaders;
 import com.zhouyou.http.request.DownloadRequest;
-import com.zhouyou.http.subsciber.DownloadSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
@@ -77,12 +68,11 @@ import static com.gxdingo.sg.http.Api.ALICLOUDAPI_VERIFY;
 import static com.gxdingo.sg.http.Api.AUTHENTICATION_INIT;
 import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY;
 import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY2;
-import static com.gxdingo.sg.http.Api.CHAT_SETTOP;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
+import static com.gxdingo.sg.http.Api.CIRCLE_LABEL;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
 import static com.gxdingo.sg.http.Api.EXTRA_CERTIFICATION;
 import static com.gxdingo.sg.http.Api.EXTRA_IDCARDOCR;
-import static com.gxdingo.sg.http.Api.IM_URL;
 import static com.gxdingo.sg.http.Api.INVITATIONCODE;
 import static com.gxdingo.sg.http.Api.ONE_CLICK_LOGIN;
 import static com.gxdingo.sg.http.Api.OTHER_DISTANCE;
@@ -94,16 +84,10 @@ import static com.gxdingo.sg.http.Api.USER_LOGOUT;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
 import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
-import static com.gxdingo.sg.http.HttpClient.getCurrentTimeUTCM;
-import static com.gxdingo.sg.utils.LocalConstant.AAC;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.GLOBAL_SIGN;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.StoreLocalConstant.INVITATION_CODE;
-import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.oneDecimal;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -405,10 +389,10 @@ public class NetworkModel {
 
         map.put(Constant.MOBILE, phone);
 
-        if (SPUtils.getInstance().getBoolean(LocalConstant.LOGIN_WAY))
-            map.put(Constant.CODE, code);
-        else
-            map.put(StoreLocalConstant.CAPTCHA, code);
+//        if (SPUtils.getInstance().getBoolean(LocalConstant.LOGIN_WAY))
+        map.put(Constant.CODE, code);
+//        else
+//            map.put(StoreLocalConstant.CAPTCHA, code);
 
         Observable<NormalBean> observable = HttpClient.post(CHECK_CODE_SMS, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -500,7 +484,7 @@ public class NetworkModel {
      * @param
      * @param
      */
-    public void oneClickLogin(Context context, String accessToken, boolean isUse) {
+    public void oneClickLogin(Context context, String accessToken) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -536,21 +520,15 @@ public class NetworkModel {
                     netWorkListener.onAfters();
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
                     netWorkListener.onMessage(gets(R.string.login_succeed));
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
 
 //                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登录状态
 
-                    if (!isUse) {
-                        //商家
-                        if (StoreActivity.getInstance() == null)
-                            goToPage(context, StoreActivity.class, null);
-                    } else {
-                        //客户端
-                        if (ClientActivity.getInstance() == null)
-                            goToPage(context, ClientActivity.class, null);
-                    }
+                    //客户端
+                    if (ClientActivity.getInstance() == null)
+                        goToPage(context, ClientActivity.class, null);
                 }
             }
         };
@@ -567,7 +545,7 @@ public class NetworkModel {
      * @param mobile
      * @param code
      */
-    public void login(Context context, String mobile, String code, boolean isUse) {
+    public void login(Context context, String mobile, String code) {
 
         if (isEmpty(mobile)) {
             netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
@@ -610,8 +588,8 @@ public class NetworkModel {
                     netWorkListener.onAfters();
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED );
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
 
             }
@@ -664,7 +642,7 @@ public class NetworkModel {
      * @param code
      * @param type
      */
-    public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
+    public void thirdPartyLogin(Context context, String code, String type) {
 
         if (isEmpty(code)) {
             netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
@@ -709,11 +687,11 @@ public class NetworkModel {
 
                     netWorkListener.onMessage(gets(R.string.please_bind_phone));
                     netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
-                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
+                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
             }
         };
@@ -732,7 +710,7 @@ public class NetworkModel {
      * @param openid
      * @param appname
      */
-    public void bind(Context context, String mobile, String code, String openid, String appname, boolean isUse) {
+    public void bind(Context context, String mobile, String code, String openid, String appname) {
 
 
         if (isEmpty(mobile)) {
@@ -779,8 +757,8 @@ public class NetworkModel {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(gets(R.string.bind_succeed));
 
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
 
                 }
 
@@ -826,6 +804,7 @@ public class NetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
 
@@ -875,6 +854,7 @@ public class NetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
                 UserInfoUtils.getInstance().goToOauthPage(context);
@@ -1584,4 +1564,41 @@ public class NetworkModel {
 
     }
 
+    /**
+     * 获取发布商圈标签列表
+     *
+     * @param context
+     * @param customResultListener
+     */
+    public void getLabelList(Context context, CustomResultListener customResultListener) {
+
+        Observable<LabelListBean> observable = HttpClient.post(CIRCLE_LABEL)
+                .execute(new CallClazzProxy<ApiResult<LabelListBean>, LabelListBean>(new TypeToken<LabelListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<LabelListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(LabelListBean data) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(data.list);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
 }

@@ -13,9 +13,8 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -36,7 +35,6 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
 
     private String openId, appName;
 
-    private boolean mIsUse;
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
         return new LoginPresenter();
@@ -108,7 +106,6 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
         title_layout.setBackgroundColor(getc(R.color.white));
         openId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         appName = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
-        mIsUse = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 2, false);
 
     }
 
@@ -127,7 +124,7 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
     public void onSucceed(int type) {
         super.onSucceed(type);
         if (type == CODE_SEND)
-            goToPagePutSerializable(this, InputVerificationCodeActivity.class, getIntentEntityMap(new Object[]{et_phone_number.getText().toString(), openId, appName, mIsUse}));
+            goToPagePutSerializable(this, InputVerificationCodeActivity.class, getIntentEntityMap(new Object[]{et_phone_number.getText().toString(), openId, appName}));
         else
             finish();
     }
@@ -152,10 +149,6 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
         return false;
     }
 
-    @Override
-    public boolean isClient() {
-        return false;
-    }
 
     @Override
     public void setVerificationCodeTime(int time) {
@@ -164,14 +157,9 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
 
 
     @Override
-    public void showIdButton() {
-
-    }
-
-    @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED || type == STORE_LOGIN_SUCCEED)
+        if (type == LOGIN_SUCCEED )
             finish();
     }
 }

@@ -29,9 +29,6 @@ import java.util.regex.Pattern;
 
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Kikis

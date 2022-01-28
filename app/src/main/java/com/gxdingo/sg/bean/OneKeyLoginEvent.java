@@ -9,19 +9,16 @@ public class OneKeyLoginEvent {
 
     public String code;
 
-    public boolean isUser;
 
     //默认0一键登录 1支付宝 2微信
     public int type ;
 
-    public OneKeyLoginEvent(String code,boolean isUser) {
+    public OneKeyLoginEvent(String code ) {
         this.code = code;
-        this.isUser=isUser;
     }
 
-    public OneKeyLoginEvent(String code, boolean isUser, int type) {
+    public OneKeyLoginEvent(String code, int type) {
         this.code = code;
-        this.isUser = isUser;
         this.type = type;
     }
 }

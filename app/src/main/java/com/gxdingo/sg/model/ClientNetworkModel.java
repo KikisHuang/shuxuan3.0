@@ -11,8 +11,6 @@ import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.ShareBean;
-import com.gxdingo.sg.http.ClientApi;
-import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
@@ -54,43 +52,43 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
+import static com.gxdingo.sg.http.Api.INVITE_HELP;
 import static com.gxdingo.sg.http.Api.UPLOAD_INVITATIONCODE;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADDRESSES;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_DEFAULT;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_DELETE;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_UPDATE;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_IMAGE;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
-import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
-import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
-import static com.gxdingo.sg.http.ClientApi.COUPON_LIST;
-import static com.gxdingo.sg.http.ClientApi.COUPON_RECEIVE;
-import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
-import static com.gxdingo.sg.http.ClientApi.HELP_AFTER;
-import static com.gxdingo.sg.http.ClientApi.INVITESELLER;
-import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
-import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
-import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
-import static com.gxdingo.sg.http.ClientApi.TASK_COMPLETE;
-import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
-import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
-import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
-import static com.gxdingo.sg.http.ClientApi.VOICE_TOKEN;
-import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
-import static com.gxdingo.sg.http.ClientApi.WALLET_UNBINDING;
-import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
-import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
-import static com.gxdingo.sg.http.StoreApi.STORE_ACCOUNT;
-import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
-import static com.gxdingo.sg.http.StoreApi.UNBIND_BANK_CARD;
-import static com.gxdingo.sg.http.StoreApi.UPDATE_WITHDRAWAL_PASSWORD;
+import static com.gxdingo.sg.http.Api.ADDRESS_ADD;
+import static com.gxdingo.sg.http.Api.ADDRESS_ADDRESSES;
+import static com.gxdingo.sg.http.Api.ADDRESS_DEFAULT;
+import static com.gxdingo.sg.http.Api.ADDRESS_DELETE;
+import static com.gxdingo.sg.http.Api.ADDRESS_UPDATE;
+import static com.gxdingo.sg.http.Api.ARTICLE_DETAIL;
+import static com.gxdingo.sg.http.Api.ARTICLE_IMAGE;
+import static com.gxdingo.sg.http.Api.ARTICLE_LIST;
+import static com.gxdingo.sg.http.Api.CATEGORY_CATEGORIES;
+import static com.gxdingo.sg.http.Api.CHECK_PAY_PASSWORD;
+import static com.gxdingo.sg.http.Api.COUPON_LIST;
+import static com.gxdingo.sg.http.Api.COUPON_RECEIVE;
+import static com.gxdingo.sg.http.Api.Cash_ACCOUNT_INFO;
+import static com.gxdingo.sg.http.Api.HELP_AFTER;
+import static com.gxdingo.sg.http.Api.INVITESELLER;
+import static com.gxdingo.sg.http.Api.MINE_HOME;
+import static com.gxdingo.sg.http.Api.STORE_DETAIL;
+import static com.gxdingo.sg.http.Api.STORE_LIST;
+import static com.gxdingo.sg.http.Api.TASK_COMPLETE;
+import static com.gxdingo.sg.http.Api.TRANSACTION_RECORD;
+import static com.gxdingo.sg.http.Api.USER_EDIT;
+import static com.gxdingo.sg.http.Api.USER_MOBILE_CHANGE;
+import static com.gxdingo.sg.http.Api.VOICE_TOKEN;
+import static com.gxdingo.sg.http.Api.WALLET_BINDING;
+import static com.gxdingo.sg.http.Api.WALLET_UNBINDING;
+import static com.gxdingo.sg.http.Api.ADD_CARD;
+import static com.gxdingo.sg.http.Api.BALANCE_CASH;
+import static com.gxdingo.sg.http.Api.STORE_ACCOUNT;
+import static com.gxdingo.sg.http.Api.SUPPORT_CARD_LIST;
+import static com.gxdingo.sg.http.Api.UNBIND_BANK_CARD;
+import static com.gxdingo.sg.http.Api.UPDATE_WITHDRAWAL_PASSWORD;
 import static com.gxdingo.sg.utils.ClientLocalConstant.ALIPAY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.BANK;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.WECHAT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -229,20 +227,14 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
 
         Map<String, String> map = getJsonMap();
 
-        if (isUser) {
             map.put(Constant.MOBILE, mobile);
-        } else {
-//            map.put(StoreLocalConstant.OLD_MOBILE, UserInfoUtils.getInstance().getUserPhone());
-//            map.put(StoreLocalConstant.NEW_MOBILE, mobile);
-        }
         map.put(Constant.CODE, code);
 
 
-        Observable<NormalBean> observable = HttpClient.post(isUser ? USER_MOBILE_CHANGE : "USER_UPDATE_MOBILE", map)
+        Observable<NormalBean> observable = HttpClient.post( USER_MOBILE_CHANGE , map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -672,9 +664,7 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-
-        Observable<ClientCashInfoBean> observable = HttpClient.post(isUser ? Cash_ACCOUNT_INFO : STORE_ACCOUNT)
+        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });
@@ -1603,7 +1593,7 @@ public class ClientNetworkModel {
 
         map.put("helpCode", helpCode);
 
-        Observable<HelpBean> observable = HttpClient.post(ClientApi.INVITE_HELP, map)
+        Observable<HelpBean> observable = HttpClient.post(INVITE_HELP, map)
                 .execute(new CallClazzProxy<ApiResult<HelpBean>, HelpBean>(new TypeToken<HelpBean>() {
                 }.getType()) {
                 });

@@ -34,7 +34,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -251,10 +250,10 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
+     /*   boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
         if (!isUser) {
             TransactionBean item = (TransactionBean) adapter.getItem(position);
             goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
-        }
+        }*/
     }
 }

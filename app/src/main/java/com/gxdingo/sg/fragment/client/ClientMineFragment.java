@@ -1,26 +1,17 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -33,27 +24,21 @@ import com.gxdingo.sg.activity.ClientCashActivity;
 import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
 import com.gxdingo.sg.activity.ClientCouponListActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
-import com.gxdingo.sg.activity.ClientPersonalDataActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
 import com.gxdingo.sg.activity.WebActivity;
-import com.gxdingo.sg.adapter.ClientCouponAdapter;
-import com.gxdingo.sg.adapter.HomePageBannerAdapter;
 import com.gxdingo.sg.adapter.MineActivityAdapter;
-import com.gxdingo.sg.adapter.MineBannerAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.GridRecyclerDecoration;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
@@ -61,10 +46,6 @@ import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.tencent.bugly.crashreport.biz.UserInfoBean;
-import com.youth.banner.Banner;
-import com.youth.banner.adapter.BannerImageAdapter;
-import com.youth.banner.holder.BannerImageHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,15 +55,14 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
-import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.gxdingo.sg.http.Api.SERVER_URL;
+import static com.gxdingo.sg.http.Api.WEB_URL;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.ShareAnimaStartPages;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -198,9 +178,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.CLIENT_LOGIN_SUCCEED
+        if (type == LocalConstant.LOGIN_SUCCEED
                 || type == LocalConstant.CLIENT_REFRESH_USER_HOME
-                || type == LocalConstant.CASH_SUCCESSS) {
+                || type == LocalConstant.CASH_SUCCESSS || type == SOTRE_REVIEW_SUCCEED) {
             getP().getUserInfo();
             checkShowFillCode();
         } else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS) {
@@ -259,7 +239,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         }
     }
 
-    @OnClick({R.id.coupon_img,R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
+    @OnClick({R.id.coupon_img, R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
             , R.id.contract_server_stv, R.id.about_us_stv, R.id.fill_invitation_code_stv, R.id.settle_protocol_stv, R.id.logout_stv})
     public void onClickViews(View v) {
         switch (v.getId()) {
@@ -300,7 +280,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientAccountSecurityActivity.class, null);
                 break;
             case R.id.contract_server_stv:
-                String url = WEB_URL + ClientApi.SERVER_URL;
+                String url = WEB_URL + SERVER_URL;
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
                 break;
             case R.id.about_us_stv:

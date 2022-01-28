@@ -1,6 +1,5 @@
 package com.gxdingo.sg.activity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -10,12 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.IdSwitchEvent;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
@@ -23,7 +20,6 @@ import com.gxdingo.sg.view.CountdownView;
 import com.gxdingo.sg.view.PartTextClickSpan;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
@@ -33,16 +29,11 @@ import java.util.regex.Pattern;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.http.Api.CLIENT_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_SERVICE_AGREEMENT_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -57,24 +48,12 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  */
 public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter> implements LoginContract.LoginListener {
 
-    //用户身份登录
-    private boolean isUserId = true;
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
     @BindView(R.id.img_back)
     public ImageView img_back;
-
-    @BindView(R.id.role_tv)
-    public TextView role_tv;
-
-
-    @BindView(R.id.user_login_tv)
-    public TextView user_login_tv;
-
-    @BindView(R.id.store_login_tv)
-    public TextView store_login_tv;
 
     @BindView(R.id.agreement_tv)
     public TextView agreement_tv;
@@ -169,9 +148,6 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void init() {
 //        getP().switchPanel(false,true);
-        isUserId = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-        role_tv.setText(isUserId ? gets(R.string.client_shuxuan) : gets(R.string.store_shuxuan));
-        setLoginWayState();
         setTextHighLightWithClick(agreement_tv.getText().toString(), new String[]{"《服务协议》", "《隐私政策》"});
 
         getP().getVerificationCodeTime();
@@ -183,18 +159,10 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     }
 
-    @OnClick({R.id.user_login_tv, R.id.store_login_tv, R.id.alipay_login
+    @OnClick({R.id.alipay_login
             , R.id.wechat_login, R.id.send_verification_code_bt, R.id.login_bt})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.user_login_tv:
-                isUserId = true;
-                getP().switchUrl(isUserId);
-                break;
-            case R.id.store_login_tv:
-                isUserId = false;
-                getP().switchUrl(isUserId);
-                break;
             case R.id.alipay_login:
                 getP().alipayAuth();
                 break;
@@ -225,16 +193,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED || type == STORE_LOGIN_SUCCEED) {
-            if (type == STORE_LOGIN_SUCCEED) {
-                sendEvent(new ReLoginBean());
-                SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-                goToPage(reference.get(), StoreActivity.class, null);
-            } else {
-                SPUtils.getInstance().put(LOGIN_WAY, true);
-                sendEvent(new ReLoginBean());
-                goToPage(reference.get(), ClientActivity.class, null);
-            }
+        if (type == LOGIN_SUCCEED) {
+//            sendEvent(new ReLoginBean());
+            goToPage(reference.get(), ClientActivity.class, null);
             finish();
         }
     }
@@ -269,23 +230,12 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     }
 
     @Override
-    public boolean isClient() {
-        return isUserId;
-    }
-
-    @Override
     public void setVerificationCodeTime(int time) {
         /*send_verification_code_bt.setTotalTime(time);
 
         send_verification_code_bt.start();*/
     }
 
-    //身份切换
-    @Override
-    public void showIdButton() {
-        role_tv.setText(isUserId ? "树选客户端" : "树选商家端");
-        setLoginWayState();
-    }
 
     /**
      * 设置文字高亮及点击事件
@@ -318,9 +268,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                     @Override
                     public void onClick(View view) {
                         if (finalI == 0)
-                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, isUserId ? CLIENT_SERVICE_AGREEMENT_KEY : STORE_SERVICE_AGREEMENT_KEY}));
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_SERVICE_AGREEMENT_KEY }));
                         else
-                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, isUserId ? CLIENT_PRIVACY_AGREEMENT_KEY : STORE_PRIVACY_AGREEMENT_KEY}));
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0,  CLIENT_PRIVACY_AGREEMENT_KEY }));
                     }
                 }), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
@@ -329,22 +279,4 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
 
     }
 
-    private void setLoginWayState() {
-        if (isUserId) {
-            store_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            store_login_tv.setTextColor(getc(R.color.green_dominant_tone));
-
-            user_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            user_login_tv.setTextColor(getc(R.color.white));
-        } else {
-            user_login_tv.setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            user_login_tv.setTextColor(getc(R.color.green_dominant_tone));
-
-            store_login_tv.setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            store_login_tv.setTextColor(getc(R.color.white));
-        }
-        //发送事件修改一键登录页的切换状态
-        sendEvent(new IdSwitchEvent(isUserId));
-
-    }
 }

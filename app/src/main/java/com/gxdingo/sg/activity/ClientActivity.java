@@ -1,26 +1,22 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
-import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -28,13 +24,11 @@ import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.client.SettledFragment;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
 import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -43,40 +37,30 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
-import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
-import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
@@ -211,15 +195,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().getUnreadMessageNum();
             startImService();
         }
-
-        //商家已登录则跳转到商家主界面
-        if (UserInfoUtils.getInstance().isLogin()) {
-            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-            if (!isUse) {
-                goToPage(this, StoreActivity.class, null);
-                finish();
-            }
-        }
     }
 
 
@@ -242,7 +217,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
 
         if (object instanceof OneKeyLoginEvent) {
-            getP().oneKeyLogin(((OneKeyLoginEvent) object).code, ((OneKeyLoginEvent) object).isUser);
+            getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
         }/* else if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code) && event.login)
@@ -273,14 +248,9 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             setBusinessUnreadMsgNum(null);
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
-        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
-            finish();
-        } else if (type == CLIENT_LOGIN_SUCCEED) {
+        } else if (type == LOGIN_SUCCEED) {
             toBusinessCircle();
             getP().getUnreadMessageNum();
-        } else if (type == SOTRE_REVIEW_SUCCEED) {
-            //用户认证成功，关闭客户端
-            finish();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
@@ -312,7 +282,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (!checkClickInterval(v.getId()))
             return;
 
-        if ((v.getId() != R.id.home_page_layout || v.getId() != R.id.business_layout) && !UserInfoUtils.getInstance().isLogin()) {
+        if ((v.getId() == R.id.message_layout || v.getId() == R.id.settle_in || v.getId() == R.id.mine_layout) && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
 

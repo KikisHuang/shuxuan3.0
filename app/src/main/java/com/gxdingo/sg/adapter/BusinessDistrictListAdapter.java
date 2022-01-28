@@ -1,7 +1,9 @@
 package com.gxdingo.sg.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,12 +31,14 @@ import com.lzy.ninegrid.NineGridView;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -66,6 +70,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
+        ImageView authenticated_img = baseViewHolder.findView(R.id.authenticated_img);
         RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
         TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
@@ -81,11 +86,53 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
         TextView distance_tv = baseViewHolder.findView(R.id.distance_tv);
 
-        ImageView real_name_img = baseViewHolder.findView(R.id.real_name_img);
+        TextView one_label = baseViewHolder.findView(R.id.one_label);
+        TextView two_label = baseViewHolder.findView(R.id.two_label);
 
 
-/*        //登录方式，true 用户，false 商家
-        boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
+        if (data.labels != null && data.labels.size() > 0) {
+            if (data.labels.size() > 1) {
+                one_label.setVisibility(View.VISIBLE);
+                two_label.setVisibility(View.VISIBLE);
+
+                GradientDrawable mGrad = (GradientDrawable) one_label.getBackground();
+                mGrad.setColor(getc(R.color.white));
+                mGrad.setStroke(dp2px(1), Color.parseColor(data.labels.get(0).getColor()));
+
+
+                GradientDrawable mGrad1 = (GradientDrawable) two_label.getBackground();
+                mGrad1.setColor(getc(R.color.white));
+                mGrad1.setStroke(dp2px(1), Color.parseColor(data.labels.get(1).getColor()));
+
+                one_label.setTextColor( Color.parseColor(data.labels.get(0).getColor()));
+                two_label.setTextColor( Color.parseColor(data.labels.get(1).getColor()));
+
+                if (!isEmpty(data.labels.get(0).getName()))
+                    one_label.setText(data.labels.get(0).getName());
+
+                if (!isEmpty(data.labels.get(1).getName()))
+                    two_label.setText(data.labels.get(1).getName());
+
+            } else {
+                one_label.setVisibility(View.VISIBLE);
+
+                GradientDrawable mGrad = (GradientDrawable) one_label.getBackground();
+                mGrad.setColor(getc(R.color.white));
+                mGrad.setStroke(dp2px(1), Color.parseColor(data.labels.get(0).getColor()));
+
+                one_label.setTextColor( Color.parseColor(data.labels.get(0).getColor()));
+
+                if (!isEmpty(data.labels.get(0).getName()))
+                    one_label.setText(data.labels.get(0).getName());
+
+                two_label.setVisibility(View.GONE);
+            }
+
+
+        } else {
+            one_label.setVisibility(View.GONE);
+            two_label.setVisibility(View.GONE);
+        }
 
 
         if (!isEmpty(data.liked) && !data.liked.equals("0"))
@@ -105,7 +152,10 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                 mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.forwardingUrl);
         });
 
-        Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
+        Glide.with(mContext).load(data.getAvatar()).apply(getRequestOptions()).into(ivAvatar);
+
+        if (!isEmpty(data.iconUrl))
+            Glide.with(mContext).load(data.iconUrl).apply(getRequestOptions().fitCenter()).into(authenticated_img);
 
         ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
 
@@ -116,8 +166,9 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         String createTime = dealDateFormat(data.getCreateTime());
 
         tvTime.setText(showTimeText(string2Date(createTime)));
-        //todo  缺少距离字段
-        distance_tv.setText("距离 1.5km");
+
+        if (!isEmpty(data.distance))
+            distance_tv.setText(data.distance);
 
         //用户端ui布局显示
         if (mType != 2) {

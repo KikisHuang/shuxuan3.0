@@ -14,6 +14,7 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -31,17 +32,16 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
-import static com.gxdingo.sg.http.ClientApi.BUSINESS_DISTRICT_COMMENT_OR_ADD;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_GET_COMMENT;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
-import static com.gxdingo.sg.http.StoreApi.CIRCLE_LIKEDORUNLIKED;
-import static com.gxdingo.sg.http.StoreApi.DELETE_MY_OWN_COMMENT;
-import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
-import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
-import static com.gxdingo.sg.http.StoreApi.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_COMMENT_OR_ADD;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_GET_COMMENT;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_LIST;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
+import static com.gxdingo.sg.http.Api.CIRCLE_LIKEDORUNLIKED;
+import static com.gxdingo.sg.http.Api.DELETE_MY_OWN_COMMENT;
+import static com.gxdingo.sg.http.Api.GET_NUMBER_UNREAD_COMMENTS;
+import static com.gxdingo.sg.http.Api.RELEASE_BUSINESS_DISTRICT_INFO;
+import static com.gxdingo.sg.http.Api.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
 import static com.gxdingo.sg.utils.LocalConstant.lat;
 import static com.gxdingo.sg.utils.LocalConstant.lon;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -202,11 +202,24 @@ public class BusinessDistrictModel {
     /**
      * 商家发布商圈信息
      */
-    public void storeReleaseBusinessDistrict(Context context, String content, List<String> images) {
+    public void storeReleaseBusinessDistrict(Context context, String content, List<String> images, List<BusinessDistrictListBean.Labels> labels) {
 
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.CONTENT, content);
+
         map.put(StoreLocalConstant.IMAGES, GsonUtil.gsonToStr(images));
+
+        if (labels != null && labels.size() > 0){
+            map.put(LocalConstant.LABELS, GsonUtil.gsonToStr(labels));
+        }
+
+        if (lon != 0)
+            map.put(LocalConstant.LONGITUDE, GsonUtil.gsonToStr(lon));
+        if (lat != 0)
+            map.put(LocalConstant.LATITUDE, GsonUtil.gsonToStr(lat));
+
+/*        if (!isEmpty(LocalConstant.AdCode))
+            map.put(ClientLocalConstant.REGIONPATH, LocalConstant.AdCode);*/
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -300,7 +313,8 @@ public class BusinessDistrictModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
+        //UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY
+        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(BUSINESS_DISTRICT_COMMENT_OR_ADD , map)
                 .execute(new CallClazzProxy<ApiResult<BusinessDistrictCommentOrReplyBean>, BusinessDistrictCommentOrReplyBean>(new TypeToken<BusinessDistrictCommentOrReplyBean>() {
                 }.getType()) {
                 });

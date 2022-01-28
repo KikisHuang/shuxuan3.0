@@ -54,26 +54,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- 已实名img-->
-    <ImageView
-        android:id="@+id/real_name_img"
-        android:layout_width="54dp"
-        android:layout_height="18dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/module_svg_store_authenticated"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/store_name_ll"
-        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"></ImageView>
-
 
     <ImageView
         android:id="@+id/authenticated_img"
-        android:layout_width="54dp"
+        android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:src="@drawable/module_svg_store_authenticated"
+        android:scaleType="fitCenter"
+        tools:src="@drawable/module_svg_store_authenticated"
         app:layout_constraintStart_toStartOf="@+id/store_name_ll"
         app:layout_constraintTop_toBottomOf="@+id/store_name_ll"></ImageView>
 
@@ -82,12 +71,11 @@
         android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginTop="2dp"
         android:background="@drawable/module_bg_business_district_today_new_products"
         android:gravity="center"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:text="新品上架"
+        tools:text="新品上架"
         android:textColor="#599252"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"
@@ -99,12 +87,11 @@
         android:layout_width="wrap_content"
         android:layout_height="18dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginTop="2dp"
         android:background="@drawable/module_bg_business_district_today_new_products"
         android:gravity="center"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        android:text="新品上架"
+        tools:text="新品上架"
         android:textColor="#599252"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"

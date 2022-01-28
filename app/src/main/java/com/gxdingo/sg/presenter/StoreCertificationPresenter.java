@@ -52,13 +52,10 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     private StoreNetworkModel storeNetworkModel;
 
-    private boolean isUser;
 
     private int status;
 
-    public StoreCertificationPresenter(boolean isUser) {
-
-        this.isUser = isUser;
+    public StoreCertificationPresenter() {
 
         networkModel = new NetworkModel(this);
         mCommonModel = new CommonModel();
@@ -269,7 +266,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
             return;
 
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), status == 10 ? 1 : !isUser ? 1 : 0, o -> {
+            storeNetworkModel.refreshLoginStauts(getContext(), status == 10 ? 1 :  0, o -> {
                 UserBean data = (UserBean) o;
 
                 if (!isEmpty(data.getToken()))
@@ -284,7 +281,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
 
-                        if (isUser && status != 10) {
+                        if (status != 10) {
                             status = 10;
                             storeNetworkModel.refreshLoginStauts(getContext(), status, new CustomResultListener() {
                                 @Override

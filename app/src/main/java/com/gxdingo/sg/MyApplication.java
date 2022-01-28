@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.http.HttpResponseCache;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,12 +25,9 @@ import com.blankj.utilcode.util.SPUtils;
 //import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.db.DaoManager;
 import com.gxdingo.sg.http.Api;
-import com.gxdingo.sg.http.ClientApi;
-import com.gxdingo.sg.http.StoreApi;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 //import com.gxdingo.sg.view.NineGridGlideImageLoader;
-import com.gxdingo.sg.utils.SignatureUtils;
 import com.gxdingo.sg.view.NineGridGlideImageLoader;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.Constant;
@@ -39,7 +35,6 @@ import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lzy.ninegrid.NineGridView;
-import com.taobao.accs.utl.ALog;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.UpgradeInfo;
@@ -57,18 +52,12 @@ import com.zhouyou.http.cache.model.CacheMode;
 import com.zhouyou.http.cookie.CookieManger;
 import com.zhouyou.http.model.HttpHeaders;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.plugins.RxJavaPlugins;
 
-import static cc.shinichi.library.tool.file.FileUtil.createOrExistsDir;
 import static com.blankj.utilcode.util.AppUtils.getAppName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.esandinfo.livingdetection.EsLivingDetectionManager.Init;
+import static com.gxdingo.sg.http.Api.CLIENT_PORT;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.IM_OFFICIAL_URL;
@@ -76,15 +65,15 @@ import static com.gxdingo.sg.http.Api.IM_TEST_URL;
 import static com.gxdingo.sg.http.Api.IM_UAT_URL;
 import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.OFFICIAL_OSS_UPLOAD_URL;
+import static com.gxdingo.sg.http.Api.OFFICIAL_URL;
+import static com.gxdingo.sg.http.Api.OFFICIAL_WEB_URL;
 import static com.gxdingo.sg.http.Api.SM;
 import static com.gxdingo.sg.http.Api.TEST_OSS_UPLOAD_URL;
+import static com.gxdingo.sg.http.Api.TEST_URL;
+import static com.gxdingo.sg.http.Api.TEST_WEB_URL;
+import static com.gxdingo.sg.http.Api.UAT_URL;
+import static com.gxdingo.sg.http.Api.UAT_WEB_URL;
 import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
-import static com.gxdingo.sg.http.ClientApi.OFFICIAL_WEB_URL;
-import static com.gxdingo.sg.http.ClientApi.TEST_WEB_URL;
-import static com.gxdingo.sg.http.ClientApi.UAT_URL;
-import static com.gxdingo.sg.http.ClientApi.UAT_WEB_URL;
-import static com.gxdingo.sg.http.StoreApi.STORE_PORT;
 import static com.gxdingo.sg.utils.ClientLocalConstant.APP;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DEVICE;
 import static com.gxdingo.sg.utils.ClientLocalConstant.UMENG_APP_KEY;
@@ -96,15 +85,10 @@ import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.IM_UAT_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.LocalConstant.OSS_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_OSS_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.UAT_OSS_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.WEB_SOCKET_KEY;
-import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.Constant.BUGLYAPPID;
 import static com.kikis.commnlibrary.utils.Constant.MI_APPID;
@@ -113,7 +97,6 @@ import static com.kikis.commnlibrary.utils.Constant.OPPO_APPKEY;
 import static com.kikis.commnlibrary.utils.Constant.OPPO_MASTERSECRET;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.KikisUitls.getContext;
-import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * Created by Kikis on 2021/3/16.
@@ -177,16 +160,10 @@ public class MyApplication extends Application {
      */
     private void keyInt() {
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
 
         //全局url初始化
-        if (isUser) {
-            //客户端
-            LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        } else {
-            //商家端
-            LocalConstant.GLOBAL_SIGN = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        }
+        //客户端
+        LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
         Log.i("key", "keyInt: " + LocalConstant.GLOBAL_SIGN);
 
         LocalConstant.IM_SIGN = isUat ? IM_UAT_HTTP_KEY : !isDebug ? IM_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
@@ -195,14 +172,8 @@ public class MyApplication extends Application {
 
 
     /*    //正式环境路径测试
-        if (isUser) {
             //客户端
             LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
-        } else {
-            //商家端
-            LocalConstant.GLOBAL_SIGN = STORE_OFFICIAL_HTTP_KEY;
-        }
-
         LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
 
         LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
@@ -371,32 +342,19 @@ public class MyApplication extends Application {
      */
     private void okHttpInit() {
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
+
         //全局url初始化
-        if (isUser) {
-            //客户端
-            Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
-            Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-        } else {
-            //商家端
-            Api.URL = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-            Api.OSS_URL = isUat ? HTTP + ClientApi.UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
-        }
+        Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_URL : HTTP + TEST_URL + SM + CLIENT_PORT + L;
+        Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
         Api.IM_URL = isUat ? HTTP + IM_UAT_URL : !isDebug ? HTTPS + IM_OFFICIAL_URL : HTTP + IM_TEST_URL;
         //H5客服
-        ClientApi.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? HTTPS + OFFICIAL_WEB_URL : TEST_WEB_URL;
+        Api.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? HTTPS + OFFICIAL_WEB_URL : TEST_WEB_URL;
 
 /*
         //正式环境测试
-        if (isUser) {
             //客户端
             Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
             Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
-        } else {
-            //商家端
-            Api.URL = HTTPS + StoreApi.OFFICIAL_URL;
-            Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
-        }
         Api.IM_URL = HTTPS + IM_OFFICIAL_URL;
         ClientApi.WEB_URL = HTTPS +OFFICIAL_WEB_URL;
 */

@@ -71,7 +71,7 @@ public class LocalConstant {
 //    public static String AUTH_SECRET = "WSSxEQegYUPwpv0HmGtL5ANDCfCHPqmvK4EHzd66XfcbmSksf4kMaT8IcKQnElSwlZF6V1tgwCx80ODP6LMQlQJbVTBwP5R6ZUfXQAtorPWE0b67pXmd1DrHL7SPUHx6lsLhYoSAZwocE75UNgpw/Iv5HztGAymo4sBxoMvPTIl9b8Cd30jONC1A3XJRvNwqss0fz2ME0nqujWgtEjlZQEy60L6FdWAcGwvDuqKo02AyAyZ2vvWQeqCZm/whkGe4XKnWH+Tj29Kl04VbZLajystSEHRPGCm0PbcuoE7EOL46aev0A2qN4g==";
 
     public static final int CODE_SEND = 10;
-    public static final int CLIENT_LOGIN_SUCCEED = 20;
+    public static final int LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
     public static final int NOTIFY_MSG_LIST_ADAPTER = 4545;
@@ -85,7 +85,6 @@ public class LocalConstant {
     public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
-    public static final int STORE_LOGIN_SUCCEED = 21;
     public static final int LOGOUT_SUCCEED = 22;
     public static final int BIND_PHONE = 30;
     public static final int BIND_NEW_PHONE = 31;
@@ -123,8 +122,6 @@ public class LocalConstant {
     //第一次进入用户端标识符 用于显示输入邀请码弹框
     public static final String FIRST_INTER_KEY = "shugou_first_login_key";
     //sp final
-    //登录方式 true 用户 false商家端
-    public static final String LOGIN_WAY = "shugou_login_way_key";
     public static final String CASH_SELECTED_ID_KEY = "cash_selected_id_key";
     //通知栏管理
     public static final String NOTIFICATION_MANAGER_KEY = "shugou_notification_manager_key";
@@ -140,6 +137,8 @@ public class LocalConstant {
     public static final String LATITUDE2 = "latitude2";
     public static final String LONGITUDE2 = "longitude2";
     public static final String CERTFLAG = "certFlag";
+
+    public static final String LABELS = "labels";
 
     public static final String CONTENTID = "contentId";
 
@@ -188,13 +187,9 @@ public class LocalConstant {
 
     //客户端uat http 签名
     public static final String CLIENT_UAT_HTTP_KEY = "79f895661d9fe3c2bf048578493a37a1";
-    //商家端uat http 签名
-    public static final String STORE_UAT_HTTP_KEY = "0ad003666103496c6d17ceab55795764";
 
     //客户端official http 签名
     public static final String CLIENT_OFFICIAL_HTTP_KEY = "298fb7d237c3cd377ed95dc0075e7f35";
-    //商家端official http 签名
-    public static final String STORE_OFFICIAL_HTTP_KEY = "4b2412de3657b3fcdc6b1f7d1518b3df";
 
     //im uat http 签名
     public static final String IM_UAT_HTTP_KEY = "4ee5515ac41d433cabfa7b741c07f55f";

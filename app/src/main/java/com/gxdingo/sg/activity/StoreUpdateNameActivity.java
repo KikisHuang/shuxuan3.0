@@ -14,8 +14,7 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_NAMING_RULE;
+import static com.gxdingo.sg.http.Api.STORE_NAMING_RULE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;

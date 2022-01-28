@@ -1,55 +1,37 @@
 package com.gxdingo.sg.fragment.store;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.blankj.utilcode.util.ConvertUtils;
-import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ClientActivity;
-import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
-import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
-import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
 import com.gxdingo.sg.adapter.TabPageAdapter;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
+import com.gxdingo.sg.biz.onSwipeGestureListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
-import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.gxdingo.sg.view.NoScrollViewPager;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
-import com.kikis.commnlibrary.utils.Constant;
 import com.lxj.xpopup.XPopup;
-import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
-import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.uuzuche.lib_zxing.view.ViewfinderView;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -59,8 +41,6 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerInd
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView;
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,14 +48,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.adapter.TabPageAdapter.STORE_BUSINESS_DISTRICT_TAB;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGOUT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
-import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * 商家端商圈父类
@@ -88,17 +65,17 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
     @BindView(R.id.tv_unread_msg_count)
     TextView tvUnreadMsgCount;
 
-
     @BindView(R.id.view_pager)
-    public ViewPager view_pager;
+    public NoScrollViewPager view_pager;
 
     @BindView(R.id.magic_indicator)
     public MagicIndicator magic_indicator;
 
     private TabPageAdapter tabAdapter;
 
-
     private List<String> mTitles;
+
+    private SgConfirm2ButtonPopupView mLoginDialog;
 
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
@@ -151,6 +128,19 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         initMagicIndicator();
         tabAdapter = new TabPageAdapter(getChildFragmentManager(), mTitles, STORE_BUSINESS_DISTRICT_TAB);
         view_pager.setAdapter(tabAdapter);
+        view_pager.setScroll(UserInfoUtils.getInstance().isLogin());
+        view_pager.setOnSwipeGestureListener(new onSwipeGestureListener() {
+            @Override
+            public void onRightSwipe() {
+
+            }
+
+            @Override
+            public void onLeftSwipe() {
+                if (!UserInfoUtils.getInstance().isLogin())
+                    showLoginDialog();
+            }
+        });
         view_pager.setOffscreenPageLimit(2);
     }
 
@@ -210,6 +200,12 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //获取商圈评论未读数量
             getP().getNumberUnreadComments();
+        } else if (type == LOGIN_SUCCEED || type == LOGOUT_SUCCEED) {
+
+            if (type == LOGOUT_SUCCEED && view_pager.getCurrentItem() != 0)
+                view_pager.setCurrentItem(0);
+
+            view_pager.setScroll(type == LOGIN_SUCCEED ? true : false);
         }
     }
 
@@ -243,7 +239,6 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
 
     }
 
-
     /**
      * MagicIndicator 通用标题初始化方法
      */
@@ -272,7 +267,10 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
                 simplePagerTitleView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        view_pager.setCurrentItem(index);
+                        if (index == 1 && !UserInfoUtils.getInstance().isLogin()) {
+                            showLoginDialog();
+                        } else
+                            view_pager.setCurrentItem(index);
                     }
                 });
                 return simplePagerTitleView;
@@ -302,7 +300,6 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
             }
         });
         magic_indicator.setNavigator(commonNavigator);
-
         LinearLayout titleContainer = commonNavigator.getTitleContainer(); // must after setNavigator
         titleContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
         titleContainer.setDividerDrawable(new ColorDrawable() {
@@ -314,4 +311,23 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         ViewPagerHelper.bind(magic_indicator, view_pager);
     }
 
+    private void showLoginDialog() {
+        if (mLoginDialog == null) {
+            mLoginDialog = new SgConfirm2ButtonPopupView(reference.get(), "请先登录才可查我的商圈哦~", () -> UserInfoUtils.getInstance().goToOauthPage(reference.get()));
+
+            new XPopup.Builder(reference.get())
+                    .isDarkTheme(false)
+                    .asCustom(mLoginDialog).show();
+        } else if (!mLoginDialog.isShow())
+            mLoginDialog.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mLoginDialog != null) {
+            mLoginDialog.destroy();
+            mLoginDialog = null;
+        }
+    }
 }

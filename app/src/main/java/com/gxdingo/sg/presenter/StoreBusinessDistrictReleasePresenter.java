@@ -2,6 +2,7 @@ package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
 
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictReleaseContract;
@@ -10,8 +11,11 @@ import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -19,7 +23,11 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
@@ -34,7 +42,10 @@ public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<Basi
     private NetworkModel networkModel;
     private BusinessDistrictModel businessDistrictModel;
 
+    private List<BusinessDistrictListBean.Labels> labels;
+
     public StoreBusinessDistrictReleasePresenter() {
+        labels = new ArrayList<>();
         networkModel = new NetworkModel(this);
         businessDistrictModel = new BusinessDistrictModel(this);
     }
@@ -48,6 +59,8 @@ public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<Basi
 
     @Override
     public void onMessage(String msg) {
+        if (isBViewAttached())
+            getBV().onMessage(msg);
 
     }
 
@@ -168,6 +181,62 @@ public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<Basi
      */
     @Override
     public void releaseBusinessDistrict(String content, List<String> images) {
-        businessDistrictModel.storeReleaseBusinessDistrict(getContext(), content, images);
+
+        businessDistrictModel.storeReleaseBusinessDistrict(getContext(), content, images,labels);
+    }
+
+    @Override
+    public void getLabelList() {
+        if (networkModel != null)
+            networkModel.getLabelList(getContext(), o -> {
+                if (isViewAttached()) {
+                    getV().onLabelResult((List<BusinessDistrictListBean.Labels>) o);
+                }
+
+            });
+
+    }
+
+    @Override
+    public void labelCheck(int position) {
+        if (!isViewAttached() || getV().getLabelsData() == null)
+            return;
+
+        RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+            //选中的数量
+            int checkNum = 0;
+            for (BusinessDistrictListBean.Labels datas : getV().getLabelsData()) {
+                if (datas.isCheck)
+                    checkNum++;
+            }
+            if (checkNum >= 2 && !getV().getLabelsData().get(position).isCheck)
+                e.onNext("最多只能选2个标签哦~");
+            else {
+                getV().getLabelsData().get(position).isCheck = !getV().getLabelsData().get(position).isCheck;
+
+                if (getV().getLabelsData().get(position).isCheck)
+                    labels.add(getV().getLabelsData().get(position));
+                else {
+                    for (int i = 0; i < labels.size(); i++) {
+                        if (getV().getLabelsData().get(position).getId() == labels.get(i).getId()) {
+                            labels.remove(i);
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+            e.onNext(0);
+            e.onComplete();
+        }), (BaseActivity) getContext()).subscribe(o -> {
+            if (o instanceof String) {
+                onMessage((String) o);
+            } else {
+                getV().refreshLabelAdapter(position);
+            }
+
+        });
+
     }
 }

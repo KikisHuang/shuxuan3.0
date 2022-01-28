@@ -18,9 +18,8 @@ import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.getUserPhone;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
@@ -49,7 +48,6 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
     public String mAppName = "";
 
-    private boolean mIsUse;
 
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
@@ -121,7 +119,6 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
         mPhoneNumber = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         mOpenId = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
         mAppName = getIntent().getStringExtra(Constant.SERIALIZABLE + 2);
-        mIsUse = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 3, false);
 
         if (isEmpty(mPhoneNumber)) {
             onMessage(getString(R.string.dont_get_phone_number));
@@ -182,11 +179,6 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
     }
 
     @Override
-    public boolean isClient() {
-        return mIsUse;
-    }
-
-    @Override
     public void setVerificationCodeTime(int time) {
         send_code.setTotalTime(time);
 
@@ -195,14 +187,9 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
 
 
     @Override
-    public void showIdButton() {
-
-    }
-
-    @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED || type == STORE_LOGIN_SUCCEED)
+        if (type == LOGIN_SUCCEED)
             finish();
     }
 }

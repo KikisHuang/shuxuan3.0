@@ -4,9 +4,7 @@ import android.content.Context;
 
 import com.amap.api.services.core.PoiItem;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.reflect.TypeToken;
-import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.DistanceListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreAuthInfoBean;
@@ -20,9 +18,7 @@ import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionDetails;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
-import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.HttpClient;
-import com.gxdingo.sg.http.StoreApi;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.SignatureUtils;
@@ -32,13 +28,11 @@ import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GsonUtil;
-import com.tencent.bugly.beta.Beta;
 import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
 import com.zhouyou.http.model.HttpParams;
-import com.zhouyou.http.request.PostRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -49,34 +43,28 @@ import java.util.Map;
 import io.reactivex.Observable;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.http.Api.BALANCE_CASH;
+import static com.gxdingo.sg.http.Api.CATEGORY_LIST;
+import static com.gxdingo.sg.http.Api.CHECK_QUALIFICATION;
+import static com.gxdingo.sg.http.Api.CONFIG_SCANNING_REMIND;
+import static com.gxdingo.sg.http.Api.DELIVERY_SCOPE;
 import static com.gxdingo.sg.http.Api.HTTP;
 import static com.gxdingo.sg.http.Api.HTTPS;
 import static com.gxdingo.sg.http.Api.L;
+import static com.gxdingo.sg.http.Api.MINE_INFO;
+import static com.gxdingo.sg.http.Api.SETTLE;
 import static com.gxdingo.sg.http.Api.SM;
+import static com.gxdingo.sg.http.Api.STORE_DETAIL;
+import static com.gxdingo.sg.http.Api.STORE_QR_CODE;
+import static com.gxdingo.sg.http.Api.STORE_SCAN_CODE;
+import static com.gxdingo.sg.http.Api.STORE_UPDATE;
+import static com.gxdingo.sg.http.Api.TRANSACTION_DETAILS;
+import static com.gxdingo.sg.http.Api.USER_STATUS;
+import static com.gxdingo.sg.http.Api.WALLET_BINDING;
+import static com.gxdingo.sg.http.Api.WALLET_HOME;
 import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
-import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
 import static com.gxdingo.sg.http.HttpClient.getCurrentTimeUTCM;
-import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
-import static com.gxdingo.sg.http.StoreApi.CATEGORY_LIST;
-import static com.gxdingo.sg.http.StoreApi.CHECK_QUALIFICATION;
-import static com.gxdingo.sg.http.StoreApi.CONFIG_SCANNING_REMIND;
-import static com.gxdingo.sg.http.StoreApi.DELIVERY_SCOPE;
-import static com.gxdingo.sg.http.StoreApi.MINE_INFO;
-import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
-import static com.gxdingo.sg.http.StoreApi.SETTLE;
-import static com.gxdingo.sg.http.StoreApi.STORE_PORT;
-import static com.gxdingo.sg.http.StoreApi.STORE_QR_CODE;
-import static com.gxdingo.sg.http.StoreApi.STORE_SCAN_CODE;
-import static com.gxdingo.sg.http.StoreApi.STORE_UPDATE;
-import static com.gxdingo.sg.http.StoreApi.TRANSACTION_DETAILS;
-import static com.gxdingo.sg.http.StoreApi.USER_STATUS;
-import static com.gxdingo.sg.http.StoreApi.WALLET_HOME;
-import static com.gxdingo.sg.utils.LocalConstant.GLOBAL_SIGN;
 import static com.gxdingo.sg.utils.LocalConstant.IDENTIFIER;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_OFFICIAL_HTTP_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
@@ -276,27 +264,7 @@ public class StoreNetworkModel {
             map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
 
 
-        String url = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-        String timeStamp = getCurrentTimeUTCM();
-        Map<String, String> signMap = new HashMap<>();
-        signMap.putAll(map);
-        signMap.put(LocalConstant.TIMESTAMP, timeStamp);
-        String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
-
-        HttpParams req = new HttpParams();
-
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            try {
-                req.put(entry.getKey(), entry.getValue());
-            } catch (Exception e) {
-                LogUtils.e("http error === " + e);
-            }
-        }
-
-        Observable<NormalBean> observable = HttpClient.post(url + SETTLE)
-                .headers(LocalConstant.TIMESTAMP, timeStamp).params(req)
-                .headers(LocalConstant.SIGN, sign).headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken())
+        Observable<NormalBean> observable = HttpClient.post(SETTLE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1053,28 +1021,12 @@ public class StoreNetworkModel {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
-        String url = isUat ? HTTP + StoreApi.UAT_URL : !isDebug ? HTTPS + StoreApi.OFFICIAL_URL : HTTP + StoreApi.TEST_URL + SM + STORE_PORT + L;
-        String timeStamp = getCurrentTimeUTCM();
-        Map<String, String> signMap = new HashMap<>();
-        signMap.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
-        signMap.put("isConvertToSeller", String.valueOf(isConvertToSeller));
-        signMap.put(LocalConstant.TIMESTAMP, timeStamp);
-        String sign_key = isUat ? STORE_UAT_HTTP_KEY : !isDebug ? STORE_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
-        String sign = SignatureUtils.generate(signMap, sign_key, SignatureUtils.SignType.MD5);
 
-        HttpParams params = new HttpParams();
-        for (Map.Entry<String, String> entry : signMap.entrySet()) {
-            try {
-                params.put(entry.getKey(), entry.getValue());
-            } catch (Exception e) {
-                LogUtils.e("http error === " + e);
-            }
-        }
-        Observable<UserBean> observable = EasyHttp.post(url + USER_STATUS)
-                .headers(LocalConstant.TIMESTAMP, timeStamp)
-                .headers(LocalConstant.SIGN, sign)
-                .headers(Constant.TOKEN, UserInfoUtils.getInstance().getUserToken())
-                .params(params)
+        Map<String, String> map = new HashMap<>();
+        map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
+        map.put("isConvertToSeller", String.valueOf(isConvertToSeller));
+
+        Observable<UserBean> observable = HttpClient.post(USER_STATUS, map)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
                 }.getType()) {
                 });

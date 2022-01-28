@@ -30,7 +30,6 @@ import org.greenrobot.eventbus.EventBus;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -196,9 +195,9 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void oneKeyLogin(String code, boolean isUser) {
+    public void oneKeyLogin(String code) {
         if (networkModel != null)
-            networkModel.oneClickLogin(getContext(), code, isUser);
+            networkModel.oneClickLogin(getContext(), code);
     }
 
     @Override
@@ -222,7 +221,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void wechatLogin(String code) {
         if (networkModel != null && isViewAttached()) {
-            networkModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT, SPUtils.getInstance().getBoolean(LOGIN_WAY));
+            networkModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT);
         }
     }
 
@@ -250,7 +249,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
                 String authCode = bundle.getString("auth_code");
                 if (networkModel != null) {
                     if (!isEmpty(authCode)) {
-                        networkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY, SPUtils.getInstance().getBoolean(LOGIN_WAY));
+                        networkModel.thirdPartyLogin(getContext(), authCode, ClientLocalConstant.ALIPAY);
                     } else
                         onMessage("没有获取到authCode");
                 }

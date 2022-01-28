@@ -15,34 +15,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.alibaba.sdk.android.push.CloudPushService;
-import com.alibaba.sdk.android.push.CommonCallback;
-import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
-import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.RealNameAuthenticationActivity;
-import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.AuthenticationBean;
-import com.gxdingo.sg.view.PartTextClickSpan;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.core.CenterPopupView;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.blankj.utilcode.util.AppUtils.getAppName;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
-import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis

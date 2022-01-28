@@ -1,10 +1,12 @@
 package com.gxdingo.sg.bean;
 
 
+import com.google.gson.annotations.SerializedName;
 import com.lzy.ninegrid.ImageInfo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 商圈列表
@@ -42,9 +44,12 @@ public class BusinessDistrictListBean implements Serializable {
         private int comments;
         private String createTime;
         private String identifier;
+        public String distance;
         private String storeName;
-        private String stareAvatar;
+        private String avatar;
         public String forwardingUrl;
+        public String iconUrl;
+        public List<Labels> labels;
         public int likedStatus;
         public String liked;
         private ArrayList<String> images;//商圈图片（需要判空null/[]处理）
@@ -124,12 +129,12 @@ public class BusinessDistrictListBean implements Serializable {
             this.storeName = storeName;
         }
 
-        public String getStareAvatar() {
-            return stareAvatar;
+        public String getAvatar() {
+            return avatar;
         }
 
-        public void setStareAvatar(String stareAvatar) {
-            this.stareAvatar = stareAvatar;
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
         }
 
         public ArrayList<String> getImages() {
@@ -157,6 +162,43 @@ public class BusinessDistrictListBean implements Serializable {
 
         public void setCommentOpen(int commentOpen) {
             this.commentOpen = commentOpen;
+        }
+    }
+
+
+    public static class Labels implements Serializable {
+
+        @SerializedName("id")
+        private int id;
+        @SerializedName("name")
+        private String name;
+        @SerializedName("color")
+        private String color;
+
+        public transient boolean isCheck = false;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
         }
     }
 

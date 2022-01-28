@@ -27,17 +27,8 @@ import java.util.List;
 
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
-import static com.blankj.utilcode.util.TimeUtils.string2Millis;
-import static com.gxdingo.sg.db.SqlUtils.EQUAL;
-import static com.gxdingo.sg.db.SqlUtils.WHERE;
-import static com.gxdingo.sg.utils.DateUtils.IsToday;
-import static com.gxdingo.sg.utils.DateUtils.IsYesterday;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.Constant.error;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
