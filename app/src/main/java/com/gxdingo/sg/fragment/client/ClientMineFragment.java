@@ -1,13 +1,16 @@
 package com.gxdingo.sg.fragment.client;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -67,6 +70,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Weaving
@@ -79,8 +83,17 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.avatar_cimg)
     public CircleImageView avatar_cimg;
 
+    @BindView(R.id.authentication_img)
+    public ImageView authentication_img;
+
+    @BindView(R.id.real_name_img)
+    public ImageView real_name_img;
+
     @BindView(R.id.username_stv)
     public TextView username_stv;
+
+    @BindView(R.id.secondary_tv)
+    public TextView secondary_tv;
 
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
@@ -90,6 +103,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.activity_recycler)
     public RecyclerView activity_recycler;
+
+    @BindView(R.id.capital_panel_cl)
+    public ConstraintLayout capital_panel_cl;
 
     @BindView(R.id.fill_invitation_code_cardview)
     public CardView fill_invitation_code_cardview;
@@ -330,6 +346,54 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     public void onMineDataResult(ClientMineBean mineBean) {
+
+        ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) capital_panel_cl.getLayoutParams();
+        clp.topMargin = dp2px(mineBean.releaseUserType == 1 ? 35 : 15);
+        capital_panel_cl.setLayoutParams(clp);
+
+        //发布用户类型。0=商家；1=用户
+        if (mineBean.releaseUserType == 1) {
+            Drawable drawable = getResources().getDrawable(
+                    R.drawable.module_svg_right_arrow_8934);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+                    drawable.getMinimumHeight());
+            secondary_tv.setCompoundDrawables(null, null, drawable, null);
+            secondary_tv.setText("信息管理");
+        } else {
+
+            secondary_tv.setCompoundDrawables(null, null, null, null);
+            StringBuffer sb = new StringBuffer();
+
+            if (mineBean.categoryList != null) {
+                for (int i = 0; i < mineBean.categoryList.size(); i++) {
+                    if (i == 0)
+                        sb.append(mineBean.categoryList.get(i).getName());
+                    else
+                        sb.append(" | " + mineBean.categoryList.get(i).getName());
+                }
+                sb.append(" " + mineBean.openTime);
+                sb.append("-" + mineBean.closeTime);
+                secondary_tv.setText(sb);
+            }
+        }
+
+        if (mineBean.iconList != null && mineBean.iconList.size() > 0) {
+
+            authentication_img.setVisibility(View.VISIBLE);
+
+            Glide.with(reference.get()).load(mineBean.iconList.get(0)).into(authentication_img);
+
+            if (mineBean.iconList.size() >= 2) {
+                real_name_img.setVisibility(View.VISIBLE);
+                Glide.with(reference.get()).load(mineBean.iconList.get(1)).into(real_name_img);
+            }
+
+        } else {
+            authentication_img.setVisibility(View.GONE);
+            real_name_img.setVisibility(View.GONE);
+        }
+
+
         Glide.with(getContext()).load(isEmpty(mineBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : mineBean.getAvatar()).into(avatar_cimg);
         if (!isEmpty(mineBean.getNickname()))
             username_stv.setText(mineBean.getNickname());

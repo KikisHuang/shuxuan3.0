@@ -20,10 +20,16 @@ public class ClientMineBean {
     private String balance;
     public String integral;
     public String integralLink;
+    public String openTime;
+    public String closeTime;
     private List<ClientCouponBean> couponList;
+    public List<String> iconList;
     private List<AdsListBean> adsList;
+    public List<StoreAuthInfoBean.CategoryListBean> categoryList;
     private String nickname;
     private String avatar;
+    //用户类型。0=商家；1=用户
+    public int releaseUserType;
 
     public String getBalance() {
         return balance;
