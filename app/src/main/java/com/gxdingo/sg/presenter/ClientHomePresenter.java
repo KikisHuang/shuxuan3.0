@@ -256,39 +256,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
         UserInfoUtils.getInstance().goToOauthPage(context);
     }
 
-    @Override
-    public void checkHelpCode() {
-
-        ShibbolethModel.checkShibboleth((type, code) -> {
-            if (UserInfoUtils.getInstance().isLogin()) {
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
-                    //30口令类型为邀请商家活动 40为分享跳转商圈
-                    if (type != 30 && type != 40) {
-                        helpCode = code;
-                        if (clientNetworkModel != null)
-                            clientNetworkModel.inviteHelp(getContext(), code);
-                    }
-                } else {
-                    //商家端
-
-
-                }
-
-            }
-        }, 1000);
-
-//        ShibbolethModel.checkShibboleth(code -> {
-//            if (clientNetworkModel!=null)
-//                clientNetworkModel.inviteHelp(getContext(),code);
-//        });
-
-    }
-
-    @Override
-    public void help() {
-        if (clientNetworkModel != null)
-            clientNetworkModel.helpAfter(getContext(), helpCode);
-    }
 
     /**
      * 获取分享连接
@@ -448,11 +415,7 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     //Home首页 数据返回
                     getV().onStoresResult(refresh, searchModel, storeListBean.getList());
 
-            } else if (o instanceof HelpBean) {
-                getV().onHelpDataResult((HelpBean) o);
             }
-
-
         }
     }
 

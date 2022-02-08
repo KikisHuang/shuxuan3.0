@@ -303,10 +303,6 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         history_lv.setLabels(searchHistories);
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-
-    }
 
     @Override
     public void onShareUrlResult(ShareBean shareBean) {

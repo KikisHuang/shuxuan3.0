@@ -174,7 +174,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onStart() {
         super.onStart();
-        getP().checkHelpCode();
+//        getP().checkHelpCode();
     }
 
     @Override
@@ -362,19 +362,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-        new XPopup.Builder(reference.get())
-                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
-                .isDarkTheme(false)
-                .asCustom(new HelpPopupView(getContext(), helpBean, new HelpListener() {
-                    @Override
-                    public void help() {
-                        getP().help();
-                    }
-                }))
-                .show();
-    }
 
     @Override
     public void onShareUrlResult(ShareBean shareBean) {

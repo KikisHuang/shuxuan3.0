@@ -181,4 +181,9 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
     public void onMineDataResult(ClientMineBean mineBean) {
 
     }
+
+    @Override
+    public void onRemindResult(String remindValue) {
+
+    }
 }

@@ -16,7 +16,6 @@ public class ClientMineContract {
 
     public interface ClientMinePresenter extends MvpPresenter<BasicsListener,ClientMineListener>{
 
-
         void editsetInit(EditText nick_name_edt, int limit);
 
         void photoItemClick(int pos);
@@ -30,6 +29,10 @@ public class ClientMineContract {
         void scan(RxPermissions rxPermissions);
 
         void scanCode(String content);
+
+        void getNoRemindContent();
+
+        void storeScanCode(String scanContent);
     }
 
     public interface ClientMineListener<T>{
@@ -38,5 +41,7 @@ public class ClientMineContract {
         RxPermissions getPermissions();
 
         void onMineDataResult(ClientMineBean mineBean);
+
+        void onRemindResult(String remindValue);
     }
 }

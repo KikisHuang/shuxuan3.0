@@ -224,7 +224,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onStart() {
         super.onStart();
-        getP().checkHelpCode();
+//        getP().checkHelpCode();
     }
 
     @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})
@@ -416,19 +416,6 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-        new XPopup.Builder(reference.get())
-                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
-                .isDarkTheme(false)
-                .asCustom(new HelpPopupView(getContext(), helpBean, new HelpListener() {
-                    @Override
-                    public void help() {
-                        getP().help();
-                    }
-                }))
-                .show();
-    }
 
     @Override
     public void onShareUrlResult(ShareBean shareBean) {

@@ -202,11 +202,6 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-
-    }
-
-    @Override
     public void onShareUrlResult(ShareBean sb) {
 
         shareBean = sb;

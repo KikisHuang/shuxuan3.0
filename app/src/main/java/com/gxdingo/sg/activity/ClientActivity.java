@@ -15,10 +15,13 @@ import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ActivityEvent;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
+import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
@@ -37,6 +40,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 
 import java.util.ArrayList;
@@ -182,7 +186,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onStart() {
         super.onStart();
-
+        getP().checkHelpCode();
 //        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
@@ -398,6 +402,15 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .asCustom(sgConfirm2ButtonPopupView).show();
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+        new XPopup.Builder(reference.get())
+                .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
+                .isDarkTheme(false)
+                .asCustom(new HelpPopupView(reference.get(), helpBean, () -> getP().help()))
+                .show();
     }
 
     @Override

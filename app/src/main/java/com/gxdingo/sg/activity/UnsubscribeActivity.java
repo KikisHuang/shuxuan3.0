@@ -156,4 +156,9 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     public void onMineDataResult(ClientMineBean mineBean) {
 
     }
+
+    @Override
+    public void onRemindResult(String remindValue) {
+
+    }
 }

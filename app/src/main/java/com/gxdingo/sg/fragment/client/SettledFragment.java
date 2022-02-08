@@ -160,10 +160,6 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
 
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-
-    }
 
     @Override
     public void onShareUrlResult(ShareBean sb) {

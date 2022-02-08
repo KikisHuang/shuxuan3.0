@@ -61,7 +61,6 @@ public class StoreWalletPresenter extends BaseMvpPresenter<BasicsListener, Store
 
     private LoginModel mModdel;
 
-
     private CommonModel commonModel;
 //    private StoreWalletBean walletBean;
 

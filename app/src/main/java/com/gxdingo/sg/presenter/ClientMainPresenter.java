@@ -8,14 +8,17 @@ import androidx.fragment.app.FragmentTransaction;
 import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.ClientMainModel;
+import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.OneKeyModel;
+import com.gxdingo.sg.model.ShibbolethModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -51,11 +54,17 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private WebSocketModel mWebSocketModel;
 
+    private ClientNetworkModel clientNetworkModel;
+
     private LoginModel mModdel;
 
     private BusinessDistrictModel businessDistrictModel;
 
+    private String helpCode;
+
     public ClientMainPresenter() {
+        clientNetworkModel = new ClientNetworkModel(this);
+
         model = new ClientMainModel();
         networkModel = new NetworkModel(this);
         oneKeyModel = new OneKeyModel(this);
@@ -84,6 +93,10 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onData(boolean refresh, Object o) {
+
+        if (o instanceof HelpBean) {
+            getV().onHelpDataResult((HelpBean) o);
+        }
 
     }
 
@@ -314,5 +327,36 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
         if (SPUtils.getInstance().getBoolean(LocalConstant.NOTIFICATION_MANAGER_KEY, true) && !isNotificationEnabled(getContext()))
             getV().showNotifyDialog();
+    }
+
+    @Override
+    public void checkHelpCode() {
+        ShibbolethModel.checkShibboleth((type, code) -> {
+            if (UserInfoUtils.getInstance().isLogin()) {
+                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
+                    //30口令类型为邀请商家活动 40为分享跳转商圈
+                    if (type != 30 && type != 40) {
+                        helpCode = code;
+                        if (clientNetworkModel != null)
+                            clientNetworkModel.inviteHelp(getContext(), code);
+                    } else if (type == 40) {
+                        //分享跳转商圈
+
+
+                    }
+                } else {
+                    //商家端
+
+
+                }
+            }
+        }, 200);
+
+    }
+
+    @Override
+    public void help() {
+        if (clientNetworkModel != null)
+            clientNetworkModel.helpAfter(getContext(), helpCode);
     }
 }

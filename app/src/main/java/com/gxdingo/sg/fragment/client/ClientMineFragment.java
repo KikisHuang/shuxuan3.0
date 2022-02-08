@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
@@ -37,6 +38,7 @@ import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.ScanningHintPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
@@ -115,6 +117,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     private String integralLink = "";
 
     private BasePopupView mPhotoPopupView;
+
+    private String scanContent  = "";
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -243,11 +247,22 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 //返回的文本内容
-                String content = data.getStringExtra("success_result");
-                int mType = getAcType(numberDecode(content));
-                if (mType == 10)
-                    getP().scanCode(content);
-                else
+                scanContent = data.getStringExtra("success_result");
+                int mType = getAcType(numberDecode(scanContent));
+                if (mType == 10){
+                    //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
+                    getP().scanCode(scanContent);
+                }
+                else if (mType == 11) {
+                    //客户端点击【使用优惠券】商家端扫码核销
+                    boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
+
+                    if (!showDialog)
+                        getP().getNoRemindContent();
+                    else
+                        getP().scanCode(scanContent);
+
+                } else
                     onMessage("无法识别的二维码类型");
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
@@ -407,6 +422,18 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         if (!isEmpty(mineBean.integral))
             internal_tv.setText(mineBean.integral);
 
+    }
+
+    @Override
+    public void onRemindResult(String data) {
+        ScanningHintPopupView dialog =  new ScanningHintPopupView(reference.get(), data, flag -> {
+            SPUtils.getInstance().put(LocalConstant.SCANNING_NO_REMIND, (Boolean) flag);
+            getP().storeScanCode(scanContent);
+        });
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true)
+                .isDarkTheme(false)
+                .asCustom(dialog).show();
     }
 
     @Override
