@@ -46,6 +46,8 @@ public class ClientMainContract {
         void checkHelpCode();
 
         void help();
+
+        void fllInvitationCode(String content);
     }
 
     public interface ClientMainListener {
@@ -77,6 +79,8 @@ public class ClientMainContract {
         void showNotifyDialog();
 
         void onHelpDataResult(HelpBean o);
+
+        void goToBusinessDistrict(String code);
     }
 
     public interface ClientMainModelListener {

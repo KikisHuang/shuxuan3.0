@@ -25,7 +25,7 @@ public class IMChatContract {
         /**
          * 获取聊天记录列表
          */
-        void getChatHistoryList(String shareUuid, int otherId, int otherRole);
+        void getChatHistoryList(String shareUuid, String otherId, int otherRole);
 
         /**
          * 刷新聊天记录
@@ -34,7 +34,7 @@ public class IMChatContract {
          * @param otherId
          * @param otherRole
          */
-        void refreshHistoryList(String shareUuid, int otherId, int otherRole);
+        void refreshHistoryList(String shareUuid, String otherId, int otherRole);
 
         /**
          * 发送消息

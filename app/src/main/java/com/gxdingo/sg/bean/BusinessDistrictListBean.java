@@ -43,9 +43,12 @@ public class BusinessDistrictListBean implements Serializable {
         private String content;
         private int comments;
         private String createTime;
+        public String releaseUserType;
+        public String isAuthentication;
+        public String circleUserIdentifier;
         private String identifier;
         public String distance;
-        private String storeName;
+        private String nickName;
         private String avatar;
         public String forwardingUrl;
         public String iconUrl;
@@ -121,12 +124,12 @@ public class BusinessDistrictListBean implements Serializable {
             this.identifier = identifier;
         }
 
-        public String getStoreName() {
-            return storeName;
+        public String getNickName() {
+            return nickName;
         }
 
-        public void setStoreName(String storeName) {
-            this.storeName = storeName;
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
         }
 
         public String getAvatar() {

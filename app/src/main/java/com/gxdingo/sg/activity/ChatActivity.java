@@ -35,6 +35,7 @@ import com.gxdingo.sg.db.CommonDaoUtils;
 import com.gxdingo.sg.db.DaoUtilsStore;
 import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.dialog.ChatFunctionDialog;
+import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
@@ -109,6 +110,8 @@ import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.MoveToPositionTop;
 
@@ -162,7 +165,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     private int otherRole = 0;
 
     //对方的id。otherRole = 11传店铺id；otherRole = 12 默认传0
-    private int otherId = 0;
+    private String otherId = "";
 
     //聊天消息数据集
     private LinkedList<ReceiveIMMessageBean> mChatDatas;
@@ -250,7 +253,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         //用户首页进入时，没有ShareUuid，需要传入otherRole、otherId
         otherRole = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 10);
-        otherId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
+        otherId = getIntent().getStringExtra(Constant.SERIALIZABLE + 2);
 
         if (otherRole != 12)
             title_layout.setMoreImg(R.drawable.module_svg_more_8935);
@@ -388,7 +391,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 finish();
                 break;
             case R.id.img_more:
-                //客服没有右上角的更多功能
+                showBaseDialog();
+           /*     //客服没有右上角的更多功能
                 if (otherRole == 12)
                     return;
                 //联系商家跳转商商家详情
@@ -400,18 +404,38 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
                         goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
                 }
-
+*/
                 break;
-          /*  case R.id.photo_album_img:
-                PhotoUtils.Photo(reference.get(), this);
-                break;
-            case R.id.camera_img:
-                PhotoUtils.TakePhoto(reference.get(), this);
-                break;*/
         }
     }
 
+    private void showBaseDialog() {
 
+        int pos[] = {-1, -1}; //保存当前坐标的数组
+
+        title_layout.findViewById(com.kikis.commnlibrary.R.id.title).getLocationOnScreen(pos);//获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .offsetY(pos[1])
+                .offsetX(pos[0])
+                .autoDismiss(true)
+                .hasShadowBg(false)
+                .asCustom(new PostionFunctionDialog(reference.get(), v -> {
+                    switch (v.getId()) {
+                        case R.id.share_ll:
+                            //todo 分享链接没有
+
+                            break;
+                        case R.id.report_ll:
+                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+
+                            break;
+
+                    }
+
+                }, 1).show());
+    }
     @Override
     protected void onBaseEvent(Object object) {
 /*

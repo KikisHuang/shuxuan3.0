@@ -18,7 +18,7 @@ import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
+import com.gxdingo.sg.fragment.store.BusinessDistrictParentFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreMessageFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;
@@ -49,9 +49,7 @@ import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
-import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
@@ -175,10 +173,10 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
 
     }
 
-    StoreBusinessDistrictParentFragment mStoreBusinessDistrictFragment;
+    BusinessDistrictParentFragment mStoreBusinessDistrictFragment;
 
     private void fragmentInit() {
-        mStoreBusinessDistrictFragment = new StoreBusinessDistrictParentFragment();
+        mStoreBusinessDistrictFragment = new BusinessDistrictParentFragment();
         mFragmentList = new ArrayList<>();
         mFragmentList.add(new StoreHomeFragment());
         mFragmentList.add(new StoreMessageFragment());
@@ -278,7 +276,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
             getP().getUnreadMessageNum();
             startImService();
         }
-        toBusinessCircle();
     }
 
 
@@ -371,8 +368,6 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        } else if (type == GO_TO_BUSINESS_CIRCLE) {
-            toBusinessCircle();
         }
 
 //        if (type == STORE_LOGIN_SUCCEED) {//登录成功
@@ -519,13 +514,5 @@ public class StoreActivity extends BaseMvpActivity<StoreMainContract.StoreMainPr
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .asCustom(sgConfirm2ButtonPopupView).show();
-    }
-
-    //分享口令类型40登录成功跳转商圈页
-    private void toBusinessCircle() {
-        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false) && UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getStore().getStatus() == 10) {
-            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
-            getP().checkTab(3);
-        }
     }
 }

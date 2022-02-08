@@ -18,17 +18,20 @@ import com.gxdingo.sg.bean.ActivityEvent;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
+import com.gxdingo.sg.bean.ShareEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
-import com.gxdingo.sg.biz.HelpListener;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.biz.OnContentListener;
+import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.client.SettledFragment;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictParentFragment;
+import com.gxdingo.sg.fragment.store.BusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -42,6 +45,7 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,17 +57,14 @@ import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
-import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
-import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
-import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
@@ -100,6 +101,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     //刷新商圈定时器disposable
     private Disposable mDisposable;
 
+    private BasePopupView fillCodePopupView;
 
     public static ClientActivity getInstance() {
         return instance;
@@ -201,6 +203,15 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
     }
 
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+
+        if (type == ClientLocalConstant.FILL_SUCCESS) {
+            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
+            fillCodePopupView.dismiss();
+        }
+    }
 
     @Override
     protected void onBaseCreate() {
@@ -253,14 +264,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
-            toBusinessCircle();
+                if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
+                    showInvitationCodeDialog();
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        } else if (type == GO_TO_BUSINESS_CIRCLE) {
-            toBusinessCircle();
-        } else if (type == GO_SETTLED) {
+        }else if (type == GO_SETTLED) {
             getP().checkTab(2);
         }
     }
@@ -273,14 +283,29 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     private void fragmentInit() {
 
         mFragmentList = new ArrayList<>();
-        mFragmentList.add(new StoreBusinessDistrictParentFragment());
+        mFragmentList.add(new BusinessDistrictParentFragment());
         mFragmentList.add(new ClientHomeFragment());
         mFragmentList.add(new SettledFragment());
         mFragmentList.add(new ClientMessageFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 
+    private void showInvitationCodeDialog() {
+        if (fillCodePopupView == null) {
+            fillCodePopupView = new XPopup.Builder(reference.get())
+                    .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
+                    .isDarkTheme(false)
+                    .asCustom(new FillInvitationCodePopupView(reference.get(), new OnContentListener() {
+                        @Override
+                        public void onConfirm(BasePopupView popupView, String content) {
+                            getP().fllInvitationCode(content);
+                        }
+                    })).show();
+        } else {
+            fillCodePopupView.show();
+        }
 
+    }
     @OnClick({R.id.home_page_layout, R.id.message_layout, R.id.settle_in, R.id.business_layout, R.id.mine_layout})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
@@ -413,6 +438,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
                 .show();
     }
 
+
+    @Override
+    public void goToBusinessDistrict(String code) {
+        getP().checkTab(0);
+        sendEvent(new ShareEvent(code));
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -491,16 +523,5 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onUserPresent() {
 
-    }
-
-
-    //分享口令类型40登录成功跳转商圈页
-    private void toBusinessCircle() {
-        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)) {
-            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
-
-            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
-        }
     }
 }

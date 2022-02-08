@@ -3,6 +3,7 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
@@ -22,14 +23,17 @@ import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MultiParameterCallbackListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.lzy.ninegrid.ImageInfo;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.trello.rxlifecycle3.LifecycleProvider;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -37,14 +41,16 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * 商家端商圈Presenter
  *
  * @author JM
  */
-public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, StoreBusinessDistrictContract.StoreBusinessDistrictListener>
+public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, StoreBusinessDistrictContract.StoreBusinessDistrictListener>
         implements StoreBusinessDistrictContract.StoreBusinessDistrictPresenter, NetWorkListener, MultiParameterCallbackListener {
 
     private ClientNetworkModel clientNetworkModel;
@@ -54,7 +60,7 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
     private NetworkModel mNetWorkModel;
 
 
-    public StoreBusinessDistrictPresenter() {
+    public BusinessDistrictPresenter() {
         businessDistrictModel = new BusinessDistrictModel(this);
         commonModel = new CommonModel();
         mNetWorkModel = new NetworkModel(this);
@@ -174,8 +180,13 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
      */
     @Override
     public void getBusinessDistrictList(boolean refresh, String circleUserIdentifier) {
-        businessDistrictModel.getBusinessDistrict(getContext(), refresh, circleUserIdentifier);
+        businessDistrictModel.getBusinessDistrict(getContext(), refresh, circleUserIdentifier, "");
 
+    }
+
+    @Override
+    public void shareGetBusinessDistrictList(String id, String circleCode) {
+        businessDistrictModel.getBusinessDistrict(getContext(), true, id, circleCode);
     }
 
     /**
@@ -369,6 +380,37 @@ public class StoreBusinessDistrictPresenter extends BaseMvpPresenter<BasicsListe
                 }
             });
         }
+    }
+
+    /**
+     * 商圈广告/图标/通知
+     */
+    @Override
+    public void getBannerDataInfo() {
+
+        if (businessDistrictModel != null)
+            businessDistrictModel.getBannerDataInfo(getContext(), o -> {
+                BannerBean data = (BannerBean) o;
+
+                RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                    List<String> notices = new ArrayList<>();
+                    for (BannerBean.NoticeListDTO d : data.getNoticeList()) {
+                        if (!isEmpty(d.getContent()))
+                            notices.add(d.getContent());
+
+                    }
+                    e.onNext(notices);
+                    e.onComplete();
+                }), (BaseActivity) getContext()).subscribe(o1 -> {
+
+                    List<String> data1 = (List<String>) o1;
+                    data.noticeStringList = data1;
+                    if (isViewAttached())
+                        getV().onBannerResult(data);
+                });
+
+            });
+
     }
 
     /**

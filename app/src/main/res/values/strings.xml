@@ -103,5 +103,7 @@
     <string name="upload_authentication_video">上传认证视频</string>
     <string name="face_identification">人脸识别</string>
     <string name="start_certification">开始认证</string>
+    <string name="please_login_after_browse_business_district">请先登录才可查我的商圈哦~</string>
+    <string name="please_login_before_operation">请先登录后再操作</string>
 
 </resources>

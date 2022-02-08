@@ -5,6 +5,7 @@ import android.content.Context;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictMessageCommentListBean;
@@ -37,6 +38,7 @@ import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
 import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_GET_COMMENT;
 import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_LIST;
 import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
+import static com.gxdingo.sg.http.Api.CIRCLE_HEADER_ADS;
 import static com.gxdingo.sg.http.Api.CIRCLE_LIKEDORUNLIKED;
 import static com.gxdingo.sg.http.Api.DELETE_MY_OWN_COMMENT;
 import static com.gxdingo.sg.http.Api.GET_NUMBER_UNREAD_COMMENTS;
@@ -136,7 +138,7 @@ public class BusinessDistrictModel {
     /**
      * 获取商圈列表
      */
-    public void getBusinessDistrict(Context context, boolean refresh, String circleUserIdentifier) {
+    public void getBusinessDistrict(Context context, boolean refresh, String circleUserIdentifier, String circleCode) {
         if (refresh)
             resetPage();//重置页码
 
@@ -153,6 +155,8 @@ public class BusinessDistrictModel {
         if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.AdCode))
             map.put("area", LocalConstant.AdCode);
 
+        if (!isEmpty(circleCode))
+            map.put("circleCode", circleCode);
 
         if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getIdentifier()))
             map.put("identifier", UserInfoUtils.getInstance().getIdentifier());
@@ -209,7 +213,7 @@ public class BusinessDistrictModel {
 
         map.put(StoreLocalConstant.IMAGES, GsonUtil.gsonToStr(images));
 
-        if (labels != null && labels.size() > 0){
+        if (labels != null && labels.size() > 0) {
             map.put(LocalConstant.LABELS, GsonUtil.gsonToStr(labels));
         }
 
@@ -314,7 +318,7 @@ public class BusinessDistrictModel {
             netWorkListener.onStarts();
 
         //UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY
-        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(BUSINESS_DISTRICT_COMMENT_OR_ADD , map)
+        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(BUSINESS_DISTRICT_COMMENT_OR_ADD, map)
                 .execute(new CallClazzProxy<ApiResult<BusinessDistrictCommentOrReplyBean>, BusinessDistrictCommentOrReplyBean>(new TypeToken<BusinessDistrictCommentOrReplyBean>() {
                 }.getType()) {
                 });
@@ -545,6 +549,36 @@ public class BusinessDistrictModel {
             }
         };
 
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
+    }
+
+
+    /**
+     * 商圈广告/图标/通知
+     */
+    public void getBannerDataInfo(Context context, CustomResultListener customResultListener) {
+
+        Observable<BannerBean> observable = HttpClient.post(CIRCLE_HEADER_ADS)
+                .execute(new CallClazzProxy<ApiResult<BannerBean>, BannerBean>(new TypeToken<BannerBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<BannerBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+            }
+            @Override
+            public void onNext(BannerBean bannerBean) {
+
+                if (customResultListener != null)
+                    customResultListener.onResult(bannerBean);
+
+            }
+        };
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
 

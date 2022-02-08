@@ -328,7 +328,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         });
                     }
                 }
-            }, 50);
+            }, 50,true);
         }/* else {
             if (networkModel != null) {
                 networkModel.getInvitationCode(getContext(), "", result -> {

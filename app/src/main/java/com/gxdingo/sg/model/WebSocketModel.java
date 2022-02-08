@@ -351,14 +351,14 @@ public class WebSocketModel {
     /**
      * 获取聊天记录列表
      */
-    public void getChatHistoryList(Context context, String shareUuid, int otherId, int otherRole, CustomResultListener customResultListener) {
+    public void getChatHistoryList(Context context, String shareUuid, String otherId, int otherRole, CustomResultListener customResultListener) {
         Map<String, String> map = new HashMap<>();
 
         if (!isEmpty(shareUuid))
             map.put("shareUuid", shareUuid);
         else {
             map.put("otherId", String.valueOf(otherId));
-            map.put("otherRole", String.valueOf(otherRole));
+//            map.put("otherRole", String.valueOf(otherRole));
         }
 
         map.put("current", String.valueOf(mPage));
@@ -367,6 +367,7 @@ public class WebSocketModel {
         PostRequest request = HttpClient.imPost(IM_URL + GET_CHAT_HISTORY_LIST, map);
         if (UserInfoUtils.getInstance().isLogin())
             request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
         Observable<IMChatHistoryListBean> observable = request
                 .execute(new CallClazzProxy<ApiResult<IMChatHistoryListBean>, IMChatHistoryListBean>(new TypeToken<IMChatHistoryListBean>() {
                 }.getType()) {
@@ -411,7 +412,7 @@ public class WebSocketModel {
     /**
      * 刷新聊天记录列表
      */
-    public void refreshChatHistoryList(Context context, String shareUuid, int otherId, int otherRole, CustomResultListener customResultListener) {
+    public void refreshChatHistoryList(Context context, String shareUuid, String otherId, int otherRole, CustomResultListener customResultListener) {
 
         if (!UserInfoUtils.getInstance().isLogin() || UserInfoUtils.getInstance().getUserInfo() == null || isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
             return;
@@ -422,7 +423,7 @@ public class WebSocketModel {
             map.put("shareUuid", shareUuid);
         else {
             map.put("otherId", String.valueOf(otherId));
-            map.put("otherRole", String.valueOf(otherRole));
+//            map.put("otherRole", String.valueOf(otherRole));
         }
 
         map.put("current", String.valueOf(1));

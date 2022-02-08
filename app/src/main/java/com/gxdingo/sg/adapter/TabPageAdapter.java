@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.utils.Constant;
 
@@ -50,7 +50,7 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
                         //我的商圈，传自己的Identifier
                         args.putString(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getIdentifier());
                 }
-                return StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, args);
+                return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
             }
 
         }

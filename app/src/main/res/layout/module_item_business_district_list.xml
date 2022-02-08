@@ -103,8 +103,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="25dp"
         android:padding="6dp"
+        android:visibility="gone"
         android:src="@drawable/module_svg_delete_grey"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -113,12 +114,12 @@
         android:id="@+id/distance_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:padding="6dp"
         android:textColor="@color/gray_a9"
         android:textSize="12sp"
+        android:layout_marginRight="25dp"
         app:layout_constraintRight_toLeftOf="@+id/iv_delete"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/store_name_ll"
+        app:layout_constraintBottom_toBottomOf="@+id/store_name_ll"
         tools:text="距离 1.5km" />
 
     <TextView
@@ -127,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginRight="40dp"
         android:lineSpacingExtra="3dp"
         android:text="今日上架元气森林山楂味气泡水，6元一瓶56元一箱，一箱/10瓶"
         android:textColor="#FF2E2E2E"
@@ -142,7 +143,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
+        android:layout_marginRight="40dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_content">
@@ -218,7 +219,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="45dp"
+        android:layout_marginRight="40dp"
         android:background="@drawable/module_select_send_address_cancel_button"
         android:orientation="vertical"
         android:padding="8dp"

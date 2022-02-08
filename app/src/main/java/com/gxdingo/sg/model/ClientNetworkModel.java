@@ -396,7 +396,7 @@ public class ClientNetworkModel {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(LocalConstant.STOREID, String.valueOf(mStoreId));
+        map.put(LocalConstant.IDENTIFIER, String.valueOf(mStoreId));
 
         if (la != 0)
             map.put(LocalConstant.LATITUDE, String.valueOf(la));

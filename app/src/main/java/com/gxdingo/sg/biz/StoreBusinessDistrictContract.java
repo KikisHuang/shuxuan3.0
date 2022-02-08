@@ -1,5 +1,6 @@
 package com.gxdingo.sg.biz;
 
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
@@ -23,6 +24,13 @@ public class StoreBusinessDistrictContract {
          * @param refresh true 表示刷新，false表示加载更多
          */
         void getBusinessDistrictList(boolean refresh, String id);
+
+        /**
+         * 分享跳转获取商圈列表
+         *
+         * @param circleCode 商圈分享口令
+         */
+        void shareGetBusinessDistrictList(String id, String circleCode);
 
         /**
          * 提交评论/回复
@@ -79,6 +87,8 @@ public class StoreBusinessDistrictContract {
         void shareLink(String content, String imgUrl, String url);
 
         void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier);
+
+        void getBannerDataInfo();
     }
 
     public interface StoreBusinessDistrictListener {
@@ -114,5 +124,12 @@ public class StoreBusinessDistrictContract {
          * @param position
          */
         void refreshLikeNum(String o, int position);
+
+        /**
+         * 头部广告数据回调
+         *
+         * @param data
+         */
+        void onBannerResult(BannerBean data);
     }
 }

@@ -238,7 +238,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * 获取聊天记录列表
      */
     @Override
-    public void getChatHistoryList(String shareUuid, int otherId, int otherRole) {
+    public void getChatHistoryList(String shareUuid, String otherId, int otherRole) {
 
         mWebSocketModel.getChatHistoryList(getContext(), shareUuid, otherId, otherRole, new CustomResultListener<IMChatHistoryListBean>() {
             @Override
@@ -256,7 +256,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * @param otherRole
      */
     @Override
-    public void refreshHistoryList(String shareUuid, int otherId, int otherRole) {
+    public void refreshHistoryList(String shareUuid, String otherId, int otherRole) {
 
         mWebSocketModel.refreshChatHistoryList(getContext(), shareUuid, otherId, otherRole, (CustomResultListener<IMChatHistoryListBean>) imChatHistoryListBean -> {
             try {

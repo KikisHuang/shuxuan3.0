@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.StringUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
@@ -332,25 +333,20 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void checkHelpCode() {
         ShibbolethModel.checkShibboleth((type, code) -> {
-            if (UserInfoUtils.getInstance().isLogin()) {
-                if (UserInfoUtils.getInstance().getUserInfo().getRole() == 10) {
-                    //30口令类型为邀请商家活动 40为分享跳转商圈
-                    if (type != 30 && type != 40) {
-                        helpCode = code;
-                        if (clientNetworkModel != null)
-                            clientNetworkModel.inviteHelp(getContext(), code);
-                    } else if (type == 40) {
-                        //分享跳转商圈
 
-
-                    }
-                } else {
-                    //商家端
-
-
+            //30口令类型为邀请商家活动 40为分享跳转商圈
+            if (type != 30 && type != 40) {
+                if (UserInfoUtils.getInstance().isLogin()) {
+                    helpCode = code;
+                    if (clientNetworkModel != null)
+                        clientNetworkModel.inviteHelp(getContext(), code);
                 }
+            } else if (type == 40) {
+                //分享跳转商圈
+                getV().goToBusinessDistrict(code);
+
             }
-        }, 200);
+        }, 200, false);
 
     }
 
@@ -358,5 +354,15 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     public void help() {
         if (clientNetworkModel != null)
             clientNetworkModel.helpAfter(getContext(), helpCode);
+    }
+
+    @Override
+    public void fllInvitationCode(String code) {
+        if (StringUtils.isEmpty(code)) {
+            onMessage("请填写商家邀请码");
+            return;
+        }
+        if (clientNetworkModel != null)
+            clientNetworkModel.receiveCoupon(getContext(), code);
     }
 }

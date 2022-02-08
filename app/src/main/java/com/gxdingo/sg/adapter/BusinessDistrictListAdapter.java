@@ -20,7 +20,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.biz.NineClickListener;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
@@ -49,14 +49,14 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistrictListBean.BusinessDistrict, BaseViewHolder> {
     Context mContext;
     PullDividerItemDecoration mSpaceItemDecoration;
-    StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
+    BusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
     //单张图片宽度
     private int singleWidth = 0;
 
     private int mType;
 
     public BusinessDistrictListAdapter(Context context
-            , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener, int mType) {
+            , BusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener, int mType) {
         super(R.layout.module_item_business_district_list);
         this.mContext = context;
         singleWidth = (int) (getScreenWidth() * 1 / 3);
@@ -104,8 +104,8 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                 mGrad1.setColor(getc(R.color.white));
                 mGrad1.setStroke(dp2px(1), Color.parseColor(data.labels.get(1).getColor()));
 
-                one_label.setTextColor( Color.parseColor(data.labels.get(0).getColor()));
-                two_label.setTextColor( Color.parseColor(data.labels.get(1).getColor()));
+                one_label.setTextColor(Color.parseColor(data.labels.get(0).getColor()));
+                two_label.setTextColor(Color.parseColor(data.labels.get(1).getColor()));
 
                 if (!isEmpty(data.labels.get(0).getName()))
                     one_label.setText(data.labels.get(0).getName());
@@ -120,7 +120,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                 mGrad.setColor(getc(R.color.white));
                 mGrad.setStroke(dp2px(1), Color.parseColor(data.labels.get(0).getColor()));
 
-                one_label.setTextColor( Color.parseColor(data.labels.get(0).getColor()));
+                one_label.setTextColor(Color.parseColor(data.labels.get(0).getColor()));
 
                 if (!isEmpty(data.labels.get(0).getName()))
                     one_label.setText(data.labels.get(0).getName());
@@ -157,11 +157,11 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         if (!isEmpty(data.iconUrl))
             Glide.with(mContext).load(data.iconUrl).apply(getRequestOptions().fitCenter()).into(authenticated_img);
 
-        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
 
-        tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+        tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
 
-        tvStoreName.setText(data.getStoreName());
+        tvStoreName.setText(data.getNickName());
         tvContent.setText(data.getContent());
         String createTime = dealDateFormat(data.getCreateTime());
 

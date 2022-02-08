@@ -11,22 +11,21 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.viewpager.widget.ViewPager;
-
 import com.blankj.utilcode.util.ConvertUtils;
-import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ClientActivity;
+import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.TabPageAdapter;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.biz.onSwipeGestureListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
+import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.NoScrollViewPager;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
@@ -53,13 +52,14 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGOUT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * 商家端商圈父类
  *
  * @author Kikis
  */
-public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
+public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
 
 
     @BindView(R.id.tv_unread_msg_count)
@@ -79,7 +79,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
 
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
-        return new StoreBusinessDistrictPresenter();
+        return new BusinessDistrictPresenter();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
             @Override
             public void onLeftSwipe() {
                 if (!UserInfoUtils.getInstance().isLogin())
-                    showLoginDialog();
+                    showLoginDialog(getString(R.string.please_login_after_browse_business_district));
             }
         });
         view_pager.setOffscreenPageLimit(2);
@@ -159,9 +159,18 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         }
     }
 
-    @OnClick({R.id.unread_iv, R.id.iv_send_business_district})
+    @OnClick({R.id.search_iv, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
+
+        if (!UserInfoUtils.getInstance().isLogin()) {
+            showLoginDialog(getString(R.string.please_login_before_operation));
+            return;
+        }
+
         switch (view.getId()) {
+            case R.id.search_iv:
+                goToPage(getContext(), ClientSearchActivity.class, null);
+                break;
             case R.id.unread_iv:
                 startActivity(new Intent(reference.get(), BusinessDistrictMessageActivity.class));
                 break;
@@ -239,6 +248,11 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
 
     }
 
+    @Override
+    public void onBannerResult(BannerBean data) {
+
+    }
+
     /**
      * MagicIndicator 通用标题初始化方法
      */
@@ -268,7 +282,7 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
                     @Override
                     public void onClick(View v) {
                         if (index == 1 && !UserInfoUtils.getInstance().isLogin()) {
-                            showLoginDialog();
+                            showLoginDialog(getString(R.string.please_login_after_browse_business_district));
                         } else
                             view_pager.setCurrentItem(index);
                     }
@@ -311,9 +325,9 @@ public class StoreBusinessDistrictParentFragment extends BaseMvpFragment<StoreBu
         ViewPagerHelper.bind(magic_indicator, view_pager);
     }
 
-    private void showLoginDialog() {
+    private void showLoginDialog(String msg) {
         if (mLoginDialog == null) {
-            mLoginDialog = new SgConfirm2ButtonPopupView(reference.get(), "请先登录才可查我的商圈哦~", () -> UserInfoUtils.getInstance().goToOauthPage(reference.get()));
+            mLoginDialog = new SgConfirm2ButtonPopupView(reference.get(), msg, () -> UserInfoUtils.getInstance().goToOauthPage(reference.get()));
 
             new XPopup.Builder(reference.get())
                     .isDarkTheme(false)

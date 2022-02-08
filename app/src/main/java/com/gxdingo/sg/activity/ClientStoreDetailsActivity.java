@@ -5,6 +5,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import com.allen.library.CircleImageView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.blankj.utilcode.util.ToastUtils;
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
@@ -32,6 +34,7 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -43,6 +46,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -62,6 +66,9 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @BindView(R.id.mapView)
     public MapView mapView;
 
+    @BindView(R.id.ll_navigation)
+    public LinearLayout ll_navigation;
+
     @BindView(R.id.address_tv)
     public TextView address_tv;
 
@@ -70,6 +77,12 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @BindView(R.id.business_district_cl)
     public ConstraintLayout business_district_cl;
+
+    @BindView(R.id.address_cl)
+    public ConstraintLayout address_cl;
+
+    @BindView(R.id.top_line)
+    public TextView top_line;
 
     @BindView(R.id.store_photo_rv)
     public RecyclerView store_photo_rv;
@@ -88,7 +101,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     private BasePopupView mNavigationPopupView;
 
-    private int storeId;
+    private String storeId;
 
     private StoreDetail mStoreDetail;
 
@@ -164,8 +177,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void init() {
-        storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
-        if (storeId <= 0) {
+        storeId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+        if (isEmpty(storeId)) {
             onMessage("未获取到店铺信息！");
             finish();
         }
@@ -247,7 +260,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                 break;
             case R.id.ll_send_message:
                 if (UserInfoUtils.getInstance().isLogin() && mStoreDetail != null) {
-                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, mStoreDetail.getId()}));
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11,storeId}));
                 } else {
                     UserInfoUtils.getInstance().goToOauthPage(this);
                 }
@@ -277,11 +290,18 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                             if (mStoreDetail != null && mStoreDetail.getLicence() != null)
                                 goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                             break;
+                        case R.id.share_ll:
+                            //todo 分享链接没有
+                            break;
+                        case R.id.report_ll:
+                            //todo 投诉待修改
+//                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+
+                            break;
+
                     }
 
-                    //todo 分享链接没有，诉投功能待实现
-
-                }, 2).show());
+                }, mStoreDetail.getReleaseUserType()==0?2:1).show());
     }
 
 
@@ -326,7 +346,6 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void initData() {
-        //todo 后期有接口了更换后修改页面显示逻辑
         getP().getStoreDetail(getRxPermissions(), storeId);
     }
 
@@ -334,12 +353,74 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     public void onStoreDetailResult(StoreDetail storeDetail) {
 
+        mStoreDetail = storeDetail;
+
+        Glide.with(reference.get()).load(!isEmpty(storeDetail.getAvatar()) ? storeDetail.getAvatar() : R.drawable.module_svg_client_default_avatar).apply(GlideUtils.getInstance().getDefaultOptions()).into(avatar_img);
+
+
+        if (!isEmpty(storeDetail.getName()))
+            name_tv.setText(storeDetail.getName());
+
+        if (!isEmpty(storeDetail.getName()))
+            secondary_tv.setText(storeDetail.getName());
+
+        StringBuffer label = new StringBuffer();
+
+        // 用户类型0=商家 1=用户
+        if (storeDetail.getReleaseUserType() == 0) {
+            mapView.setVisibility(View.VISIBLE);
+            address_cl.setVisibility(View.VISIBLE);
+            ll_navigation.setVisibility(View.VISIBLE);
+            if (storeDetail.getIsAuthentication() == 0) {
+                tag_img.setVisibility(View.GONE);
+            } else {
+                tag_img.setVisibility(View.VISIBLE);
+                int tag = storeDetail.getIsAuthentication() == 1 ? R.drawable.module_svg_certification : R.drawable.module_svg_v_certification;
+                Glide.with(reference.get()).load(tag).apply(GlideUtils.getInstance().getDefaultOptions()).into(tag_img);
+            }
+
+
+            for (int i = 0; i < storeDetail.getClassNameList().size(); i++) {
+                if (i == 0)
+                    label.append(storeDetail.getClassNameList().get(i));
+                else
+                    label.append(" | " + storeDetail.getClassNameList().get(i));
+            }
+
+            if (!isEmpty(storeDetail.getOpenTime()) && !isEmpty(storeDetail.getCloseTime()))
+                label.append(" "+storeDetail.getOpenTime() + " - " + storeDetail.getCloseTime());
+
+        } else {
+            top_line.setVisibility(storeDetail.getImages() != null && storeDetail.getImages().size() > 0 ? View.VISIBLE : View.GONE);
+
+            mapView.setVisibility(View.GONE);
+            ll_navigation.setVisibility(View.GONE);
+            address_cl.setVisibility(View.GONE);
+            if (storeDetail.getAuthStatus() == 1) {
+                tag_img.setVisibility(View.VISIBLE);
+                Glide.with(reference.get()).load(R.drawable.module_svg_user_certification).apply(GlideUtils.getInstance().getDefaultOptions()).into(tag_img);
+            } else
+                tag_img.setVisibility(View.GONE);
+
+            if (storeDetail.getAuthStatus() == 0) {
+                label.append("未认证");
+            } else if (storeDetail.getAuthStatus() == 1) {
+                label.append("已认证");
+            } else if (storeDetail.getAuthStatus() == 2) {
+                label.append("认证中");
+            } else if (storeDetail.getAuthStatus() == 3) {
+                label.append("认证失败");
+            }
+        }
+
+        secondary_tv.setText(label);
 
         if (storeDetail == null) {
             onMessage("未获取到商家信息！");
             finish();
         }
-        mStoreDetail = storeDetail;
+
+
         title_layout.setTitleText(storeDetail.getName());
         address_tv.setText(storeDetail.getAddress());
         if (!isEmpty(storeDetail.getDistance()))

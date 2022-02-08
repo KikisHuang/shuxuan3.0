@@ -36,7 +36,7 @@ import static com.luck.picture.lib.config.PictureMimeType.ofImage;
  *
  * @author JM
  */
-public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<BasicsListener, StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleaseListener>
+public class BusinessDistrictReleasePresenter extends BaseMvpPresenter<BasicsListener, StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleaseListener>
         implements StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleasePresenter, NetWorkListener {
 
     private NetworkModel networkModel;
@@ -44,7 +44,7 @@ public class StoreBusinessDistrictReleasePresenter extends BaseMvpPresenter<Basi
 
     private List<BusinessDistrictListBean.Labels> labels;
 
-    public StoreBusinessDistrictReleasePresenter() {
+    public BusinessDistrictReleasePresenter() {
         labels = new ArrayList<>();
         networkModel = new NetworkModel(this);
         businessDistrictModel = new BusinessDistrictModel(this);

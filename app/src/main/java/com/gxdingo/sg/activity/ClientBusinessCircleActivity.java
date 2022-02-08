@@ -2,45 +2,22 @@ package com.gxdingo.sg.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
-import com.gxdingo.sg.adapter.StoreBusinessScopeAdapter;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
-import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
-import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
-import com.gxdingo.sg.biz.StoreCertificationContract;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
-import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
-import com.gxdingo.sg.presenter.StoreCertificationPresenter;
+import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
+import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.view.TemplateTitle;
-import com.scwang.smart.refresh.footer.ClassicsFooter;
-import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
-
-import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
-import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
-import static com.kikis.commnlibrary.fragment.BaseFragment.newInstance;
-import static com.kikis.commnlibrary.utils.Constant.KEY;
 
 /**
  * 商圈
@@ -57,7 +34,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
-        return new StoreBusinessDistrictPresenter();
+        return new BusinessDistrictPresenter();
     }
 
     @Override
@@ -135,7 +112,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.main_ll, StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, bundle))   // 此处的R.id.fragment_container是要盛放fragment的父容器
+                .add(R.id.main_ll, BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, bundle))   // 此处的R.id.fragment_container是要盛放fragment的父容器
                 .commit();
     }
 
@@ -173,6 +150,11 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
     @Override
     public void refreshLikeNum(String o, int position) {
+
+    }
+
+    @Override
+    public void onBannerResult(BannerBean data) {
 
     }
 }

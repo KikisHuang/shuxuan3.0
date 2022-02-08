@@ -28,15 +28,17 @@ import com.gxdingo.sg.adapter.BusinessDistrictLabelAdapter;
 import com.gxdingo.sg.adapter.BusinessDistrictListAdapter;
 import com.gxdingo.sg.adapter.HomePageBannerAdapter;
 import com.gxdingo.sg.bean.ActivityEvent;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.ShareEvent;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.presenter.StoreBusinessDistrictPresenter;
+import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -83,7 +85,7 @@ import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerVie
  *
  * @author JM
  */
-public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
+public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistrictContract.StoreBusinessDistrictPresenter> implements StoreBusinessDistrictContract.StoreBusinessDistrictListener {
 
 
     @BindView(R.id.title_tv)
@@ -150,6 +152,8 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     private Banner mBanner;
 
+    private List<BannerBean.NoticeListDTO> noticeList;
+
     /**
      * 商圈子视图点击监听接口
      */
@@ -174,7 +178,7 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
-        return new StoreBusinessDistrictPresenter();
+        return new BusinessDistrictPresenter();
     }
 
     @Override
@@ -276,14 +280,14 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //增加头部广告
             LinearLayout mHeadLayout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_business_district_head, new LinearLayout(reference.get()));
             mBanner = mHeadLayout.findViewById(R.id.banner);
-            String bannerTestJson = "[{\"id\":12,\"position\":\"app-home-middle\",\"identifier\":\"\",\"title\":\"大转盘活动\",\"type\":2,\"image\":\"https://dgkjuat.oss-cn-guangzhou.aliyuncs.com/upload/20211210/f2f9555bf330499ba59d481951b66f70.jpg\",\"page\":\"http://uat.gxdingo.com/html/#/pages/activity/turntable/lottery\",\"status\":1,\"sort\":0,\"remark\":\"大转盘活动\",\"createTime\":\"2021-12-06T09:38:01.000+00:00\",\"positionName\":null},{\"id\":13,\"position\":\"app-home-middle\",\"identifier\":\"\",\"title\":\"0元拿活动\",\"type\":2,\"image\":\"https://dgkjuat.oss-cn-guangzhou.aliyuncs.com/upload/20211210/b1cca225ca734b5e9bad0c3130d2b0ca.jpg\",\"page\":\"http://uat.gxdingo.com/html/#/pages/activity/integral/index\",\"status\":1,\"sort\":0,\"remark\":\"0元拿活动\",\"createTime\":\"2021-12-10T06:16:35.000+00:00\",\"positionName\":null}]";
 
-            List<HomeBannerBean> bannerBeans = GsonUtil.jsonToList(bannerTestJson, HomeBannerBean.class);
-
-            mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), bannerBeans));
+            //todo 点击事件没响应
             mBanner.setOnBannerListener((data, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) data;
+
+                //类型 0=无跳转 1=APP跳转 2=H5跳转
                 if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage())) {
+
                     if (!UserInfoUtils.getInstance().isLogin()) {
                         UserInfoUtils.getInstance().goToOauthPage(reference.get());
                         onMessage(gets(R.string.please_login));
@@ -301,22 +305,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
 
             marqueeView = mHeadLayout.findViewById(R.id.marqueeView);
 
-            List<String> messages = new ArrayList<>();
-            messages.add("1.:因疫情原因，部分地区无法配送，奖品可以直接折算现金");
-            messages.add("2.:因疫情原因，部分地区无法配送，奖品可以直接折算现金");
-
-            marqueeView.startWithList(messages);
             marqueeView.setOnItemClickListener((position, textView) -> {
-
                 goToPage(reference.get(), NoticeMessageActivity.class, getIntentMap(new String[]{textView.getText().toString()}));
             });
-            List<String> datas = new ArrayList<>();
 
-            datas.add("");
-            datas.add("");
-            datas.add("");
-
-            mLabelAdapter.setList(datas);
             label_recyclerView.setAdapter(mLabelAdapter);
             mAdapter.addHeaderView(mHeadLayout);
         }
@@ -325,7 +317,9 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
     @Override
     protected void initData() {
 
-
+        if (mType == 1) {
+            getP().getBannerDataInfo();
+        }
     }
 
     @Override
@@ -412,6 +406,12 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             //活动事件
             cl_visit_countdown.setVisibility(View.VISIBLE);
             startCountDown((ActivityEvent) object);
+
+        } else if (object instanceof ShareEvent) {
+            ShareEvent shareEvent = (ShareEvent) object;
+
+            //获取商圈列表
+            getP().shareGetBusinessDistrictList(mcircleUserIdentifier, shareEvent.code);
 
         }
     }
@@ -561,10 +561,10 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
                 getP().PhotoViewer(mAdapter.getData().get(parentPosition).getImages(), position);
             } else if (view.getId() == R.id.iv_avatar || view.getId() == R.id.tv_store_name) {
                 if (mType == 3)
-                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, (int) mAdapter.getData().get(parentPosition).getStoreId()}));
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, mAdapter.getData().get(parentPosition).circleUserIdentifier}));
                 else {
-                    int storeId = Integer.valueOf(String.valueOf(object));
-                    goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{storeId}));
+                    String id = String.valueOf(object);
+                    goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{id}));
                 }
 
             } else if (view.getId() == R.id.like_tv) {
@@ -725,6 +725,21 @@ public class StoreBusinessDistrictFragment extends BaseMvpFragment<StoreBusiness
             mAdapter.notifyItemChanged(position + 1);
         else
             mAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onBannerResult(BannerBean data) {
+
+        if (mBanner != null && data.getAppHomeHeader() != null)
+            mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), data.getAppHomeHeader()));
+
+        if (marqueeView != null && data.noticeStringList != null) {
+            noticeList = data.getNoticeList();
+            marqueeView.startWithList(data.noticeStringList);
+        }
+        if (mLabelAdapter != null && data.getIconList() != null) {
+            mLabelAdapter.setList(data.getIconList());
+        }
     }
 
     /**

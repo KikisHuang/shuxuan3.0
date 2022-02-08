@@ -14,7 +14,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 public class ClientStoreContract {
     public interface ClientStorePresenter extends MvpPresenter<BasicsListener,ClientStoreListener>{
 
-        void getStoreDetail(RxPermissions rxPermissions, long storeId);
+        void getStoreDetail(RxPermissions rxPermissions, String storeId);
 
         void mapInit(double latitude,double longitude);
 

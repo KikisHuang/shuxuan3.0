@@ -62,6 +62,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.PermissionUtils.gotoPermission;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
@@ -114,8 +115,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     private int categoryId = 0;
 
     private int mTitleHeight = dp2px(80);
-
-    private BasePopupView fillCodePopupView;
 
 
     @Override
@@ -230,6 +229,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})
     public void OnClickViews(View v) {
         switch (v.getId()) {
+
             case R.id.location_tt_tv:
             case R.id.location_tv:
                 if (UserInfoUtils.getInstance().isLogin())
@@ -243,7 +243,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 goToPage(getContext(), ClientSearchActivity.class, getIntentMap(new String[]{location_tv.getText().toString()}));
                 break;
             case R.id.btn_empower:
-                getP().checkPermissions(getRxPermissions(), true);
+//                getP().checkPermissions(getRxPermissions(), true);
+                gotoPermission(reference.get());
                 break;
             case R.id.btn_become_store:
                 if (UserInfoUtils.getInstance().isLogin())
@@ -277,10 +278,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LOGIN_SUCCEED) {
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && isEmpty(LocalConstant.TEMP_SHIBBOLETH))
-                showInvitationCodeDialog();
-        } else if (type == REFRESH_LOCATION) {
+        if (type == REFRESH_LOCATION) {
             //判断如果有权限，进行重新定位，刷新操作
             if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
                 getP().checkPermissions(getRxPermissions(), true);
@@ -321,8 +319,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     public void onFailed() {
         super.onFailed();
         location = false;
-        if (noLocation_layout.getVisibility() == View.INVISIBLE || noLocation_layout.getVisibility() == View.GONE)
+        if (noLocation_layout.getVisibility() == View.INVISIBLE || noLocation_layout.getVisibility() == View.GONE) {
             noLocation_layout.setVisibility(View.VISIBLE);
+            NoDataBgSwitch(false);
+        }
+
     }
 
     private void setTitleViewAlpha(float alpha) {
@@ -349,6 +350,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     public void onStoresResult(boolean refresh, boolean search, List<StoreListBean.StoreBean> storeBeans) {
+
+        if (noLocation_layout.getVisibility() == View.VISIBLE)
+            NoDataBgSwitch(false);
 
         if (refresh)
             mStoreAdapter.setList(storeBeans);
@@ -386,21 +390,15 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         switch (view.getId()) {
             case R.id.store_avatar_iv:
 
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{ item.storeUserIdentifier}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new ClientCallPhoneDialog(reference.get(), item.getContactNumber(), new OnContentListener() {
-                            @Override
-                            public void onConfirm(BasePopupView popupView, String content) {
-                                getP().callStore(content);
-                            }
-                        }))
+                        .asCustom(new ClientCallPhoneDialog(reference.get(), item.getContactNumber(), (popupView, content) -> getP().callStore(content)))
                         .show();
                 break;
         }
-
     }
 
     @Override
@@ -409,7 +407,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         if (UserInfoUtils.getInstance().isLogin()) {
             StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.storeUserIdentifier}));
         } else {
             UserInfoUtils.getInstance().goToOauthPage(getContext());
         }
@@ -418,28 +416,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onSucceed(int type) {
         super.onSucceed(type);
-        if (type == ClientLocalConstant.FILL_SUCCESS) {
-            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
-            fillCodePopupView.dismiss();
-        }
-
-    }
-
-
-    private void showInvitationCodeDialog() {
-        if (fillCodePopupView == null) {
-            fillCodePopupView = new XPopup.Builder(reference.get())
-                    .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
-                    .isDarkTheme(false)
-                    .asCustom(new FillInvitationCodePopupView(getContext(), new OnContentListener() {
-                        @Override
-                        public void onConfirm(BasePopupView popupView, String content) {
-                            getP().fllInvitationCode(content);
-                        }
-                    })).show();
-        } else {
-            fillCodePopupView.show();
-        }
 
     }
 }

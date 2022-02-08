@@ -746,4 +746,8 @@ public class Api {
      * 获取扫码核销优惠卷弹窗内容
      */
     public static final String CONFIG_SCANNING_REMIND = HIERARCHY + "config/scanning/remind";
+    /**
+     * 商圈广告/图标/通知
+     */
+    public static final String CIRCLE_HEADER_ADS = HIERARCHY + "circle/header/ads";
 }

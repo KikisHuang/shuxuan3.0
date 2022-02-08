@@ -67,6 +67,7 @@ import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
 import static com.gxdingo.sg.utils.StoreLocalConstant.REQUEST_CODE_SCAN;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
+import static com.kikis.commnlibrary.utils.CommonUtils.URLRequest;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
@@ -214,6 +215,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
             fill_invitation_code_cardview.setVisibility(View.GONE);
             getP().getUserInfo();
+
+            goToPage(reference.get(), ClientCouponListActivity.class, null);
         }
 
     }
@@ -248,22 +251,32 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             if (data != null) {
                 //返回的文本内容
                 scanContent = data.getStringExtra("success_result");
-                int mType = getAcType(numberDecode(scanContent));
-                if (mType == 10){
-                    //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
-                    getP().scanCode(scanContent);
+
+                if (!isEmpty(scanContent) && scanContent.contains("activeCode=")) {
+                    //url中获取活动码
+                    String activeCode = URLRequest(scanContent).get("activeCode");
+
+                    int mType = getAcType(numberDecode(activeCode));
+
+                    if (mType == 10){
+                        //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
+                        getP().scanCode(activeCode);
+                    }
+                    else if (mType == 11) {
+                        scanContent = activeCode;
+                        //客户端点击【使用优惠券】商家端扫码核销
+                        boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
+
+                        if (!showDialog)
+                            getP().getNoRemindContent();
+                        else
+                            getP().storeScanCode(activeCode);
+
+                    } else
+                        onMessage("无法识别的二维码类型");
                 }
-                else if (mType == 11) {
-                    //客户端点击【使用优惠券】商家端扫码核销
-                    boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
 
-                    if (!showDialog)
-                        getP().getNoRemindContent();
-                    else
-                        getP().scanCode(scanContent);
 
-                } else
-                    onMessage("无法识别的二维码类型");
                 //返回的BitMap图像
 //                Bitmap bitmap = data.getParcelableExtra(DECODED_BITMAP_KEY);
             }
