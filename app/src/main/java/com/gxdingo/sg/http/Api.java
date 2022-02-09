@@ -548,7 +548,7 @@ public class Api {
     /**
      * 店铺信息编辑
      */
-    public static final String STORE_UPDATE = HIERARCHY + "store/update";
+    public static final String STORE_UPDATE = HIERARCHY + "user/edit";
 
     /**
      * 获取配送距离列表

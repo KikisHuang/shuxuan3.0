@@ -215,24 +215,31 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void convertStore() {
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), 0, new CustomResultListener() {
-                @Override
-                public void onResult(Object o) {
-                    UserBean userBean = (UserBean) o;
-                    if (userBean.getStore() != null) {
-                        int status = userBean.getStore().getStatus();
-                        if (userBean.getStore().getId() <= 0 || status == 20) {
-                            goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
-                        } else if (status == 0) {
-                            onMessage("店铺审核中！");
-                        } else if (status > 0)
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
+                UserBean userBean = (UserBean) o;
+                if (userBean.getStore() != null) {
+                    int status = userBean.getStore().getStatus();
+                    if (userBean.getStore().getId() <= 0 || status == 20) {
+                        goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
+                    } else if (status == 0) {
+                        onMessage("店铺审核中！");
+                    } else if (status > 0) {
+                        UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
+
+                        if (locatUserBean.getRole() == 10) {
+                            locatUserBean.setRole(11);
+                            locatUserBean.setStore(userBean.getStore());
+                            UserInfoUtils.getInstance().saveUserInfo(locatUserBean);
+                            onMessage("店铺已通过审核！");
+                        } else
                             onMessage("该账户已有店铺！");
+                    }
+
 //                        if (status>0){
 //                            onMessage("店铺审核中！");
 //                        }else {
 //                            onMessage("该账户已有店铺！");
 //                        }
-                    }
                 }
             });
     }

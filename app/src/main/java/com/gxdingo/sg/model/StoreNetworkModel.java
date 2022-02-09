@@ -10,6 +10,7 @@ import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreMineBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
@@ -66,6 +67,8 @@ import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.http.HttpClient.getCurrentTimeUTCM;
 import static com.gxdingo.sg.utils.LocalConstant.IDENTIFIER;
 import static com.gxdingo.sg.utils.LocalConstant.TEST_HTTP_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.lat;
+import static com.gxdingo.sg.utils.LocalConstant.lon;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
@@ -593,15 +596,24 @@ public class StoreNetworkModel {
      *
      * @param
      */
-    public void getStoreDetails(Context context) {
+    public void getStoreDetails(Context context, String id) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<StoreDetailBean> observable = HttpClient.post(STORE_DETAIL)
-                .execute(new CallClazzProxy<ApiResult<StoreDetailBean>, StoreDetailBean>(new TypeToken<StoreDetailBean>() {
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.IDENTIFIER, id);
+
+        if (lat != 0)
+            map.put(LocalConstant.LATITUDE, String.valueOf(lat));
+        if (lon != 0)
+            map.put(LocalConstant.LONGITUDE, String.valueOf(lon));
+
+        Observable<StoreDetail> observable = HttpClient.post(STORE_DETAIL, map)
+                .execute(new CallClazzProxy<ApiResult<StoreDetail>, StoreDetail>(new TypeToken<StoreDetail>() {
                 }.getType()) {
                 });
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<StoreDetailBean>(context) {
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<StoreDetail>(context) {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
@@ -613,7 +625,7 @@ public class StoreNetworkModel {
             }
 
             @Override
-            public void onNext(StoreDetailBean storeDetailBean) {
+            public void onNext(StoreDetail storeDetailBean) {
                 netWorkListener.onAfters();
                 if (netWorkListener != null) {
                     netWorkListener.onData(true, storeDetailBean);
@@ -1017,14 +1029,13 @@ public class StoreNetworkModel {
      * @param context
      * @param customResultListener
      */
-    public void refreshLoginStauts(Context context, int isConvertToSeller, CustomResultListener customResultListener) {
+    public void refreshLoginStauts(Context context,CustomResultListener customResultListener) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
         Map<String, String> map = new HashMap<>();
         map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
-        map.put("isConvertToSeller", String.valueOf(isConvertToSeller));
 
         Observable<UserBean> observable = HttpClient.post(USER_STATUS, map)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {

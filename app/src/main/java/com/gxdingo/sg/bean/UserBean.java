@@ -43,14 +43,14 @@ public class UserBean implements Serializable {
     private String mobile;
     private String nickname;
     private String avatar;
-    private Integer gender;
-    private Integer authenticationStatus;
+    private int gender;
+    private int authenticationStatus;
 
-    public Integer getAuthenticationStatus() {
+    public int getAuthenticationStatus() {
         return authenticationStatus;
     }
 
-    public void setAuthenticationStatus(Integer authenticationStatus) {
+    public void setAuthenticationStatus(int authenticationStatus) {
         this.authenticationStatus = authenticationStatus;
     }
 

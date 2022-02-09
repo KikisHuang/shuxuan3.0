@@ -522,9 +522,9 @@ public class BusinessDistrictModel {
         Map<String, String> map = new HashMap<>();
 
         map.put(LocalConstant.STATUS, String.valueOf(status));
-
+/*
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
-            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
+            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));*/
 
         map.put("circleId", String.valueOf(id));
 

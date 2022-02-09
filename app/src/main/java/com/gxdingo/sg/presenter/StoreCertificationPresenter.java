@@ -52,9 +52,6 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     private StoreNetworkModel storeNetworkModel;
 
-
-    private int status;
-
     public StoreCertificationPresenter() {
 
         networkModel = new NetworkModel(this);
@@ -266,11 +263,8 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
             return;
 
         if (storeNetworkModel != null)
-            storeNetworkModel.refreshLoginStauts(getContext(), status == 10 ? 1 :  0, o -> {
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
                 UserBean data = (UserBean) o;
-
-                if (!isEmpty(data.getToken()))
-                    UserInfoUtils.getInstance().saveLoginUserInfo(data);
 
                 if (isViewAttached()) {
 
@@ -281,18 +275,13 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
 
-                        if (status != 10) {
-                            status = 10;
-                            storeNetworkModel.refreshLoginStauts(getContext(), status, new CustomResultListener() {
-                                @Override
-                                public void onResult(Object o) {
-                                    //回调显示已认证通过
-                                    getV().certificationPassed();
-                                }
-                            });
-                        } else
-                            //回调显示已认证通过
-                            getV().certificationPassed();
+                        UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
+                        locatUserBean.setRole(11);
+                        locatUserBean.setStore(data.getStore());
+                        UserInfoUtils.getInstance().saveUserInfo(locatUserBean);
+
+                        //回调显示已认证通过
+                        getV().certificationPassed();
 
                     } else if (data.getStore().getStatus() == 0) {
                         //回调显示在审核
@@ -328,7 +317,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         });
                     }
                 }
-            }, 50,true);
+            }, 50, true);
         }/* else {
             if (networkModel != null) {
                 networkModel.getInvitationCode(getContext(), "", result -> {

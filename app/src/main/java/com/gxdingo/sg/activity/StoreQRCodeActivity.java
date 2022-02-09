@@ -13,6 +13,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.DistanceBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
@@ -137,8 +138,9 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
         onMessage("已复制到剪切板");
     }
 
+
     @Override
-    public void onInfoResult(StoreDetailBean storeDetailBean) {
+    public void onInfoResult(StoreDetail storeDetailBean) {
 
     }
 

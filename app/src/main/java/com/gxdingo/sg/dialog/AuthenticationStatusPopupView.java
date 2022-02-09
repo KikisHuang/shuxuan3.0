@@ -62,24 +62,25 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
         done_bt.setOnClickListener(this);
         close_img.setOnClickListener(this);
+        if (authenticationBean != null) {
+            boolean isSucceed = authenticationBean.getAuthenticationStatus() == 1;
 
-        boolean isSucceed = authenticationBean.getAuthenticationStatus() == 1;
+            Glide.with(getContext()).load(isSucceed ? R.drawable.ic_id_card_authentication_success : R.drawable.ic_id_card_authentication_failed).apply(GlideUtils.getInstance().getDefaultOptions()).into(status_img);
 
-        Glide.with(getContext()).load(isSucceed ? R.drawable.ic_id_card_authentication_success : R.drawable.ic_id_card_authentication_failed).apply(GlideUtils.getInstance().getDefaultOptions()).into(status_img);
+            String hint1 = "";
+            String hint2 = "";
 
-        String hint1 = "";
-        String hint2 = "";
-
-        if (isSucceed) {
-            hint1 = "恭喜您，认证成功";
-            done_bt.setText("完成");
-        } else {
-            hint1 = "认证失败";
-            done_bt.setText("重新认证");
+            if (isSucceed) {
+                hint1 = "恭喜您，认证成功";
+                done_bt.setText("完成");
+            } else {
+                hint1 = "认证失败";
+                done_bt.setText("重新认证");
+            }
+            hint2 = authenticationBean.getMsg();
+            hint_one_tv.setText(hint1);
+            hint_two_tv.setText(hint2);
         }
-        hint2 = authenticationBean.getMsg();
-        hint_one_tv.setText(hint1);
-        hint_two_tv.setText(hint2);
 
     }
 
@@ -97,7 +98,7 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
                 break;
             case R.id.done_bt:
                 if (listener != null)
-                    listener.onResult( authenticationBean.getAuthenticationStatus());
+                    listener.onResult(authenticationBean!=null?authenticationBean.getAuthenticationStatus():-1);
                 this.dismiss();
                 break;
         }

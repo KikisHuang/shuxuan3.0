@@ -28,8 +28,10 @@ import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.presenter.ClientStorePresenter;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
@@ -39,6 +41,7 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import java.util.List;
 
@@ -109,6 +112,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     private GestureDetector gestureDetector;
 
+    private SgConfirm2ButtonPopupView mLoginDialog;
 
     @Override
     protected ClientStoreContract.ClientStorePresenter createPresenter() {
@@ -177,6 +181,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void init() {
+        //todo 查看个人商圈有问题
         storeId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         if (isEmpty(storeId)) {
             onMessage("未获取到店铺信息！");
@@ -208,7 +213,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 if (mStoreDetail != null)
-                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId}));
                 return true;
             }
 
@@ -239,6 +244,12 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @OnClick({R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
     public void onClickViews(View v) {
+
+        if (!UserInfoUtils.getInstance().isLogin()) {
+            showLoginDialog(getString(R.string.please_login_before_operation));
+            return;
+        }
+
         switch (v.getId()) {
             case R.id.btn_more:
 
@@ -255,8 +266,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     mNavigationPopupView.show();
                 break;
             case R.id.business_district_cl:
-                if (mStoreDetail != null)
-                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mStoreDetail.getId()}));
+                if (!isEmpty(storeId))
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId}));
                 break;
             case R.id.ll_send_message:
                 if (UserInfoUtils.getInstance().isLogin() && mStoreDetail != null) {
@@ -291,7 +302,9 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                                 goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                             break;
                         case R.id.share_ll:
-                            //todo 分享链接没有
+                            if (mStoreDetail!=null&&!isEmpty(mStoreDetail.forwardingUrl)){
+                                ShareUtils.UmShare(reference.get(), null, mStoreDetail.forwardingUrl,"分享店铺", mStoreDetail.getIntroduction(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
+                            }
                             break;
                         case R.id.report_ll:
                             //todo 投诉待修改
@@ -342,6 +355,10 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             mNavigationPopupView = null;
         }
 
+            if (mLoginDialog != null) {
+                mLoginDialog.destroy();
+                mLoginDialog = null;
+            }
     }
 
     @Override
@@ -436,6 +453,19 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     public AMap getMap() {
         return mapView.getMap();
+    }
+
+
+
+    private void showLoginDialog(String msg) {
+        if (mLoginDialog == null) {
+            mLoginDialog = new SgConfirm2ButtonPopupView(reference.get(), msg, () -> UserInfoUtils.getInstance().goToOauthPage(reference.get()));
+
+            new XPopup.Builder(reference.get())
+                    .isDarkTheme(false)
+                    .asCustom(mLoginDialog).show();
+        } else if (!mLoginDialog.isShow())
+            mLoginDialog.show();
     }
 
 }

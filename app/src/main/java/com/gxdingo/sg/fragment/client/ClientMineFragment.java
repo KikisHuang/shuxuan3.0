@@ -89,6 +89,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @BindView(R.id.authentication_img)
     public ImageView authentication_img;
 
+    @BindView(R.id.name_right_arrow_img)
+    public ImageView name_right_arrow_img;
+
     @BindView(R.id.real_name_img)
     public ImageView real_name_img;
 
@@ -97,6 +100,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.secondary_tv)
     public TextView secondary_tv;
+
 
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
@@ -119,7 +123,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     private BasePopupView mPhotoPopupView;
 
-    private String scanContent  = "";
+    private String scanContent = "";
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -169,15 +173,6 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         activity_recycler.setLayoutManager(new GridLayoutManager(reference.get(), 2));
 //        activity_recycler.addItemDecoration(new GridRecyclerDecoration(1, getc(R.color.grayf6)));
         mAcAdapter.setOnItemClickListener(this);
-
-        List<String> arrayList = new ArrayList<>();
-
-        arrayList.add("");
-        arrayList.add("");
-        arrayList.add("");
-        arrayList.add("");
-
-        mAcAdapter.setList(arrayList);
 
     }
 
@@ -258,11 +253,10 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
                     int mType = getAcType(numberDecode(activeCode));
 
-                    if (mType == 10){
+                    if (mType == 10) {
                         //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
                         getP().scanCode(activeCode);
-                    }
-                    else if (mType == 11) {
+                    } else if (mType == 11) {
                         scanContent = activeCode;
                         //客户端点击【使用优惠券】商家端扫码核销
                         boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
@@ -375,12 +369,19 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onMineDataResult(ClientMineBean mineBean) {
 
+
         ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) capital_panel_cl.getLayoutParams();
         clp.topMargin = dp2px(mineBean.releaseUserType == 1 ? 35 : 15);
         capital_panel_cl.setLayoutParams(clp);
 
+
+        if (mineBean.getAdsList() != null) {
+            mAcAdapter.setList(mineBean.getAdsList());
+        }
+
         //发布用户类型。0=商家；1=用户
         if (mineBean.releaseUserType == 1) {
+            name_right_arrow_img.setVisibility(View.GONE);
             Drawable drawable = getResources().getDrawable(
                     R.drawable.module_svg_right_arrow_8934);
             drawable.setBounds(0, 0, drawable.getMinimumWidth(),
@@ -388,6 +389,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             secondary_tv.setCompoundDrawables(null, null, drawable, null);
             secondary_tv.setText("信息管理");
         } else {
+            name_right_arrow_img.setVisibility(View.VISIBLE);
 
             secondary_tv.setCompoundDrawables(null, null, null, null);
             StringBuffer sb = new StringBuffer();
@@ -439,7 +441,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     public void onRemindResult(String data) {
-        ScanningHintPopupView dialog =  new ScanningHintPopupView(reference.get(), data, flag -> {
+        ScanningHintPopupView dialog = new ScanningHintPopupView(reference.get(), data, flag -> {
             SPUtils.getInstance().put(LocalConstant.SCANNING_NO_REMIND, (Boolean) flag);
             getP().storeScanCode(scanContent);
         });
@@ -472,6 +474,10 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
+        //类型 0=无跳转 1=APP跳转 2=H5跳转
+        if (mAcAdapter.getData().get(position).getType() == 2)
+            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, mAcAdapter.getData().get(position).getPage()}));
 
     }
 

@@ -544,6 +544,11 @@
             android:name=".activity.RealNameAuthenticationActivity"
             android:screenOrientation="portrait" />
 
+        <!--排行榜页面 -->
+        <activity
+            android:name=".activity.RankingActivity"
+            android:screenOrientation="portrait" />
+
         <!--注销页面 -->
         <activity
             android:name=".activity.UnsubscribeActivity"

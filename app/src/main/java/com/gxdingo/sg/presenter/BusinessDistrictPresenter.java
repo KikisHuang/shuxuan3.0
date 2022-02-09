@@ -337,7 +337,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
             public void onCancel(SHARE_MEDIA share_media) {
 
             }
-        }, url, content, content, imgUrl, SHARE_MEDIA.WEIXIN_CIRCLE);
+        }, url, content, content, imgUrl, SHARE_MEDIA.WEIXIN);
 
 
     }

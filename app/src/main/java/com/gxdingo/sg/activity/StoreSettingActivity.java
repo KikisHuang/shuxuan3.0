@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.StringUtils;
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.DistanceBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.OnBusinessTimeListener;
@@ -19,6 +21,7 @@ import com.gxdingo.sg.dialog.DeliverScopePopupView;
 import com.gxdingo.sg.dialog.EditMobilePopupView;
 import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.view.TemplateTitle;
@@ -64,9 +67,15 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
     @BindView(R.id.shop_type_stv)
     public SuperTextView shop_type_stv;
 
+    @BindView(R.id.store_ll)
+    public LinearLayout store_ll;
+
     @BindView(R.id.operating_state_stv)
     public SuperTextView operating_state_stv;
 
+    private String id = "";
+
+    private int ReleaseUserType = -1;
 
     @Override
     protected StoreSettingsContract.StoreSettingsPresenter createPresenter() {
@@ -140,10 +149,11 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
 
     @Override
     protected void initData() {
-        getP().getStoreInfo();
+        id = UserInfoUtils.getInstance().getUserInfo().getIdentifier();
+        getP().getStoreInfo(id);
     }
 
-    @OnClick({R.id.operating_state_stv,R.id.change_nickname_stv,
+    @OnClick({R.id.operating_state_stv, R.id.change_nickname_stv,
             R.id.change_mobile_stv, R.id.business_time_stv, R.id.distribution_scope_stv})
     public void OnClickViews(View v) {
         switch (v.getId()) {
@@ -161,23 +171,15 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                         }).show());
                 break;
             case R.id.change_nickname_stv:
-                goToPage(this, StoreUpdateNameActivity.class, getIntentMap(new String[]{change_nickname_stv.getLeftTextView().getText().toString()}));
+                if (ReleaseUserType == 0)
+                    goToPage(this, StoreUpdateNameActivity.class, getIntentMap(new String[]{change_nickname_stv.getLeftTextView().getText().toString()}));
+                else if (ReleaseUserType == 1)
+                    showChangeDialog("修改昵称");
+
                 break;
 
             case R.id.change_mobile_stv:
-                new XPopup.Builder(reference.get())
-                        .isDarkTheme(false)
-                        .asCustom(new EditMobilePopupView(reference.get(), new OnContentListener() {
-                            @Override
-                            public void onConfirm(BasePopupView popupView, String content) {
-                                if (isEmpty(content)) {
-                                    return;
-                                }
-                                getP().changMobile(content);
-                                popupView.dismiss();
-                            }
-                        }))
-                        .show();
+                showChangeDialog("");
                 break;
             case R.id.business_time_stv:
                 new XPopup.Builder(reference.get())
@@ -200,31 +202,60 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
         }
     }
 
-    @Override
-    public void onSucceed(int type) {
-        super.onSucceed(type);
-        getP().getStoreInfo();
+    private void showChangeDialog(String title) {
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .asCustom(new EditMobilePopupView(reference.get(), title, (popupView, content) -> {
+                    if (isEmpty(content)) {
+                        return;
+                    }
+                    if (isEmpty(title))
+                        getP().changMobile(content);
+                    else
+                        getP().updateStoreName(content);
+
+                    popupView.dismiss();
+                }))
+                .show();
     }
 
     @Override
-    public void onInfoResult(StoreDetailBean storeDetailBean) {
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        getP().getStoreInfo(id);
+    }
 
-        StringBuffer stringBuffer = new StringBuffer();
-        for (int i = 0; i < storeDetailBean.getBusinessScope().size(); i++) {
-            stringBuffer.append(storeDetailBean.getBusinessScope().get(i).getName());
-            if (i != storeDetailBean.getBusinessScope().size() - 1)
-                stringBuffer.append(" | ");
+    @Override
+    public void onInfoResult(StoreDetail storeDetailBean) {
+
+        ReleaseUserType = storeDetailBean.getReleaseUserType();
+
+        store_ll.setVisibility(storeDetailBean.getReleaseUserType() == 0 ? View.VISIBLE : View.GONE);
+
+        // 用户类型0=商家 1=用户
+        if (storeDetailBean.getReleaseUserType() == 0) {
+
+            StringBuffer stringBuffer = new StringBuffer();
+
+            for (int i = 0; i < storeDetailBean.getClassNameList().size(); i++) {
+                stringBuffer.append(storeDetailBean.getClassNameList().get(i));
+                if (i != storeDetailBean.getClassNameList().size() - 1)
+                    stringBuffer.append(" | ");
+            }
+            shop_type_stv.setRightString(stringBuffer.toString());
+
+            //经营状态  0=未营业  1=营业中
+            operating_state_stv.getRightTextView().setText(storeDetailBean.getBusinessStatus() == 1 ? "营业中" : "未营业");
+
+            change_address_stv.setRightString(storeDetailBean.getAddress());
+            change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
+            business_time_stv.setRightString(storeDetailBean.getOpenTime() + "-" + storeDetailBean.getCloseTime());
+            distribution_scope_stv.setRightString(storeDetailBean.getDistance());
         }
-        shop_type_stv.setRightString(stringBuffer.toString());
 
-        //经营状态  0=未营业  1=营业中
-        operating_state_stv.getRightTextView().setText(storeDetailBean.getBusinessStatus()==1?"营业中":"未营业");
+        if (!isEmpty(storeDetailBean.getName()))
+            change_nickname_stv.setLeftString(storeDetailBean.getName());
 
-        change_nickname_stv.setLeftString(storeDetailBean.getName());
-        change_address_stv.setRightString(storeDetailBean.getAddress());
-        change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
-        business_time_stv.setRightString(dealDateFormat(storeDetailBean.getOpenTime(), "HH:mm") + "-" + dealDateFormat(storeDetailBean.getCloseTime(), "HH:mm"));
-        distribution_scope_stv.setRightString(storeDetailBean.getMaxDistance());
     }
 
     @Override
@@ -249,6 +280,6 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
     public void changeBusinessStatus(int status) {
 
         //经营状态  0=未营业  1=营业中
-        operating_state_stv.getRightTextView().setText(status==1?"营业中":"未营业");
+        operating_state_stv.getRightTextView().setText(status == 1 ? "营业中" : "未营业");
     }
 }

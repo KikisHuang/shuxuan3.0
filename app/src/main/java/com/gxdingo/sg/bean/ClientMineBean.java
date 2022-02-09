@@ -85,7 +85,16 @@ public class ClientMineBean {
         private Integer id;
         private String page;
         private String title;
+        private String remark;
         private Integer type;
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
+        }
 
         public String getImage() {
             return image;

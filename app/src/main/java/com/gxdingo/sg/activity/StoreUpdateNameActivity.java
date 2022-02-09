@@ -25,7 +25,7 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
  * @date: 2021/11/11
  * @page:
  */
-public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContract.StoreSettingsPresenter>   {
+public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContract.StoreSettingsPresenter> {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -104,14 +104,17 @@ public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContra
     protected void init() {
         title_layout.setTitleText("修改店铺名称");
         title_layout.setBackgroundColor(getc(R.color.divide_color));
-        storeName  = getIntent().getStringExtra(Constant.PARAMAS+0);
-        if (!isEmpty(storeName))
+        storeName = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        if (!isEmpty(storeName)) {
             store_name_et.setText(storeName);
+            store_name_et.setSelection(store_name_et.getText().length());
+        }
+
     }
 
-    @OnClick({R.id.btn_submit,R.id.store_name_rule_tv})
-    public void onClickViews(View v){
-        switch (v.getId()){
+    @OnClick({R.id.btn_submit, R.id.store_name_rule_tv})
+    public void onClickViews(View v) {
+        switch (v.getId()) {
             case R.id.store_name_rule_tv:
 
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, STORE_NAMING_RULE}));
@@ -120,7 +123,7 @@ public class StoreUpdateNameActivity extends BaseMvpActivity<StoreSettingsContra
                 break;
             case R.id.btn_submit:
                 String s = store_name_et.getText().toString();
-                if (isEmpty(s)){
+                if (isEmpty(s)) {
                     onMessage("店铺名不能为空！");
                     return;
                 }

@@ -588,7 +588,7 @@ public class NetworkModel {
                     netWorkListener.onAfters();
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED );
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
                     EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
 
@@ -1403,9 +1403,9 @@ public class NetworkModel {
 
         HttpHeaders headers = new HttpHeaders();
 
-        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 0529cdbf24174f839acd89d6eafbf99c
-        headers.put("Authorization", "APPCODE " + "a0b80eedd699448e82a1f1f7250deb31");
-//        headers.put("Authorization", "APPCODE " + "0529cdbf24174f839acd89d6eafbf99c");
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE
+//        headers.put("Authorization", "APPCODE " + "a0b80eedd699448e82a1f1f7250deb31");
+        headers.put("Authorization", "APPCODE " + LocalConstant.APPCODE);
         //根据API的要求，定义相对应的Content-Type
         headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同
@@ -1526,7 +1526,7 @@ public class NetworkModel {
         HttpHeaders headers = new HttpHeaders();
 
         //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
-        headers.put("Authorization", "APPCODE " + "0529cdbf24174f839acd89d6eafbf99c");
+        headers.put("Authorization", "APPCODE " + LocalConstant.APPCODE);
         //根据API的要求，定义相对应的Content-Type
         headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同

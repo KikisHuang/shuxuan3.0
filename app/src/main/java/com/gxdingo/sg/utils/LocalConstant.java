@@ -177,6 +177,8 @@ public class LocalConstant {
     public static final String UAT_OSS_KEY = "79f895661d9fe3c2bf048578493a37a1";
     //oss 签名  9e8252612f954ee42a50b3096827fc33
     public static final String OSS_KEY = "298fb7d237c3cd377ed95dc0075e7f35";
+    //活体实名认证appcode
+    public static final String APPCODE = "0529cdbf24174f839acd89d6eafbf99c";
 
     //客户端测试 http 签名
     public static final String TEST_HTTP_KEY = "42368a38a5a1a0d8bc6160513b032e15";

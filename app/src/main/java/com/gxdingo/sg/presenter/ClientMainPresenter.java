@@ -9,6 +9,7 @@ import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.ClientMainContract;
@@ -39,6 +40,8 @@ import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isNotificationEnabled;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -335,16 +338,17 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
         ShibbolethModel.checkShibboleth((type, code) -> {
 
             //30口令类型为邀请商家活动 40为分享跳转商圈
-            if (type != 30 && type != 40) {
+            if (type == 40) {
+                //分享跳转商圈
+                getV().goToBusinessDistrict(code);
+            } else if (type == 50) {
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{code}));
+            } else if (type != 30) {
                 if (UserInfoUtils.getInstance().isLogin()) {
                     helpCode = code;
                     if (clientNetworkModel != null)
                         clientNetworkModel.inviteHelp(getContext(), code);
                 }
-            } else if (type == 40) {
-                //分享跳转商圈
-                getV().goToBusinessDistrict(code);
-
             }
         }, 200, false);
 

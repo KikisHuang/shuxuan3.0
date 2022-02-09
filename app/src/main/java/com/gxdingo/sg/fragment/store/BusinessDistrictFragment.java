@@ -40,6 +40,7 @@ import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
@@ -54,6 +55,7 @@ import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.sunfusheng.marqueeview.MarqueeView;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -250,7 +252,8 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         unread_iv.setVisibility(mType == 0 ? View.VISIBLE : View.GONE);
 
         img_back.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
-        more_img.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
+//        more_img.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
+        more_img.setVisibility( View.GONE);
 
         title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
 
@@ -280,22 +283,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             //增加头部广告
             LinearLayout mHeadLayout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_business_district_head, new LinearLayout(reference.get()));
             mBanner = mHeadLayout.findViewById(R.id.banner);
-
-            //todo 点击事件没响应
-            mBanner.setOnBannerListener((data, position) -> {
-                HomeBannerBean bannerBean = (HomeBannerBean) data;
-
-                //类型 0=无跳转 1=APP跳转 2=H5跳转
-                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage())) {
-
-                    if (!UserInfoUtils.getInstance().isLogin()) {
-                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
-                        onMessage(gets(R.string.please_login));
-                        return;
-                    }
-                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
-                }
-            });
 
             label_recyclerView = mHeadLayout.findViewById(R.id.label_recyclerView);
 
@@ -473,12 +460,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         }
     }
 
-    @OnClick({R.id.more_img, R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
+    @OnClick({R.id.img_back, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.more_img:
-                showDialog(title_tv);
-                break;
             case R.id.img_back:
                 getActivity().finish();
                 break;
@@ -489,23 +473,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 startActivity(new Intent(mContext, StoreBusinessDistrictReleaseActivity.class));
                 break;
         }
-    }
-
-    private void showDialog(View view) {
-        int pos[] = {-1, -1}; //保存当前坐标的数组
-
-        view.getLocationOnScreen(pos); //获取选中的 Item 在屏幕中的位置，以左上角为原点 (0, 0)
-
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .offsetY(pos[1])
-                .offsetX(pos[0])
-                .autoDismiss(true)
-                .hasShadowBg(false)
-                .asCustom(new PostionFunctionDialog(reference.get(), v -> {
-                    //todo 分享链接没有，投诉功能待实现
-
-                }).show());
     }
 
     /**
@@ -584,6 +551,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 String imgUrl = mAdapter.getData().get(parentPosition).getImages() != null && mAdapter.getData().get(parentPosition).getImages().size() > 0 ? mAdapter.getData().get(parentPosition).getImages().get(0) : LocalConstant.SHARE_BUSINESS_DISTRICT_URL;
 
                 getP().shareLink(mAdapter.getData().get(parentPosition).getContent(), imgUrl, (String) object);
+
             }
         }
     };
@@ -730,8 +698,24 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     @Override
     public void onBannerResult(BannerBean data) {
 
-        if (mBanner != null && data.getAppHomeHeader() != null)
+        if (mBanner != null && data.getAppHomeHeader() != null){
+
             mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), data.getAppHomeHeader()));
+            mBanner.setOnBannerListener((d, position) -> {
+                HomeBannerBean bannerBean = (HomeBannerBean) d;
+
+                //类型 0=无跳转 1=APP跳转 2=H5跳转
+                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage())) {
+
+                    if (!UserInfoUtils.getInstance().isLogin()) {
+                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
+                        onMessage(gets(R.string.please_login));
+                        return;
+                    }
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                }
+            });
+        }
 
         if (marqueeView != null && data.noticeStringList != null) {
             noticeList = data.getNoticeList();

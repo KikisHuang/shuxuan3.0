@@ -43,6 +43,8 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.content_two_tv)
     public TextView content_two_tv;
 
+    @BindView(R.id.status_tv)
+    public TextView status_tv;
 
     @BindView(R.id.affirmative_cbx)
     public CheckBox affirmative_cbx;
@@ -129,7 +131,9 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
         switch (v.getId()) {
             case R.id.start_logout_tv:
                 if (affirmative_cbx.isChecked()) {
-                    //todo 注销
+                    //todo 注销功能待实现
+
+
                 } else
                     onMessage("请先勾选注销须知协议");
 

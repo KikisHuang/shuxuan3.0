@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class StoreDetail {
 
+    public String forwardingUrl;
 
     @SerializedName("address")
     private String address;

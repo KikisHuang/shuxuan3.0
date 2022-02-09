@@ -8,13 +8,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AuthenticationBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.AuthenticationContract;
 import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.presenter.AuthenticationPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
+import com.tencent.bugly.crashreport.biz.UserInfoBean;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -174,7 +177,12 @@ public class RealNameAuthenticationActivity extends BaseMvpActivity<Authenticati
                 .hasShadowBg(true)
                 .asCustom(new AuthenticationStatusPopupView(reference.get(), data, status -> {
 
-                    if (status == 1){
+                    if (status == 1) {
+                        //认证成功保存认证状态
+                        UserBean userInfo = UserInfoUtils.getInstance().getUserInfo();
+                        userInfo.setAuthenticationStatus(1);
+                        UserInfoUtils.getInstance().saveUserInfo(userInfo);
+
                         sendEvent(LocalConstant.AUTHENTICATION_SUCCEEDS);
                         finish();
                     }

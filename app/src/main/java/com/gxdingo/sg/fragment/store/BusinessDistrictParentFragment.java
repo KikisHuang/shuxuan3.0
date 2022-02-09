@@ -16,16 +16,20 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
+import com.gxdingo.sg.activity.RealNameAuthenticationActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.adapter.TabPageAdapter;
 import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.biz.onSwipeGestureListener;
+import com.gxdingo.sg.dialog.AuthenticationStatusPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.NoScrollViewPager;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
@@ -175,9 +179,30 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
                 startActivity(new Intent(reference.get(), BusinessDistrictMessageActivity.class));
                 break;
             case R.id.iv_send_business_district:
-                startActivity(new Intent(reference.get(), StoreBusinessDistrictReleaseActivity.class));
+                UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+                //登录角色 Role 10=客户 11=商家
+                if (userBean.getRole() == 10 && userBean.getAuthenticationStatus() == 0) {
+                    showAuthenticationDialog();
+                } else
+                    startActivity(new Intent(reference.get(), StoreBusinessDistrictReleaseActivity.class));
                 break;
         }
+    }
+
+    /**
+     * 显示去实名认证弹窗
+     */
+    private void showAuthenticationDialog() {
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), null, status -> {
+                    if (status == -1)
+                        goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                }).show());
+
     }
 
     @Override
