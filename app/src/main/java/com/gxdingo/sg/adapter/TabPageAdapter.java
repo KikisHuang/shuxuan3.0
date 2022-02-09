@@ -23,6 +23,7 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
 
 
     public static final int STORE_BUSINESS_DISTRICT_TAB = 1;
+    public static final int RANKING_TAB = 2;
 
     public static final String TAB = "tab";
 
@@ -45,11 +46,14 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
             case STORE_BUSINESS_DISTRICT_TAB: {
                 args.putInt(Constant.PARAMAS + 0, position + 1);
                 if (position == 1) {
-                    //todo 未登录时状态判断
                     if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getIdentifier()))
                         //我的商圈，传自己的Identifier
                         args.putString(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getIdentifier());
                 }
+                return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
+            }
+            case RANKING_TAB: {
+                //todo 写到了排行榜子类
                 return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
             }
 
