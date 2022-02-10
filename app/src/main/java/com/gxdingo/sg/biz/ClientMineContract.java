@@ -3,6 +3,7 @@ package com.gxdingo.sg.biz;
 import android.widget.EditText;
 
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -35,6 +36,8 @@ public class ClientMineContract {
         void getNoRemindContent();
 
         void storeScanCode(String scanContent);
+
+        void refreshStatus();
     }
 
     public interface ClientMineListener<T>{
@@ -45,5 +48,7 @@ public class ClientMineContract {
         void onMineDataResult(ClientMineBean mineBean);
 
         void onRemindResult(String remindValue);
+
+        void onStatusResult(UserBean userBean);
     }
 }

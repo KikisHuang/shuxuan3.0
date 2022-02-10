@@ -24,6 +24,9 @@ public class UserBean implements Serializable {
     private String identifier;
     private String emasId;
 
+    public String logoffRejectText;
+    public int logoffAuditStatus;
+
     public String getEmasId() {
         return emasId;
     }

@@ -1029,13 +1029,15 @@ public class StoreNetworkModel {
      * @param context
      * @param customResultListener
      */
-    public void refreshLoginStauts(Context context,CustomResultListener customResultListener) {
+    public void refreshLoginStauts(Context context, CustomResultListener customResultListener) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
         Map<String, String> map = new HashMap<>();
-        map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
+
+        if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().isLogin())
+            map.put(IDENTIFIER, UserInfoUtils.getInstance().getIdentifier());
 
         Observable<UserBean> observable = HttpClient.post(USER_STATUS, map)
                 .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
@@ -1050,13 +1052,10 @@ public class StoreNetworkModel {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(e.getMessage());
                 }
-
-
             }
 
             @Override
             public void onNext(UserBean userBean) {
-
 
                 if (customResultListener != null)
                     customResultListener.onResult(userBean);

@@ -10,6 +10,7 @@ import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -41,6 +42,9 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.content_one_tv)
     public TextView content_one_tv;
 
+    @BindView(R.id.cancel_logoff_tv)
+    public TextView cancel_logoff_tv;
+
     @BindView(R.id.status_ll)
     public LinearLayout status_ll;
 
@@ -56,6 +60,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.affirmative_cbx)
     public CheckBox affirmative_cbx;
 
+    private int mStatus = 0;
 
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
@@ -124,15 +129,16 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
 
     @Override
     protected void init() {
+        title_layout.setTitleText(gets(R.string.logout));
     }
 
     @Override
     protected void initData() {
-
+        getP().refreshStatus();
 
     }
 
-    @OnClick({R.id.cancel_logoff_tv,R.id.cancel_tv, R.id.start_logout_tv})
+    @OnClick({R.id.cancel_logoff_tv, R.id.cancel_tv, R.id.start_logout_tv})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -140,11 +146,16 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
             case R.id.start_logout_tv:
                 if (affirmative_cbx.isChecked())
                     getP().loginOff(0);
-                 else
+                else
                     onMessage("请先勾选注销须知协议");
                 break;
             case R.id.cancel_logoff_tv:
-                getP().loginOff(1);
+                if (mStatus == 0)
+                    getP().loginOff(1);
+                else if (mStatus == 2){
+                    status_ll.setVisibility(View.GONE);
+                    cancel_logoff_tv.setVisibility(View.GONE);
+                }
                 break;
             case R.id.cancel_tv:
                 finish();
@@ -171,6 +182,26 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
 
     @Override
     public void onRemindResult(String remindValue) {
+
+    }
+
+    @Override
+    public void onStatusResult(UserBean userBean) {
+
+        mStatus = userBean.logoffAuditStatus;
+
+        status_ll.setVisibility(userBean.logoffAuditStatus == 0 || userBean.logoffAuditStatus == 2 ? View.VISIBLE : View.GONE);
+        cancel_logoff_tv.setVisibility(userBean.logoffAuditStatus == 0 || userBean.logoffAuditStatus == 2 ? View.VISIBLE : View.GONE);
+
+        if (userBean.logoffAuditStatus == 0 || userBean.logoffAuditStatus == 2) {
+            status_hint_tv.setText(userBean.logoffAuditStatus == 0 ? "您提交的注销申请正在审核中" : "您提交的注销申请审核不通过");
+            status_content_tv.setVisibility(userBean.logoffAuditStatus == 2 ? View.VISIBLE : View.GONE);
+
+            if (userBean.logoffAuditStatus == 2)
+                status_content_tv.setText(userBean.logoffRejectText);
+
+            cancel_logoff_tv.setText(userBean.logoffAuditStatus == 0 ? "撤销申请" : "返回");
+        }
 
     }
 }

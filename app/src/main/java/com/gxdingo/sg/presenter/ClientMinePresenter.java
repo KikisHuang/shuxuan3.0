@@ -7,6 +7,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.UpLoadBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
@@ -19,6 +20,7 @@ import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -65,8 +67,13 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onSucceed(int type) {
-        if (isBViewAttached())
-            getBV().onSucceed(type);
+        if (isBViewAttached()) {
+            if (type == 100)
+                refreshStatus();
+            else
+                getBV().onSucceed(type);
+        }
+
     }
 
     @Override
@@ -214,7 +221,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void loginOff(int c) {
         if (networkModel != null)
-            networkModel.logOff(getContext(),c);
+            networkModel.logOff(getContext(), c);
     }
 
     @Override
@@ -258,6 +265,21 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     public void storeScanCode(String scanContent) {
         if (storeNetworkModel != null)
             storeNetworkModel.scanCode(getContext(), scanContent);
+    }
+
+    /**
+     * 刷新状态
+     */
+    @Override
+    public void refreshStatus() {
+        if (storeNetworkModel != null)
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
+                UserBean userBean = (UserBean) o;
+
+                if (isViewAttached())
+                    getV().onStatusResult(userBean);
+
+            });
     }
 
     @Override

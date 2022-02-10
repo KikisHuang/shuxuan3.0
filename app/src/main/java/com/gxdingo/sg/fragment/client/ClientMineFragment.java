@@ -452,6 +452,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     }
 
     @Override
+    public void onStatusResult(UserBean userBean) {
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
     }

@@ -857,7 +857,10 @@ public class NetworkModel {
             @Override
             public void onNext(NormalBean normalBean) {
 
-
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onSucceed(100);
+                }
             }
         };
 
