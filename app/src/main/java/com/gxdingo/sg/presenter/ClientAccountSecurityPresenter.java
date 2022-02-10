@@ -233,7 +233,7 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     @Override
     public void loginOff() {
         if (mNetworkModel != null)
-            mNetworkModel.logOff(getContext());
+            mNetworkModel.logOff(getContext(),0);
     }
 
     @Override

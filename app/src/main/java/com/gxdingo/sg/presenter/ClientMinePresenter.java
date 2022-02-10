@@ -212,6 +212,12 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
+    public void loginOff(int c) {
+        if (networkModel != null)
+            networkModel.logOff(getContext(),c);
+    }
+
+    @Override
     public void scan(RxPermissions rxPermissions) {
         if (mClientCommonModel != null)
             mClientCommonModel.checkPermission(rxPermissions, new String[]{CAMERA, VIBRATE}, new PermissionsListener() {

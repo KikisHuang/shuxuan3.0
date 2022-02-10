@@ -26,6 +26,8 @@ public class ClientMineContract {
 
         void logout();
 
+        void loginOff(int cancel);
+
         void scan(RxPermissions rxPermissions);
 
         void scanCode(String content);

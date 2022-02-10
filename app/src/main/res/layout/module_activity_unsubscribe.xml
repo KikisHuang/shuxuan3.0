@@ -139,8 +139,23 @@
         android:background="@color/white"
         android:text="您提交的注销申请正在审核中"
         android:padding="25dp"
-        android:textColor="@color/gray202"
         android:visibility="gone"
+        android:textColor="@color/gray202"
         />
+
+    <TextView
+        android:id="@+id/cancel_logoff_tv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/module_shape_bg_green_6r"
+        android:gravity="center"
+        android:text="撤销注销"
+        android:visibility="gone"
+        android:layout_marginBottom="25dp"
+        android:layout_marginHorizontal="5dp"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="15sp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

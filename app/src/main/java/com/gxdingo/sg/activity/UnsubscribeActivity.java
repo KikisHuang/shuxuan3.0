@@ -124,19 +124,20 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
 
     }
 
-    @OnClick({R.id.cancel_tv, R.id.start_logout_tv})
+    @OnClick({R.id.cancel_logoff_tv,R.id.cancel_tv, R.id.start_logout_tv})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
             case R.id.start_logout_tv:
                 if (affirmative_cbx.isChecked()) {
-                    //todo 注销功能待实现
-
-
+                    getP().loginOff(0);
                 } else
                     onMessage("请先勾选注销须知协议");
 
+                break;
+            case R.id.cancel_logoff_tv:
+                getP().loginOff(1);
                 break;
             case R.id.cancel_tv:
                 finish();

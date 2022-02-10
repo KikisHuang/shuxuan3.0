@@ -826,13 +826,18 @@ public class NetworkModel {
      * 注销
      *
      * @param context
+     * @param cancel  1=取消注销申请 0=正常注销
      */
-    public void logOff(Context context) {
+    public void logOff(Context context, int cancel) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<NormalBean> observable = HttpClient.post(USER_LOGOFF)
+        Map<String, String> map = getJsonMap();
+
+        map.put("cancel", String.valueOf(cancel));
+
+        Observable<NormalBean> observable = HttpClient.post(USER_LOGOFF, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -851,13 +856,7 @@ public class NetworkModel {
 
             @Override
             public void onNext(NormalBean normalBean) {
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
-                    EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
-                }
-                UserInfoUtils.getInstance().clearLoginStatus();
-                UserInfoUtils.getInstance().goToOauthPage(context);
+
 
             }
         };
