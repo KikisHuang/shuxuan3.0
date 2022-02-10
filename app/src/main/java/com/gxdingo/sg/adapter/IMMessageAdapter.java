@@ -19,6 +19,7 @@ import com.gxdingo.sg.utils.DateUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.gxdingo.sg.utils.TextViewUtils;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundAngleImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +42,6 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
-    private int role = 0;
 
     public IMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
@@ -54,55 +54,22 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, SubscribesListBean.SubscribesMessage subscribesMessage) {
-        RoundAngleImageView nivAvatar = baseViewHolder.findView(R.id.niv_avatar);
+        ImageView nivAvatar = baseViewHolder.findView(R.id.niv_avatar);
         TextView tvUnreadMsgCount = baseViewHolder.findView(R.id.tv_unread_msg_count);
         TextView tvNickname = baseViewHolder.findView(R.id.tv_nickname);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
-        TextView store_tab_tv = baseViewHolder.findView(R.id.store_tab_tv);
         TextView draft_tag_tv = baseViewHolder.findView(R.id.draft_tag_tv);
         ImageView settop_img = baseViewHolder.findView(R.id.settop_img);
+        ImageView v_img = baseViewHolder.findView(R.id.v_img);
 
 
-        if (role == 0 && UserInfoUtils.getInstance().getUserInfo() != null)
-            role = UserInfoUtils.getInstance().getUserInfo().getRole();
 
-        store_tab_tv.setVisibility(role == 11 ? View.VISIBLE : View.GONE);
+        v_img.setVisibility(subscribesMessage.getSendUserRole() == 11 ? View.VISIBLE : View.GONE);
 
         settop_img.setVisibility(subscribesMessage.sort > 0 ? View.VISIBLE : View.GONE);
 
-        if (role == 11) {
-            if (subscribesMessage.getSendUserRole() == 10) {
-                //用户
-                store_tab_tv.setTextColor(getc(R.color.green_dominant_tone));
-                store_tab_tv.setBackgroundResource(R.drawable.module_border_green_round8);
-                store_tab_tv.setText("客户");
-            } else if (subscribesMessage.getSendUserRole() == 11) {
-                //商家
-                store_tab_tv.setTextColor(getc(R.color.yellow_tag));
-                store_tab_tv.setBackgroundResource(R.drawable.module_border_yellow_round8);
-                store_tab_tv.setText("商家");
-            } else if (subscribesMessage.getSendUserRole() == 12) {
-                //商家
-                store_tab_tv.setTextColor(getc(R.color.blue_text));
-                store_tab_tv.setBackgroundResource(R.drawable.module_border_blue_round8);
-                store_tab_tv.setText("客服");
-            }
-        }
-
-
-        Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(getRequestOptions()).into(nivAvatar);
-
-        String date = DateUtils.dealDateFormat(subscribesMessage.getUpdateTime(), "yyyy-MM-dd HH:mm");
-
-/*
-        if (IsToday(date))
-            tvTime.setText(dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
-        else if (IsYesterday(date))
-            tvTime.setText("昨天" + dealDateFormat(subscribesMessage.getUpdateTime(), "HH:mm"));
-        else
-            tvTime.setText(date);
-*/
+        Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
 
         DraftBean draftBean = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(subscribesMessage.getShareUuid()));
 

@@ -3,6 +3,7 @@ package com.gxdingo.sg.activity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
@@ -40,11 +41,17 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.content_one_tv)
     public TextView content_one_tv;
 
+    @BindView(R.id.status_ll)
+    public LinearLayout status_ll;
+
     @BindView(R.id.content_two_tv)
     public TextView content_two_tv;
 
-    @BindView(R.id.status_tv)
-    public TextView status_tv;
+    @BindView(R.id.status_content_tv)
+    public TextView status_content_tv;
+
+    @BindView(R.id.status_hint_tv)
+    public TextView status_hint_tv;
 
     @BindView(R.id.affirmative_cbx)
     public CheckBox affirmative_cbx;
@@ -122,6 +129,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @Override
     protected void initData() {
 
+
     }
 
     @OnClick({R.id.cancel_logoff_tv,R.id.cancel_tv, R.id.start_logout_tv})
@@ -130,11 +138,10 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
             return;
         switch (v.getId()) {
             case R.id.start_logout_tv:
-                if (affirmative_cbx.isChecked()) {
+                if (affirmative_cbx.isChecked())
                     getP().loginOff(0);
-                } else
+                 else
                     onMessage("请先勾选注销须知协议");
-
                 break;
             case R.id.cancel_logoff_tv:
                 getP().loginOff(1);
