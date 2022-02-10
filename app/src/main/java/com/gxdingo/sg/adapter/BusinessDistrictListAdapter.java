@@ -20,7 +20,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.biz.NineClickListener;
-import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictFragment;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundImageView;

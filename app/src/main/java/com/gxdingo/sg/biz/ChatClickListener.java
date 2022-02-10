@@ -13,7 +13,7 @@ public interface ChatClickListener {
 
     void onTransferClick(int position, long id);
 
-    void onAvatarClickListener(int position, long id);
+    void onAvatarClickListener(int position, String id);
 
     void onLongClickChatItem(View content, int position, boolean isSelf);
 }

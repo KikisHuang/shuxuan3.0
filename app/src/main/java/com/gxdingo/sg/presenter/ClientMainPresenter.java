@@ -35,6 +35,8 @@ import org.greenrobot.eventbus.EventBus;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_MESSAGE_LIST;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_SHOP;
 import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -198,16 +200,19 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     public void checkTab(int tab) {
         if (model != null) {
 
-            if (tab == 2 && model.getOldTab() == 2)
+            if (tab == 0 && model.getOldTab() == 0)
                 EventBus.getDefault().post(BACK_TOP_BUSINESS_DISTRICT);
+            if (tab == 1 && model.getOldTab() == 1)
+                EventBus.getDefault().post(BACK_TOP_SHOP);
+            if (tab == 3 && model.getOldTab() == 3)
+                EventBus.getDefault().post(BACK_TOP_MESSAGE_LIST);
 
-            if (isViewAttached() && tab != model.getOldTab())
+            if (isViewAttached() && tab != model.getOldTab()){
                 getV().onSeleted(tab, model.getOldTab());
+                showFm(tab);
+                model.recordTab(tab);
+            }
 
-
-            showFm(tab);
-
-            model.recordTab(tab);
         }
     }
 

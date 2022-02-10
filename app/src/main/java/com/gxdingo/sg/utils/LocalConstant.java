@@ -83,6 +83,8 @@ public class LocalConstant {
     public static final int SHOW_BUSINESS_DISTRICT_UN_READ_DOT = 1242;
 
     public static final int BACK_TOP_BUSINESS_DISTRICT = 999;
+    public static final int BACK_TOP_SHOP = 998;
+    public static final int BACK_TOP_MESSAGE_LIST = 997;
     //确认收货
     public static final int CLIENT_CONFIRM_RECEIPT_ORDER = 36;
     public static final int LOGOUT_SUCCEED = 22;

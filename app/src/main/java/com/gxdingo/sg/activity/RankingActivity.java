@@ -7,28 +7,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
 
 import com.blankj.utilcode.util.ConvertUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.TabPageAdapter;
-import com.gxdingo.sg.bean.ClientMineBean;
-import com.gxdingo.sg.biz.ClientHomeContract;
-import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.RankingContract;
-import com.gxdingo.sg.biz.onSwipeGestureListener;
-import com.gxdingo.sg.presenter.ClientMinePresenter;
-import com.gxdingo.sg.presenter.RankinigPresenter;
-import com.gxdingo.sg.utils.UserInfoUtils;
-import com.gxdingo.sg.view.NoScrollViewPager;
+import com.gxdingo.sg.presenter.RankingPresenter;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.view.TemplateTitle;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -45,9 +34,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.adapter.TabPageAdapter.RANKING_TAB;
-import static com.gxdingo.sg.adapter.TabPageAdapter.STORE_BUSINESS_DISTRICT_TAB;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Kikis
@@ -70,7 +57,7 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
 
     @Override
     protected RankingContract.RankingPresenter createPresenter() {
-        return new RankinigPresenter();
+        return new RankingPresenter();
     }
 
     @Override
@@ -172,7 +159,7 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
                 ScaleTransitionPagerTitleView simplePagerTitleView = new ScaleTransitionPagerTitleView(context);
 //                simplePagerTitleView.setMinScale(0.91f);
                 simplePagerTitleView.setMinScale(0.96f);
-                simplePagerTitleView.setDeselectedStyle(Typeface.BOLD);
+//                simplePagerTitleView.setDeselectedStyle(Typeface.BOLD);
                 simplePagerTitleView.setText(mTitles.get(index));
                 simplePagerTitleView.setTextSize(18);
                 simplePagerTitleView.setMaxEms(10);
@@ -202,9 +189,9 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
 
                 LinePagerIndicator indicator = new LinePagerIndicator(context);
                 indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
-                indicator.setLineHeight(ConvertUtils.dp2px(2));
+                indicator.setLineHeight(ConvertUtils.dp2px(3));
                 indicator.setLineWidth(ConvertUtils.dp2px(20));
-                indicator.setRoundRadius(ConvertUtils.dp2px(1));
+                indicator.setRoundRadius(ConvertUtils.dp2px(2));
                 indicator.setStartInterpolator(new AccelerateInterpolator());
                 indicator.setEndInterpolator(new DecelerateInterpolator(2.0f));
                 indicator.setColors(getc(R.color.green16));
@@ -224,12 +211,14 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
         ViewPagerHelper.bind(magic_indicator, view_pager);
     }
 
-    @OnClick({})
+    @OnClick({R.id.bg_img})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
-
+            case R.id.bg_img:
+                finish();
+                break;
 
         }
     }

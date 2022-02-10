@@ -42,14 +42,14 @@ import static com.luck.picture.lib.config.PictureMimeType.ofImage;
  * @date: 2022/2/9
  * @page:
  */
-public class RankinigPresenter extends BaseMvpPresenter<BasicsListener, RankingContract.RankingListener> implements RankingContract.RankingPresenter, NetWorkListener {
+public class RankingPresenter extends BaseMvpPresenter<BasicsListener, RankingContract.RankingListener> implements RankingContract.RankingPresenter, NetWorkListener {
 
     private ClientNetworkModel clientNetworkModel;
 
     private CommonModel mClientCommonModel;
 
 
-    public RankinigPresenter() {
+    public RankingPresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
         mClientCommonModel = new CommonModel();
     }

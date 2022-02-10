@@ -1,4 +1,4 @@
-package com.gxdingo.sg.fragment.store;
+package com.gxdingo.sg.fragment.child;
 
 import android.content.Context;
 import android.content.Intent;
@@ -390,9 +390,11 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             if (mType != 3)
                 getP().getNumberUnreadComments();
         } else if (object instanceof ActivityEvent) {
-            //活动事件
-            cl_visit_countdown.setVisibility(View.VISIBLE);
-            startCountDown((ActivityEvent) object);
+            if (mType==1){
+                //只有浏览全部商圈才显示活动倒计时
+                cl_visit_countdown.setVisibility(View.VISIBLE);
+                startCountDown((ActivityEvent) object);
+            }
 
         } else if (object instanceof ShareEvent) {
             ShareEvent shareEvent = (ShareEvent) object;

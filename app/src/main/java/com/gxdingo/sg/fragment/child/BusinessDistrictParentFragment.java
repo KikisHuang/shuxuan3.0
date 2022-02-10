@@ -1,4 +1,4 @@
-package com.gxdingo.sg.fragment.store;
+package com.gxdingo.sg.fragment.child;
 
 import android.content.Context;
 import android.content.Intent;

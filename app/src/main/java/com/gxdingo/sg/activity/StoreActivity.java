@@ -18,7 +18,7 @@ import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMainContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.fragment.store.BusinessDistrictParentFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictParentFragment;
 import com.gxdingo.sg.fragment.store.StoreHomeFragment;
 import com.gxdingo.sg.fragment.store.StoreMessageFragment;
 import com.gxdingo.sg.fragment.store.StoreMyFragment;

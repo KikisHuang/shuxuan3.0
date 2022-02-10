@@ -39,6 +39,7 @@ import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -54,6 +55,7 @@ import butterknife.OnClick;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_SHOP;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
@@ -63,6 +65,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.PermissionUtils.gotoPermission;
+import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
@@ -282,6 +285,15 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             //判断如果有权限，进行重新定位，刷新操作
             if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
                 getP().checkPermissions(getRxPermissions(), true);
+        }else if (type==BACK_TOP_SHOP){
+            if (scrollView!=null){
+                scrollView.fling(0);
+                scrollView.smoothScrollTo(0, 0);
+            }
+
+            forceStopRecyclerViewScroll(store_rv);
+            //返回顶部
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) store_rv.getLayoutManager(), store_rv, 0);
         }
     }
 

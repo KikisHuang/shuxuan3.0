@@ -29,7 +29,7 @@ import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
 import com.gxdingo.sg.fragment.client.SettledFragment;
-import com.gxdingo.sg.fragment.store.BusinessDistrictParentFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.ImMessageUtils;

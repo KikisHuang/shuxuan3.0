@@ -28,6 +28,7 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -41,11 +42,13 @@ import io.reactivex.schedulers.Schedulers;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_MESSAGE_LIST;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
 
 /**
  * @author: Weaving
@@ -175,7 +178,11 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             getP().getSubscribesMessage(true);
         } else if (type == NOTIFY_MSG_LIST_ADAPTER)
             imMessageAdapter.notifyDataSetChanged();
-
+        else if (type==BACK_TOP_MESSAGE_LIST){
+            forceStopRecyclerViewScroll(recyclerView);
+            //返回顶部
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
+        }
     }
 
     @Override

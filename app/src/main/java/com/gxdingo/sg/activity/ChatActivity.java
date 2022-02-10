@@ -1012,12 +1012,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      * @param id
      */
     @Override
-    public void onAvatarClickListener(int position, long id) {
+    public void onAvatarClickListener(int position, String id) {
         if (otherRole == 10)
             return;
 
         if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
-            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{(int) id}));
+            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{ id}));
     }
 
     /**

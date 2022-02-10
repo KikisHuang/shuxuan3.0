@@ -6,7 +6,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.RankingFragment;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.utils.Constant;
 
@@ -53,8 +54,7 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
                 return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
             }
             case RANKING_TAB: {
-                //todo 写到了排行榜子类
-                return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
+                return RankingFragment.newInstance(RankingFragment.class, args);
             }
 
         }

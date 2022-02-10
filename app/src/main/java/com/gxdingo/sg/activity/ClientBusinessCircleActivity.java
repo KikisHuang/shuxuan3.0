@@ -10,7 +10,7 @@ import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
-import com.gxdingo.sg.fragment.store.BusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictFragment;
 import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
@@ -104,10 +104,10 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
     @Override
     protected void init() {
-        int storeId = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+        String storeId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Constant.SERIALIZABLE + 0, storeId);
+        bundle.putString(Constant.SERIALIZABLE + 0, storeId);
         bundle.putInt(Constant.PARAMAS + 0, 3);
 
         getSupportFragmentManager()
