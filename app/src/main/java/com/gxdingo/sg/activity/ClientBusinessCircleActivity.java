@@ -32,6 +32,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     @BindView(R.id.main_ll)
     public FrameLayout main_ll;
 
+
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
         return new BusinessDistrictPresenter();
@@ -105,9 +106,12 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     @Override
     protected void init() {
         String storeId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+        String title_name = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
 
         Bundle bundle = new Bundle();
         bundle.putString(Constant.SERIALIZABLE + 0, storeId);
+        bundle.putString(Constant.SERIALIZABLE + 1, title_name);
+
         bundle.putInt(Constant.PARAMAS + 0, 3);
 
         getSupportFragmentManager()

@@ -213,7 +213,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 if (mStoreDetail != null)
-                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId}));
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId, mStoreDetail.getName()}));
                 return true;
             }
 
@@ -266,12 +266,12 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                     mNavigationPopupView.show();
                 break;
             case R.id.business_district_cl:
-                if (!isEmpty(storeId))
-                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId}));
+                if (!isEmpty(storeId) && mStoreDetail != null)
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{storeId, mStoreDetail.getName()}));
                 break;
             case R.id.ll_send_message:
                 if (UserInfoUtils.getInstance().isLogin() && mStoreDetail != null) {
-                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11,storeId}));
+                    goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, storeId}));
                 } else {
                     UserInfoUtils.getInstance().goToOauthPage(this);
                 }
@@ -302,8 +302,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                                 goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
                             break;
                         case R.id.share_ll:
-                            if (mStoreDetail!=null&&!isEmpty(mStoreDetail.forwardingUrl)){
-                                ShareUtils.UmShare(reference.get(), null, mStoreDetail.forwardingUrl,"分享店铺", mStoreDetail.getIntroduction(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
+                            if (mStoreDetail != null && !isEmpty(mStoreDetail.forwardingUrl)) {
+                                ShareUtils.UmShare(reference.get(), null, mStoreDetail.forwardingUrl, "分享店铺", mStoreDetail.getIntroduction(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
                             }
                             break;
                         case R.id.report_ll:
@@ -314,7 +314,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
                     }
 
-                }, mStoreDetail.getReleaseUserType()==0?2:1).show());
+                }, mStoreDetail.getReleaseUserType() == 0 ? 2 : 1).show());
     }
 
 
@@ -355,10 +355,10 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             mNavigationPopupView = null;
         }
 
-            if (mLoginDialog != null) {
-                mLoginDialog.destroy();
-                mLoginDialog = null;
-            }
+        if (mLoginDialog != null) {
+            mLoginDialog.destroy();
+            mLoginDialog = null;
+        }
     }
 
     @Override
@@ -405,7 +405,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             }
 
             if (!isEmpty(storeDetail.getOpenTime()) && !isEmpty(storeDetail.getCloseTime()))
-                label.append(" "+storeDetail.getOpenTime() + " - " + storeDetail.getCloseTime());
+                label.append(" " + storeDetail.getOpenTime() + " - " + storeDetail.getCloseTime());
 
         } else {
             top_line.setVisibility(storeDetail.getImages() != null && storeDetail.getImages().size() > 0 ? View.VISIBLE : View.GONE);
@@ -454,7 +454,6 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     public AMap getMap() {
         return mapView.getMap();
     }
-
 
 
     private void showLoginDialog(String msg) {

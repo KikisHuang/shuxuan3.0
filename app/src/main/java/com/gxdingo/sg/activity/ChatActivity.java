@@ -428,7 +428,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         case R.id.share_ll:
 
                             if (mMessageDetails != null && !isEmpty(mMessageDetails.shareLinks))
-                                ShareUtils.UmShare(reference.get(), null, mMessageDetails.shareLinks,"树选", "最近发现了一个好玩的APP，一起来玩啊！", R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
+                                ShareUtils.UmShare(reference.get(), null, mMessageDetails.shareLinks, "树选", "最近发现了一个好玩的APP，一起来玩啊！", R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
 
                             break;
                         case R.id.report_ll:
@@ -1019,8 +1019,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public void onAvatarClickListener(int position, String id) {
 
-        if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
-            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{id}));
+        if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()) && mMessageDetails != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getSendNickname()))
+            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{id, mMessageDetails.getOtherAvatarInfo().getSendNickname()}));
     }
 
     /**

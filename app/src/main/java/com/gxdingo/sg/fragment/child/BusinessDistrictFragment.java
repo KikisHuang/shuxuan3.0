@@ -253,18 +253,18 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
         img_back.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
 //        more_img.setVisibility(mType == 3 ? View.VISIBLE : View.GONE);
-        more_img.setVisibility( View.GONE);
+        more_img.setVisibility(View.GONE);
 
         title_cl.setVisibility(mType == 1 || mType == 2 ? View.GONE : View.VISIBLE);
 
-        if (mType != 2) {
+        if (mType != 3) {
             title_tv.setText("商圈");
             ivSendBusinessDistrict.setVisibility(View.GONE);
-        }/* else {
-            title_tv.setText("我的商圈");
-            ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) title_cl.getLayoutParams();
-            clp.topMargin = dp2px(40);
-        }*/
+        } else {
+            String title_name = args.getString(Constant.SERIALIZABLE + 1);
+            title_tv.setText(title_name);
+            ivSendBusinessDistrict.setVisibility(View.GONE);
+        }
 
         mAdapter = new BusinessDistrictListAdapter(mContext, mOnChildViewClickListener, mType);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
@@ -390,7 +390,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             if (mType != 3)
                 getP().getNumberUnreadComments();
         } else if (object instanceof ActivityEvent) {
-            if (mType==1){
+            if (mType == 1) {
                 //只有浏览全部商圈才显示活动倒计时
                 cl_visit_countdown.setVisibility(View.VISIBLE);
                 startCountDown((ActivityEvent) object);
@@ -700,7 +700,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     @Override
     public void onBannerResult(BannerBean data) {
 
-        if (mBanner != null && data.getAppHomeHeader() != null){
+        if (mBanner != null && data.getAppHomeHeader() != null) {
 
             mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), data.getAppHomeHeader()));
             mBanner.setOnBannerListener((d, position) -> {
