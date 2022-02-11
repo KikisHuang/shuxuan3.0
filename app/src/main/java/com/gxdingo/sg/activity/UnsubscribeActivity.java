@@ -162,7 +162,6 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
                 break;
 
         }
-
     }
 
     @Override

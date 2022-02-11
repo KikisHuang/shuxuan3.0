@@ -73,6 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@+id/store_name_tv"
             app:layout_constraintTop_toBottomOf="@+id/store_name_tv">
@@ -99,14 +100,14 @@
 
         <LinearLayout
             android:id="@+id/state_ll"
-            android:layout_width="47dp"
+            android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/module_svg_state_shadow_bg"
-            android:gravity="center"
             android:visibility="gone"
+            android:background="@drawable/bg_store_state"
+            android:gravity="center"
             app:layout_constraintStart_toStartOf="@+id/store_name_tv"
-            app:layout_constraintTop_toBottomOf="@+id/store_name_tv">
+            app:layout_constraintBottom_toBottomOf="@+id/store_avatar_iv">
 
             <TextView
                 android:id="@+id/state_tv"

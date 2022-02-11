@@ -27,14 +27,10 @@ import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
  */
 public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean, BaseViewHolder> {
 
-    //0首页店铺item 1搜索店铺item
-    private int mType;
 
     public ClientStoreAdapter() {
 //        super(type==0?R.layout.module_recycle_item_store:R.layout.module_recycle_item_search_store);
         super(R.layout.module_recycle_item_store);
-//        mType = type;
-//        if (type == 0)
         addChildClickViewIds(R.id.store_avatar_iv, R.id.call_phone_iv);
     }
 
@@ -51,10 +47,19 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
 
         TextView label_tv = baseViewHolder.findView(R.id.label_tv);
         LinearLayout label_ll = baseViewHolder.findView(R.id.label_ll);
+        LinearLayout state_ll = baseViewHolder.findView(R.id.state_ll);
+        TextView state_tv = baseViewHolder.findView(R.id.state_tv);
+
+
+        state_ll.setVisibility(storeBean.businessStatus == 1 ? View.GONE : View.VISIBLE);
+
+        label_ll.setVisibility(storeBean.businessStatus == 1 ? View.VISIBLE : View.GONE);
+
+
+        if (storeBean.businessStatus == 0 || storeBean.businessStatus == 2)
+            state_tv.setText(storeBean.businessStatus == 0 ? "暂停营业" : "休息中");
 
         if (storeBean.getClassNameList() != null && storeBean.getClassNameList().size() > 0) {
-
-            label_ll.setVisibility(View.VISIBLE);
 
             String label = "";
 
@@ -65,8 +70,8 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
                     label += " | " + storeBean.getClassNameList().get(i);
             }
             label_tv.setText(label);
-        } else
-            label_ll.setVisibility(View.GONE);
+        }
+
 
 
         if (storeBean.isShowTop()) {

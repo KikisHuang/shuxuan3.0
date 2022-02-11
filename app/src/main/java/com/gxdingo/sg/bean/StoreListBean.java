@@ -53,6 +53,7 @@ public class StoreListBean {
 
         private String id;
         public String storeUserIdentifier;
+        public int businessStatus;
         private String avatar;
         private String name;
         private String contactNumber;
