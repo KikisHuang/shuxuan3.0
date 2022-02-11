@@ -194,9 +194,9 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 }
                 break;
             case R.id.cash_account_cl:
-                if (cashInfoBean != null) {
+                if (cashInfoBean != null)
                     showCashSelectDialog();
-                }
+
                 break;
             case R.id.btn_confirm:
 
@@ -348,6 +348,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         this.cashInfoBean = cashInfoBean;
 
         int bankCardId = SPUtils.getInstance().getInt(LocalConstant.CASH_SELECTED_ID_KEY, 0);
+        if (bankCardId > 0)
+            mBankCardId = bankCardId;
 
         if (bankCardId == 998 && !isEmpty(cashInfoBean.getAlipay()) && cashInfoBean.getIsShowAlipay() == 1) {
             methods_name_tv.setText("支付宝");
@@ -367,13 +369,14 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                     }
                 }
                 e.onComplete();
-            }), (BaseActivity) reference.get()).subscribe(o -> {
+            }), reference.get()).subscribe(o -> {
                 int pos = (int) o;
 
                 if (!isEmpty(cashInfoBean.getBankList().get(pos).getNumber())) {
                     String num = cashInfoBean.getBankList().get(pos).getNumber().substring(cashInfoBean.getBankList().get(pos).getNumber().length() - 4, cashInfoBean.getBankList().get(pos).getNumber().length());
                     methods_name_tv.setText(cashInfoBean.getBankList().get(pos).getCardName() + "(" + num + ")");
                 }
+
                 mtype = 0;
                 Glide.with(reference.get()).load(cashInfoBean.getBankList().get(pos).getIcon()).into(methods_icon_img);
             });

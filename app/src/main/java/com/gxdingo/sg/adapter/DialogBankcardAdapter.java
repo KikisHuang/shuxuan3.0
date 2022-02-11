@@ -41,8 +41,14 @@ public class DialogBankcardAdapter extends BaseQuickAdapter<BankcardBean, BaseVi
 
         SuperTextView bankcard_stv = baseViewHolder.getView(R.id.bankcard_stv);
 
-        if (!isEmpty(bankcardBean.getName()))
-            bankcard_stv.getLeftTextView().setText(bankcardBean.getName());
+        if (!isEmpty(bankcardBean.getNumber()) && !isEmpty(bankcardBean.getName())) {
+            String num = bankcardBean.getNumber().substring(bankcardBean.getNumber().length() - 4);
+
+            String name = bankcardBean.getName() + "(" + num + ")";
+
+            bankcard_stv.getLeftTextView().setText(name);
+        }
+
 
         if (!isEmpty(bankcardBean.getIcon()))
             Glide.with(getContext()).load(bankcardBean.getIcon()).apply(GlideUtils.getInstance().getDefaultOptions()).into(bankcard_stv.getLeftIconIV());
