@@ -21,8 +21,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -36,24 +35,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/dp_10">
 
-                    <ImageView
-                        android:id="@+id/btn_qr_code"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                    <LinearLayout
+                        android:id="@+id/scan_ll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="15dp"
-                        android:src="@drawable/module_svg_qr_code_icon"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        >
+                        <ImageView
+                            android:id="@+id/btn_scan"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/module_svg_scan"/>
 
-                    <ImageView
-                        android:id="@+id/btn_scan"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/module_svg_scan"
-                        app:layout_constraintBottom_toBottomOf="@+id/btn_qr_code"
-                        app:layout_constraintRight_toLeftOf="@+id/btn_qr_code"
-                        app:layout_constraintTop_toTopOf="@+id/btn_qr_code" />
+                        <ImageView
+                            android:id="@+id/btn_qr_code"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_marginStart="5dp"
+                            android:src="@drawable/module_svg_qr_code_icon"/>
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/username_stv"
@@ -63,7 +68,7 @@
                         android:textColor="@color/graye2e2e2"
                         android:textSize="20sp"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/btn_qr_code"
+                        app:layout_constraintTop_toBottomOf="@+id/scan_ll"
                         tools:text="金源便利店" />
 
                     <ImageView
@@ -125,7 +130,7 @@
                         android:id="@+id/capital_panel_cl"
                         android:layout_width="match_parent"
                         android:layout_height="136dp"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="35dp"
                         android:background="@drawable/module_bg_mine_capital"
                         app:layout_constraintTop_toBottomOf="@+id/authentication_img">
 

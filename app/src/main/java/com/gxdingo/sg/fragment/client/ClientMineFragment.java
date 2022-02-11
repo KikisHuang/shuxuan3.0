@@ -30,6 +30,7 @@ import com.gxdingo.sg.activity.ClientCouponListActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
+import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.MineActivityAdapter;
@@ -94,6 +95,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.real_name_img)
     public ImageView real_name_img;
+
+    @BindView(R.id.btn_qr_code)
+    public ImageView btn_qr_code;
 
     @BindView(R.id.username_stv)
     public TextView username_stv;
@@ -277,10 +281,13 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         }
     }
 
-    @OnClick({R.id.coupon_img, R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
+    @OnClick({R.id.btn_qr_code, R.id.coupon_img, R.id.secondary_tv, R.id.auth_info_stv, R.id.my_balance_text, R.id.btn_scan, R.id.check_internal_stv, R.id.avatar_cimg, R.id.username_stv, R.id.btn_cash, R.id.address_manage_stv, R.id.account_security_stv
             , R.id.contract_server_stv, R.id.about_us_stv, R.id.fill_invitation_code_stv, R.id.settle_protocol_stv, R.id.logout_stv})
     public void onClickViews(View v) {
         switch (v.getId()) {
+            case R.id.btn_qr_code:
+                goToPage(getContext(), StoreQRCodeActivity.class, null);
+                break;
             case R.id.coupon_img:
                 goToPage(reference.get(), ClientCouponListActivity.class, null);
                 break;
@@ -378,6 +385,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         if (mineBean.getAdsList() != null) {
             mAcAdapter.setList(mineBean.getAdsList());
         }
+        btn_qr_code.setVisibility(mineBean.releaseUserType == 1 ? View.GONE : View.VISIBLE);
 
         //发布用户类型。0=商家；1=用户
         if (mineBean.releaseUserType == 1) {

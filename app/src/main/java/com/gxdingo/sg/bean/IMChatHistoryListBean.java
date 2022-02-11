@@ -20,6 +20,7 @@ public class IMChatHistoryListBean implements Serializable {
     private String shareUuid;//双向唯一id，发送消息以及查看聊天列表信息需要用到
     private ArrayList<ReceiveIMMessageBean> list;
 
+    public String shareLinks;
 
     public String getWebsocketUrl() {
         return websocketUrl;
@@ -239,7 +240,7 @@ public class IMChatHistoryListBean implements Serializable {
         private String sendNickname;//对方的昵称
         private long id;//店铺id（role == 11时返回，默认返回0）
         private String mobile;//联系电话号码（默认值空字符串=""）
-        
+
         public int getSendRole() {
             return sendRole;
         }

@@ -37,6 +37,7 @@ import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
+import com.gxdingo.sg.utils.ShareUtils;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
@@ -66,6 +67,7 @@ import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
@@ -424,7 +426,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 .asCustom(new PostionFunctionDialog(reference.get(), v -> {
                     switch (v.getId()) {
                         case R.id.share_ll:
-                            //todo 分享链接没有
+
+                            if (mMessageDetails != null && !isEmpty(mMessageDetails.shareLinks))
+                                ShareUtils.UmShare(reference.get(), null, mMessageDetails.shareLinks,"树选", "最近发现了一个好玩的APP，一起来玩啊！", R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
 
                             break;
                         case R.id.report_ll:
@@ -436,6 +440,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                 }, 1).show());
     }
+
     @Override
     protected void onBaseEvent(Object object) {
 /*
@@ -1013,11 +1018,9 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
      */
     @Override
     public void onAvatarClickListener(int position, String id) {
-        if (otherRole == 10)
-            return;
 
         if (!mChatDatas.get(position).getSendIdentifier().equals(UserInfoUtils.getInstance().getIdentifier()))
-            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{ id}));
+            goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{id}));
     }
 
     /**
