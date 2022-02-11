@@ -120,7 +120,6 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
     private ReceiveIMMessageBean.DataByType mDataByType;
     private ReceiveIMMessageBean receiveIMMessageBean;
 
-
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
         return new AddressPresenter();

@@ -60,7 +60,6 @@ public class ForwardListActivity extends BaseMvpActivity<ClientMessageContract.C
     private IMMessageAdapter imMessageAdapter;
 
     private ReceiveIMMessageBean receiveIMMessageBean;
-
     @Override
     protected boolean eventBusRegister() {
         return false;
@@ -138,7 +137,6 @@ public class ForwardListActivity extends BaseMvpActivity<ClientMessageContract.C
     @Override
     protected void init() {
         receiveIMMessageBean = (ReceiveIMMessageBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
-
         imMessageAdapter = new IMMessageAdapter();
         recyclerView.setAdapter(imMessageAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));

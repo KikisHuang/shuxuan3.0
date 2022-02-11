@@ -489,7 +489,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, mOtherAvatarInfo.getSendIdentifier()));
 
         String avatarUrl = "";
-        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer) {
+        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer||getItemViewType(position) == SelfLocationMapInfo||getItemViewType(position) == SelfLogistics) {
             if (mMyAvatarInfo != null && !isEmpty(mMyAvatarInfo.getSendAvatar()))
                 avatarUrl = mMyAvatarInfo.getSendAvatar();
         } else {

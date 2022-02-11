@@ -77,7 +77,8 @@ public class ChatForwardDialog extends CenterPopupView {
             address_street_tv.setText(receiveIMMessageBean.getDataByType().getDoorplate());
 
             address_tv.setText(receiveIMMessageBean.getDataByType().getStreet());
-            //todo map_img缺少map地图定位图字段
+
+            Glide.with(getContext()).load(!isEmpty(receiveIMMessageBean.getDataByType().locationImage)?receiveIMMessageBean.getDataByType().locationImage:R.drawable.bg_location_default).apply(GlideUtils.getInstance().getDefaultOptions()).into(map_img);
 
             if (!isEmpty(receiveIMMessageBean.getDataByType().getName()))
                 name_tv.setText(receiveIMMessageBean.getDataByType().getName());
