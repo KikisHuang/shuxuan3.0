@@ -5,8 +5,10 @@ import android.view.View;
 import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.StoreAuthInfoBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
@@ -28,6 +30,9 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
     @BindView(R.id.business_scope_stv)
     public SuperTextView business_scope_stv;
+
+    @BindView(R.id.certification_status_stv)
+    public SuperTextView certification_status_stv;
 
     @BindView(R.id.details_address_stv)
     public SuperTextView details_address_stv;
@@ -111,24 +116,47 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
     }
 
     @OnClick(R.id.business_license_stv)
-    public void onClickViews(View v){
-        if (authInfoBean!=null)
-            goToPage(this,StoreQualificationActivity.class,getIntentMap(new String[]{authInfoBean.getBusinessLicence()}));
+    public void onClickViews(View v) {
+        if (authInfoBean != null)
+            goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{authInfoBean.getBusinessLicence()}));
+        else
+            onMessage("没有获取到信息");
     }
 
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof StoreAuthInfoBean){
+        if (object instanceof StoreAuthInfoBean) {
             authInfoBean = (StoreAuthInfoBean) object;
             StringBuffer stringBuffer = new StringBuffer();
-            for (int i=0;i<authInfoBean.getCategoryList().size();i++){
+            for (int i = 0; i < authInfoBean.getCategoryList().size(); i++) {
                 stringBuffer.append(authInfoBean.getCategoryList().get(i).getName());
-                if (i!=authInfoBean.getCategoryList().size()-1)
+                if (i != authInfoBean.getCategoryList().size() - 1)
                     stringBuffer.append(",");
             }
             business_scope_stv.setRightString(stringBuffer.toString());
             details_address_stv.setRightString(authInfoBean.getAddress());
+
+            UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
+
+            certification_status_stv.setVisibility(userBean.getRole() == 11 ? View.VISIBLE : View.GONE);
+
+            if (userBean.getRole() == 11) {
+                String status = "";
+
+                //实名认证状态。0=未实名认证；1=已实名认证；2=待审核
+                if (authInfoBean.authStatus == 0)
+                    status = "未认证";
+                else if (authInfoBean.authStatus == 1)
+                    status = "已认证";
+                else if (authInfoBean.authStatus == 2)
+                    status = "认证中";
+                else if (authInfoBean.authStatus == 3)
+                    status = "认证失败";
+
+                certification_status_stv.setRightString(status);
+            }
+
         }
 
     }

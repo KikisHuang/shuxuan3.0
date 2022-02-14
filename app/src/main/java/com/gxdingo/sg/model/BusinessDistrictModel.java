@@ -412,7 +412,6 @@ public class BusinessDistrictModel {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
             }
 
             @Override
@@ -572,6 +571,7 @@ public class BusinessDistrictModel {
                 LogUtils.e(e);
 
             }
+
             @Override
             public void onNext(BannerBean bannerBean) {
 

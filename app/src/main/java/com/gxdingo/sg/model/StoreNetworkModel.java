@@ -991,7 +991,7 @@ public class StoreNetworkModel {
     }
 
     /**
-     * 营业状态修改
+     * 店铺获取店铺资质
      */
     public void getAuthInfo(Context context) {
 

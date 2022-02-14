@@ -40,4 +40,18 @@
         app:sRightTextString="查看"
         app:sRightTextColor="#3D7BE8"
         app:sRightTextSize="@dimen/sp_14" />
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/certification_status_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="实名认证"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString=""
+        app:sRightTextColor="@color/gray_a9"
+        app:sRightTextSize="@dimen/sp_14"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        app:sRightIconMarginRight="5dp"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+
 </LinearLayout>

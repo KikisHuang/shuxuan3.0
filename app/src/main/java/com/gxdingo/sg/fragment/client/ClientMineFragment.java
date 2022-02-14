@@ -14,6 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -111,6 +112,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.internal_tv)
     public TextView internal_tv;
+
 
     @BindView(R.id.activity_recycler)
     public RecyclerView activity_recycler;
@@ -376,19 +378,18 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onMineDataResult(ClientMineBean mineBean) {
 
-
         ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) capital_panel_cl.getLayoutParams();
         clp.topMargin = dp2px(mineBean.releaseUserType == 1 ? 35 : 15);
         capital_panel_cl.setLayoutParams(clp);
 
-
-        if (mineBean.getAdsList() != null) {
+        if (mineBean.getAdsList() != null)
             mAcAdapter.setList(mineBean.getAdsList());
-        }
+
         btn_qr_code.setVisibility(mineBean.releaseUserType == 1 ? View.GONE : View.VISIBLE);
 
         //发布用户类型。0=商家；1=用户
         if (mineBean.releaseUserType == 1) {
+
             name_right_arrow_img.setVisibility(View.GONE);
             Drawable drawable = getResources().getDrawable(
                     R.drawable.module_svg_right_arrow_8934);

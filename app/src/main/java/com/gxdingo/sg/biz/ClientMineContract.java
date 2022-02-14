@@ -38,6 +38,8 @@ public class ClientMineContract {
         void storeScanCode(String scanContent);
 
         void refreshStatus();
+
+        void getArticleImg(String article);
     }
 
     public interface ClientMineListener<T>{

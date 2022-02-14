@@ -129,7 +129,6 @@ public class RankingFragment extends BaseMvpFragment<RankingContract.RankingPres
     @Override
     protected void lazyInit() {
         super.lazyInit();
-
     }
 
     @OnClick({})

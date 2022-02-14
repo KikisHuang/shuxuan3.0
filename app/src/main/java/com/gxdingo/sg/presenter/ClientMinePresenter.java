@@ -282,6 +282,17 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
             });
     }
 
+    /**
+     * 获取文章图
+     *
+     * @param article
+     */
+    @Override
+    public void getArticleImg(String article) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getArticleImage(getContext(), article);
+    }
+
     @Override
     public void onResult(List<LocalMedia> result) {
         String url = getPhotoUrl(result.get(0));

@@ -3,12 +3,14 @@ package com.gxdingo.sg.activity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
@@ -16,6 +18,7 @@ import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
@@ -39,8 +42,6 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
 
-    @BindView(R.id.content_one_tv)
-    public TextView content_one_tv;
 
     @BindView(R.id.cancel_logoff_tv)
     public TextView cancel_logoff_tv;
@@ -48,8 +49,8 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @BindView(R.id.status_ll)
     public LinearLayout status_ll;
 
-    @BindView(R.id.content_two_tv)
-    public TextView content_two_tv;
+    @BindView(R.id.article_img)
+    public ImageView article_img;
 
     @BindView(R.id.status_content_tv)
     public TextView status_content_tv;
@@ -69,7 +70,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -134,6 +135,10 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
 
     @Override
     protected void initData() {
+
+
+        String article = UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "sxyg_user_logoff_instruction" : "sxyg_store_logoff_instruction";
+        getP().getArticleImg(article);
         getP().refreshStatus();
 
     }
@@ -152,7 +157,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
             case R.id.cancel_logoff_tv:
                 if (mStatus == 0)
                     getP().loginOff(1);
-                else if (mStatus == 2){
+                else if (mStatus == 2) {
                     status_ll.setVisibility(View.GONE);
                     cancel_logoff_tv.setVisibility(View.GONE);
                 }
@@ -203,4 +208,15 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
         }
 
     }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof ArticleImage) {
+            ArticleImage articleImage = (ArticleImage) object;
+            Glide.with(this).load(articleImage.getImage()).into(article_img);
+        }
+
+    }
+
 }
