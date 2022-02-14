@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.blankj.utilcode.util.ConvertUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.TabPageAdapter;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.biz.RankingContract;
 import com.gxdingo.sg.presenter.RankingPresenter;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
@@ -221,5 +222,10 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
                 break;
 
         }
+    }
+
+    @Override
+    public void onRankingListResult(RankListBean data) {
+
     }
 }

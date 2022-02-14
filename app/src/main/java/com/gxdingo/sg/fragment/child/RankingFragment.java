@@ -2,18 +2,23 @@ package com.gxdingo.sg.fragment.child;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ArticleListActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
+import com.gxdingo.sg.activity.ClientBusinessCircleActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
 import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.RankingAdapter;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.RankingContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -103,29 +108,22 @@ public class RankingFragment extends BaseMvpFragment<RankingContract.RankingPres
 
         mAdapter = new RankingAdapter();
 
-        List<String> testData = new ArrayList<>();
-
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-        testData.add("");
-
-        mAdapter.setList(testData);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
 
+        mAdapter.setOnItemChildClickListener((adapter, view, position) -> {
+            switch (view.getId()) {
+                case R.id.viwe_tv:
+                    goToPagePutSerializable(reference.get(), ClientBusinessCircleActivity.class, getIntentEntityMap(new Object[]{mAdapter.getData().get(position).getUserIdentifier(), mAdapter.getData().get(position).getNickname()}));
+                    break;
+            }
+
+        });
         recyclerView.setAdapter(mAdapter);
     }
 
     @Override
     protected void initData() {
-
-
+        getP().getRankingDataList(mTab == 0 ? "week" : "month");
     }
 
     @Override
@@ -149,5 +147,12 @@ public class RankingFragment extends BaseMvpFragment<RankingContract.RankingPres
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
 
+    }
+
+    @Override
+    public void onRankingListResult(RankListBean data) {
+
+        if (mAdapter != null)
+            mAdapter.setList(data.list);
     }
 }

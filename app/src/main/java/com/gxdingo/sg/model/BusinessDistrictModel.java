@@ -188,8 +188,9 @@ public class BusinessDistrictModel {
             public void onNext(BusinessDistrictListBean storeDataBean) {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onData(refresh, storeDataBean);
                 }
-                netWorkListener.onData(refresh, storeDataBean);
+
 
                 if (storeDataBean != null && storeDataBean.getList() != null) {
                     //下一页

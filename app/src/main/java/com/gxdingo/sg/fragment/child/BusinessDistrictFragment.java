@@ -21,6 +21,7 @@ import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
 import com.gxdingo.sg.activity.NoticeMessageActivity;
+import com.gxdingo.sg.activity.RankingActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.activity.WebActivity;
@@ -706,16 +707,18 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             mBanner.setOnBannerListener((d, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) d;
 
-                //类型 0=无跳转 1=APP跳转 2=H5跳转
-                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage())) {
-
-                    if (!UserInfoUtils.getInstance().isLogin()) {
-                        UserInfoUtils.getInstance().goToOauthPage(reference.get());
-                        onMessage(gets(R.string.please_login));
-                        return;
-                    }
-                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                if (!UserInfoUtils.getInstance().isLogin()) {
+                    UserInfoUtils.getInstance().goToOauthPage(reference.get());
+                    onMessage(gets(R.string.please_login));
+                    return;
                 }
+                //类型 0=无跳转 1=APP跳转 2=H5跳转
+                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                 else if (bannerBean.getType() == 1)
+                    //排行榜类型
+                    goToPage(reference.get(), RankingActivity.class, null);
+
             });
         }
 

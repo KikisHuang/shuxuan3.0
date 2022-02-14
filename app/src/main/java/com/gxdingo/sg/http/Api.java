@@ -512,8 +512,6 @@ public class Api {
     public static final String INVITESELLER = HIERARCHY + "activity/inviteSeller";
 
 
-
-
     /**
      * 重置支付密码
      */
@@ -750,4 +748,9 @@ public class Api {
      * 商圈广告/图标/通知
      */
     public static final String CIRCLE_HEADER_ADS = HIERARCHY + "circle/header/ads";
+
+    /**
+     * 排行榜列表
+     */
+    public static final String RANKING_LIST = HIERARCHY + "activity/ranking/list";
 }

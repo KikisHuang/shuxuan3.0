@@ -112,6 +112,7 @@ public class LocalConstant {
     public static final int GO_SETTLED = 1013;
 
     public static String AdCode = "";
+    public static String AoiName = "";
     public static double lat = 0;
     public static double lon = 0;
 

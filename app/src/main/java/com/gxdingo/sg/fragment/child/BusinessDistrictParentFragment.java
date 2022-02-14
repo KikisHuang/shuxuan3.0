@@ -56,6 +56,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGOUT_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -173,7 +174,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
 
         switch (view.getId()) {
             case R.id.search_iv:
-                goToPage(getContext(), ClientSearchActivity.class, null);
+                goToPage(getContext(), ClientSearchActivity.class, getIntentMap(new String[]{LocalConstant.AoiName}));
                 break;
             case R.id.unread_iv:
                 startActivity(new Intent(reference.get(), BusinessDistrictMessageActivity.class));

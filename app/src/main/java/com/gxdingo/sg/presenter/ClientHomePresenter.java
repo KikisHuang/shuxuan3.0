@@ -120,6 +120,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                                     LocalConstant.lon = aMapLocation.getLongitude();
 
                                     LocalConstant.AdCode = aMapLocation.getAdCode();
+                                    
+                                    LocalConstant.AoiName = aMapLocation.getPoiName();
 
                                     if (UserInfoUtils.getInstance().isLogin()) {
                                         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();

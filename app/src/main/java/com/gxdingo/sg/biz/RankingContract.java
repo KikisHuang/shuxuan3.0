@@ -3,6 +3,7 @@ package com.gxdingo.sg.biz;
 import android.content.Context;
 
 import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -19,12 +20,15 @@ import java.util.List;
  */
 public class RankingContract {
 
-    public interface RankingPresenter extends MvpPresenter<BasicsListener,RankingListener>{
+    public interface RankingPresenter extends MvpPresenter<BasicsListener, RankingListener> {
 
+        void getRankingDataList(String cycle);
 
     }
 
-    public interface RankingListener{
+    public interface RankingListener {
+
+        void onRankingListResult(RankListBean data);
 
     }
 }

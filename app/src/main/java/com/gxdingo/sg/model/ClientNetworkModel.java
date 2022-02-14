@@ -10,6 +10,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
@@ -53,6 +54,7 @@ import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.gxdingo.sg.http.Api.INVITE_HELP;
+import static com.gxdingo.sg.http.Api.RANKING_LIST;
 import static com.gxdingo.sg.http.Api.UPLOAD_INVITATIONCODE;
 import static com.gxdingo.sg.http.Api.ADDRESS_ADD;
 import static com.gxdingo.sg.http.Api.ADDRESS_ADDRESSES;
@@ -230,11 +232,11 @@ public class ClientNetworkModel {
 
         Map<String, String> map = getJsonMap();
 
-            map.put(Constant.MOBILE, mobile);
+        map.put(Constant.MOBILE, mobile);
         map.put(Constant.CODE, code);
 
 
-        Observable<NormalBean> observable = HttpClient.post( USER_MOBILE_CHANGE , map)
+        Observable<NormalBean> observable = HttpClient.post(USER_MOBILE_CHANGE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -1865,5 +1867,46 @@ public class ClientNetworkModel {
         observable.subscribe(subscriber);
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
+    }
+
+    public void getRankingList(Context context, String cycle) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("cycle", cycle);
+//        map.put("activityIdentifier",);
+
+        Observable<RankListBean> observable = HttpClient.post(RANKING_LIST, map)
+                .execute(new CallClazzProxy<ApiResult<RankListBean>, RankListBean>(new TypeToken<RankListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<RankListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(RankListBean rankListBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onData(true, rankListBean);
+                }
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
     }
 }

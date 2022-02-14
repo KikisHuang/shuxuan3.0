@@ -181,7 +181,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void init() {
-        //todo 查看个人商圈有问题
+
         storeId = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
         if (isEmpty(storeId)) {
             onMessage("未获取到店铺信息！");

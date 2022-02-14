@@ -44,6 +44,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.KeyboardUtils.showSoftInput;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -177,8 +178,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
         location = getIntent().getStringExtra(Constant.PARAMAS + 0);
 
-        if (!isEmpty(location))
-            location_tv.setText(location);
+        location_tv.setText(!isEmpty(location) ? location : gets(R.string.unknow));
 
         mStoreAdapter = new ClientStoreAdapter();
 

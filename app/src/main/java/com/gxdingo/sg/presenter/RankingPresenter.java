@@ -6,6 +6,7 @@ import android.widget.EditText;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.NormalBean;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.NetWorkListener;
@@ -46,12 +47,9 @@ public class RankingPresenter extends BaseMvpPresenter<BasicsListener, RankingCo
 
     private ClientNetworkModel clientNetworkModel;
 
-    private CommonModel mClientCommonModel;
-
 
     public RankingPresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
-        mClientCommonModel = new CommonModel();
     }
 
     @Override
@@ -75,8 +73,8 @@ public class RankingPresenter extends BaseMvpPresenter<BasicsListener, RankingCo
     @Override
     public void onData(boolean refresh, Object o) {
         if (isViewAttached()) {
-
-
+            if (o instanceof RankListBean)
+                getV().onRankingListResult((RankListBean) o);
         }
     }
 
@@ -140,4 +138,12 @@ public class RankingPresenter extends BaseMvpPresenter<BasicsListener, RankingCo
     }
 
 
+    /**
+     * 获取排行榜列表
+     */
+    @Override
+    public void getRankingDataList(String cycle) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getRankingList(getContext(),cycle);
+    }
 }

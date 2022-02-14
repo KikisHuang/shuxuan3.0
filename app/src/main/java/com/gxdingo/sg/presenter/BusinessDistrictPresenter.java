@@ -41,6 +41,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -344,6 +345,12 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
 
     @Override
     public void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier) {
+        //没有权限直接获取商圈数据
+        if (!isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)) {
+            getBusinessDistrictList(true, mcircleUserIdentifier);
+            return;
+        }
+
         if (commonModel != null) {
             commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
@@ -353,18 +360,19 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
                         if (value) {
                             mNetWorkModel.location(getContext(), aMapLocation -> {
                                 if (aMapLocation.getErrorCode() == 0) {
+
+                                    LocalConstant.AdCode = aMapLocation.getAdCode();
+
                                     LocalConstant.lat = aMapLocation.getLatitude();
 
                                     LocalConstant.lon = aMapLocation.getLongitude();
+                                    LocalConstant.AoiName = aMapLocation.getPoiName();
                                     //获取商圈列表
                                     getBusinessDistrictList(true, mcircleUserIdentifier);
                                 } else
                                     LogUtils.e("(aMapLocation.getErrorCode() == " + aMapLocation.getErrorCode());
                             });
-
-                        } else
-                            getBusinessDistrictList(true, mcircleUserIdentifier);
-
+                        }
                     }
                 }
 
