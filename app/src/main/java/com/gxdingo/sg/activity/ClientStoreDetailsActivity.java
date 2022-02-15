@@ -347,14 +347,15 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mapView != null)
+        if (mapView != null) {
+            mapView.getMap().clear();
             mapView.onDestroy();
-
+            mapView = null;
+        }
         if (mNavigationPopupView != null) {
             mNavigationPopupView.destroy();
             mNavigationPopupView = null;
         }
-
         if (mLoginDialog != null) {
             mLoginDialog.destroy();
             mLoginDialog = null;

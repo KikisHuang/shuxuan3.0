@@ -236,6 +236,9 @@ public class Api {
     //客户端服务协议文章
     public static final String CLIENT_SERVICE_AGREEMENT_KEY = "yonghufuwuxieyi";
 
+    // 商圈排行榜规则
+    public static final String RANKING_RULE = "circle-ranking";
+
     //商家端隐私协议文章
     public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";
     //商家端服务协议文章

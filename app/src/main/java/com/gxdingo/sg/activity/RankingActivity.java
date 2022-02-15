@@ -22,6 +22,7 @@ import com.gxdingo.sg.adapter.TabPageAdapter;
 import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.biz.AppBarStateChangeListener;
 import com.gxdingo.sg.biz.RankingContract;
+import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.presenter.RankingPresenter;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -43,8 +44,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.gxdingo.sg.adapter.TabPageAdapter.RANKING_TAB;
+import static com.gxdingo.sg.http.Api.CLIENT_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.HTML;
+import static com.gxdingo.sg.http.Api.RANKING_RULE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
@@ -251,13 +257,16 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
         ViewPagerHelper.bind(magic_indicator, view_pager);
     }
 
-    @OnClick({R.id.img_back})
+    @OnClick({R.id.img_back,R.id.rule_tv})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
             case R.id.img_back:
                 finish();
+                break;
+            case R.id.rule_tv:
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, Api.URL + HTML + "identifier=" + RANKING_RULE}));
                 break;
 
         }
