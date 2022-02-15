@@ -123,6 +123,17 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
             onMessage("没有获取到信息");
     }
 
+    @OnClick(R.id.certification_status_stv)
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
+            case R.id.certification_status_stv:
+                //未认证状态直接跳转认证页面
+                if (authInfoBean != null && authInfoBean.authStatus == 0)
+                    goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                break;
+        }
+    }
+
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
@@ -145,9 +156,10 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
                 String status = "";
 
                 //实名认证状态。0=未实名认证；1=已实名认证；2=待审核
-                if (authInfoBean.authStatus == 0)
+                if (authInfoBean.authStatus == 0) {
+                    certification_status_stv.setRightIcon(R.drawable.module_svg_right_gray_arrow_little);
                     status = "未认证";
-                else if (authInfoBean.authStatus == 1)
+                } else if (authInfoBean.authStatus == 1)
                     status = "已认证";
                 else if (authInfoBean.authStatus == 2)
                     status = "认证中";
@@ -156,7 +168,6 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
                 certification_status_stv.setRightString(status);
             }
-
         }
 
     }

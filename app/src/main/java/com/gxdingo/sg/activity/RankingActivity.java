@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -7,18 +8,25 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.blankj.utilcode.util.ConvertUtils;
+import com.google.android.material.appbar.AppBarLayout;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.TabPageAdapter;
 import com.gxdingo.sg.bean.RankListBean;
+import com.gxdingo.sg.biz.AppBarStateChangeListener;
 import com.gxdingo.sg.biz.RankingContract;
 import com.gxdingo.sg.presenter.RankingPresenter;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.AnimationUtil;
+import com.tencent.bugly.proguard.B;
 
 import net.lucode.hackware.magicindicator.MagicIndicator;
 import net.lucode.hackware.magicindicator.ViewPagerHelper;
@@ -36,6 +44,8 @@ import butterknife.OnClick;
 
 import static com.gxdingo.sg.adapter.TabPageAdapter.RANKING_TAB;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.CommonUtils.getd;
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
  * @author: Kikis
@@ -45,11 +55,20 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPresenter> implements RankingContract.RankingListener {
 
 
+    @BindView(R.id.top_tv)
+    public TextView top_tv;
+
+    @BindView(R.id.img_back)
+    public ImageView img_back;
+
     @BindView(R.id.view_pager)
     public ViewPager view_pager;
 
     @BindView(R.id.magic_indicator)
     public MagicIndicator magic_indicator;
+
+    @BindView(R.id.app_bar)
+    public AppBarLayout appBar;
 
     private TabPageAdapter tabAdapter;
 
@@ -108,7 +127,7 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_ranking;
+        return R.layout.module_activity_ranking2;
     }
 
     @Override
@@ -135,6 +154,7 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
         view_pager.setOffscreenPageLimit(2);
 
         initMagicIndicator();
+        setAppBarLayoutListener();
     }
 
     @Override
@@ -142,6 +162,25 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
 
     }
 
+    private void setAppBarLayoutListener() {
+
+        appBar.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, int state, int verticalOffset) {
+
+                //折叠状态
+                top_tv.setVisibility(state == COLLAPSED ? View.VISIBLE : View.GONE);
+
+                img_back.setImageDrawable(state != COLLAPSED ? getd(R.drawable.module_svg_back_white_icon) : getd(R.drawable.module_svg_back_black_icon));
+            }
+
+            @Override
+            public void onStateOffset(AppBarLayout appBarLayout, int verticalOffset) {
+
+            }
+        });
+    }
 
     /**
      * MagicIndicator 通用标题初始化方法
@@ -212,12 +251,12 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
         ViewPagerHelper.bind(magic_indicator, view_pager);
     }
 
-    @OnClick({R.id.bg_img})
+    @OnClick({R.id.img_back})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
         switch (v.getId()) {
-            case R.id.bg_img:
+            case R.id.img_back:
                 finish();
                 break;
 

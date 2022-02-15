@@ -712,8 +712,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                     onMessage(gets(R.string.please_login));
                     return;
                 }
-                //类型 0=无跳转 1=APP跳转 2=H5跳转
+
                 if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
+                    //类型 0=无跳转 1=APP跳转 2=H5跳转
                     goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
                  else if (bannerBean.getType() == 1)
                     //排行榜类型

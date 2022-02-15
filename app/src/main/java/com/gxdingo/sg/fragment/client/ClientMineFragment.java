@@ -30,6 +30,7 @@ import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
 import com.gxdingo.sg.activity.ClientCouponListActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
+import com.gxdingo.sg.activity.RankingActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
@@ -489,9 +490,14 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 
-        //类型 0=无跳转 1=APP跳转 2=H5跳转
+
         if (mAcAdapter.getData().get(position).getType() == 2)
+            //类型 0=无跳转 1=APP跳转 2=H5跳转
             goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, mAcAdapter.getData().get(position).getPage()}));
+        else if (mAcAdapter.getData().get(position).getType() == 1)
+            //排行榜类型
+            goToPage(reference.get(), RankingActivity.class, null);
+
 
     }
 

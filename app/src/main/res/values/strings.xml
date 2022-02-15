@@ -107,5 +107,6 @@
     <string name="please_login_before_operation">请先登录后再操作</string>
     <string name="go_authentication">去认证</string>
     <string name="unknow">未知</string>
+    <string name="shop_qualification">店铺资质</string>
 
 </resources>

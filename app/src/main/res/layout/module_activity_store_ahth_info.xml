@@ -47,11 +47,11 @@
         android:layout_height="56dp"
         app:sLeftTextString="实名认证"
         app:sLeftTextColor="@color/gray_a9"
-        app:sRightTextString=""
+        app:sRightTextString="认证中"
+        app:sRightViewMarginRight="10dp"
         app:sRightTextColor="@color/gray_a9"
         app:sRightTextSize="@dimen/sp_14"
         app:sLeftViewMarginLeft="@dimen/dp20"
-        app:sRightIconMarginRight="5dp"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+        />
 
 </LinearLayout>

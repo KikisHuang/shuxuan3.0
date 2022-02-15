@@ -29,7 +29,7 @@ public class StoreQualificationActivity extends BaseMvpActivity<ClientStoreContr
     @BindView(R.id.photo_img)
     public ImageView photo_img;
 
-    private String imageUrl ;
+    private String imageUrl;
 
     @Override
     protected ClientStoreContract.ClientStorePresenter createPresenter() {
@@ -98,8 +98,8 @@ public class StoreQualificationActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected void init() {
-        imageUrl = getIntent().getStringExtra(Constant.PARAMAS+0);
-        title_layout.setTitleText("店铺资质");
+        imageUrl = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        title_layout.setTitleText(getString(R.string.shop_qualification));
     }
 
     @Override
