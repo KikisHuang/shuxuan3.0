@@ -995,8 +995,6 @@ public class StoreNetworkModel {
      */
     public void getAuthInfo(Context context) {
 
-
-        netWorkListener.onStarts();
         Observable<StoreAuthInfoBean> observable = HttpClient.post(CHECK_QUALIFICATION)
                 .execute(new CallClazzProxy<ApiResult<StoreAuthInfoBean>, StoreAuthInfoBean>(new TypeToken<StoreAuthInfoBean>() {
                 }.getType()) {
@@ -1006,13 +1004,12 @@ public class StoreNetworkModel {
             public void onError(ApiException e) {
                 super.onError(e);
                 LogUtils.e(e);
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
             }
 
             @Override
             public void onNext(StoreAuthInfoBean authInfoBean) {
-                netWorkListener.onAfters();
                 if (authInfoBean != null)
                     EventBus.getDefault().post(authInfoBean);
             }

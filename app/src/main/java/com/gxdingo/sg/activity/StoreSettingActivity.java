@@ -24,6 +24,7 @@ import com.gxdingo.sg.presenter.StoreSettingsPresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
+import com.kikis.commnlibrary.utils.BigDecimalUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -35,6 +36,7 @@ import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -190,7 +192,8 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                             public void onSelected(BasePopupView popupView, int startHour, int startMinute, int endHour, int endMinute) {
                                 String startTime = (startHour < 10 ? "0" : "") + startHour + ":" + (startMinute < 10 ? "0" : "") + startMinute;
                                 String endTime = (endHour < 10 ? "0" : "") + endHour + ":" + (endMinute < 10 ? "0" : "") + endMinute;
-                                getP().businessTime(startTime, endTime);
+                                //修改HH:mm为HH:mm:ss
+                                getP().businessTime(startTime + ":00", endTime + ":00");
 //                                business_time_stv.setRightString(startTime+" - "+endTime);
                                 popupView.dismiss();
                             }
@@ -250,7 +253,8 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
             change_address_stv.setRightString(storeDetailBean.getAddress());
             change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
             business_time_stv.setRightString(storeDetailBean.getOpenTime() + "-" + storeDetailBean.getCloseTime());
-            distribution_scope_stv.setRightString(storeDetailBean.getDistance());
+            if (storeDetailBean.getMaxDistance() > 0)
+                distribution_scope_stv.setRightString(div( String.valueOf(storeDetailBean.getMaxDistance()),"1000", 1) + "公里");
         }
 
         if (!isEmpty(storeDetailBean.getName()))
@@ -272,7 +276,7 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                 .asCustom(new DeliverScopePopupView(reference.get(), pos -> {
                     Integer s = distanceBeans.get((Integer) pos).getMeter();
                     getP().deliveryScope(s.toString());
-                    distribution_scope_stv.setRightString(distanceBeans.get((Integer) pos).getName());
+//                    distribution_scope_stv.setRightString(distanceBeans.get((Integer) pos).getName());
                 }, distanceBeans).show());
     }
 

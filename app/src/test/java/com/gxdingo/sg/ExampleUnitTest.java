@@ -46,18 +46,9 @@ public class ExampleUnitTest {
 
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
-        String json = "http://uat.gxdingo.com/html/#/pages/activity/coupon/detail?activeCode=dWKULklfNvKfWdp&couponIdIdentifier=invite-new-register";
-
-        long sendT = 1642749435000l;
-        long nowT = getNowMills();
-
-        System.out.println(" time === " + (nowT - sendT));
-
-
-        System.out.println(" is include  === " + json.contains("activeCode="));
 
         //dWKULklfNvKfWdp
-        System.out.println(" content  === " + URLRequest(json).get("activeCode"));
+        System.out.println(" content  === " + div("2000", String.valueOf(1000), 1)+"公里");
 
     }
 

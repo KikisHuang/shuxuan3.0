@@ -207,7 +207,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
             if (tab == 3 && model.getOldTab() == 3)
                 EventBus.getDefault().post(BACK_TOP_MESSAGE_LIST);
 
-            if (isViewAttached() && tab != model.getOldTab()){
+            if (isViewAttached() && tab != model.getOldTab()) {
                 getV().onSeleted(tab, model.getOldTab());
                 showFm(tab);
                 model.recordTab(tab);
