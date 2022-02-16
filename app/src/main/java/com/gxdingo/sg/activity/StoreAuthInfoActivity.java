@@ -37,6 +37,9 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
     @BindView(R.id.details_address_stv)
     public SuperTextView details_address_stv;
 
+    @BindView(R.id.business_license_stv)
+    public SuperTextView business_license_stv;
+
 
     private StoreAuthInfoBean authInfoBean;
 
@@ -112,6 +115,12 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
     @Override
     protected void initData() {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         getP().getAuthInfo();
     }
 
@@ -139,20 +148,29 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
         super.onBaseEvent(object);
         if (object instanceof StoreAuthInfoBean) {
             authInfoBean = (StoreAuthInfoBean) object;
-            StringBuffer stringBuffer = new StringBuffer();
-            for (int i = 0; i < authInfoBean.getCategoryList().size(); i++) {
-                stringBuffer.append(authInfoBean.getCategoryList().get(i).getName());
-                if (i != authInfoBean.getCategoryList().size() - 1)
-                    stringBuffer.append(",");
-            }
-            business_scope_stv.setRightString(stringBuffer.toString());
-            details_address_stv.setRightString(authInfoBean.getAddress());
+
 
             UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
 
-            certification_status_stv.setVisibility(userBean.getRole() == 11 ? View.VISIBLE : View.GONE);
+            if (userBean.getRole()==10){
+                business_scope_stv.setVisibility( View.GONE);
+                details_address_stv.setVisibility( View.GONE);
+                business_license_stv.setVisibility( View.GONE);
+            }else {
+                business_scope_stv.setVisibility( View.VISIBLE);
+                details_address_stv.setVisibility( View.VISIBLE);
+                business_license_stv.setVisibility( View.VISIBLE);
 
-            if (userBean.getRole() == 11) {
+                StringBuffer stringBuffer = new StringBuffer();
+                for (int i = 0; i < authInfoBean.getCategoryList().size(); i++) {
+                    stringBuffer.append(authInfoBean.getCategoryList().get(i).getName());
+                    if (i != authInfoBean.getCategoryList().size() - 1)
+                        stringBuffer.append(",");
+                }
+                business_scope_stv.setRightString(stringBuffer.toString());
+                details_address_stv.setRightString(authInfoBean.getAddress());
+            }
+
                 String status = "";
 
                 //实名认证状态。0=未实名认证；1=已实名认证；2=待审核
@@ -167,8 +185,6 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
                     status = "认证失败";
 
                 certification_status_stv.setRightString(status);
-            }
         }
-
     }
 }

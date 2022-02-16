@@ -266,7 +266,7 @@ public class RankingActivity extends BaseMvpActivity<RankingContract.RankingPres
                 finish();
                 break;
             case R.id.rule_tv:
-                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, Api.URL + HTML + "identifier=" + RANKING_RULE}));
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, Api.URL + HTML + "identifier=" + RANKING_RULE,0,true}));
                 break;
 
         }

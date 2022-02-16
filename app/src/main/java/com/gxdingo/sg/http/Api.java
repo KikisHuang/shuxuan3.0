@@ -237,7 +237,7 @@ public class Api {
     public static final String CLIENT_SERVICE_AGREEMENT_KEY = "yonghufuwuxieyi";
 
     // 商圈排行榜规则
-    public static final String RANKING_RULE = "circle-ranking";
+    public static final String RANKING_RULE = "ranking-circle";
 
     //商家端隐私协议文章
     public static final String STORE_PRIVACY_AGREEMENT_KEY = "shuxuanshangjinxieyi";

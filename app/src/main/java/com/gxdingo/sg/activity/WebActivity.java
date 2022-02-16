@@ -47,6 +47,7 @@ import static com.blankj.utilcode.util.AppUtils.isAppInstalled;
 import static com.blankj.utilcode.util.AppUtils.launchApp;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.Constant.failure;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 
@@ -62,6 +63,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     //是否文章
     private boolean mIsArticle = false;
+    //是否显示标题
+    private boolean mShowTitle = false;
 
     private String mUrl;
 
@@ -72,6 +75,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected int activityTitleLayout() {
+        mShowTitle = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 3, false);
+
+        if (mShowTitle)
+            return R.layout.module_include_custom_title;
+
         mIsArticle = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
         return mIsArticle ? R.layout.module_include_custom_title : 0;
     }
@@ -268,7 +276,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             onStarts();
         else {
             onAfters();
-            if (UserInfoUtils.getInstance().isLogin()&&UserInfoUtils.getInstance().getUserInfo().getRole()==10)
+            if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
                 getP().upLoadRegionCode(LocalConstant.AdCode);
         }
     }
