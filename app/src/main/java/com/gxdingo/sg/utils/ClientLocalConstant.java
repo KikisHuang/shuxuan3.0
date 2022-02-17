@@ -31,6 +31,7 @@ public class ClientLocalConstant {
     public static final String STREET = "street";
     public static final String DOORPLATE = "doorplate";
     public static final String ADDRESSID = "addressId";
+    public static final String LOCATIONIMAGE = "locationImage";
     public static final String DEMAND = "demand";
     public static final String WALLPAPER = "wallpaper";
     public static final String CATEGORYID = "categoryId";

@@ -1011,12 +1011,10 @@ public class ClientNetworkModel {
      * @param addressDetail
      * @param contact
      * @param mobile
-     * @param labelString
      * @param point
-     * @param gender
      * @param regionPath
      */
-    public void addAddressInfo(Context context, boolean isAdd, int id, String doorplate, String addressDetail, String contact, String mobile, String labelString, LatLonPoint point, int gender, String regionPath) {
+    public void addAddressInfo(Context context, boolean isAdd, int id, String doorplate, String addressDetail, String contact, String mobile, LatLonPoint point, String regionPath, String locationImage) {
 
         if (isEmpty(mobile) || !isMobileSimple(mobile)) {
             if (!isMobileSimple(mobile))
@@ -1054,6 +1052,9 @@ public class ClientNetworkModel {
         map.put(ClientLocalConstant.STREET, addressDetail);
 
         map.put(ClientLocalConstant.DOORPLATE, doorplate);
+
+        if (!isEmpty(locationImage))
+            map.put(ClientLocalConstant.LOCATIONIMAGE, locationImage);
 
         //map.put(LocalConstant.TAG, labelString);
 

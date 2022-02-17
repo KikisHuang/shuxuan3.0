@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:paddingHorizontal="@dimen/dp_10"
@@ -22,9 +23,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="#A9A9A9"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/tv_distance"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_district"
-        tools:text="金源CBD现代城A座13楼1301室" />
+        tools:text="金源CBD现代" />
 
     <TextView
         android:id="@+id/tv_distance"
@@ -32,9 +37,29 @@
         android:layout_height="wrap_content"
         android:textColor="#A9A9A9"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="1.5km" />
+        app:layout_constraintBottom_toBottomOf="@+id/tv_details_address"
+        app:layout_constraintEnd_toStartOf="@+id/barrier"
+        app:layout_constraintStart_toEndOf="@+id/tv_details_address"
+        app:layout_constraintTop_toTopOf="@+id/tv_details_address"
+        tools:text=" | 1.5km" />
+
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="layout" />
+
+    <ImageView
+        android:id="@+id/check_img"
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:src="@drawable/module_address_check"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="match_parent"

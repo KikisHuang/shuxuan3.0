@@ -208,7 +208,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             checkShowFillCode();
         } else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS) {
             Glide.with(getContext()).load(UserInfoUtils.getInstance().getUserAvatar()).into(avatar_cimg);
-            username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
+//            username_stv.setText(UserInfoUtils.getInstance().getUserNickName());
         } else if (type == ClientLocalConstant.FILL_SUCCESS) {
 
             UserBean userBean = UserInfoUtils.getInstance().getUserInfo();

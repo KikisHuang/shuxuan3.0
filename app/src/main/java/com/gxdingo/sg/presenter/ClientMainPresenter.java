@@ -343,12 +343,12 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
         ShibbolethModel.checkShibboleth((type, code) -> {
 
             //30口令类型为邀请商家活动 40为分享跳转商圈
-            if (type == 40) {
+            if (type == 40)
                 //分享跳转商圈
                 getV().goToBusinessDistrict(code);
-            } else if (type == 50) {
+             else if (type == 50)
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{code}));
-            } else if (type != 30) {
+             else if (type != 30) {
                 if (UserInfoUtils.getInstance().isLogin()) {
                     helpCode = code;
                     if (clientNetworkModel != null)

@@ -10,7 +10,9 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ItemDistanceBean;
+import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
+import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -40,6 +42,7 @@ import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.ClientLocalConstant.ADDADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DELADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -61,6 +64,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     private CommonModel mClientCommonModel;
 
     private ClientNetworkModel clientNetworkModel;
+    private NetworkModel mNetworkModel;
 
     private AMapLocation mMapLocation;
 
@@ -69,11 +73,14 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     private String cityCode;
 
     private CameraPosition mCameraPosition;
+    //定位截图
+    private String mLocationImage;
 
 
     private boolean isPOIAsyn = false;
 
     public AddressPresenter() {
+        mNetworkModel = new NetworkModel(this);
         model = new SelectAddressModel();
         mClientCommonModel = new CommonModel();
         clientNetworkModel = new ClientNetworkModel(this);
@@ -90,7 +97,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
         if (!isViewAttached() || clientNetworkModel == null)
             return;
 
-        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), "", getV().getPoint(), 0, getV().getRegionPath());
+        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), getV().getPoint(), getV().getRegionPath(), mLocationImage);
 
     }
 
@@ -400,6 +407,30 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                 }
             });
+        }
+
+    }
+
+    /**
+     * 上传定位截图
+     *
+     * @param fliepath
+     */
+    @Override
+    public void upLoadLocationImage(String fliepath) {
+
+        if (mNetworkModel != null) {
+            mNetworkModel.upLoadImage(getContext(), fliepath, new UpLoadImageListener() {
+                @Override
+                public void loadSucceed(String path) {
+                    mLocationImage = path;
+                }
+
+                @Override
+                public void loadSucceed(UpLoadBean upLoadBean) {
+
+                }
+            }, 0);
         }
 
     }

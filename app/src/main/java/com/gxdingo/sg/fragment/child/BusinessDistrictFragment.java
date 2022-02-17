@@ -418,6 +418,10 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             if (mType != 3)
                 //获取商圈评论未读数量
                 getP().getNumberUnreadComments();
+
+            if (mType == 2)
+                mcircleUserIdentifier = UserInfoUtils.getInstance().getUserInfo().getIdentifier();
+
             //获取商圈列表
             getP().getBusinessDistrictList(true, mcircleUserIdentifier);
             isFirstLoad = false;
@@ -716,7 +720,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
                     //类型 0=无跳转 1=APP跳转 2=H5跳转
                     goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
-                 else if (bannerBean.getType() == 1)
+                else if (bannerBean.getType() == 1)
                     //排行榜类型
                     goToPage(reference.get(), RankingActivity.class, null);
 

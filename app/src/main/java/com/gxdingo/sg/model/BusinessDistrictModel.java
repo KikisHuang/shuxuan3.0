@@ -284,7 +284,6 @@ public class BusinessDistrictModel {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
             }
 
             @Override

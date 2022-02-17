@@ -117,7 +117,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     private int categoryId = 0;
 
-    private int mTitleHeight = dp2px(80);
+    private int mTitleHeight = dp2px(70);
 
 
     @Override

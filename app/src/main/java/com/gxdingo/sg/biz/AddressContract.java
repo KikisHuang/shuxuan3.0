@@ -56,6 +56,8 @@ public class AddressContract {
         void callPhone(ReceiveIMMessageBean.DataByType mDataByType);
 
         void getDistance(double latitude, double longitude);
+
+        void upLoadLocationImage(String fliepath);
     }
 
     public interface AddressListener {
@@ -90,6 +92,7 @@ public class AddressContract {
         AMap getAMap();
 
         void onDistanceResult(ItemDistanceBean bean);
+
     }
 
     public interface AddressCompileModelListener {

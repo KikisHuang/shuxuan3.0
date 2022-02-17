@@ -42,6 +42,7 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
+    private boolean mIsForward;
 
     public IMMessageAdapter() {
         super(R.layout.module_item_store_home_im_message);
@@ -50,6 +51,15 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
         mDraftUtils = mStore.getDratfUtils();
 
+    }
+
+    public IMMessageAdapter(boolean isforward) {
+        super(R.layout.module_item_store_home_im_message);
+
+        DaoUtilsStore mStore = DaoUtilsStore.getInstance();
+
+        mDraftUtils = mStore.getDratfUtils();
+        mIsForward = isforward;
     }
 
     @Override
@@ -63,7 +73,14 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         ImageView settop_img = baseViewHolder.findView(R.id.settop_img);
         ImageView v_img = baseViewHolder.findView(R.id.v_img);
 
-
+        //转发页面
+        if (mIsForward) {
+            tvUnreadMsgCount.setVisibility(View.GONE);
+            draft_tag_tv.setVisibility(View.GONE);
+        } else {
+            tvUnreadMsgCount.setVisibility(View.VISIBLE);
+            draft_tag_tv.setVisibility(View.VISIBLE);
+        }
 
         v_img.setVisibility(subscribesMessage.getSendUserRole() == 11 ? View.VISIBLE : View.GONE);
 
@@ -72,16 +89,18 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
 
         DraftBean draftBean = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(subscribesMessage.getShareUuid()));
+        //转发列表不显示
+        if (!mIsForward) {
+            //草稿
+            if (draftBean != null && !isEmpty(draftBean.draft)) {
 
-        //草稿
-        if (draftBean != null && !isEmpty(draftBean.draft)) {
+                draft_tag_tv.setVisibility(View.VISIBLE);
 
-            draft_tag_tv.setVisibility(View.VISIBLE);
+                tvContent.setText(draftBean.draft);
 
-            tvContent.setText(draftBean.draft);
-
-        } else
-            draft_tag_tv.setVisibility(View.GONE);
+            } else
+                draft_tag_tv.setVisibility(View.GONE);
+        }
 
         tvTime.setText(showTimeText(string2Date(dealDateFormat(subscribesMessage.getUpdateTime()))));
 

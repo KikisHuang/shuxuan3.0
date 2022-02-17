@@ -3,14 +3,11 @@ package com.gxdingo.sg.activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.bumptech.glide.Glide;
-import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.SelectAddressEvent;
@@ -21,7 +18,6 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,7 +26,6 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -71,8 +66,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     private String regionPath = "";
 
     private LatLonPoint mPoint;
-
-    private String filePath;
 
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
@@ -209,9 +202,8 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
             SelectAddressEvent event = (SelectAddressEvent) object;
 
-            filePath = event.fliepath;
-            //todo 新增接口后上传地图截屏
-
+            //上传地图截屏
+            getP().upLoadLocationImage(event.fliepath);
 
             poiItem = (PoiItem) event.poiItem;
 
@@ -350,6 +342,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     public void onDistanceResult(ItemDistanceBean bean) {
 
     }
+
 
     @Override
     public void onSucceed(int type) {
