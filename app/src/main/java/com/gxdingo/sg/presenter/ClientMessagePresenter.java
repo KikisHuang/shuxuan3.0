@@ -110,7 +110,7 @@ public class ClientMessagePresenter extends BaseMvpPresenter<BasicsListener, Cli
         if (mWebSocketModel != null) {
             mWebSocketModel.chatSetTop(getContext(), shareUuid, sort, result -> {
                 if (isViewAttached())
-                    getV().onSetTopResult(pos);
+                    getV().onSetTopResult(pos,sort);
 
             });
         }

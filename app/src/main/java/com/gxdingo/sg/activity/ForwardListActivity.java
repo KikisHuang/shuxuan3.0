@@ -13,7 +13,6 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.IMMessageAdapter;
 import com.gxdingo.sg.biz.ClientMessageContract;
 import com.gxdingo.sg.dialog.ChatForwardDialog;
-import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -34,8 +33,6 @@ import butterknife.OnClick;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Kikis
@@ -240,7 +237,7 @@ public class ForwardListActivity extends BaseMvpActivity<ClientMessageContract.C
     }
 
     @Override
-    public void onSetTopResult(int pos) {
+    public void onSetTopResult(int pos, int sort) {
 
     }
 

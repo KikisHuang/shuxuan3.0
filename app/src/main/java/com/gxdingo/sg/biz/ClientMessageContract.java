@@ -37,7 +37,7 @@ public class ClientMessageContract {
 
         void setUnreadMsgNum(Integer data);
 
-        void onSetTopResult(int pos);
+        void onSetTopResult(int pos, int sort);
 
         void onSubDel(int position);
     }

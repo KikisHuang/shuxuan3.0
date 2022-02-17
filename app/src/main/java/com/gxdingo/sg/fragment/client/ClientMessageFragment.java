@@ -34,6 +34,8 @@ import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
+import java.util.Collections;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -247,13 +249,17 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     }
 
     @Override
-    public void onSetTopResult(int pos) {
-        if (pos <= imMessageAdapter.getData().size() - 1) {
-            imMessageAdapter.getData().get(pos).sort = imMessageAdapter.getData().get(pos).sort > 0 ? 0 : 1;
+    public void onSetTopResult(int pos, int sort) {
+        if (sort <= imMessageAdapter.getData().size() - 1) {
 
-            imMessageAdapter.getData().add(0, imMessageAdapter.getData().remove(pos));
-
-            imMessageAdapter.notifyDataSetChanged();
+            if (sort > 0) {
+                //置顶无需刷新
+                imMessageAdapter.getData().get(pos).sort = 1;
+                imMessageAdapter.getData().add(0, imMessageAdapter.getData().remove(pos));
+                imMessageAdapter.notifyDataSetChanged();
+            } else
+                //取消置顶刷新列表
+                getP().refreshList();
         }
     }
 
@@ -300,13 +306,11 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
                 .hasShadowBg(true)
                 .asCustom(new ChatListFunctionDialog(reference.get(), v -> {
 
-                    if (v.getId() == R.id.del_ll) {
+                    if (v.getId() == R.id.del_ll)
                         getP().listChatDel(imMessageAdapter.getData().get(position).id, position);
-
-                    } else if (v.getId() == R.id.settop_ll)
+                    else if (v.getId() == R.id.settop_ll)
                         //置顶
                         getP().setTop(imMessageAdapter.getData().get(position).id, imMessageAdapter.getData().get(position).sort > 0 ? 0 : 1, position);
-
                 }, imMessageAdapter.getData().get(position).sort > 0 ? true : false).show());
         return false;
     }
