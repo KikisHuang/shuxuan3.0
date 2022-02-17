@@ -280,7 +280,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 goToPage(this, StoreBusinessScopeActivity.class, null);
                 break;
             case R.id.stv_select_address://选择店铺地址
-                goToPage(this, SelectAddressActivity.class, null);
+                goToPagePutSerializable(this, SelectAddressActivity.class, getIntentEntityMap(new Object[]{false}));
                 break;
             case R.id.upload_branch_information_license://门头照
                 mType = 3;

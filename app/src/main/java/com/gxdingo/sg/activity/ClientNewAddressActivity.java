@@ -32,6 +32,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: kikis
@@ -188,7 +189,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
                 break;
             case R.id.cl_receive_address:
 
-                goToPage(this, SelectAddressActivity.class, null);
+                goToPagePutSerializable(this, SelectAddressActivity.class, null);
                 break;
         }
     }

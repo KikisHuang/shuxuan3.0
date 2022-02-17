@@ -500,7 +500,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 if (businessDistrict != null) {
                     ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
                     if (commentList != null) {
-                        BusinessDistrictListBean.Comment comment = commentList.get(parentPosition);
+                        BusinessDistrictListBean.Comment comment = commentList.get(position);
                         if (UserInfoUtils.getInstance().getIdentifier().equals(comment.getIdentifier())) {
                             onMessage("您不能回复自己的评论");
                             return;

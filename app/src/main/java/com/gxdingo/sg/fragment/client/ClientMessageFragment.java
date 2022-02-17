@@ -178,7 +178,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             getP().getSubscribesMessage(true);
         } else if (type == NOTIFY_MSG_LIST_ADAPTER)
             imMessageAdapter.notifyDataSetChanged();
-        else if (type==BACK_TOP_MESSAGE_LIST){
+        else if (type == BACK_TOP_MESSAGE_LIST) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
@@ -307,7 +307,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
                         //置顶
                         getP().setTop(imMessageAdapter.getData().get(position).id, imMessageAdapter.getData().get(position).sort > 0 ? 0 : 1, position);
 
-                },imMessageAdapter.getData().get(position).sort > 0 ? true: false).show());
+                }, imMessageAdapter.getData().get(position).sort > 0 ? true : false).show());
         return false;
     }
 }

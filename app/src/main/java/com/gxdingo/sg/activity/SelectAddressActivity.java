@@ -43,6 +43,7 @@ import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.gxdingo.sg.view.RegexEditText;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 
@@ -110,6 +111,8 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
     public MapView mapView;
 
     private SelectAddressEvent selectAddressEvent;
+
+    private boolean mIsScreenshots = true;
 
     @Override
     protected AddressContract.AddressPresenter createPresenter() {
@@ -189,6 +192,8 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
     @Override
     protected void init() {
+
+        mIsScreenshots = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
         title_layout.setTitleText(getString(R.string.select_receiving_address));
 
         title_layout.setMoreText(gets(R.string.confirm));
@@ -282,6 +287,10 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
      * 对地图进行截屏
      */
     private void mapScreenShot() {
+        //不截屏直接退出
+        if (!mIsScreenshots)
+            finish();
+
         onStarts();
         getAMap().getMapScreenShot(new AMap.OnMapScreenShotListener() {
             @Override
@@ -313,25 +322,14 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
+                    //status!=0 地图渲染完成，截屏无网格 else 地图未渲染完成，截屏有网格
                     if (b) {
+                        //截屏成功
                         selectAddressEvent.fliepath = path;
                         sendEvent(selectAddressEvent);
                         finish();
                     } else
                         onMessage("获取截图信息失败,请重新操作");
-
-                  /*  StringBuffer buffer = new StringBuffer();
-                    if (b)
-                        buffer.append("截屏成功 ");
-                    else {
-                        buffer.append("截屏失败 ");
-                    }
-                    if (status != 0)
-                        buffer.append("地图渲染完成，截屏无网格");
-                    else {
-                        buffer.append( "地图未渲染完成，截屏有网格");
-                    }*/
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
