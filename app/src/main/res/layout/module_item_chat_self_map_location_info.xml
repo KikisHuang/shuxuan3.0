@@ -51,7 +51,7 @@
                         android:id="@+id/address_street_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="请您核对地址信息"
+                        tools:text="请您核对地址信息"
                         android:textColor="@color/graye2e2e2"
                         android:textStyle="bold" />
 
@@ -62,7 +62,7 @@
                         android:layout_marginTop="5dp"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:text="青秀区金湖路"
+                        tools:text="青秀区金湖路"
                         android:textColor="@color/graya9a9a9"
                         android:textSize="12sp"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -74,7 +74,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
                         android:layout_marginTop="5dp"
-                        android:src="@drawable/default_bg"
+                        android:src="@drawable/bg_location_default"
                         android:scaleType="centerCrop"
                         app:layout_constraintTop_toBottomOf="@+id/address_tv"
                         />
@@ -97,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="3"
-                        android:text="李四"
+                        tools:text="李四"
                         android:textColor="@color/graye2e2e2"
                         android:textSize="14sp"
                         app:layout_constraintRight_toRightOf="parent"
@@ -124,7 +124,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:singleLine="true"
-                        android:text="13766666969"
+                        tools:text="13766666969"
                         android:textColor="@color/graye2e2e2"
                         android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/phone_tag_tv"
@@ -144,7 +144,7 @@
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
-            android:src="@mipmap/ic_launcher_round" />
+            tools:src="@mipmap/ic_launcher_round" />
 
     </LinearLayout>
 

@@ -84,7 +84,10 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
         v_img.setVisibility(subscribesMessage.getSendUserRole() == 11 ? View.VISIBLE : View.GONE);
 
-        settop_img.setVisibility(subscribesMessage.sort > 0 ? View.VISIBLE : View.GONE);
+        if (!mIsForward)
+            settop_img.setVisibility(subscribesMessage.sort > 0 ? View.VISIBLE : View.GONE);
+        else
+            settop_img.setVisibility(View.GONE);
 
         Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
 

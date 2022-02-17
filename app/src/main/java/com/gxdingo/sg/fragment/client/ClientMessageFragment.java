@@ -297,7 +297,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
-                .hasShadowBg(false)
+                .hasShadowBg(true)
                 .asCustom(new ChatListFunctionDialog(reference.get(), v -> {
 
                     if (v.getId() == R.id.del_ll) {

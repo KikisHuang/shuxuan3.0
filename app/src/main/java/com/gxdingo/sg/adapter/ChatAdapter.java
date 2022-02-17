@@ -43,6 +43,7 @@ import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.isToday;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.gxdingo.sg.utils.LocalConstant.AddressInfoDel;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
 import static com.gxdingo.sg.utils.LocalConstant.OtherImage;
 import static com.gxdingo.sg.utils.LocalConstant.OtherLocationMapInfo;
@@ -139,6 +140,10 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             else
                 return OtherTransfer;
         } else if (data.getType() == 30) {
+            //删除掉的地址显示一条文字提示
+            if (data.getDataByType() == null)
+                return AddressInfoDel;
+
             if (self)
                 return SelfLocationMapInfo;
             else
@@ -183,8 +188,11 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             return R.layout.module_item_chat_self_map_location_info;
         else if (viewType == OtherLocationMapInfo)
             return R.layout.module_item_chat_other_map_location_info;
+        else if (viewType == AddressInfoDel)
+            return R.layout.module_item_chat_revocation;
         else if (viewType == UNKNOWN)
             return R.layout.module_include_empty;
+
 
         return -1;
     }
@@ -195,10 +203,15 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         int itemType = getItemViewType(position);
 
         if (itemType == -1 || itemType == UNKNOWN) return;
-        //撤回类型
+
         if (itemType == OtherRevocation || itemType == SelfRevocation) {
+            //消息撤回类型
             TextView revocation_tv = holder.getTextView(R.id.revocation_tv);
             revocation_tv.setText(itemType == OtherRevocation ? "对方撤回了一条消息" : "你撤回了一条消息");
+            return;
+        } else if (itemType == AddressInfoDel) {
+            //地址信息删除已类型
+            holder.setText(R.id.revocation_tv, "该条地址信息已被删除");
             return;
         }
 
@@ -237,7 +250,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 if (!isEmpty(data.getDataByType().getMobile()))
                     phone_tv.setText(data.getDataByType().getMobile());
 
-                Glide.with(mContext).load(!isEmpty(data.getDataByType().locationImage)?data.getDataByType().locationImage:R.drawable.bg_location_default).into(map_img);
+                Glide.with(mContext).load(!isEmpty(data.getDataByType().locationImage) ? data.getDataByType().locationImage : R.drawable.bg_location_default).into(map_img);
 
             }
 
@@ -489,7 +502,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, mOtherAvatarInfo.getSendIdentifier()));
 
         String avatarUrl = "";
-        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer||getItemViewType(position) == SelfLocationMapInfo||getItemViewType(position) == SelfLogistics) {
+        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer || getItemViewType(position) == SelfLocationMapInfo || getItemViewType(position) == SelfLogistics) {
             if (mMyAvatarInfo != null && !isEmpty(mMyAvatarInfo.getSendAvatar()))
                 avatarUrl = mMyAvatarInfo.getSendAvatar();
         } else {

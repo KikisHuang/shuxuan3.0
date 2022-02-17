@@ -206,11 +206,13 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
             finish();
         }
         mDataByType = receiveIMMessageBean.getDataByType();
-        //初始默认地址
-        LatLng latLng = new LatLng(mDataByType.getLatitude(), mDataByType.getLongitude());//构造一个位置
-        getAMap().moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        if (mDataByType!=null){
+            //初始默认地址
+            LatLng latLng = new LatLng(mDataByType.getLatitude(), mDataByType.getLongitude());//构造一个位置
+            getAMap().moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 
-        addMarkers(mDataByType.getLatitude(), mDataByType.getLongitude());
+            addMarkers(mDataByType.getLatitude(), mDataByType.getLongitude());
+        }
 
     }
 
