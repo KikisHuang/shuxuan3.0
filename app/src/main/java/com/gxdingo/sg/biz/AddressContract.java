@@ -87,7 +87,7 @@ public class AddressContract {
 
         void setCityName(String cityName);
 
-        void searchResult(boolean refresh, List<PoiItem> poiItems);
+        void searchResult(boolean refresh, List<PoiItem> poiItems,boolean isSearch);
 
         AMap getAMap();
 

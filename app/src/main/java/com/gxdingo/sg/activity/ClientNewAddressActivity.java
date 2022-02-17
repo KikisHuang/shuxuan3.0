@@ -11,12 +11,16 @@ import com.amap.api.services.core.PoiItem;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.SelectAddressEvent;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
+import com.gxdingo.sg.dialog.SgConfirmPopupView;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 
 import java.util.List;
 
@@ -26,6 +30,7 @@ import butterknife.OnClick;
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -309,13 +314,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     public void showDelDialog() {
-//        new XPopup.Builder(reference.get())
-//                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-//                .isDarkTheme(false)
-//                .asCustom(new SgConfirmPopupView(reference.get(), gets(R.string.confirm_del_address), "", () -> {
-//                    getP().delAddress(addressBean.getId());
-//                }).show());
-        getP().delAddress(addressBean.getId());
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.confirm_del_address), () -> getP().delAddress(addressBean.getId()))).show();
     }
 
     @Override
@@ -329,9 +332,10 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
 
     }
+
 
     @Override
     public AMap getAMap() {

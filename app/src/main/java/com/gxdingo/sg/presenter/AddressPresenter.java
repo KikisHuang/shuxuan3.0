@@ -176,7 +176,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                 if (errorCode == 1000) {
                     if (isViewAttached()) {
 
-                        getV().searchResult(refresh, poiResult.getPois());
+                        getV().searchResult(refresh, poiResult.getPois(),true);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }
@@ -221,7 +221,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                         if (isBViewAttached())
                             getBV().onAfters();
 
-                        getV().searchResult(refresh, poiResult.getPois());
+                        getV().searchResult(refresh, poiResult.getPois(),false);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }

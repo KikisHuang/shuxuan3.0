@@ -422,7 +422,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
         if (poiItems.size() <= 0 && mAdapter.getFooterLayoutCount() > 0)
             mAdapter.removeFooterView(LayoutInflater.from(reference.get()).inflate(R.layout.module_include_loadmore_foot, new LinearLayout(reference.get()), false));
 
@@ -439,8 +439,11 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
                 }
             }
 
+            if (isSearch)
+                mAdapter.checkPost(-1);
+
             mAdapter.setList(poiItems);
-            mAdapter.notifyDataSetChanged();
+//            mAdapter.notifyDataSetChanged();
         } else
             mAdapter.addData(poiItems);
     }
@@ -463,13 +466,13 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
         PoiItem poiItem = (PoiItem) adapter.getItem(position);
 //        sendEvent(poiItem);
         selectAddressEvent.poiItem = poiItem;
+        mAdapter.checkPost(0);
 
         getP().moveCamera(new LatLng(poiItem.getLatLonPoint().getLatitude(), poiItem.getLatLonPoint().getLongitude()));
 
         addMarkers(poiItem);
 
         RecycleViewUtils.MoveToPositionTop(recyclerView, 0);
-
 
         behavior.setState(STATE_COLLAPSED);
     }

@@ -307,7 +307,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
                         //置顶
                         getP().setTop(imMessageAdapter.getData().get(position).id, imMessageAdapter.getData().get(position).sort > 0 ? 0 : 1, position);
 
-                }).show());
+                },imMessageAdapter.getData().get(position).sort > 0 ? true: false).show());
         return false;
     }
 }

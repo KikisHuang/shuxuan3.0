@@ -351,8 +351,10 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
+
     }
+
 
     @Override
     public AMap getAMap() {

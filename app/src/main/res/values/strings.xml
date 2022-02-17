@@ -108,5 +108,7 @@
     <string name="go_authentication">去认证</string>
     <string name="unknow">未知</string>
     <string name="shop_qualification">店铺资质</string>
+    <string name="confirm_del_address">确定要删除地址吗？</string>
+    <string name="cancel_settop">取消置顶</string>
 
 </resources>

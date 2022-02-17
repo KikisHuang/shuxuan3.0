@@ -265,7 +265,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
 
     }
 

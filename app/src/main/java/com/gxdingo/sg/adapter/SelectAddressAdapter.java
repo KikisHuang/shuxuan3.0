@@ -29,12 +29,19 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
 
     private String keyWord;
 
+    private int mCheckPos = -1;
+
+
     public SelectAddressAdapter() {
         super(R.layout.module_item_select_address);
     }
 
     public void setKeyWord(String keyWord) {
         this.keyWord = keyWord;
+    }
+
+    public void checkPost(int pos) {
+        mCheckPos = pos;
     }
 
     @Override
@@ -52,15 +59,15 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
         baseViewHolder.setText(R.id.tv_details_address, isEmpty(poiItem.getSnippet()) ? "" : poiItem.getSnippet());
 
         if (poiItem.getDistance() > 0) {
-//            check_img.setVisibility(View.GONE);
             if (poiItem.getDistance() < 1000)
                 baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "m");
             else
                 baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "km");
         } else {
             baseViewHolder.setText(R.id.tv_distance, "");
-//            check_img.setVisibility(View.VISIBLE);
         }
+
+        check_img.setVisibility(getItemPosition(poiItem) == mCheckPos ? View.VISIBLE : View.GONE);
 
     }
 
