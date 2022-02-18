@@ -1,6 +1,7 @@
 package com.gxdingo.sg;
 
 
+import com.gxdingo.sg.utils.DateUtils;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 
 import org.junit.Test;
@@ -28,6 +29,7 @@ import static com.blankj.utilcode.util.TimeUtils.date2String;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
 import static com.kikis.commnlibrary.utils.CommonUtils.URLRequest;
@@ -47,8 +49,12 @@ public class ExampleUnitTest {
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
+        String time = DateUtils.dealDateFormat("2022-02-21T07:59:35.000+00:00");
+
+        boolean isPastDue = string2Millis(time) < getNowMills();
         //dWKULklfNvKfWdp
-        System.out.println(" content  === " + div("2000", String.valueOf(1000), 1)+"公里");
+        System.out.println(" is past due === " + isPastDue);
+
 
     }
 

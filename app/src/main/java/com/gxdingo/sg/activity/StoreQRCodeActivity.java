@@ -154,7 +154,7 @@ public class StoreQRCodeActivity extends BaseMvpActivity<StoreSettingsContract.S
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 
-                Bitmap qrCodeBitmap = CodeUtils.createImage(qrCodeBean.getUrl(), 280, 280, resource);
+                    Bitmap qrCodeBitmap = CodeUtils.createImage(qrCodeBean.getUrl(), 280, 280, resource);
 
                 qr_code_iv.setImageBitmap(qrCodeBitmap);
             }

@@ -183,7 +183,7 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onSucceed(type);
         if (type == CODE_SEND) {
             SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
-            onMessage(gets(R.string.captcha_code_sent));
+//            onMessage(gets(R.string.captcha_code_sent));
             send_verification_code_bt.setText(gets(R.string.resend));
             send_verification_code_bt.setTotalTime(60);
             send_verification_code_bt.start();
@@ -268,9 +268,9 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                     @Override
                     public void onClick(View view) {
                         if (finalI == 0)
-                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_SERVICE_AGREEMENT_KEY }));
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_SERVICE_AGREEMENT_KEY}));
                         else
-                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0,  CLIENT_PRIVACY_AGREEMENT_KEY }));
+                            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_PRIVACY_AGREEMENT_KEY}));
                     }
                 }), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }

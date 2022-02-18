@@ -13,6 +13,7 @@ import com.gxdingo.sg.adapter.ClientCouponAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
+import com.gxdingo.sg.utils.DateUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
@@ -22,6 +23,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -131,7 +134,7 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
         mCouponAdapter = new ClientCouponAdapter();
         recyclerView.setAdapter(mCouponAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
-        recyclerView.setPadding(20,0,20,0);
+        recyclerView.setPadding(20, 0, 20, 0);
         recyclerView.setBackgroundColor(getc(R.color.divide_color));
         mCouponAdapter.setOnItemChildClickListener(this);
     }
@@ -152,11 +155,19 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
             mCouponAdapter.setList(couponBeans);
         else
             mCouponAdapter.addData(couponBeans);
+
     }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
-        ClientCouponBean item =(ClientCouponBean) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class,getIntentEntityMap(new Object[]{item}));
+
+        ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
+        // 状态。0=待使用；1=已使用；2=已过期
+        boolean isPastDue = item.status == 1 || item.status == 2;
+        if (!isPastDue)
+            goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
+        else
+            onMessage("优惠卷已过期");
+
     }
 }

@@ -168,7 +168,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     @OnClick({R.id.search_iv, R.id.unread_iv, R.id.iv_send_business_district})
     public void onViewClicked(View view) {
 
-        if (!UserInfoUtils.getInstance().isLogin()) {
+        if (view.getId() != R.id.search_iv && !UserInfoUtils.getInstance().isLogin()) {
             showLoginDialog(getString(R.string.please_login_before_operation));
             return;
         }

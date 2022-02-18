@@ -285,8 +285,8 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             //判断如果有权限，进行重新定位，刷新操作
             if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
                 getP().checkPermissions(getRxPermissions(), true);
-        }else if (type==BACK_TOP_SHOP){
-            if (scrollView!=null){
+        } else if (type == BACK_TOP_SHOP) {
+            if (scrollView != null) {
                 scrollView.fling(0);
                 scrollView.smoothScrollTo(0, 0);
             }
@@ -366,9 +366,11 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         if (noLocation_layout.getVisibility() == View.VISIBLE)
             NoDataBgSwitch(false);
 
-        if (refresh)
+        if (refresh) {
             mStoreAdapter.setList(storeBeans);
-        else
+            scrollView.fling(0);
+            scrollView.smoothScrollTo(0, 0);
+        } else
             mStoreAdapter.addData(storeBeans);
     }
 
@@ -402,7 +404,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         switch (view.getId()) {
             case R.id.store_avatar_iv:
 
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{ item.storeUserIdentifier}));
+                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.storeUserIdentifier}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())

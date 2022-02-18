@@ -166,7 +166,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     //对方角色。10=联系用户 11=联系商家 12=联系客服
     private int otherRole = 0;
 
-    //对方的id。otherRole = 11传店铺id；otherRole = 12 默认传0
+    //对方的id。otherRole = 11传店铺id；otherRole = 12 默认传0 (旧版本)
+    //3.0版本 为storeUserIdentifier otherRole不用传
     private String otherId = "";
 
     //聊天消息数据集
@@ -352,19 +353,15 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
             if (event.getAction() == ACTION_DOWN) {
                 clicktimeDValue = System.currentTimeMillis();
-
                 getP().startRecorder();
-
-                recordedVoiceScrolling.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecordedVoiceAnimation.start();//启动动画
-                    }
+                recordedVoiceScrolling.post(() -> {
+                    mRecordedVoiceAnimation.start();//启动动画
                 });
-
                 btn_long_press_to_speak.setText("松开发送");
                 btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
                 btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
+            }else if (event.getAction()==MotionEvent.ACTION_UP||event.getAction()==MotionEvent.ACTION_CANCEL){
+                LogUtils.i("ACTION_UP or ACTION_CANCEL");
             }
 
             return false;
@@ -615,23 +612,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private void createNewMsg(ReceiveIMMessageBean receiveIMMessageBean) {
         try {
-         /*   //地址类型
-            if (receiveIMMessageBean.getType() == 30) {
-                ReceiveIMMessageBean.DataByType type = receiveIMMessageBean.getDataByType();
-
-                AddressBean addressBean = new AddressBean();
-                addressBean.setId(type.getId());
-                addressBean.identifier = type.getIdentifier();
-                addressBean.setMobile(type.getMobile());
-                addressBean.setName(type.getName());
-                addressBean.setGender(type.getGender());
-                addressBean.setRegionPath(type.getRegionPath());
-                addressBean.setStreet(type.getStreet());
-                addressBean.setDoorplate(type.getDoorplate());
-                addressBean.setLatitude(type.getLatitude());
-                addressBean.setLongitude(type.getLongitude());
-                setAddressInfo(addressBean);
-            }*/
 
             mChatDatas.add(receiveIMMessageBean);
             mAdapter.notifyDataSetChanged();

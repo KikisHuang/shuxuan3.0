@@ -331,7 +331,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         if (UserInfoUtils.getInstance().isLogin()) {
             StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.storeUserIdentifier}));
         } else {
             UserInfoUtils.getInstance().goToOauthPage(this);
         }
@@ -342,7 +342,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
         switch (view.getId()) {
             case R.id.store_avatar_iv:
-                goToPagePutSerializable(this, ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(this, ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.storeUserIdentifier}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())

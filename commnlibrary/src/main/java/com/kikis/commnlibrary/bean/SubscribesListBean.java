@@ -43,6 +43,7 @@ public class SubscribesListBean {
         private String updateTime;//最后发送时间
         public int sort; //置顶值，值越大越靠前。0=未置顶；>0 大于零已置顶
         public String id; //订阅列表id
+        public int avatarIcon; //头像图标。0不显示；1 = 显示商家图标
 
         public String getSendAvatar() {
             return sendAvatar;

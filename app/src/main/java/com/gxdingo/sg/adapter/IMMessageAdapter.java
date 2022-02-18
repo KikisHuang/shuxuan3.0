@@ -82,7 +82,7 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
             draft_tag_tv.setVisibility(View.VISIBLE);
         }
 
-        v_img.setVisibility(subscribesMessage.getSendUserRole() == 11 ? View.VISIBLE : View.GONE);
+        v_img.setVisibility(subscribesMessage.avatarIcon == 1 ? View.VISIBLE : View.GONE);
 
         if (!mIsForward)
             settop_img.setVisibility(subscribesMessage.sort > 0 ? View.VISIBLE : View.GONE);

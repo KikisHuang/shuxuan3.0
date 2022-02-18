@@ -294,12 +294,13 @@ public class NetworkModel {
 
                 SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
 
-                netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 
-                netWorkListener.onAfters();
-                netWorkListener.onMessage(gets(R.string.captcha_code_sent));
+                if (netWorkListener!=null){
+                    netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 
-
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(gets(R.string.captcha_code_sent));
+                }
             }
         };
 
