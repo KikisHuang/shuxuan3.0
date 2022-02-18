@@ -33,6 +33,7 @@ import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.NoScrollViewPager;
 import com.gxdingo.sg.view.ScaleTransitionPagerTitleView;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.lxj.xpopup.XPopup;
 
@@ -226,6 +227,15 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     @Override
     public void onReturnCommentListResult(BusinessDistrictListBean.BusinessDistrict businessDistrict, BusinessDistrictUnfoldCommentListBean commentListBean) {
 
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof ReLoginBean) {
+            //重登状态重置滑动
+            view_pager.setScroll(UserInfoUtils.getInstance().isLogin());
+        }
     }
 
     @Override

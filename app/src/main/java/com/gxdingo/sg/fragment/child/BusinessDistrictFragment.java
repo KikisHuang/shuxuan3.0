@@ -496,25 +496,24 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             }
             //点击评论列表中的某一条数据，回复谁
             else if (view.getId() == R.id.rv_comment_list) {
-                BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
-                if (businessDistrict != null) {
-                    ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
-                    if (commentList != null) {
-                        BusinessDistrictListBean.Comment comment = commentList.get(position);
-                        if (UserInfoUtils.getInstance().getIdentifier().equals(comment.getIdentifier())) {
-                            onMessage("您不能回复自己的评论");
-                            return;
+                if (checkLogin()) {
+                    BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
+                    if (businessDistrict != null) {
+                        ArrayList<BusinessDistrictListBean.Comment> commentList = businessDistrict.getCommentList();
+                        if (commentList != null) {
+                            BusinessDistrictListBean.Comment comment = commentList.get(position);
+                            if (UserInfoUtils.getInstance().getIdentifier().equals(comment.getIdentifier())) {
+                                onMessage("您不能回复自己的评论");
+                                return;
+                            }
+                            showCommentInputBoxDialog(businessDistrict, "回复" + comment.getReplyNickname(), businessDistrict.getId(), comment.getId());
                         }
-                        /*  if (businessDistrict.getIdentifier().equals(comment.getIdentifier())) {
-                            onMessage("您不能回复自己的评论");
-                            return;
-                        }*/
-                        showCommentInputBoxDialog(businessDistrict, "回复" + comment.getReplyNickname(), businessDistrict.getId(), comment.getId());
                     }
                 }
             }
             //点击评论数量（评论数量大于等于10）或者展开更多/收起布局（标题显示展开更多）
             else if (view.getId() == R.id.tv_comment_count || view.getId() == R.id.ll_comment_unfold_put_away_layout) {
+
                 //tvCommentUnfoldText引用R.id.tv_comment_unfold_put_away_text，方便根据请求展开评论接口的时候根据是否还有数据做响应操作
                 BusinessDistrictListBean.BusinessDistrict businessDistrict = mAdapter.getItem(parentPosition);
                 getP().getUnfoldCommentList(businessDistrict, businessDistrict.getId(), businessDistrict.getCurrentPage(), businessDistrict.getPageSize());
@@ -542,16 +541,19 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 }
 
             } else if (view.getId() == R.id.like_tv) {
-                int status = (int) object;
+                if (checkLogin()) {
+                    int status = (int) object;
 
-                getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
+                    getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
 
-                mAdapter.getData().get(parentPosition).likedStatus = status;
+                    mAdapter.getData().get(parentPosition).likedStatus = status;
 
-                if (mType == 1)
-                    mAdapter.notifyItemChanged(parentPosition + 1);
-                else
-                    mAdapter.notifyItemChanged(parentPosition);
+                    if (mType == 1)
+                        mAdapter.notifyItemChanged(parentPosition + 1);
+                    else
+                        mAdapter.notifyItemChanged(parentPosition);
+                }
+
 
             } else if (view.getId() == R.id.share_tv) {
 
@@ -562,6 +564,17 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             }
         }
     };
+
+    private boolean checkLogin() {
+        if (!UserInfoUtils.getInstance().isLogin()) {
+            new XPopup.Builder(reference.get())
+                    .isDarkTheme(false)
+                    .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                    .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.please_login), () -> UserInfoUtils.getInstance().goToOauthPage(reference.get()))).show();
+            return false;
+        }
+        return true;
+    }
 
 
     /**
@@ -711,19 +724,14 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             mBanner.setOnBannerListener((d, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) d;
 
-                if (!UserInfoUtils.getInstance().isLogin()) {
-                    UserInfoUtils.getInstance().goToOauthPage(reference.get());
-                    onMessage(gets(R.string.please_login));
-                    return;
+                if (checkLogin()) {
+                    if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
+                        //类型 0=无跳转 1=APP跳转 2=H5跳转
+                        goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                    else if (bannerBean.getType() == 1)
+                        //排行榜类型
+                        goToPage(reference.get(), RankingActivity.class, null);
                 }
-
-                if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
-                    //类型 0=无跳转 1=APP跳转 2=H5跳转
-                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
-                else if (bannerBean.getType() == 1)
-                    //排行榜类型
-                    goToPage(reference.get(), RankingActivity.class, null);
-
             });
         }
 
