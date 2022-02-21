@@ -217,22 +217,18 @@ public class AuthenticationPresenter extends BaseMvpPresenter<BasicsListener, Au
                             AuthenticationBean data1 = (AuthenticationBean) o;
                             LogUtils.w("get esFace token === " + data1.getToken());
 
-
                             if (data1.getCode().equals("0000")) {
                                 //初始化成功过 访问服务端进行初始化
                                 manager.startLivingDetect(data1.getToken(), result1 -> {
                                     if (result1.getCode() == EsLivingDetectErrorCode.ELD_SUCCESS) {
                                         if (mNetworkModel != null) {
-
                                             mNetworkModel.AliRPauth(getContext(), result1, o1 -> {
                                                 AliVerifyBean data2 = (AliVerifyBean) o1;
                                                 mNetworkModel.RPauth(getContext(), data2, o2 -> {
                                                     AuthenticationBean data3 = (AuthenticationBean) o2;
                                                     updateUi(data3);
                                                 });
-
                                             });
-
                                         }
                                     } else {
                                         updateUi(result1.getMsg());

@@ -677,46 +677,46 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_MOVE:
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
 
-                    int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
-                    int cancelY = ivVoiceRecordingStatus.getBottom();
+                int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
+                int cancelY = ivVoiceRecordingStatus.getBottom();
 
-                    //当滑动超过close bt getbottom的后，设置为取消状态
-                    if (y > cancelY) {
-                        mCancel = false;
-                        btn_long_press_to_speak.setText("松开发送");
-                        btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
-                        btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
-                        ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_open);
-                    } else {
-                        mCancel = true;
-                        btn_long_press_to_speak.setText("取消发送");
-                        btn_long_press_to_speak.setTextColor(Color.parseColor("#2E2E2E"));
-                        btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#EDEDED"));
-                        ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_close);
-                    }
+                //当滑动超过close bt getbottom的后，设置为取消状态
+                if (y > cancelY) {
+                    mCancel = false;
+                    btn_long_press_to_speak.setText("松开发送");
+                    btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
+                    btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
+                    ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_open);
+                } else {
+                    mCancel = true;
+                    btn_long_press_to_speak.setText("取消发送");
+                    btn_long_press_to_speak.setTextColor(Color.parseColor("#2E2E2E"));
+                    btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#EDEDED"));
+                    ivVoiceRecordingStatus.setImageResource(R.drawable.module_svg_im_voice_recording_status_close);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                if (mCancel) {
+                    resetVoiceBt();
+                    getP().cancelRecorder();
                     break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (mCancel) {
-                        resetVoiceBt();
-                        getP().cancelRecorder();
-                        break;
-                    }
+                }
 
-                    if (System.currentTimeMillis() - clicktimeDValue > 1500) {
-                        resetVoiceBt();
-                        getP().stopRecorder();
-                    } else {
-                        onMessage("录制时间太短");
-                        getP().cancelRecorder();
-                        resetVoiceBt();
+                if (System.currentTimeMillis() - clicktimeDValue > 1500) {
+                    resetVoiceBt();
+                    getP().stopRecorder();
+                } else {
+                    onMessage("录制时间太短");
+                    getP().cancelRecorder();
+                    resetVoiceBt();
 
-                    }
-                    break;
-            }
+                }
+                break;
+        }
         return super.onTouchEvent(event);
     }
 

@@ -5,12 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -94,6 +96,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.name_right_arrow_img)
     public ImageView name_right_arrow_img;
+
+    @BindView(R.id.scroll_view)
+    public NestedScrollView scroll_view;
 
     @BindView(R.id.real_name_img)
     public ImageView real_name_img;
@@ -204,6 +209,14 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
         if (type == LocalConstant.LOGIN_SUCCEED
                 || type == LocalConstant.CLIENT_REFRESH_USER_HOME
                 || type == LocalConstant.CASH_SUCCESSS || type == SOTRE_REVIEW_SUCCEED) {
+
+            if (type == LocalConstant.LOGIN_SUCCEED){
+                scroll_view.post(() -> {
+                    scroll_view.fling(0);
+                    scroll_view.smoothScrollTo(0, 0);
+                });
+            }
+
             getP().getUserInfo();
             checkShowFillCode();
         } else if (type == ClientLocalConstant.MODIFY_PERSONAL_SUCCESS) {

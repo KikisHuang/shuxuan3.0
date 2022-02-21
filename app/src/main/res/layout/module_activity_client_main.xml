@@ -76,7 +76,6 @@
             android:id="@+id/settle_in"
             android:layout_width="0dp"
             android:layout_height="75dp"
-            android:layout_marginVertical="10dp"
             android:layout_weight="1"
             app:anim_show="false"
             app:defocus_color="@color/title_color"

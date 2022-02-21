@@ -166,6 +166,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
             getP().getLocationInfo(getRxPermissions(), false);
         else
             location_name_tv.setText(LocalConstant.locationSelected);
+
     }
 
     @Override

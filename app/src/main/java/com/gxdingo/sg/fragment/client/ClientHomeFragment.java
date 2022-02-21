@@ -108,10 +108,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     private ClientCategoryAdapter mCategoryAdapter;
 
-    private List<CategoriesBean> mDefaultTypeData;
-
-    private List<CategoriesBean> mAllTypeData;
-
     //是否获取定位
     private boolean location = true;
 
@@ -287,8 +283,10 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
                 getP().checkPermissions(getRxPermissions(), true);
         } else if (type == BACK_TOP_SHOP) {
             if (scrollView != null) {
-                scrollView.fling(0);
-                scrollView.smoothScrollTo(0, 0);
+                scrollView.post(() -> {
+                    scrollView.fling(0);
+                    scrollView.smoothScrollTo(0, 0);
+                });
             }
 
             forceStopRecyclerViewScroll(store_rv);
@@ -299,9 +297,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     @Override
     protected void initData() {
-
-        mAllTypeData = new ArrayList<>();
-        mDefaultTypeData = new ArrayList<>();
 
         getP().checkPermissions(getRxPermissions(), true);
 
@@ -368,8 +363,12 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
         if (refresh) {
             mStoreAdapter.setList(storeBeans);
-            scrollView.fling(0);
-            scrollView.smoothScrollTo(0, 0);
+
+            scrollView.post(() -> {
+                scrollView.fling(0);
+                scrollView.smoothScrollTo(0, 0);
+            });
+
         } else
             mStoreAdapter.addData(storeBeans);
     }
@@ -389,7 +388,20 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onItemClick(View itemView, int pos) {
         CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
-        categoryId = categoriesBean.getId();
+
+        if (mCategoryAdapter.getCategoryId() != categoriesBean.getId()) {
+            categorPitch(categoriesBean.getId());
+        } else {
+            //反选(如果是0为全部，全部无需反选)
+            if (categoriesBean.getId() != 0) {
+                categorPitch(0);
+            }
+        }
+
+    }
+
+    private void categorPitch(int id) {
+        categoryId = id;
         mCategoryAdapter.setCategoryId(categoryId);
         mCategoryAdapter.notifyDataSetChanged();
         if (!location)

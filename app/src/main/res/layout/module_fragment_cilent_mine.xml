@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
-
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grayf6">
@@ -251,7 +251,7 @@
                 android:id="@+id/activity_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginHorizontal="7dp"
                 android:layout_marginTop="5dp"
                 android:background="#FFFFFF"
                 app:cardCornerRadius="6dp"
@@ -270,7 +270,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginHorizontal="7dp"
                 android:background="#FFFFFF"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="0dp"
@@ -320,7 +320,7 @@
                 android:id="@+id/fill_invitation_code_cardview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginHorizontal="7dp"
                 android:background="#FFFFFF"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="0dp"
@@ -346,7 +346,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginHorizontal="7dp"
                 android:background="#FFFFFF"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="0dp"
@@ -431,7 +431,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dp_10"
+                android:layout_marginHorizontal="7dp"
                 android:background="#FFFFFF"
                 app:cardCornerRadius="6dp"
                 app:cardElevation="0dp"
@@ -452,7 +452,6 @@
                     app:sLeftTextString="退出登录"
                     app:sLeftViewMarginLeft="@dimen/dp20"
                     app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
-
 
             </androidx.cardview.widget.CardView>
 

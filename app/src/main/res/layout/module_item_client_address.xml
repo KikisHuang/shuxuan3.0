@@ -41,6 +41,7 @@
         android:textColor="@color/graya9a9a9"
         app:layout_constraintStart_toStartOf="@+id/tv_receiver"
         app:layout_constraintTop_toBottomOf="@+id/tv_phone_number"
+        app:layout_constraintEnd_toStartOf="@+id/btn_edit"
         tools:text="金源CBD现代城A座13楼1301室" />
 
     <TextView

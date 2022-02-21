@@ -38,6 +38,10 @@ public class ClientCategoryAdapter extends BaseRecyclerAdapter {
         categoryId = id;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
     @Override
     public int getItemLayoutId(int viewType) {
         return R.layout.module_recycle_item_category;

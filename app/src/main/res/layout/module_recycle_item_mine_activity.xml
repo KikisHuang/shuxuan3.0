@@ -25,15 +25,13 @@
         android:textSize="11sp"
         app:layout_constraintTop_toBottomOf="@+id/ac_name_tv" />
 
-
     <ImageView
         android:id="@+id/ac_img"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

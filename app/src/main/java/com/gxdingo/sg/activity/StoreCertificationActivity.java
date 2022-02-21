@@ -503,7 +503,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         tv_status.setText("正在审核");
         tv_status.setTextColor(getc(R.color.green_dominant_tone));
 
-        ivResultStatus.setBackgroundResource(R.drawable.module_svg_store_certification_audit_status);
+        ivResultStatus.setImageResource(R.drawable.module_svg_store_certification_audit_status);
 
         btnResultBotton.setText("刷新一下");
 
