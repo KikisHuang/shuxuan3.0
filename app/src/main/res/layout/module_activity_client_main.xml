@@ -10,14 +10,20 @@
         android:id="@+id/main_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/menu_layout" />
+        android:layout_above="@+id/shadow_tv" />
+
+    <TextView
+        android:id="@+id/shadow_tv"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/menu_layout"
+        android:background="@drawable/module_layer_list_bg_border_top_white" />
 
     <LinearLayout
         android:id="@+id/menu_layout"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
         android:clipChildren="false"
         android:gravity="bottom"
         android:orientation="horizontal">

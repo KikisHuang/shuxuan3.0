@@ -429,7 +429,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
                             break;
                         case R.id.report_ll:
-                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
+                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier()}));
 
                             break;
 

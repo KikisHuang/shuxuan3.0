@@ -1149,13 +1149,10 @@ public class NetworkModel {
      * @param content
      * @param list
      * @param sendIdentifier
-     * @param role
-     * @param shareUuid
      */
-    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier, int role, String shareUuid) {
+    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier) {
 
         Map<String, String> map = getJsonMap();
-
 
         map.put(LocalConstant.REASON, reason);
         map.put("content", content);
@@ -1165,12 +1162,6 @@ public class NetworkModel {
 
         if (!isEmpty(sendIdentifier))
             map.put("sendIdentifier", sendIdentifier);
-
-        if (role > 0)
-            map.put("role", String.valueOf(role));
-
-        if (!isEmpty(shareUuid))
-            map.put("shareUuid", String.valueOf(shareUuid));
 
         Observable<NormalBean> observable = HttpClient.post(COMPLAINT_MSG, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {

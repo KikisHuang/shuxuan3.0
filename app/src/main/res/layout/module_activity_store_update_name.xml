@@ -42,6 +42,7 @@
             android:background="@null"
             tools:text="金源便利店"
             android:textSize="18sp"
+            android:maxLength="12"
             android:textColor="@color/gray_2e"/>
         <View
             android:layout_width="match_parent"

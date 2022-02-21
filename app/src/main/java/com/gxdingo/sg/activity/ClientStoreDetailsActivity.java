@@ -314,9 +314,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                             }
                             break;
                         case R.id.report_ll:
-                            //todo 投诉待修改
-//                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
-
+                            goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{storeId}));
                             break;
 
                     }

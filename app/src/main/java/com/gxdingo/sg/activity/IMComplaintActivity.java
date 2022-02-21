@@ -126,15 +126,15 @@ public class IMComplaintActivity extends BaseMvpActivity<IMComplaintContract.IMC
     protected void init() {
 
         String sendIdentifier = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
-        int roleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 0);
-        String UUID = getIntent().getStringExtra(Constant.SERIALIZABLE + 2);
+/*        int roleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 0);
+        String UUID = getIntent().getStringExtra(Constant.SERIALIZABLE + 2);*/
 
         //商家对商家文章使用：shuxuanshangjia，商家对用户文章使用：shuxuanyonghutousu，用户对商家shuxuanshangjiatousu
-        identifier = roleId == 11 && UserInfoUtils.getInstance().getUserInfo().getRole() == 11 ? "shuxuanshangjia" : UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "shuxuanyonghutousu" : "shuxuanshangjiatousu";
+        identifier =  "shuxuanshangjia";
 
         titleLayout.setTitleText("投诉举报");
         mAdapter = new IMComplaintContentItemAdapter();
-        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), IMComplaintContentActivity.class, getIntentEntityMap(new Object[]{mAdapter.getData().get(position).getTitle(), sendIdentifier, roleId, UUID})));
+        mAdapter.setOnItemClickListener((adapter, view, position) -> goToPagePutSerializable(reference.get(), IMComplaintContentActivity.class, getIntentEntityMap(new Object[]{mAdapter.getData().get(position).getTitle(), sendIdentifier})));
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         recyclerView.addItemDecoration(new SpaceItemDecoration(dp2px(10), 1));
         recyclerView.setAdapter(mAdapter);

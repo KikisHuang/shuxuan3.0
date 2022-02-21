@@ -150,22 +150,18 @@ public class IMComplaintPresenter extends BaseMvpPresenter<BasicsListener, IMCom
 
     @Override
     public void getDataList(String identifier) {
-
         if (mClientNetworkModel != null)
             mClientNetworkModel.getArticleList(getContext(), 0, identifier);
-
     }
 
     @Override
-    public void complaint(String reason, String content, ArrayList<GridPictureEditing.PictureValue> values, String sendIdentifier, int roleId, String uuid) {
+    public void complaint(String reason, String content, ArrayList<GridPictureEditing.PictureValue> values, String sendIdentifier) {
         if (networkModel != null) {
             List<String> list = new ArrayList<>();
             for (GridPictureEditing.PictureValue value : values) {
                 list.add(isEmpty(value.thumbnailUrl) ? value.url : value.thumbnailUrl);
             }
-
-            networkModel.complaintMessage(getContext(), reason, content, list, sendIdentifier, roleId, uuid);
-
+            networkModel.complaintMessage(getContext(), reason, content, list, sendIdentifier);
         }
     }
 }
