@@ -210,7 +210,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 || type == LocalConstant.CLIENT_REFRESH_USER_HOME
                 || type == LocalConstant.CASH_SUCCESSS || type == SOTRE_REVIEW_SUCCEED) {
 
-            if (type == LocalConstant.LOGIN_SUCCEED){
+            if (type == LocalConstant.LOGIN_SUCCEED) {
                 scroll_view.post(() -> {
                     scroll_view.fling(0);
                     scroll_view.smoothScrollTo(0, 0);
@@ -504,9 +504,9 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 
 
-        if (mAcAdapter.getData().get(position).getType() == 2)
-            //类型 0=无跳转 1=APP跳转 2=H5跳转
-            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, mAcAdapter.getData().get(position).getPage()}));
+        if (mAcAdapter.getData().get(position).getType() == 2 || mAcAdapter.getData().get(position).getType() == 3)
+            //类型 0=无跳转 1=APP跳转 2=H5跳转  3=H5跳转（左上角增加返回按钮）
+            goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, mAcAdapter.getData().get(position).getPage(), "", mAcAdapter.getData().get(position).getType() == 3 ? true : false}));
         else if (mAcAdapter.getData().get(position).getType() == 1)
             //排行榜类型
             goToPage(reference.get(), RankingActivity.class, null);

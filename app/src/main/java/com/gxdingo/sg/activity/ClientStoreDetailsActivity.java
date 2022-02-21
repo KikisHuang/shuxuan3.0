@@ -49,8 +49,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -242,7 +244,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     }
 
-    @OnClick({R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
+    @OnClick({R.id.avatar_img,R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
     public void onClickViews(View v) {
 
         if (!UserInfoUtils.getInstance().isLogin()) {
@@ -279,6 +281,11 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             case R.id.ll_phone_contract:
                 if (mStoreDetail != null)
                     getP().callStore(mStoreDetail.getContactNumber());
+                break;
+            case R.id.avatar_img:
+                if (mStoreDetail != null)
+                getImagePreviewInstance(reference.get(), NetworkAuto, 0, true).setImage(mStoreDetail.getAvatar()).start();
+
                 break;
         }
     }
@@ -438,13 +445,14 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             finish();
         }
 
-
         title_layout.setTitleText(storeDetail.getName());
         address_tv.setText(storeDetail.getAddress());
+
         if (!isEmpty(storeDetail.getDistance()))
             distance_tv.setText(storeDetail.getDistance());
         else
             distance_tv.setVisibility(View.GONE);
+
         mPhotoAdapter.setList(storeDetail.getImages());
 
         business_district_cl.setVisibility(storeDetail == null || storeDetail.getImages() == null || storeDetail.getImages().size() <= 0 ? View.GONE : View.VISIBLE);

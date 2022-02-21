@@ -725,9 +725,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                 HomeBannerBean bannerBean = (HomeBannerBean) d;
 
                 if (checkLogin()) {
-                    if (bannerBean.getType() == 2 && !StringUtils.isEmpty(bannerBean.getPage()))
-                        //类型 0=无跳转 1=APP跳转 2=H5跳转
-                        goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage()}));
+                    if ((bannerBean.getType() == 2 || bannerBean.getType() == 3) && !StringUtils.isEmpty(bannerBean.getPage()))
+                        //类型 0=无跳转 1=APP跳转 2=H5跳转  3=H5跳转（左上角增加返回按钮）
+                        goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, bannerBean.getPage(), "", bannerBean.getType() == 3 ? true : false}));
                     else if (bannerBean.getType() == 1)
                         //排行榜类型
                         goToPage(reference.get(), RankingActivity.class, null);

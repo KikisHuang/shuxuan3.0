@@ -38,7 +38,7 @@
             app:layout_constraintLeft_toRightOf="@+id/name_tg"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/name_tg"
-            tools:text="张三" />
+             />
 
         <TextView
             android:id="@+id/divider_tv"
@@ -65,15 +65,16 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:background="@color/white"
+            android:digits="0123456789xX"
+            android:hint="输入身份证"
             android:textColor="@color/graye2e2e2"
             android:textColorHint="@color/graycc"
             android:textSize="@dimen/sp_14"
-            android:digits="0123456789xX"
             app:layout_constraintBottom_toBottomOf="@+id/id_tag"
             app:layout_constraintLeft_toRightOf="@+id/id_tag"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/id_tag"
-            tools:text="985875699874621854" />
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

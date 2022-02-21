@@ -123,9 +123,7 @@
 
                     <include layout="@layout/module_include_client_home_nolocation" />
 
-
                 </LinearLayout>
-
 
             </LinearLayout>
 

@@ -307,17 +307,14 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     private void scrollViewInit() {
 
-        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
-                if (mTitleHeight > scrollY)
-                    setTitleViewAlpha(0f);
-                else {
-                    setTitleViewAlpha(1);
-                }
-
+            if (mTitleHeight > scrollY)
+                setTitleViewAlpha(0f);
+            else {
+                setTitleViewAlpha(1);
             }
+
         });
     }
 
