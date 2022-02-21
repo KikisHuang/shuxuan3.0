@@ -85,7 +85,10 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.Manifest.permission.RECORD_AUDIO;
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_UP;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
@@ -360,10 +363,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 btn_long_press_to_speak.setText("松开发送");
                 btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
                 btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));
-            }else if (event.getAction()==MotionEvent.ACTION_UP||event.getAction()==MotionEvent.ACTION_CANCEL){
-                LogUtils.i("ACTION_UP or ACTION_CANCEL");
             }
-
             return false;
         });
 
@@ -677,47 +677,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-/*        LogUtils.i("evnet y === " + event.getY());
-
-//        LogUtils.i("ivVoiceRecordingStatus top === " + ivVoiceRecordingStatus.getBottom());
-
-        LogUtils.i("btn_long_press_to_speak bottom === " + btn_long_press_to_speak.getBottom());
-
-        LogUtils.i("ivVoiceRecordingStatus bottom === " + ivVoiceRecordingStatus.getBottom());
-
-        int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
-
-        LogUtils.i("height y === " + y);*/
-
-        if (btn_long_press_to_speak.getBottom() > 0 && ivVoiceRecordingStatus.getBottom() > 0) {
-
             switch (event.getAction()) {
-                case ACTION_DOWN:
-
-                /*    clicktimeDValue = System.currentTimeMillis();
-
-                    getP().startRecorder();
-
-                    recordedVoiceScrolling.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mRecordedVoiceAnimation.start();//启动动画
-                        }
-                    });
-
-                    btn_long_press_to_speak.setText("松开发送");
-                    btn_long_press_to_speak.setTextColor(Color.parseColor("#ffffff"));
-                    btn_long_press_to_speak.setBackgroundColor(Color.parseColor("#599252"));*/
-
-                    break;
                 case MotionEvent.ACTION_MOVE:
 
                     int y = (int) (event.getY() - (btn_long_press_to_speak.getBottom() - ivVoiceRecordingStatus.getBottom()));
                     int cancelY = ivVoiceRecordingStatus.getBottom();
-
-/*                    LogUtils.i("y ==== " + y);
-
-                    LogUtils.i("cancelY ==== " + cancelY);*/
 
                     //当滑动超过close bt getbottom的后，设置为取消状态
                     if (y > cancelY) {
@@ -736,7 +700,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-
                     if (mCancel) {
                         resetVoiceBt();
                         getP().cancelRecorder();
@@ -754,7 +717,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                     }
                     break;
             }
-        }
         return super.onTouchEvent(event);
     }
 
