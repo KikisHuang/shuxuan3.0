@@ -37,18 +37,15 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.ShareEvent;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
 import com.gxdingo.sg.dialog.BusinessDistrictCommentInputBoxDialogFragment;
-import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.BusinessDistrictPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.utils.StringUtils;
 import com.lxj.xpopup.XPopup;
@@ -56,7 +53,6 @@ import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.sunfusheng.marqueeview.MarqueeView;
-import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
@@ -546,15 +542,8 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             } else if (view.getId() == R.id.like_tv) {
                 if (checkLogin()) {
                     int status = (int) object;
-
                     getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
 
-                    mAdapter.getData().get(parentPosition).likedStatus = status;
-
-                    if (mType == 1)
-                        mAdapter.notifyItemChanged(parentPosition + 1);
-                    else
-                        mAdapter.notifyItemChanged(parentPosition);
                 }
 
 
@@ -709,13 +698,26 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     }
 
     @Override
-    public void refreshLikeNum(String o, int position) {
-        mAdapter.getData().get(position).liked = o;
+    public void refreshLikeNum(String o, int postition, int status) {
+        int pos = postition;
 
-        if (mType == 1)
+        mAdapter.getData().get(pos).likedStatus = status;
+
+        mAdapter.getData().get(pos).liked = o;
+
+        mAdapter.notifyDataSetChanged();
+
+
+               /*             mAdapter.getData().get(parentPosition).likedStatus = status;
+
+                    if (mType == 1)
+                        mAdapter.notifyItemChanged(parentPosition + 1);
+                    else
+                        mAdapter.notifyItemChanged(parentPosition);*/
+     /*   if (mType == 1)
             mAdapter.notifyItemChanged(position + 1);
         else
-            mAdapter.notifyItemChanged(position);
+            mAdapter.notifyItemChanged(position);*/
     }
 
     @Override

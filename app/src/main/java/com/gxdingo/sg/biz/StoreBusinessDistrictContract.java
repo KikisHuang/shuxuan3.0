@@ -121,9 +121,10 @@ public class StoreBusinessDistrictContract {
         /**
          * 刷新点赞数量
          *
-         * @param position
+         * @param postition
+         * @param status
          */
-        void refreshLikeNum(String o, int position);
+        void refreshLikeNum(String o, int postition, int status);
 
         /**
          * 头部广告数据回调

@@ -161,8 +161,12 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
 
-        tvStoreName.setText(data.getNickName());
-        tvContent.setText(data.getContent());
+        if (!isEmpty(data.getNickName()))
+            tvStoreName.setText(data.getNickName());
+
+        if (!isEmpty(data.getContent()))
+            tvContent.setText(data.getContent());
+
         String createTime = dealDateFormat(data.getCreateTime());
 
         tvTime.setText(showTimeText(string2Date(createTime)));

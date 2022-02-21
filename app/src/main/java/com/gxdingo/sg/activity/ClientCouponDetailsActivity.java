@@ -149,7 +149,7 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
             }
         });
 
-        valid_date_tv.setText("有效期至：" + DateUtils.dealDateFormat(mCouponBean.getExpireTime()));
+        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
     }
 
     @OnClick(R.id.other_coupon_stv)

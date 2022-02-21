@@ -276,7 +276,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                     if (mType == 10) {
                         //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
                         getP().scanCode(activeCode);
-                    } else if (mType == 11) {
+                    } /*else if (mType == 11) {
                         scanContent = activeCode;
                         //客户端点击【使用优惠券】商家端扫码核销
                         boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
@@ -286,9 +286,19 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                         else
                             getP().storeScanCode(activeCode);
 
-                    } else
+                    }*/ else
                         onMessage("无法识别的二维码类型");
-                }
+                } else if (getAcType(numberDecode(scanContent)) == 11) {
+                    //客户端点击【使用优惠券】商家端扫码核销
+                    boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
+
+                    if (!showDialog)
+                        getP().getNoRemindContent();
+                    else
+                        getP().storeScanCode(scanContent);
+
+                }else
+                    onMessage("无法识别的二维码类型");
 
 
                 //返回的BitMap图像

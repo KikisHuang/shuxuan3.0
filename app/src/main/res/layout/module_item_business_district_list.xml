@@ -44,7 +44,6 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="金源便金源便金源便" />
 
-
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"
             android:layout_width="wrap_content"

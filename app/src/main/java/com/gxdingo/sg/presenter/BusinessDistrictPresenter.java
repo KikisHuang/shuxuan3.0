@@ -301,7 +301,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
             businessDistrictModel.likedOrUnliked(getContext(), status, id, (CustomResultListener<String>) o -> {
 
                 if (isViewAttached())
-                    getV().refreshLikeNum(o, position);
+                    getV().refreshLikeNum(o, position,status);
 
             });
 

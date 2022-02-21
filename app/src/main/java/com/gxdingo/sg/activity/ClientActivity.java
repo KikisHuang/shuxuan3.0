@@ -246,7 +246,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (object instanceof ActivityEvent) {
             //活动事件
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
+            getP().checkTab(0);
         }
     }
 

@@ -280,7 +280,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     }
 
     @Override
-    public void refreshLikeNum(String o, int position) {
+    public void refreshLikeNum(String o, int postition, int status) {
 
     }
 

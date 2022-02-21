@@ -426,7 +426,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
         if (wheelResultBean.type == 20 || wheelResultBean.type == 21) {
 
-
             if (wheelResultBean.jumpType == 30) {
                 ShareUtils.UmShare(this, new UMShareListener() {
                     @Override
