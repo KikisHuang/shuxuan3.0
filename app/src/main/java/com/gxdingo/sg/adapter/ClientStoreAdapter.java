@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static android.text.TextUtils.isEmpty;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.CommonUtils.HideMobile;
 import static com.kikis.commnlibrary.utils.FormatUtils.double2Str;
 
 /**
@@ -73,15 +74,14 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
         }
 
 
-
         if (storeBean.isShowTop()) {
             baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.VISIBLE);
         } else {
             baseViewHolder.getView(R.id.ll_nearby_store).setVisibility(View.GONE);
         }
 
-//        if (mType == 0)
-        baseViewHolder.setText(R.id.phone_number_tv, storeBean.getContactNumber());
+        if (!isEmpty(storeBean.getContactNumber()))
+            baseViewHolder.setText(R.id.phone_number_tv, HideMobile(storeBean.getContactNumber()));
 
     }
 }

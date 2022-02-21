@@ -403,8 +403,8 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
                 RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
                     List<String> notices = new ArrayList<>();
                     for (BannerBean.NoticeListDTO d : data.getNoticeList()) {
-                        if (!isEmpty(d.getContent()))
-                            notices.add(d.getContent());
+                        if (!isEmpty(d.getTitle()))
+                            notices.add(d.getTitle());
 
                     }
                     e.onNext(notices);

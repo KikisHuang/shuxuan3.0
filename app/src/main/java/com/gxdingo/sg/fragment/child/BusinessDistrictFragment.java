@@ -294,7 +294,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             marqueeView = mHeadLayout.findViewById(R.id.marqueeView);
 
             marqueeView.setOnItemClickListener((position, textView) -> {
-                goToPage(reference.get(), NoticeMessageActivity.class, getIntentMap(new String[]{textView.getText().toString()}));
+                goToPage(reference.get(), NoticeMessageActivity.class, getIntentMap(new String[]{noticeList.get(position).getContent()}));
             });
 
             label_recyclerView.setAdapter(mLabelAdapter);
@@ -441,6 +441,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
      */
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
+        if (mType == 1) {
+            getP().getBannerDataInfo();
+        }
         //获取商圈列表
         getP().getBusinessDistrictList(true, mcircleUserIdentifier);
     }
