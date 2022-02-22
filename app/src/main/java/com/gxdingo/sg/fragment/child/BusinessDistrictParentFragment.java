@@ -339,7 +339,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
 
                 LinePagerIndicator indicator = new LinePagerIndicator(context);
                 indicator.setMode(LinePagerIndicator.MODE_EXACTLY);
-                indicator.setLineHeight(ConvertUtils.dp2px(2));
+                indicator.setLineHeight(ConvertUtils.dp2px(2.5f));
                 indicator.setLineWidth(ConvertUtils.dp2px(20));
                 indicator.setRoundRadius(ConvertUtils.dp2px(1));
                 indicator.setStartInterpolator(new AccelerateInterpolator());

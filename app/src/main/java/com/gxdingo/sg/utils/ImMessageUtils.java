@@ -149,7 +149,6 @@ public class ImMessageUtils {
                     if (!isEmpty(message)) {
                         ReceiveIMMessageBean messageBean = GsonUtil.GsonToBean(message, ReceiveIMMessageBean.class);
 
-
                         if (messageBean != null && messageBean.getType() == 1001 || messageBean.getType() == 1002) {
                             //商圈未读通知、商圈被评论通知
                             EventBus.getDefault().post(messageBean.getType() == 1001 ? LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT : messageBean.getDataByType());

@@ -143,13 +143,13 @@
             android:layout_marginStart="100dp"
             android:background="@null"
             android:hint="详细地址，例：1栋8层0801室"
+            android:maxLength="35"
+            android:paddingEnd="@dimen/dp15"
             android:textColor="@color/graye2e2e2"
             android:textColorHint="@color/gray1"
-            android:maxLength="35"
             android:textSize="14sp"
-            android:paddingEnd="@dimen/dp15"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
