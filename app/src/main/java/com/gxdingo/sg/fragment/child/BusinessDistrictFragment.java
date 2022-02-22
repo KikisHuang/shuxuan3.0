@@ -705,7 +705,11 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
         mAdapter.getData().get(pos).liked = o;
 
-        mAdapter.notifyItemChanged(pos);
+
+        if (mType == 1)
+            mAdapter.notifyItemChanged(pos + 1);
+        else
+            mAdapter.notifyItemChanged(pos);
 
 
                /*             mAdapter.getData().get(parentPosition).likedStatus = status;

@@ -3,7 +3,10 @@ package com.gxdingo.sg.activity;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -164,6 +167,13 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         et_cash_amount.setSelection(et_cash_amount.getText().toString().length());
         et_cash_amount.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         clickInterval = 500;
+
+        String strHint = "可转出到卡68.26元";
+
+        SpannableString span = new SpannableString(strHint);
+        span.setSpan(new RelativeSizeSpan(0.5f), 0, strHint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        et_cash_amount.setHint(span);
+
     }
 
     @Override
