@@ -104,6 +104,8 @@ public class LocalConstant {
 
     //登录or绑定微信获取code
     public static boolean isLogin = false;
+    //是否在联系客服页
+    public static boolean IS_CONTEACT_SERVER = false;
 
     //前后台标识符
     public static boolean isBackground = false;

@@ -6,16 +6,19 @@ import android.text.TextUtils;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.MyApplication;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.websocket.BaseWebSocket;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.KikisUitls;
 import com.kikis.commnlibrary.utils.MessageCountManager;
+import com.zhouyou.http.model.ApiResult;
 
 import org.greenrobot.eventbus.EventBus;
 import org.java_websocket.enums.ReadyState;
@@ -147,6 +150,17 @@ public class ImMessageUtils {
                     BaseLogUtils.i(TAG, "onMessage：" + message);
 
                     if (!isEmpty(message)) {
+                        //普通的返回类型
+                        ApiResult result = GsonUtil.GsonToBean(message, ApiResult.class);
+
+                        if (result != null && result.getCode() == 408 && !LocalConstant.IS_CONTEACT_SERVER) {
+                            //账号其他地方登录被顶下线返回：
+                            UserInfoUtils.getInstance().clearLoginStatus();
+                            EventBus.getDefault().post(new ReLoginBean(0, ""));
+                            ToastUtils.showShort(result.getMsg());
+                        }
+
+                        //接收新消息的返回类型
                         ReceiveIMMessageBean messageBean = GsonUtil.GsonToBean(message, ReceiveIMMessageBean.class);
 
                         if (messageBean != null && messageBean.getType() == 1001 || messageBean.getType() == 1002) {

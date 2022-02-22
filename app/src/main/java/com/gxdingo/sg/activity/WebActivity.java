@@ -328,6 +328,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected void onDestroy() {
+        if (LocalConstant.IS_CONTEACT_SERVER)
+            LocalConstant.IS_CONTEACT_SERVER = false;
         if (webView != null) {
             callJsBye();
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);

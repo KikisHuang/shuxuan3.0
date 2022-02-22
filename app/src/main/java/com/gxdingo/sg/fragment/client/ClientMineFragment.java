@@ -297,7 +297,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                     else
                         getP().storeScanCode(scanContent);
 
-                }else
+                } else
                     onMessage("无法识别的二维码类型");
 
 
@@ -351,8 +351,12 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientAccountSecurityActivity.class, null);
                 break;
             case R.id.contract_server_stv:
-                String url = WEB_URL + SERVER_URL;
-                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
+                if (checkClickInterval(R.id.contract_server_stv)) {
+                    LocalConstant.IS_CONTEACT_SERVER = true;
+                    String url = WEB_URL + SERVER_URL;
+                    goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
+                }
+
                 break;
             case R.id.about_us_stv:
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "about our"}));
