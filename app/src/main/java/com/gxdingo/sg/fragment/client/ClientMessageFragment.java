@@ -177,7 +177,12 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
         if (type == LOGIN_SUCCEED) {
+            forceStopRecyclerViewScroll(recyclerView);
+            //返回顶部
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
+
             getP().getSubscribesMessage(true);
+
         } else if (type == NOTIFY_MSG_LIST_ADAPTER)
             imMessageAdapter.notifyDataSetChanged();
         else if (type == BACK_TOP_MESSAGE_LIST) {

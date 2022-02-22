@@ -281,14 +281,13 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
             //判断如果有权限，进行重新定位，刷新操作
             if (isGranted(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
                 getP().checkPermissions(getRxPermissions(), true);
-        } else if (type == BACK_TOP_SHOP) {
+        } else if (type == BACK_TOP_SHOP || type == LOGIN_SUCCEED) {
             if (scrollView != null) {
                 scrollView.post(() -> {
                     scrollView.fling(0);
                     scrollView.smoothScrollTo(0, 0);
                 });
             }
-
             forceStopRecyclerViewScroll(store_rv);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) store_rv.getLayoutManager(), store_rv, 0);
@@ -358,15 +357,9 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         if (noLocation_layout.getVisibility() == View.VISIBLE)
             NoDataBgSwitch(false);
 
-        if (refresh) {
+        if (refresh)
             mStoreAdapter.setList(storeBeans);
-
-            scrollView.post(() -> {
-                scrollView.fling(0);
-                scrollView.smoothScrollTo(0, 0);
-            });
-
-        } else
+        else
             mStoreAdapter.addData(storeBeans);
     }
 

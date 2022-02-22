@@ -2,6 +2,8 @@ package com.gxdingo.sg.adapter;
 
 import android.widget.ImageView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
@@ -12,6 +14,7 @@ import com.gxdingo.sg.utils.DateUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -30,6 +33,9 @@ public class MineActivityAdapter extends BaseQuickAdapter<ClientMineBean.AdsList
     protected void convert(@NotNull BaseViewHolder baseViewHolder, ClientMineBean.AdsListBean data) {
 
         ImageView ac_img = baseViewHolder.itemView.findViewById(R.id.ac_img);
+        ConstraintLayout item_cl = baseViewHolder.itemView.findViewById(R.id.item_cl);
+
+        item_cl.setPadding(dp2px(15), 0, getItemPosition(data) % 2 != 0 ? dp2px(15) : 0, 0);
 
         if (!isEmpty(data.getTitle()))
             baseViewHolder.setText(R.id.ac_name_tv, data.getTitle());

@@ -70,6 +70,7 @@ import io.reactivex.disposables.Disposable;
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -416,11 +417,11 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
             if (mType == 2)
                 mcircleUserIdentifier = UserInfoUtils.getInstance().getUserInfo().getIdentifier();
-
-            //获取商圈列表
-            getP().getBusinessDistrictList(true, mcircleUserIdentifier);
             isFirstLoad = false;
-        } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
+            RecycleViewUtils.MoveToPositionTop(recyclerView, 0);
+            onRefresh(refreshLayout);
+
+        } else if (type == BACK_TOP_BUSINESS_DISTRICT ) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
@@ -436,9 +437,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
      */
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
-        if (mType == 1) {
+        if (mType == 1)
             getP().getBannerDataInfo();
-        }
+
         //获取商圈列表
         getP().getBusinessDistrictList(true, mcircleUserIdentifier);
     }
@@ -540,11 +541,13 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
             } else if (view.getId() == R.id.like_tv) {
                 if (checkLogin()) {
-                    int status = (int) object;
-                    getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
+                    if (checkClickInterval(R.id.like_tv)) {
+                        int status = (int) object;
+                        getP().likedOrUnliked(status, mAdapter.getData().get(parentPosition).getId(), parentPosition);
+                    } else
+                        onMessage(getString(R.string.take_a_break));
 
                 }
-
 
             } else if (view.getId() == R.id.share_tv) {
 
@@ -600,7 +603,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
      */
     @Override
     public void onBusinessDistrictData(boolean refresh, BusinessDistrictListBean bean) {
-        Log.d("TAG", "onBusinessDistrictData: ");
 
         if (bean != null && bean.getList() != null) {
             if (refresh) {
@@ -697,14 +699,13 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     }
 
     @Override
-    public void refreshLikeNum(String o, int postition, int status) {
-        int pos = postition;
+    public void refreshLikeNum(String o, int pos, int status) {
 
         mAdapter.getData().get(pos).likedStatus = status;
 
         mAdapter.getData().get(pos).liked = o;
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyItemChanged(pos);
 
 
                /*             mAdapter.getData().get(parentPosition).likedStatus = status;
@@ -748,17 +749,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         }
     }
 
-    /**
-     * 更换TextView图标
-     *
-     * @param textView
-     * @param resId
-     */
-    private void changeDrawable(TextView textView, int resId) {
-        Drawable drawable = mContext.getResources().getDrawable(resId);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        textView.setCompoundDrawables(null, null, drawable, null);
-    }
 
     @Override
     public void onStart() {

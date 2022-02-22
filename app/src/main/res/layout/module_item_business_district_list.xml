@@ -31,18 +31,14 @@
 
         <TextView
             android:id="@+id/tv_store_name"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:gravity="left"
             android:singleLine="true"
             android:textColor="#FF1F1F1F"
             android:textSize="16sp"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="金源便金源便金源便" />
+            tools:text="金源便" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier"

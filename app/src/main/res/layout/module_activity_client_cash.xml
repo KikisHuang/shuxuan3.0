@@ -59,7 +59,7 @@
                 android:minWidth="200dp"
                 android:textColor="@color/graye2e2e2"
                 android:textColorHint="#CCCCCC"
-                android:textSize="30sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/bottom_hint_tv"
