@@ -44,8 +44,10 @@ public class TemplateTitle extends RelativeLayout {
     @SuppressLint("ResourceAsColor")
     public TemplateTitle(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         LayoutInflater.from(context).inflate(R.layout.module_include_title, this);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TemplateTitle, 0, 0);
+
         try {
             titleText = ta.getString(R.styleable.TemplateTitle_titleText);
             canBack = ta.getBoolean(R.styleable.TemplateTitle_canBack, false);

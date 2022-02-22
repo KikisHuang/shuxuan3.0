@@ -142,7 +142,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     //活动倒计时
     private int countDown = 15;
 
-
     private BusinessDistrictLabelAdapter mLabelAdapter;
 
     private RecyclerView label_recyclerView;

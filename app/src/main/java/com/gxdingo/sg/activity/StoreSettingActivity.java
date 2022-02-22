@@ -192,8 +192,8 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                             public void onSelected(BasePopupView popupView, int startHour, int startMinute, int endHour, int endMinute) {
                                 String startTime = (startHour < 10 ? "0" : "") + startHour + ":" + (startMinute < 10 ? "0" : "") + startMinute;
                                 String endTime = (endHour < 10 ? "0" : "") + endHour + ":" + (endMinute < 10 ? "0" : "") + endMinute;
-                                //修改HH:mm为HH:mm:ss
-                                getP().businessTime(startTime + ":00", endTime + ":00");
+
+                                getP().businessTime(startTime , endTime);
 //                                business_time_stv.setRightString(startTime+" - "+endTime);
                                 popupView.dismiss();
                             }

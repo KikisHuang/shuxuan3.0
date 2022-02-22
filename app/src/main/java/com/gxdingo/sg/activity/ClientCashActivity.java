@@ -240,7 +240,6 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 @Override
                 public void onSelected(String account, int type, int bankCardId, String cardName, String icon) {
 
-
                     if (type == 998) {
                         if (isEmpty(account))
                             getP().bindAli();

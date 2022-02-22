@@ -23,6 +23,8 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
@@ -217,7 +219,36 @@ public final class CameraManager {
      */
     public Rect getFramingRect() {
         try {
-            Point screenResolution = configManager.getScreenResolution();
+
+            if (framingRect == null) {
+                if (camera == null) {
+                    return null;
+                }
+                Point screenResolution = configManager.getScreenResolution();
+                if (screenResolution == null) {
+                    // Called early, before init even finished
+                    return null;
+                }
+
+                // int width = findDesiredDimensionInRange(screenResolution.x,
+                // MIN_FRAME_WIDTH, MAX_FRAME_WIDTH);
+                // int height = findDesiredDimensionInRange(screenResolution.y,
+                // MIN_FRAME_HEIGHT, MAX_FRAME_HEIGHT);
+
+                /* 扫描框修改 */
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                int width = (int) (metrics.widthPixels * 0.6);
+                int height = (int) (width * 0.9);
+
+                int leftOffset = (screenResolution.x - width) / 2;
+                int topOffset = (screenResolution.y - height) / 4;
+                framingRect = new Rect(leftOffset, topOffset, leftOffset + width,
+                        topOffset + height);
+                Log.d(TAG, "Calculated framing rect: " + framingRect);
+            }
+            return framingRect;
+
+            /*      Point screenResolution = configManager.getScreenResolution();
             // if (framingRect == null) {
             if (camera == null) {
                 return null;
@@ -233,7 +264,7 @@ public final class CameraManager {
             }
             framingRect = new Rect(leftOffset, topOffset, leftOffset + FRAME_WIDTH, topOffset + FRAME_HEIGHT);
             // }
-            return framingRect;
+            return framingRect;*/
         } catch (Exception e) {
             e.printStackTrace();
             return null;
