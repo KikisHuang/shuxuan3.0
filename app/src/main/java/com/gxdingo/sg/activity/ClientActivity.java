@@ -264,13 +264,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
-                if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
-                    showInvitationCodeDialog();
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
+                showInvitationCodeDialog();
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        }else if (type == GO_SETTLED) {
+        } else if (type == GO_SETTLED) {
             getP().checkTab(2);
         }
     }
@@ -306,6 +306,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
 
     }
+
     @OnClick({R.id.home_page_layout, R.id.message_layout, R.id.settle_in, R.id.business_layout, R.id.mine_layout})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
@@ -314,14 +315,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if ((v.getId() == R.id.message_layout || v.getId() == R.id.settle_in || v.getId() == R.id.mine_layout) && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
-
         }
-
-        if (v.getId() == R.id.mine_layout)
-            ImmersionBar.with(reference.get()).init();
-        else
-            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.home_page_layout || v.getId() == R.id.business_layout || v.getId() == R.id.message_layout ? R.color.grayf5 : R.color.white).init();
-
 
         switch (v.getId()) {
             case R.id.home_page_layout:
@@ -376,9 +370,15 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onSeleted(int checkTab, int oldTab) {
 
+        if (checkTab == 4)
+            ImmersionBar.with(reference.get()).init();
+        else
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(1 == checkTab || 0 == checkTab || 3 == checkTab ? R.color.grayf5 : R.color.white).init();
+
         mMenuLayout.get(checkTab).setonSelected(true);
 
         mMenuLayout.get(oldTab).setonSelected(false);
+
     }
 
     @Override

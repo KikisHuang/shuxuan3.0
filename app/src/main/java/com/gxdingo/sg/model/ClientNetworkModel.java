@@ -700,6 +700,7 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
     }
 
+
     /**
      * 领取优惠券
      *
@@ -1910,4 +1911,5 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
+
 }

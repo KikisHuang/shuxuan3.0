@@ -642,10 +642,6 @@ public class Api {
      * 交易记录详情
      */
     public static final String TRANSACTION_DETAILS = HIERARCHY + "wallet/transaction/detail";
-    /**
-     * 选择已绑定银行卡
-     */
-    public static final String SELECT_BANK_CARD = HIERARCHY + "wallet/bank/list";
 
     /**
      * 提现

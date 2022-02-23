@@ -421,7 +421,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             RecycleViewUtils.MoveToPositionTop(recyclerView, 0);
             onRefresh(refreshLayout);
 
-        } else if (type == BACK_TOP_BUSINESS_DISTRICT ) {
+        } else if (type == BACK_TOP_BUSINESS_DISTRICT) {
             forceStopRecyclerViewScroll(recyclerView);
             //返回顶部
             RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
@@ -705,11 +705,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
         mAdapter.getData().get(pos).liked = o;
 
-
-        if (mType == 1)
-            mAdapter.notifyItemChanged(pos + 1);
-        else
-            mAdapter.notifyItemChanged(pos);
+        mAdapter.notifyDataSetChanged();
 
 
                /*             mAdapter.getData().get(parentPosition).likedStatus = status;

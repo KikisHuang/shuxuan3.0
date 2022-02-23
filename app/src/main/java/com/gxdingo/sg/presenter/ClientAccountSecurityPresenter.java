@@ -214,12 +214,6 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     }
 
     @Override
-    public void unbindThirdParty(int type) {
-        if (clientNetworkModel != null)
-            clientNetworkModel.unbindThirdParty(getContext(), type);
-    }
-
-    @Override
     public void cash(String pwd) {
         if (getV().getType() < 0) {
             onMessage(gets(R.string.please_select_cash_account));
@@ -230,11 +224,6 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
         clientNetworkModel.balanceCash(getContext(), getV().getType(), getV().getCashAmount(), pwd, getV().getBackCardId());
     }
 
-    @Override
-    public void loginOff() {
-        if (mNetworkModel != null)
-            mNetworkModel.logOff(getContext(),0);
-    }
 
     @Override
     public void getCardList(boolean b) {
