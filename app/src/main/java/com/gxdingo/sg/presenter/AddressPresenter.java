@@ -176,7 +176,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                 if (errorCode == 1000) {
                     if (isViewAttached()) {
 
-                        getV().searchResult(refresh, poiResult.getPois(),true);
+                        getV().searchResult(refresh, poiResult.getPois(), true);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }
@@ -221,7 +221,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                         if (isBViewAttached())
                             getBV().onAfters();
 
-                        getV().searchResult(refresh, poiResult.getPois(),false);
+                        getV().searchResult(refresh, poiResult.getPois(), false);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }
@@ -533,5 +533,20 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
         addDisposable(subscriber);
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+
+        if (model != null)
+            model.destroy();
+
+        if (mMapLocation != null)
+            mMapLocation = null;
+
+        if (mCameraPosition != null)
+            mCameraPosition = null;
+
     }
 }

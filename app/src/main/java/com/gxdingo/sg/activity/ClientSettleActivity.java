@@ -109,8 +109,8 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    protected int initContentView() {
-        return R.layout.module_activity_client_settle;
+        protected int initContentView() {
+            return R.layout.module_activity_client_settle;
     }
 
     @Override

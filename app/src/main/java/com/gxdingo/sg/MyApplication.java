@@ -145,10 +145,11 @@ public class MyApplication extends Application {
         UMConfigure.preInit(this, UMENG_APP_KEY, getChannelName(this));
         okHttpInit();
         keyInt();
-
+        
         //首次登录延迟初始化
         if (!SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true))
             init();
+
     }
 
 

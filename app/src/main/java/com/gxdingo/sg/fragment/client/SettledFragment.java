@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
@@ -16,6 +17,7 @@ import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
@@ -25,6 +27,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
+import static com.gxdingo.sg.http.Api.CLIENT_HDGZ_AGREEMENT_KEY;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Kikis
@@ -32,6 +38,10 @@ import static com.blankj.utilcode.util.ClipboardUtils.copyText;
  * @page:
  */
 public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements  ClientHomeContract.ClientHomeListener {
+
+
+    @BindView(R.id.title_layout)
+    public TemplateTitle title_layout;
 
 
     @BindView(R.id.settle_in_iv)
@@ -51,7 +61,7 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
 
     @Override
     protected int activityTitleLayout() {
-        return 0;
+        return R.layout.module_include_custom_title;
     }
 
     @Override
@@ -82,7 +92,11 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
 
     @Override
     protected void init() {
+        title_layout.setMoreText("活动规则");
 
+        title_layout.getMoreTextView().setTextColor(getc(R.color.green_dominant_tone));
+        title_layout.setTitleText("入驻平台");
+        title_layout.setBackVisible(false);
     }
 
 
@@ -96,6 +110,7 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
+
         if (object instanceof ArticleImage) {
             ArticleImage articleImage = (ArticleImage) object;
             Glide.with(this).load(articleImage.getImage()).into(settle_in_iv);
@@ -103,7 +118,7 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
 
     }
 
-    @OnClick({R.id.btn_become_store, R.id.btn_invitation})
+    @OnClick({R.id.btn_become_store, R.id.btn_invitation,R.id.btn_more})
     public void onClickViews(View v) {
         switch (v.getId()) {
             case R.id.btn_become_store:
@@ -128,6 +143,10 @@ public class SettledFragment extends BaseMvpFragment<ClientHomeContract.ClientHo
 
                 } else
                     onMessage("没有获取到分享连接");
+
+                break;
+            case R.id.btn_more:
+                goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{true, 0, CLIENT_HDGZ_AGREEMENT_KEY}));
 
                 break;
         }

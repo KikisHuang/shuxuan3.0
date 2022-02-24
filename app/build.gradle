@@ -129,6 +129,9 @@ dependencies {
     //alipay noutdid aar
     implementation(name: 'alipaysdk-noutdid-15.8.03.210428205839', ext: 'aar')
 
+    //内存泄漏检测工具leakcanary
+    debugImplementation rootProject.ext.dependencies.debugleakcanary
+
     //ButterKnife
     implementation rootProject.ext.dependencies.butterknife
     annotationProcessor rootProject.ext.dependencies.butterknifecompiler
@@ -186,6 +189,7 @@ dependencies {
     implementation rootProject.ext.dependencies.greendao
 
 
+
     //跑马灯
     api 'com.sunfusheng:MarqueeView:1.4.0'
 
@@ -203,4 +207,6 @@ dependencies {
     implementation 'com.aliyun.ams:alicloud-android-third-push-oppo:3.7.2'
     //vivo辅助通道
     implementation 'com.aliyun.ams:alicloud-android-third-push-vivo:3.7.2'
+
+
 }

@@ -30,6 +30,7 @@ import com.amap.api.maps.model.animation.ScaleAnimation;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.district.DistrictItem;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -112,7 +113,7 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
     @BindView(R.id.call_phone_img)
     public ImageView call_phone_img;
 
-    private BasePopupView mNavigationPopupView;
+    private BaseActionSheetPopupView mNavigationPopupView;
 
     @BindView(R.id.mapView)
     public MapView mapView;
@@ -206,7 +207,7 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
             finish();
         }
         mDataByType = receiveIMMessageBean.getDataByType();
-        if (mDataByType!=null){
+        if (mDataByType != null) {
             //初始默认地址
             LatLng latLng = new LatLng(mDataByType.getLatitude(), mDataByType.getLongitude());//构造一个位置
             getAMap().moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
@@ -277,7 +278,7 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
 
     private void showNaviDIalog() {
         if (mNavigationPopupView == null) {
-            mNavigationPopupView = new XPopup.Builder(reference.get())
+            mNavigationPopupView = (BaseActionSheetPopupView) new XPopup.Builder(reference.get())
                     .isDarkTheme(false)
                     .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.gaode_map), gets(R.string.baidu_map), gets(R.string.tencent_map)).setItemClickListener((itemv, pos) -> {
                         getP().goOutSideNavigation(pos, mDataByType);
@@ -404,10 +405,15 @@ public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.Addr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mapView != null)
+
+
+        if (mapView != null) {
             mapView.onDestroy();
+            mapView = null;
+        }
 
         if (mNavigationPopupView != null) {
+            mNavigationPopupView.setItemClickListener(null);
             mNavigationPopupView.destroy();
             mNavigationPopupView = null;
         }

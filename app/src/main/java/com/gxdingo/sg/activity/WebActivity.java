@@ -176,9 +176,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setSupportMultipleWindows(false); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
         webView.getSettings().setDomStorageEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler handler, SslError error) {

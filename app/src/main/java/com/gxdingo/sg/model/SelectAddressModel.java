@@ -51,7 +51,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
 
     private DistrictSearch search;
 
-    private GeocodeSearch geocoderSearch;
+//    private GeocodeSearch geocoderSearch;
 
     private DistrictSearchQuery districtQuery;
 
@@ -265,5 +265,35 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
 
     public void checkStatus(String add, String adddt, String con, String mob, String doorplate, AddressContract.AddressCompileModelListener addressCompileModelListener) {
         addressCompileModelListener.isEnable(!isEmpty(add) && !isEmpty(adddt) && !isEmpty(con) && !isEmpty(mob) && !isEmpty(doorplate));
+    }
+
+    public void destroy() {
+        if (mLocationClient != null) {
+            mLocationClient.onDestroy();
+            mLocationClient = null;
+        }
+        if (query != null)
+            query = null;
+
+        if (poiSearch != null)
+            poiSearch = null;
+
+        if (search != null)
+            search = null;
+
+        if (districtQuery != null)
+            districtQuery = null;
+        if (mAmap != null) {
+            mAmap.clear();
+            mAmap = null;
+        }
+
+        if (mMyLocation != null)
+            mMyLocation = null;
+
+        if (mLocationOption != null)
+            mLocationOption = null;
+
+
     }
 }
