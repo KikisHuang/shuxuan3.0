@@ -214,7 +214,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
         super.onBaseEvent(object);
         if (object instanceof ArticleImage) {
             ArticleImage articleImage = (ArticleImage) object;
-            Glide.with(this).load(articleImage.getImage()).into(article_img);
+            Glide.with(this).load(articleImage.getImage()).apply(GlideUtils.getInstance().getDefaultOptions().fitCenter()).override(1080,1920).into(article_img);
         }
 
     }

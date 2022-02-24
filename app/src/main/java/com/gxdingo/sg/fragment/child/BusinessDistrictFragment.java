@@ -148,6 +148,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
     private RecyclerView label_recyclerView;
 
     private MarqueeView marqueeView;
+    private LinearLayout notice_ll;
 
     private Banner mBanner;
 
@@ -288,6 +289,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             mLabelAdapter = new BusinessDistrictLabelAdapter();
 
             marqueeView = mHeadLayout.findViewById(R.id.marqueeView);
+            notice_ll = mHeadLayout.findViewById(R.id.notice_ll);
 
             marqueeView.setOnItemClickListener((position, textView) -> {
                 goToPage(reference.get(), NoticeMessageActivity.class, getIntentMap(new String[]{noticeList.get(position).getContent()}));
@@ -707,17 +709,6 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
 
         mAdapter.notifyDataSetChanged();
 
-
-               /*             mAdapter.getData().get(parentPosition).likedStatus = status;
-
-                    if (mType == 1)
-                        mAdapter.notifyItemChanged(parentPosition + 1);
-                    else
-                        mAdapter.notifyItemChanged(parentPosition);*/
-     /*   if (mType == 1)
-            mAdapter.notifyItemChanged(position + 1);
-        else
-            mAdapter.notifyItemChanged(position);*/
     }
 
     @Override
@@ -740,10 +731,13 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
             });
         }
 
-        if (marqueeView != null && data.noticeStringList != null) {
+        if (marqueeView != null && data.noticeStringList != null && data.noticeStringList.size() > 0) {
             noticeList = data.getNoticeList();
             marqueeView.startWithList(data.noticeStringList);
-        }
+            notice_ll.setVisibility(View.VISIBLE);
+        } else
+            notice_ll.setVisibility(View.GONE);
+
         if (mLabelAdapter != null && data.getIconList() != null) {
             mLabelAdapter.setList(data.getIconList());
         }

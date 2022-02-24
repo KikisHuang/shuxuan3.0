@@ -197,7 +197,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new SelectDateDialog(reference.get(),date, (dialog, year, month) -> {
+                        .asCustom(new SelectDateDialog(reference.get(), date, (dialog, year, month) -> {
 
                             date_tv.setText(year + gets(R.string.common_year) + month + gets(R.string.common_month));
 
@@ -250,10 +250,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-     /*   boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-        if (!isUser) {
-            TransactionBean item = (TransactionBean) adapter.getItem(position);
-            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
-        }*/
+        TransactionBean item = (TransactionBean) adapter.getItem(position);
+        goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

@@ -73,6 +73,7 @@ import static com.gxdingo.sg.http.Api.TEST_URL;
 import static com.gxdingo.sg.http.Api.TEST_WEB_URL;
 import static com.gxdingo.sg.http.Api.UAT_URL;
 import static com.gxdingo.sg.http.Api.UAT_WEB_URL;
+import static com.gxdingo.sg.http.Api.isOnlineTest;
 import static com.gxdingo.sg.http.Api.isUat;
 import static com.gxdingo.sg.utils.ClientLocalConstant.APP;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DEVICE;
@@ -160,7 +161,6 @@ public class MyApplication extends Application {
      */
     private void keyInt() {
 
-
         //全局url初始化
         //客户端
         LocalConstant.GLOBAL_SIGN = isUat ? CLIENT_UAT_HTTP_KEY : !isDebug ? CLIENT_OFFICIAL_HTTP_KEY : TEST_HTTP_KEY;
@@ -171,13 +171,12 @@ public class MyApplication extends Application {
         LocalConstant.OSS_SIGN_KEY = isUat ? UAT_OSS_KEY : !isDebug ? OSS_KEY : TEST_OSS_KEY;
 
 
-    /*    //正式环境路径测试
-            //客户端
+        if (isOnlineTest) {
+            //正式环境测试
             LocalConstant.GLOBAL_SIGN = CLIENT_OFFICIAL_HTTP_KEY;
-        LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
-
-        LocalConstant.OSS_SIGN_KEY = OSS_KEY;*/
-
+            LocalConstant.IM_SIGN = IM_OFFICIAL_HTTP_KEY;
+            LocalConstant.OSS_SIGN_KEY = OSS_KEY;
+        }
 
     }
 
@@ -342,7 +341,6 @@ public class MyApplication extends Application {
      */
     private void okHttpInit() {
 
-
         //全局url初始化
         Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_URL : HTTP + TEST_URL + SM + CLIENT_PORT + L;
         Api.OSS_URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + OFFICIAL_OSS_UPLOAD_URL : HTTP + TEST_OSS_UPLOAD_URL;
@@ -350,14 +348,13 @@ public class MyApplication extends Application {
         //H5客服
         Api.WEB_URL = isUat ? UAT_WEB_URL : !isDebug ? HTTPS + OFFICIAL_WEB_URL : TEST_WEB_URL;
 
-/*
-        //正式环境测试
-            //客户端
-            Api.URL = HTTPS + ClientApi.OFFICIAL_URL;
+        if (isOnlineTest) {
+            //正式环境测试
+            Api.URL = HTTPS + OFFICIAL_URL;
             Api.OSS_URL = HTTPS + OFFICIAL_OSS_UPLOAD_URL;
-        Api.IM_URL = HTTPS + IM_OFFICIAL_URL;
-        ClientApi.WEB_URL = HTTPS +OFFICIAL_WEB_URL;
-*/
+            Api.IM_URL = HTTPS + IM_OFFICIAL_URL;
+            Api.WEB_URL = HTTPS + OFFICIAL_WEB_URL;
+        }
 
         EasyHttp.init(this);//默认初始化
 

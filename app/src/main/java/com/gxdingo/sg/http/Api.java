@@ -13,7 +13,9 @@ public class Api {
 
 
     //uat服务器开关 ，***打包上线正式服请关闭此开关***
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
+    //正式服测试开关 ，***本地调试正式服打开此开关即可,打开此开关后，isUat开关不生效***
+    public static final boolean isOnlineTest = true;
 
     public static final String SM = ":";
 
@@ -42,7 +44,7 @@ public class Api {
     //im 测试
     public static final String IM_TEST_URL = "192.168.110.236:8083/";
     //im 正式
-    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsg/";
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsgr/";
 
     //oss路径
     public static String OSS_URL = "192.168.110.248:8080/";
@@ -224,12 +226,11 @@ public class Api {
      */
     public static final String USER_STATUS = HIERARCHY + "user/status";
 
-
     //uat路径
     public static final String UAT_URL = "uat.gxdingo.com/exuser/";
 
     //正式路径
-    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
+    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/exuser/";
 
     //客户端隐私协议文章
     public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";

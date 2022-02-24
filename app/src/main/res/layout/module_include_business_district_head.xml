@@ -20,14 +20,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="8dp"
         android:overScrollMode="never"
         android:scrollbars="none"></androidx.recyclerview.widget.RecyclerView>
 
 
     <LinearLayout
+        android:id="@+id/notice_ll"
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:layout_marginTop="8dp"
         android:background="#FFF0F0"
         android:orientation="horizontal">
 
@@ -40,16 +41,16 @@
             android:paddingHorizontal="8dp"
             android:paddingVertical="2dp"
             android:text="通知"
-            android:textSize="12sp"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
         <com.sunfusheng.marqueeview.MarqueeView
             android:id="@+id/marqueeView"
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_marginStart="12dp"
-            app:mvAnimDuration="1000"
             android:layout_marginEnd="10dp"
+            app:mvAnimDuration="1000"
             app:mvDirection="top_to_bottom"
             app:mvInterval="3000"
             app:mvSingleLine="true"
