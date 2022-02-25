@@ -9,11 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.ScreenUtils;
 import com.bumptech.glide.Glide;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.bean.StoreListBean;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.adapter.RecyclerViewHolder;
 import com.kikis.commnlibrary.utils.GlideUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -25,12 +30,12 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
  * @date: 2022/1/19
  * @page:
  */
-public class ClientCategoryAdapter extends BaseRecyclerAdapter {
+public class ClientCategoryAdapter extends BaseQuickAdapter<CategoriesBean, BaseViewHolder> {
 
     private int categoryId = 0;
 
     public ClientCategoryAdapter() {
-        super(null);
+        super( R.layout.module_recycle_item_category);
     }
 
 
@@ -42,20 +47,14 @@ public class ClientCategoryAdapter extends BaseRecyclerAdapter {
         return categoryId;
     }
 
-    @Override
-    public int getItemLayoutId(int viewType) {
-        return R.layout.module_recycle_item_category;
-    }
 
     @Override
-    public void bindData(RecyclerViewHolder holder, int position, Object item) {
-        CategoriesBean categoriesBean = (CategoriesBean) item;
+    protected void convert(@NotNull BaseViewHolder holder, CategoriesBean categoriesBean) {
 
+        ImageView class_img = holder.getView(R.id.class_img);
+        TextView class_name_tv = holder.getView(R.id.class_name_tv);
 
-        ImageView class_img = holder.getImageView(R.id.class_img);
-        TextView class_name_tv = holder.getTextView(R.id.class_name_tv);
-
-        Glide.with(mContext).load(isEmpty(categoriesBean.getImage()) ? R.mipmap.ic_default_avatar : categoriesBean.getImage()).apply(GlideUtils.getInstance().getCircleCrop()).into(class_img);
+        Glide.with(getContext()).load(isEmpty(categoriesBean.getImage()) ? R.mipmap.ic_default_avatar : categoriesBean.getImage()).apply(GlideUtils.getInstance().getCircleCrop()).into(class_img);
 
         if (categoriesBean.getName() != null)
             class_name_tv.setText(categoriesBean.getName());
@@ -69,6 +68,4 @@ public class ClientCategoryAdapter extends BaseRecyclerAdapter {
         }
 
     }
-
-
 }

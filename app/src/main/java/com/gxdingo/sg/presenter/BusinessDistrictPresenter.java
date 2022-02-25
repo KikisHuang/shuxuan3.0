@@ -113,7 +113,6 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
                 });
 
             }
-
         }
     }
 

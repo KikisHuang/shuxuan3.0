@@ -310,7 +310,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     private void addData(List<CategoriesBean> categories) {
 
-        mCategoryAdapter.clear();
+        mCategoryAdapter.getData().clear();
         mCategoryAdapter.notifyDataSetChanged();
 
         RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
@@ -328,13 +328,12 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
 
     private void switchData(List<CategoriesBean> data) {
-        mCategoryAdapter.clear();
-
-        mCategoryAdapter.addDataAll(data);
+        mCategoryAdapter.getData().clear();
+        mCategoryAdapter.notifyDataSetChanged();
 
         if (mAllTypeData.size() > 4) {
             CategoriesBean categoriesBean = new CategoriesBean();
-            mCategoryAdapter.addData(categoriesBean, mCategoryAdapter.getData().size());
+            mCategoryAdapter.addData(categoriesBean);
         }
 
         mCategoryAdapter.notifyDataSetChanged();

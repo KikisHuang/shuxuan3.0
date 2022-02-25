@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.StoreListBean;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.GlideRoundTransform;
 
 import org.jetbrains.annotations.NotNull;
@@ -40,8 +41,9 @@ public class ClientStoreAdapter extends BaseQuickAdapter<StoreListBean.StoreBean
     protected void convert(@NotNull BaseViewHolder baseViewHolder, StoreListBean.StoreBean storeBean) {
         Glide.with(getContext())
                 .load(isEmpty(storeBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : storeBean.getAvatar())
-                .apply(RequestOptions.bitmapTransform(new GlideRoundTransform(6)))
+                .apply(GlideUtils.getInstance().getCircleCrop())
                 .into((ImageView) baseViewHolder.getView(R.id.store_avatar_iv));
+
         baseViewHolder.setText(R.id.store_name_tv, storeBean.getName());
 
         baseViewHolder.setText(R.id.distance_tv, "距离" + (div(double2Str(storeBean.getDistance()), String.valueOf(1000), 2) + "km"));

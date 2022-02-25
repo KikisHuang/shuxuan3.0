@@ -64,6 +64,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     private CommonModel mClientCommonModel;
 
     private ClientNetworkModel clientNetworkModel;
+
     private NetworkModel mNetworkModel;
 
     private AMapLocation mMapLocation;

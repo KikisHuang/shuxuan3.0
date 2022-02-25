@@ -19,9 +19,9 @@ public class MyToastUtils {
     public static void customToast(String msg) {
         if (msg == null || msg.isEmpty() || msg.length() <= 0)
             return;
-        Toast.makeText(KikisUitls.getContext(), msg, Toast.LENGTH_SHORT).show();
+        ToastUtils.showShort(msg);
 
-    //make().setNotUseSystemToast().setBgColor(getc(R.color.white)).setTextColor(getc(R.color.gray202)).setTextSize(13).show(msg);
+        //make().setNotUseSystemToast().setBgColor(getc(R.color.white)).setTextColor(getc(R.color.gray202)).setTextSize(13).show(msg);
     }
 
     /**

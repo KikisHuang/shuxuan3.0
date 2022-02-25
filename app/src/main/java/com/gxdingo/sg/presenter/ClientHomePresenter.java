@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
 import com.gxdingo.sg.bean.HelpBean;

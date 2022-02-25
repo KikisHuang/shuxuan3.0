@@ -215,4 +215,13 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
             else
                 onMessage(gets(R.string.no_get_store_mobile_phone_number));
     }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+        if (model != null) {
+            model.destroy();
+            model = null;
+        }
+    }
 }

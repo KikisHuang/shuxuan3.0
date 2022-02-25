@@ -345,8 +345,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onCategoryResult(List<CategoriesBean> categories) {
         if (mCategoryAdapter != null) {
-            mCategoryAdapter.clear();
-            mCategoryAdapter.addDataAll(categories);
+            mCategoryAdapter.setList(categories);
         }
     }
 
