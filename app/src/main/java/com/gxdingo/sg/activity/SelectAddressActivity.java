@@ -421,7 +421,8 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
     @Override
     public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
-        if (poiItems.size() <= 0 && mAdapter.getFooterLayoutCount() > 0)
+
+        if ((poiItems.size() <= 0 && mAdapter.getFooterLayoutCount() > 0))
             mAdapter.removeFooterView(LayoutInflater.from(reference.get()).inflate(R.layout.module_include_loadmore_foot, new LinearLayout(reference.get()), false));
 
         if (refresh) {
@@ -430,7 +431,6 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
                     LinearLayout layout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_loadmore_foot, new LinearLayout(reference.get()), false);
 
                     mAdapter.addFooterView(layout);
-
                     layout.setOnClickListener(v -> {
                         OnClickViews(v);
                     });
@@ -442,8 +442,20 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
             mAdapter.setList(poiItems);
 //            mAdapter.notifyDataSetChanged();
-        } else
+        } else {
+            //todo 待测试
+            if (poiItems.size() < 15){
+                if (mAdapter.getFooterLayout() != null)
+                mAdapter.getFooterLayout().setVisibility(View.GONE);
+                refreshLayout.finishLoadMore();
+            }else{
+                if (mAdapter.getFooterLayout() != null)
+                    mAdapter.getFooterLayout().setVisibility(View.VISIBLE);
+            }
+
             mAdapter.addData(poiItems);
+        }
+
     }
 
     @Override

@@ -99,11 +99,12 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
 //        query = new PoiSearch.Query(keyWord, "", cityCode);
 //        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
+            //todo 检索交通银行等公共设施检索不到
             poiSearch = new PoiSearch(mContext, query);
 
 //            poiSearch.setOnPoiSearchListener(listener);
 //            poiSearch.searchPOIAsyn();
-            query = new PoiSearch.Query(keyWord, "", cityCode);
+            query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
             poiSearch = new PoiSearch(mContext, query);
             poiSearch.setOnPoiSearchListener(listener);

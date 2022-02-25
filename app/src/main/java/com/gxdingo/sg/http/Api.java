@@ -15,7 +15,7 @@ public class Api {
     public static final boolean isUat = true;
 
     //正式服测试开关 ，***本地调试正式服打开此开关即可,打开此开关后，isUat开关不生效***
-    public static final boolean isOnlineTest = true;
+    public static final boolean isOnlineTest = false;
 
     public static final String SM = ":";
 

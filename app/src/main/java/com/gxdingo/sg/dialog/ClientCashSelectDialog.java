@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.AddBankcardActivity;
 import com.gxdingo.sg.activity.BankcardListActivity;
 import com.gxdingo.sg.adapter.DialogBankcardAdapter;
 import com.gxdingo.sg.bean.BankcardBean;
@@ -60,6 +62,9 @@ public class ClientCashSelectDialog extends BottomPopupView {
 
     @BindView(R.id.wechaty_stv)
     public SuperTextView wechaty_stv;
+
+    @BindView(R.id.scrollview)
+    public NestedScrollView scrollview;
 
     @BindView(R.id.add_bakcard_stv)
     public SuperTextView add_bakcard_stv;
@@ -137,6 +142,16 @@ public class ClientCashSelectDialog extends BottomPopupView {
             wechaty_stv.setVisibility(GONE);
 
         bankCardId = SPUtils.getInstance().getInt(LocalConstant.CASH_SELECTED_ID_KEY, 0);
+
+        add_bakcard_stv.setVisibility(cashInfoBean.getIsShowBank() == 0 ? GONE : VISIBLE);
+
+        //不显示银行卡列表调整dialog的高度
+        if (cashInfoBean.getIsShowBank() == 0) {
+            setMinimumHeight(dp2px(120));
+            scrollview.getLayoutParams().height = dp2px(120);
+        }
+
+
         //支付宝id 998 、微信 999
         if (bankCardId == 998 && cashInfoBean.getIsShowAlipay() == 1)
             alipay_stv.setRightIcon(R.drawable.module_svg_cash_selecte);
@@ -215,7 +230,8 @@ public class ClientCashSelectDialog extends BottomPopupView {
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.add_bakcard_stv:
-                goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true}));
+//                goToPagePutSerializable(getContext(), BankcardListActivity.class, getIntentEntityMap(new Object[]{true}));
+                goToPage(getContext(), AddBankcardActivity.class, null);
                 break;
             case R.id.alipay_stv:
                 if (listener != null) {
