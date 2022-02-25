@@ -74,7 +74,7 @@ import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, BaseRecyclerAdapter.OnItemClickListener, OnItemChildClickListener, OnItemClickListener {
+public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.ClientHomePresenter> implements ClientHomeContract.ClientHomeListener, OnItemChildClickListener, OnItemClickListener {
 
     @BindView(R.id.scrollView)
     public NestedScrollView scrollView;
@@ -374,21 +374,6 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
 
     }
 
-    @Override
-    public void onItemClick(View itemView, int pos) {
-        CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(pos));
-
-        if (mCategoryAdapter.getCategoryId() != categoriesBean.getId()) {
-            categorPitch(categoriesBean.getId());
-        } else {
-            //反选(如果是0为全部，全部无需反选)
-            if (categoriesBean.getId() != 0) {
-                categorPitch(0);
-            }
-        }
-
-    }
-
     private void categorPitch(int id) {
         categoryId = id;
         mCategoryAdapter.setCategoryId(categoryId);
@@ -419,13 +404,30 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
 
-        if (UserInfoUtils.getInstance().isLogin()) {
-            StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
-//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.storeUserIdentifier}));
+        if (adapter instanceof ClientCategoryAdapter) {
+            //分类点击事件
+            CategoriesBean categoriesBean = ((CategoriesBean) mCategoryAdapter.getData().get(position));
+
+            if (mCategoryAdapter.getCategoryId() != categoriesBean.getId()) {
+                categorPitch(categoriesBean.getId());
+            } else {
+                //反选(如果是0为全部，全部无需反选)
+                if (categoriesBean.getId() != 0) {
+                    categorPitch(0);
+                }
+            }
+
         } else {
-            UserInfoUtils.getInstance().goToOauthPage(getContext());
+            //店铺列表点击事件
+            if (UserInfoUtils.getInstance().isLogin()) {
+                StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
+//        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.storeUserIdentifier}));
+            } else {
+                UserInfoUtils.getInstance().goToOauthPage(getContext());
+            }
         }
+
     }
 
     @Override
