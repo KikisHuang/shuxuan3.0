@@ -390,20 +390,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 finish();
                 break;
             case R.id.img_more:
-                showBaseDialog();
-           /*     //客服没有右上角的更多功能
-                if (otherRole == 12)
-                    return;
-                //联系商家跳转商商家详情
-                if (otherRole == 11) {
-                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
-                        goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{(int) mMessageDetails.getOtherAvatarInfo().getId()}));
-                } else {
-                    //跳转举报、投诉用户页面
-                    if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null)
-                        goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier(), mMessageDetails.getOtherAvatarInfo().getSendRole(), mShareUuid}));
-                }
-*/
+//                showBaseDialog();
+                if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getSendIdentifier()))
+                    goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier()}));
+
                 break;
         }
     }

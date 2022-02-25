@@ -762,7 +762,9 @@ public class WebSocketModel {
         map.put(LocalConstant.CONTENTID, sid);
 
         PostRequest request = HttpClient.imPost(IM_URL + MESSAGE_DELETE, map);
-        request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
+
+        if (UserInfoUtils.getInstance().getUserInfo() != null && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getCrossToken()))
+            request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
 
         Observable<NormalBean> observable = request
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
