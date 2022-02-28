@@ -443,12 +443,12 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
             mAdapter.setList(poiItems);
 //            mAdapter.notifyDataSetChanged();
         } else {
-            //todo 待测试
-            if (poiItems.size() < 15){
+
+            if (poiItems.size() < 15) {
                 if (mAdapter.getFooterLayout() != null)
-                mAdapter.getFooterLayout().setVisibility(View.GONE);
-                refreshLayout.finishLoadMore();
-            }else{
+                    mAdapter.getFooterLayout().setVisibility(View.GONE);
+
+            } else {
                 if (mAdapter.getFooterLayout() != null)
                     mAdapter.getFooterLayout().setVisibility(View.VISIBLE);
             }

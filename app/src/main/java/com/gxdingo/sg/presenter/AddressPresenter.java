@@ -77,7 +77,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     //定位截图
     private String mLocationImage;
 
-
+    //是否poi关键词搜索 (false等于周边检索POI)
     private boolean isPOIAsyn = false;
 
     public AddressPresenter() {
@@ -162,15 +162,14 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     public void searchPOIAsyn(boolean refresh, String keyword, String cityCode) {
         isPOIAsyn = true;
 
-        if (refresh)
+        if (refresh && clientNetworkModel != null)
             clientNetworkModel.resetPage();
 
 //        LogUtils.d("=========城市码"+cityCode);
 //        if (!isEmpty(cityCode)) {
 
-        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
-        model.retrievalPOI(keyword, isEmpty(cityCode) ? cityCode : cityCode, new PoiSearch.OnPoiSearchListener() {
+        model.retrievalPOI(clientNetworkModel.getPage(), keyword, isEmpty(cityCode) ? cityCode : cityCode, mCameraPosition.target, new PoiSearch.OnPoiSearchListener() {
             @Override
             public void onPoiSearched(PoiResult poiResult, int errorCode) {
 
@@ -210,7 +209,6 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void searchBound(boolean refresh, LatLng latLng, String cityCode) {
-        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         isPOIAsyn = false;
         model.retrievalBoundPOI("", cityCode, latLng.latitude, latLng.longitude, clientNetworkModel.getPage(), new PoiSearch.OnPoiSearchListener() {
@@ -251,7 +249,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                     mCameraPosition = cameraPosition;
 
-                    if (model != null)
+                    if (clientNetworkModel != null)
                         clientNetworkModel.resetPage();
 
                     if (isBViewAttached())

@@ -95,19 +95,15 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
      * @param cityCode
      * @param listener
      */
-    public void retrievalPOI(String keyWord, String cityCode, PoiSearch.OnPoiSearchListener listener) {
-//        query = new PoiSearch.Query(keyWord, "", cityCode);
-//        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+    public void retrievalPOI(int page,String keyWord, String cityCode, LatLng latLng,PoiSearch.OnPoiSearchListener listener) {
         try {
-            //todo 检索交通银行等公共设施检索不到
             poiSearch = new PoiSearch(mContext, query);
-
-//            poiSearch.setOnPoiSearchListener(listener);
-//            poiSearch.searchPOIAsyn();
-            query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
+            query = new PoiSearch.Query(keyWord, "", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);
+            query.setPageNum(page);
             poiSearch = new PoiSearch(mContext, query);
             poiSearch.setOnPoiSearchListener(listener);
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latLng.latitude, latLng.longitude), 2000));
             poiSearch.searchPOIAsyn();
         } catch (Exception e) {
             LogUtils.e(e);
@@ -126,15 +122,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
     public void retrievalBoundPOI(String keyWord, String cityCode,
                                   double latitude, double longitude, int page, PoiSearch.OnPoiSearchListener listener) {
 
-//        query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
-//        query.setExtensions(PoiSearch.EXTENSIONS_ALL);
         try {
-//            poiSearch = new PoiSearch(mContext, query);
-
-//        query.setPageNum(page);
-//        poiSearch.setOnPoiSearchListener(listener);
-//        poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
-//        poiSearch.searchPOIAsyn();
 
             query = new PoiSearch.Query(keyWord, "120000|170000|190107", cityCode);
             query.setExtensions(PoiSearch.EXTENSIONS_ALL);

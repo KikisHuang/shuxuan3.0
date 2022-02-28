@@ -110,5 +110,6 @@
     <string name="confirm_del_address">确定要删除地址吗？</string>
     <string name="cancel_settop">取消置顶</string>
     <string name="take_a_break">点太快了，休息一下吧。</string>
+    <string name="copy_address_info">复制地址信息</string>
 
 </resources>

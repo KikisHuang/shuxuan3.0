@@ -236,6 +236,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onLocationMapClick(position);
             });
 
+            map_ll.setOnLongClickListener(v -> {
+                if (chatClickListener != null)
+                chatClickListener.onLongClickChatItem(position, itemType == SelfLocationMapInfo ? true : false);
+                return false;
+            });
+
             if (data.getDataByType() != null) {
 
                 if (!isEmpty(data.getDataByType().getDoorplate()))
@@ -266,7 +272,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             }
             content.setOnLongClickListener(v -> {
                 if (chatClickListener != null) {
-                    chatClickListener.onLongClickChatItem(content, position, itemType == SelfText ? true : false);
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfText ? true : false);
                 }
                 return false;
             });
@@ -295,7 +301,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             if (itemType == SelfImage) {
                 content_img.setOnLongClickListener(v -> {
                     if (chatClickListener != null) {
-                        chatClickListener.onLongClickChatItem(content_img, position, true);
+                        chatClickListener.onLongClickChatItem( position, true);
                     }
                     return false;
                 });
@@ -322,7 +328,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             voice_ll.setOnLongClickListener(v -> {
                 if (chatClickListener != null) {
-                    chatClickListener.onLongClickChatItem(voice_ll, position, itemType == SelfAudio);
+                    chatClickListener.onLongClickChatItem( position, itemType == SelfAudio);
                 }
                 return false;
             });

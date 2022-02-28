@@ -22,11 +22,11 @@ import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
  * @date: 2021/12/25
  * @page:
  */
-public class ChatFunctionDialog extends CenterPopupView {
+public class ChatFunctionDialog extends CenterPopupView implements View.OnClickListener {
 
     private CustomArgsResultListener customArgsResultListener;
 
-    private LinearLayout copy_ll, report_ll, del_ll, turn_the_text_ll;
+    private LinearLayout copy_ll, report_ll, del_ll, turn_the_text_ll, copy_address_info_ll;
 
     private boolean isSelf;
     private ReceiveIMMessageBean receiveIMMessageBean;
@@ -50,6 +50,7 @@ public class ChatFunctionDialog extends CenterPopupView {
     protected void initPopupContent() {
         super.initPopupContent();
         copy_ll = findViewById(R.id.copy_ll);
+        copy_address_info_ll = findViewById(R.id.copy_address_info_ll);
         report_ll = findViewById(R.id.report_ll);
         del_ll = findViewById(R.id.del_ll);
         turn_the_text_ll = findViewById(R.id.turn_the_text_ll);
@@ -58,6 +59,8 @@ public class ChatFunctionDialog extends CenterPopupView {
         copy_ll.setVisibility(type == 0 ? VISIBLE : GONE);
 
         turn_the_text_ll.setVisibility(type == 11 ? VISIBLE : GONE);
+
+        copy_address_info_ll.setVisibility(type == 30 ? VISIBLE : GONE);
 
 
         //自己发送的
@@ -76,14 +79,13 @@ public class ChatFunctionDialog extends CenterPopupView {
             report_ll.setVisibility(GONE);
 
 
-
         del_ll.setOnClickListener(v -> {
             if (customArgsResultListener != null)
                 customArgsResultListener.onResult(3);
             dismiss();
         });
 
-        copy_ll.setOnClickListener(view -> {
+        copy_ll.setOnClickListener(v -> {
             if (customArgsResultListener != null)
                 customArgsResultListener.onResult(0);
             dismiss();
@@ -99,6 +101,37 @@ public class ChatFunctionDialog extends CenterPopupView {
                 customArgsResultListener.onResult(2);
             dismiss();
         });
+        copy_address_info_ll.setOnClickListener(view -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(4);
+            dismiss();
+        });
     }
 
+    @Override
+    public void onClick(View v) {
+        int t = 0;
+        switch (v.getId()) {
+            case R.id.copy_ll:
+                t = 0;
+                break;
+            case R.id.del_ll:
+                t = 3;
+                break;
+            case R.id.report_ll:
+                t = 1;
+                break;
+            case R.id.turn_the_text_ll:
+                t = 2;
+                break;
+            case R.id.copy_address_info_ll:
+                t = 4;
+                break;
+        }
+
+        if (customArgsResultListener != null)
+            customArgsResultListener.onResult(t);
+        dismiss();
+
+    }
 }

@@ -15,5 +15,5 @@ public interface ChatClickListener {
 
     void onAvatarClickListener(int position, String id);
 
-    void onLongClickChatItem(View content, int position, boolean isSelf);
+    void onLongClickChatItem( int position, boolean isSelf);
 }

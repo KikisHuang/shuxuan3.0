@@ -173,6 +173,12 @@ public class IMChatContract {
          * @param position
          */
         void delMessage(long id, int position);
+
+        /**
+         * 复制文本
+         * @param content
+         */
+        void copyText(String content,String toast);
     }
 
     public interface IMChatListener {

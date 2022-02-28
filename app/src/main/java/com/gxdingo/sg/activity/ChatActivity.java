@@ -958,12 +958,11 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
     /**
      * 聊天item长按事件
      *
-     * @param view
      * @param position
      * @param isSelf
      */
     @Override
-    public void onLongClickChatItem(View view, int position, boolean isSelf) {
+    public void onLongClickChatItem(int position, boolean isSelf) {
 
         ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
         if (((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() != 21 || ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getType() != 20) {
@@ -975,9 +974,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         int type = (int) args[0];
 
                         if (type == 0) {
-                            //复制
-                            copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent());
-                            onMessage("已复制到剪贴板");
+                            getP().copyText(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getContent(), "已复制到剪贴板");
                         } else if (type == 1) {
                             //撤回
                             getP().revocationMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
@@ -987,6 +984,10 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         } else if (type == 3) {
                             //删除
                             getP().delMessage(((ReceiveIMMessageBean) mAdapter.getData().get(position)).getId(), position);
+                        } else if (type == 4) {
+                            //复制地址信息
+                            ReceiveIMMessageBean.DataByType dataBt = ((ReceiveIMMessageBean) mAdapter.getData().get(position)).getDataByType();
+                            getP().copyText(dataBt.getStreet() + " " + dataBt.getDoorplate() + " " + dataBt.getName() + " " + dataBt.getMobile(), "已复制地址信息");
                         }
 
                     }).show());

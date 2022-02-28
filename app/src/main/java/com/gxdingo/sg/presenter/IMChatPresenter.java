@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.alibaba.idst.nui.Constants;
+import com.blankj.utilcode.util.ClipboardUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AliASRBean;
@@ -66,6 +67,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.blankj.utilcode.util.ArrayUtils.copy;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.AAC;
@@ -854,12 +856,12 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                                 });
 
                                 if (mAudioModel != null)
-                                    mAudioModel.aliYunStartFileTranscriber(filePath+fileName);
+                                    mAudioModel.aliYunStartFileTranscriber(filePath + fileName);
                             }
                         });
 
                 }
-            }, mDownloadDisp,filePath,fileName);
+            }, mDownloadDisp, filePath, fileName);
         }
     }
 
@@ -870,6 +872,14 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
             mWebSocketModel.messageDel(getContext(), String.valueOf(id), t -> {
                 getV().onMessageDelete(position);
             });
+    }
+
+    @Override
+    public void copyText(String content, String toast) {
+        //复制
+        ClipboardUtils.copyText(content);
+        if (isBViewAttached())
+            getBV().onMessage(toast);
     }
 
     private Handler mHandler = new Handler() {
