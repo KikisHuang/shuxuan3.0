@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/ll_nearby_store"
         android:layout_width="match_parent"
         android:layout_height="22dp"
+        android:layout_marginHorizontal="14dp"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginHorizontal="14dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -43,56 +45,80 @@
 
         <ImageView
             android:id="@+id/store_avatar_iv"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:src="@drawable/module_svg_client_default_avatar"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/store_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
-            android:textSize="16sp"
-            android:textColor="#1F1F1F"
-            android:singleLine="true"
-            android:maxEms="12"
             android:ellipsize="end"
-            app:layout_constraintTop_toTopOf="@+id/store_avatar_iv"
+            android:maxEms="12"
+            android:singleLine="true"
+            android:textColor="#1F1F1F"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/store_avatar_iv"
-            tools:text="金源便利店"/>
+            app:layout_constraintTop_toTopOf="@+id/store_avatar_iv"
+            tools:text="金源便利店" />
 
-        <com.donkingliang.labels.LabelsView
-            android:id="@+id/store_label_lv"
+        <LinearLayout
+            android:id="@+id/label_ll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:labelBackground="@drawable/module_shape_border_blue_2r"
-            app:labelTextPaddingTop="0dp"
-            app:labelTextPaddingBottom="0dp"
-            app:labelTextPaddingLeft="3dp"
-            app:labelTextPaddingRight="3dp"
-            app:labelTextSize="12sp"
-            app:labelTextColor="@color/main_tone"
-            app:selectType="NONE"
-            app:layout_constraintTop_toBottomOf="@+id/store_name_tv"
-            app:layout_constraintStart_toStartOf="@+id/store_name_tv"/>
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/store_name_tv"
+            app:layout_constraintTop_toBottomOf="@+id/store_name_tv">
 
-        <TextView
-            android:id="@+id/distance_tv"
+            <TextView
+                android:id="@+id/label_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textColor="#3F9111"
+                android:textSize="12sp"
+                tools:text="水果 | 商店" />
+
+            <TextView
+                android:id="@+id/distance_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="距离150m"
+                android:textColor="@color/graycc"
+                android:textSize="12sp"
+                tools:text="距离150m" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/state_ll"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="距离150m"
-            android:textSize="11sp"
-            android:textColor="#A9A9A9"
-            app:layout_constraintStart_toEndOf="@+id/store_label_lv"
-            app:layout_constraintTop_toTopOf="@+id/store_label_lv"
-            app:layout_constraintBottom_toBottomOf="@+id/store_label_lv"
-            tools:text="距离150m"/>
+            android:layout_height="16dp"
+            android:layout_marginTop="5dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_store_state"
+            android:gravity="center"
+            app:layout_constraintStart_toStartOf="@+id/store_name_tv"
+            app:layout_constraintBottom_toBottomOf="@+id/store_avatar_iv">
+
+            <TextView
+                android:id="@+id/state_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="休息中"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+        </LinearLayout>
 
 
         <ImageView
@@ -101,26 +127,20 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"
             android:src="@drawable/module_svg_item_call_phone"
-            app:layout_constraintTop_toTopOf="@+id/store_name_tv"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/store_name_tv" />
 
         <TextView
             android:id="@+id/phone_number_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
             android:layout_marginStart="4dp"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/graycc"
             android:textSize="12sp"
-            android:textColor="#A9A9A9"
-            app:layout_constraintTop_toBottomOf="@+id/call_phone_iv"
             app:layout_constraintEnd_toEndOf="@+id/call_phone_iv"
-            tools:text="13877778888"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide_color"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/call_phone_iv"
+            tools:text="13877778888" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

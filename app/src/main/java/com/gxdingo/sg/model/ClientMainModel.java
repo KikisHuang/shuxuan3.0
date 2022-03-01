@@ -55,6 +55,10 @@ public class ClientMainModel {
             fragmentTransaction.add(R.id.main_ll, mFragmentList.get(3));
             fragmentTransaction.hide(mFragmentList.get(3));
         }
+        if (!mFragmentList.get(4).isAdded()) {
+            fragmentTransaction.add(R.id.main_ll, mFragmentList.get(4));
+            fragmentTransaction.hide(mFragmentList.get(4));
+        }
 
     }
 

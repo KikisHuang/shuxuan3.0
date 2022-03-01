@@ -1,7 +1,6 @@
 package com.gxdingo.sg.activity;
 
 import android.graphics.Color;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +8,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.ResourceUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.adapter.BusinessDistrictReleaseLabelAdapter;
+import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.StoreBusinessDistrictReleaseContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.presenter.StoreBusinessDistrictReleasePresenter;
+import com.gxdingo.sg.presenter.BusinessDistrictReleasePresenter;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.GridPictureEditing;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -43,10 +44,10 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 /**
  * 商家端商圈发布
  *
- * @author JM
+ * @author Kikis
  */
 public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleasePresenter>
-        implements StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleaseListener {
+        implements StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleaseListener, OnItemClickListener {
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
     @BindView(R.id.tv_right_button)
@@ -58,12 +59,17 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
     @BindView(R.id.gpe_picture)
     GridPictureEditing gpePicture;
 
+    @BindView(R.id.label_recyclerView)
+    RecyclerView label_recyclerView;
+
+    private BusinessDistrictReleaseLabelAdapter mLabelAdapter;
+
     int mMaxCount = 9;//最大图片数
     int mSpanCount = 4;//每行多少列
 
     @Override
     protected StoreBusinessDistrictReleaseContract.StoreBusinessDistrictReleasePresenter createPresenter() {
-        return new StoreBusinessDistrictReleasePresenter();
+        return new BusinessDistrictReleasePresenter();
     }
 
     @Override
@@ -141,10 +147,18 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
         tvRightButton.setPadding(lr, tb, lr, tb);
 
         initGpeImages();
+        label_recyclerView.setLayoutManager(new GridLayoutManager(reference.get(), 5));
+
+        mLabelAdapter = new BusinessDistrictReleaseLabelAdapter();
+        mLabelAdapter.setOnItemClickListener(this);
+        label_recyclerView.setAdapter(mLabelAdapter);
+
     }
 
     @Override
     protected void initData() {
+
+        getP().getLabelList();
 
     }
 
@@ -269,5 +283,26 @@ public class StoreBusinessDistrictReleaseActivity extends BaseMvpActivity<StoreB
         sendEvent(StoreLocalConstant.SOTRE_REFRESH_BUSINESS_DISTRICT_LIST);
         onMessage(msg);
         finish();
+    }
+
+    @Override
+    public void onLabelResult(List<BusinessDistrictListBean.Labels> o) {
+        mLabelAdapter.setList(o);
+    }
+
+    @Override
+    public List<BusinessDistrictListBean.Labels> getLabelsData() {
+        return mLabelAdapter != null ? mLabelAdapter.getData() : null;
+    }
+
+    @Override
+    public void refreshLabelAdapter(int position) {
+        if (mLabelAdapter != null)
+            mLabelAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+        getP().labelCheck(position);
     }
 }

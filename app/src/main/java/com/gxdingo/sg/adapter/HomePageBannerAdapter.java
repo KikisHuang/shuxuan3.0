@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.HomeBannerBean;
+import com.kikis.commnlibrary.utils.GlideUtils;
 import com.youth.banner.adapter.BannerAdapter;
 
 import java.util.List;
@@ -54,7 +55,7 @@ public class HomePageBannerAdapter extends BannerAdapter<HomeBannerBean, HomePag
 
         Glide.with(mContext)
                 .load(data.getImage())
-                .apply(RequestOptions.bitmapTransform(new RoundedCorners(6)))
+                .apply(GlideUtils.getInstance().getRoundedOptions(6))
                 .into(new SimpleTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @androidx.annotation.Nullable Transition<? super Drawable> transition) {
@@ -63,7 +64,11 @@ public class HomePageBannerAdapter extends BannerAdapter<HomeBannerBean, HomePag
 
                         int newheight = getScreenWidth() * height / width;
 
-                        holder.imageView.setImageDrawable(resource);
+//                        holder.imageView.setImageDrawable(resource);
+
+                        Glide.with(mContext).load(resource).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(holder.imageView);
+
+
                         holder.imageView.getLayoutParams().height = newheight;
                     }
                 });

@@ -256,6 +256,12 @@
             android:screenOrientation="portrait">
 
         </activity>
+        <!--消息通知页面 -->
+        <activity
+            android:name=".activity.NoticeMessageActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
 
         <!--客户端商圈页面 -->
         <activity
@@ -288,6 +294,20 @@
         <!--选择地址管理页面 -->
         <activity
             android:name=".activity.SelectAddressActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--地址信息页面 -->
+        <activity
+            android:name=".activity.AddressMapInfoActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!--消息转发页面 -->
+        <activity
+            android:name=".activity.ForwardListActivity"
             android:screenOrientation="portrait">
 
         </activity>
@@ -522,6 +542,19 @@
         <!--实名认证页面 -->
         <activity
             android:name=".activity.RealNameAuthenticationActivity"
+            android:screenOrientation="portrait" />
+
+        <!--排行榜页面 -->
+        <activity
+            android:name=".activity.RankingActivity"
+            android:screenOrientation="portrait">
+
+
+        </activity>
+
+        <!--注销页面 -->
+        <activity
+            android:name=".activity.UnsubscribeActivity"
             android:screenOrientation="portrait" />
 
 

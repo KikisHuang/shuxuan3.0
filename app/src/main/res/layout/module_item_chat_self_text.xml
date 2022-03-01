@@ -42,13 +42,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@mipmap/bg_im_chat_oneself_content_text"
-                    android:gravity="center"
+                    android:gravity="center|left"
                     android:paddingVertical="10dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="15dp"
                     android:textColor="@color/white"
                     android:textSize="13sp"
-                    tools:text="测试" />
+                    tools:text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试" />
 
             </LinearLayout>
 

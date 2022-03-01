@@ -1,97 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/grayf6"
     android:orientation="vertical">
 
-    <com.allen.library.SuperTextView
-        android:id="@+id/cash_account_stv"
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:layout_marginTop="30dp"
-        app:sLeftIconHeight="@dimen/dp_40"
-        app:sLeftIconMarginLeft="25dp"
-        app:sLeftIconWidth="@dimen/dp_40"
-        app:sLeftTextColor="#202D3B"
-        app:sLeftTextSize="16sp"
-        app:sLeftTextString="微信"
-        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#FFFFFF"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="true">
 
-    <RelativeLayout
-        android:id="@+id/cl_center"
-        android:layout_width="match_parent"
-        android:layout_height="68dp"
-        android:layout_marginTop="20dp">
-
-        <TextView
-            android:id="@+id/text_rmb_symbol"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:text="￥"
-            android:textColor="@color/gray202"
-            android:textSize="45sp" />
-
-        <com.gxdingo.sg.view.RegexEditText
-            android:id="@+id/et_cash_amount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/text_rmb_symbol"
-            android:layout_marginStart="16dp"
-            android:layout_toEndOf="@+id/text_rmb_symbol"
-            android:background="@null"
-            android:hint="可转出到卡68.26元"
-            android:inputType="numberDecimal"
-            android:minWidth="200dp"
-            android:textColorHint="#CCCCCC"
-            android:textSize="@dimen/sp_14" />
-
-        <TextView
-            android:id="@+id/btn_all"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/et_cash_amount"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="20dp"
-            android:padding="5dp"
-            android:text="全部"
-            android:textColor="#A3BC69" />
-
-        <View
+        <RelativeLayout
+            android:id="@+id/cl_center"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/divide_color" />
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/balance_tag_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp20"
+                android:text="账户余额"
+                android:textColor="@color/gray99" />
 
-    <Button
-        android:id="@+id/btn_confirm"
+
+            <TextView
+                android:id="@+id/text_rmb_symbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/balance_tag_tv"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="25dp"
+                android:text="￥"
+                android:textColor="@color/gray202"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <com.gxdingo.sg.view.RegexEditText
+                android:id="@+id/et_cash_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/text_rmb_symbol"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@+id/text_rmb_symbol"
+                android:background="@null"
+                android:inputType="numberDecimal"
+                android:minWidth="200dp"
+                android:textColor="@color/graye2e2e2"
+                android:textColorHint="#CCCCCC"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/bottom_hint_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_cash_amount"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="@dimen/dp20"
+                android:textColor="@color/gray99"
+                tools:text="最多可提现￥6500.00" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cash_card_view"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="@dimen/dp_10"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/module_bg_main_color_round6"
-        android:text="@string/confirm_cash"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/cl_center" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#FFFFFF"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0dp"
+        app:cardUseCompatPadding="true">
+
+        <!--        <com.allen.library.SuperTextView
+                    android:id="@+id/cash_account_stv"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    app:sLeftIconMarginLeft="25dp"
+                    app:sLeftIconRes="@drawable/module_svg_withdraw_deposit"
+                    app:sLeftIconWidth="20dp"
+                    app:sLeftTextColor="@color/gray99"
+                    app:sLeftTextSize="14sp"
+                    app:sLeftTextString="提现至"
+                    app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little" />-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cash_account_cl"
+            android:layout_width="match_parent"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:id="@+id/card_icon"
+                android:layout_width="20dp"
+                android:layout_height="@dimen/dp15"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/module_svg_withdraw_deposit"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="提现至"
+                android:textColor="@color/gray99"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/card_icon"
+                app:layout_constraintLeft_toRightOf="@+id/card_icon"
+                app:layout_constraintTop_toTopOf="@+id/card_icon" />
+
+            <ImageView
+                android:id="@+id/methods_icon_img"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginEnd="6dp"
+                tools:src="@mipmap/ic_launcher"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/methods_name_tv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/methods_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/graye2e2e2"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/arrow_img"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="支付宝" />
+
+            <ImageView
+                android:id="@+id/arrow_img"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/module_svg_right_gray_arrow_little"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="@dimen/dp_10"
-        android:layout_marginVertical="60dp"
         android:background="@drawable/module_shape_bg_gray_2r">
 
-        <TextView
-            android:id="@+id/content_tv"
+        <Button
+            android:id="@+id/btn_confirm"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textColor="@color/gray_2e" />
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:layout_marginHorizontal="@dimen/dp_10"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/module_bg_main_color_round6"
+            android:stateListAnimator="@null"
+            android:text="@string/confirm_cash"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/cl_center" />
 
     </FrameLayout>
 </LinearLayout>

@@ -166,6 +166,7 @@ public class CommonModel {
      */
     public void goCallPage(Context context, String phonenum) {
 
+
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DIAL);
         intent.setData(Uri.parse("tel:" + phonenum));

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -10,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srlPrimaryColor="@color/main_tone">
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
@@ -20,107 +22,115 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/ll_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="16dp"
+                    android:background="@color/grayf6"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:background="@color/main_tone">
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="12dp">
+
+                    <ImageView
+                        android:id="@+id/location_img"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/module_svg_green_location"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
 
                     <TextView
                         android:id="@+id/location_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="获取当前定位"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/graye2e2e2"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/location_img"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <ImageView
+                        android:id="@+id/arrows_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_4"
-                        android:src="@drawable/module_svg_right_arrow_white"/>
+                        android:src="@drawable/module_svg_right_arrow_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/location_tv"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/main_tone">
                     <LinearLayout
-                        android:id="@+id/ll_search"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        android:layout_marginHorizontal="@dimen/dp_10"
-                        android:gravity="center"
-                        android:background="@drawable/module_shape_bg_white_16r">
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        app:layout_constraintRight_toRightOf="parent"
+                        tools:ignore="MissingConstraints">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/module_svg_search_blue"/>
+                        <LinearLayout
+                            android:id="@+id/ll_search"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:background="@drawable/module_shape_bg_white_16r"
+                            android:gravity="center">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_4"
-                            android:text="搜索店铺"
-                            android:textSize="12sp"
-                            android:textColor="#CCCCCC"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/dp_4"
+                                android:text="搜索店铺"
+                                android:textColor="#CCCCCC"
+                                android:textSize="12sp" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="7dp"
+                                android:src="@drawable/module_svg_search_blue" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
-                </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/category_rv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="25dp"
-                    android:background="@color/main_tone"/>
+                    android:layout_height="90dp"
+                    android:background="@color/grayf6" />
 
-                <!--            <include-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="0dp"-->
-                <!--                android:layout_weight="1"-->
-                <!--                android:background="@drawable/module_shape_bg_white_top_20r"-->
-                <!--                layout="@layout/module_include_refresh" />-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="-15dp"
+                    android:background="@color/white"
                     android:minHeight="400dp"
-                    android:orientation="vertical"
-                    android:background="@drawable/module_shape_bg_white_top_4r">
+                    android:orientation="vertical">
 
-                    <com.youth.banner.Banner
-                        android:id="@+id/home_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_10"/>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/store_rv"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:overScrollMode="never"
-                        android:scrollbars="none"
-                        android:padding="@dimen/dp_10"/>
+                        android:padding="@dimen/dp_10"
+                        android:scrollbars="none" />
 
-                    <include layout="@layout/module_include_client_home_nodata"/>
+                    <include layout="@layout/module_include_client_home_nodata" />
 
-                    <include layout="@layout/module_include_client_home_nolocation"/>
-
+                    <include layout="@layout/module_include_client_home_nolocation" />
 
                 </LinearLayout>
-
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
+
     </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
-    <include layout="@layout/module_include_client_home_page_title"/>
+    <include layout="@layout/module_include_client_home_page_title" />
 
 </FrameLayout>

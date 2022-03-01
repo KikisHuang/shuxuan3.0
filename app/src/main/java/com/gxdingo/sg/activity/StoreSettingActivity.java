@@ -2,6 +2,7 @@ package com.gxdingo.sg.activity;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.StringUtils;
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.DistanceBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.biz.OnBusinessTimeListener;
@@ -17,9 +19,12 @@ import com.gxdingo.sg.biz.StoreSettingsContract;
 import com.gxdingo.sg.dialog.BusinessTimePopupView;
 import com.gxdingo.sg.dialog.DeliverScopePopupView;
 import com.gxdingo.sg.dialog.EditMobilePopupView;
+import com.gxdingo.sg.dialog.StoreSelectBusinessStatusPopupView;
 import com.gxdingo.sg.presenter.StoreSettingsPresenter;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
+import com.kikis.commnlibrary.utils.BigDecimalUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -31,22 +36,20 @@ import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
- * @date: 2021/11/10
+ * @date: 2022/1/22
  * @page:
  */
 public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.StoreSettingsPresenter> implements StoreSettingsContract.StoreSettingsListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
-
-    @BindView(R.id.change_avatar_stv)
-    public SuperTextView change_avatar_stv;
 
     @BindView(R.id.change_nickname_stv)
     public SuperTextView change_nickname_stv;
@@ -60,10 +63,21 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
     @BindView(R.id.business_time_stv)
     public SuperTextView business_time_stv;
 
-    @BindView(R.id.business_scope_stv)
-    public SuperTextView business_scope_stv;
+    @BindView(R.id.distribution_scope_stv)
+    public SuperTextView distribution_scope_stv;
 
-    private BasePopupView mPhotoPopupView;
+    @BindView(R.id.shop_type_stv)
+    public SuperTextView shop_type_stv;
+
+    @BindView(R.id.store_ll)
+    public LinearLayout store_ll;
+
+    @BindView(R.id.operating_state_stv)
+    public SuperTextView operating_state_stv;
+
+    private String id = "";
+
+    private int ReleaseUserType = -1;
 
     @Override
     protected StoreSettingsContract.StoreSettingsPresenter createPresenter() {
@@ -132,85 +146,120 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
 
     @Override
     protected void init() {
-        title_layout.setTitleText("店铺设置");
+        title_layout.setTitleText("信息管理");
     }
 
     @Override
     protected void initData() {
-        getP().getStoreInfo();
+        id = UserInfoUtils.getInstance().getUserInfo().getIdentifier();
+        getP().getStoreInfo(id);
     }
 
-    @OnClick({R.id.change_avatar_stv,R.id.change_nickname_stv,
-            R.id.change_mobile_stv,R.id.business_time_stv,R.id.business_scope_stv})
-    public void OnClickViews(View v){
-        switch (v.getId()){
-            case R.id.change_avatar_stv:
-                if (mPhotoPopupView == null) {
-                    mPhotoPopupView = new XPopup.Builder(reference.get())
-                            .isDarkTheme(false)
-                            .asCustom(new BaseActionSheetPopupView(reference.get()).addSheetItem(gets(R.string.photo_album), gets(R.string.photo_graph)).setItemClickListener((itemv, pos) -> {
-                                getP().photoItemClick(pos);
-                            })).show();
-                } else
-                    mPhotoPopupView.show();
+    @OnClick({R.id.operating_state_stv, R.id.change_nickname_stv,
+            R.id.change_mobile_stv, R.id.business_time_stv, R.id.distribution_scope_stv})
+    public void OnClickViews(View v) {
+        switch (v.getId()) {
+
+            case R.id.operating_state_stv:
+                new XPopup.Builder(reference.get())
+                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                        .isDarkTheme(false)
+                        .asCustom(new StoreSelectBusinessStatusPopupView(reference.get(), new StoreSelectBusinessStatusPopupView.OnBusinessStatusListener() {
+                            @Override
+                            public void onStatus(int code, String name) {
+
+                                getP().updateBusinessStatus(code);
+                            }
+                        }).show());
                 break;
             case R.id.change_nickname_stv:
-                goToPage(this,StoreUpdateNameActivity.class,getIntentMap(new String[]{change_nickname_stv.getLeftTextView().getText().toString()}));
+                if (ReleaseUserType == 0)
+                    goToPage(this, StoreUpdateNameActivity.class, getIntentMap(new String[]{change_nickname_stv.getLeftTextView().getText().toString()}));
+                else if (ReleaseUserType == 1)
+                    showChangeDialog("修改昵称");
+
                 break;
 
             case R.id.change_mobile_stv:
-                new XPopup.Builder(reference.get())
-                        .isDarkTheme(false)
-                        .asCustom(new EditMobilePopupView(reference.get(), new OnContentListener() {
-                            @Override
-                            public void onConfirm(BasePopupView popupView, String content) {
-                                if (isEmpty(content)){
-                                    return;
-                                }
-                                getP().changMobile(content);
-                                popupView.dismiss();
-                            }
-                        }))
-                        .show();
+                showChangeDialog("");
                 break;
             case R.id.business_time_stv:
-               new XPopup.Builder(reference.get())
+                new XPopup.Builder(reference.get())
                         .isDestroyOnDismiss(true)
                         .isDarkTheme(false)
                         .asCustom(new BusinessTimePopupView(reference.get(), new OnBusinessTimeListener() {
                             @Override
                             public void onSelected(BasePopupView popupView, int startHour, int startMinute, int endHour, int endMinute) {
-                                String startTime = (startHour < 10 ? "0" : "")+startHour+":"+(startMinute < 10 ? "0" : "")+startMinute;
-                                String endTime = (endHour < 10 ? "0" : "")+endHour+":"+(endMinute < 10 ? "0" : "")+endMinute;
-                                getP().businessTime(startTime,endTime);
+                                String startTime = (startHour < 10 ? "0" : "") + startHour + ":" + (startMinute < 10 ? "0" : "") + startMinute;
+                                String endTime = (endHour < 10 ? "0" : "") + endHour + ":" + (endMinute < 10 ? "0" : "") + endMinute;
+
+                                getP().businessTime(startTime , endTime);
 //                                business_time_stv.setRightString(startTime+" - "+endTime);
                                 popupView.dismiss();
                             }
                         }).show());
                 break;
-            case R.id.business_scope_stv:
+            case R.id.distribution_scope_stv:
                 getP().getDistanceList();
                 break;
         }
     }
 
-    @Override
-    public void onSucceed(int type) {
-        super.onSucceed(type);
-        getP().getStoreInfo();
+    private void showChangeDialog(String title) {
+        new XPopup.Builder(reference.get())
+                .isDarkTheme(false)
+                .asCustom(new EditMobilePopupView(reference.get(), title, (popupView, content) -> {
+                    if (isEmpty(content)) {
+                        return;
+                    }
+                    if (isEmpty(title))
+                        getP().changMobile(content);
+                    else
+                        getP().updateStoreName(content);
+
+                    popupView.dismiss();
+                }))
+                .show();
     }
 
     @Override
-    public void onInfoResult(StoreDetailBean storeDetailBean) {
-        Glide.with(this).
-                load(StringUtils.isEmpty(storeDetailBean.getAvatar()) ? R.drawable.module_svg_client_default_avatar : storeDetailBean.getAvatar())
-                .apply(RequestOptions.circleCropTransform())
-                .into(change_avatar_stv.getLeftIconIV());
-        change_nickname_stv.setLeftString(storeDetailBean.getName());
-        change_address_stv.setRightString(storeDetailBean.getAddress());
-        change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
-        business_time_stv.setRightString(dealDateFormat(storeDetailBean.getOpenTime(),"HH:mm")+"-"+dealDateFormat(storeDetailBean.getCloseTime(),"HH:mm"));
-        business_scope_stv.setRightString(storeDetailBean.getMaxDistance());
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+        getP().getStoreInfo(id);
+    }
+
+    @Override
+    public void onInfoResult(StoreDetail storeDetailBean) {
+
+        ReleaseUserType = storeDetailBean.getReleaseUserType();
+
+        store_ll.setVisibility(storeDetailBean.getReleaseUserType() == 0 ? View.VISIBLE : View.GONE);
+
+        // 用户类型0=商家 1=用户
+        if (storeDetailBean.getReleaseUserType() == 0) {
+
+            StringBuffer stringBuffer = new StringBuffer();
+
+            for (int i = 0; i < storeDetailBean.getClassNameList().size(); i++) {
+                stringBuffer.append(storeDetailBean.getClassNameList().get(i));
+                if (i != storeDetailBean.getClassNameList().size() - 1)
+                    stringBuffer.append(" | ");
+            }
+            shop_type_stv.setRightString(stringBuffer.toString());
+
+            //经营状态  0=未营业  1=营业中
+            operating_state_stv.getRightTextView().setText(storeDetailBean.getBusinessStatus() == 1 ? "营业中" : "未营业");
+
+            change_address_stv.setRightString(storeDetailBean.getAddress());
+            change_mobile_stv.setRightString(storeDetailBean.getContactNumber());
+            business_time_stv.setRightString(storeDetailBean.getOpenTime() + "-" + storeDetailBean.getCloseTime());
+            if (storeDetailBean.getMaxDistance() > 0)
+                distribution_scope_stv.setRightString(div( String.valueOf(storeDetailBean.getMaxDistance()),"1000", 1) + "公里");
+        }
+
+        if (!isEmpty(storeDetailBean.getName()))
+            change_nickname_stv.setLeftString(storeDetailBean.getName());
+
     }
 
     @Override
@@ -227,7 +276,14 @@ public class StoreSettingActivity extends BaseMvpActivity<StoreSettingsContract.
                 .asCustom(new DeliverScopePopupView(reference.get(), pos -> {
                     Integer s = distanceBeans.get((Integer) pos).getMeter();
                     getP().deliveryScope(s.toString());
-                    business_scope_stv.setRightString(distanceBeans.get((Integer) pos).getName());
+//                    distribution_scope_stv.setRightString(distanceBeans.get((Integer) pos).getName());
                 }, distanceBeans).show());
+    }
+
+    @Override
+    public void changeBusinessStatus(int status) {
+
+        //经营状态  0=未营业  1=营业中
+        operating_state_stv.getRightTextView().setText(status == 1 ? "营业中" : "未营业");
     }
 }

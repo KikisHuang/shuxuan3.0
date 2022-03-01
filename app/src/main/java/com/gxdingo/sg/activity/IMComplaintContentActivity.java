@@ -130,14 +130,11 @@ public class IMComplaintContentActivity extends BaseMvpActivity<IMComplaintContr
         reason = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
 
         String sendIdentifier = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
-        int roleId = getIntent().getIntExtra(Constant.SERIALIZABLE + 2, 0);
-        String UUID = getIntent().getStringExtra(Constant.SERIALIZABLE + 3);
 
         titleLayout.setTitleText("");
         initGpeImages();
         btnSubmit.setOnClickListener(v -> {
-
-            getP().complaint(reason, etContent.getText().toString(), gpePicture.getValues(),sendIdentifier,roleId,UUID);
+            getP().complaint(reason, etContent.getText().toString(), gpePicture.getValues(),sendIdentifier);
             /*    new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                     .isDarkTheme(false)

@@ -10,9 +10,8 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
 import com.gxdingo.sg.bean.ArticleImage;
 import com.gxdingo.sg.bean.HelpBean;
+import com.gxdingo.sg.bean.RankListBean;
 import com.gxdingo.sg.bean.ShareBean;
-import com.gxdingo.sg.http.ClientApi;
-import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
 import com.gxdingo.sg.bean.ArticleListBean;
@@ -54,42 +53,44 @@ import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
+import static com.gxdingo.sg.http.Api.INVITE_HELP;
+import static com.gxdingo.sg.http.Api.RANKING_LIST;
 import static com.gxdingo.sg.http.Api.UPLOAD_INVITATIONCODE;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADD;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_ADDRESSES;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_DEFAULT;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_DELETE;
-import static com.gxdingo.sg.http.ClientApi.ADDRESS_UPDATE;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_DETAIL;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_IMAGE;
-import static com.gxdingo.sg.http.ClientApi.ARTICLE_LIST;
-import static com.gxdingo.sg.http.ClientApi.CATEGORY_CATEGORIES;
-import static com.gxdingo.sg.http.ClientApi.CHECK_PAY_PASSWORD;
-import static com.gxdingo.sg.http.ClientApi.COUPON_LIST;
-import static com.gxdingo.sg.http.ClientApi.COUPON_RECEIVE;
-import static com.gxdingo.sg.http.ClientApi.Cash_ACCOUNT_INFO;
-import static com.gxdingo.sg.http.ClientApi.HELP_AFTER;
-import static com.gxdingo.sg.http.ClientApi.INVITESELLER;
-import static com.gxdingo.sg.http.ClientApi.MINE_HOME;
-import static com.gxdingo.sg.http.ClientApi.STORE_DETAIL;
-import static com.gxdingo.sg.http.ClientApi.STORE_LIST;
-import static com.gxdingo.sg.http.ClientApi.TASK_COMPLETE;
-import static com.gxdingo.sg.http.ClientApi.TRANSACTION_RECORD;
-import static com.gxdingo.sg.http.ClientApi.USER_EDIT;
-import static com.gxdingo.sg.http.ClientApi.USER_MOBILE_CHANGE;
-import static com.gxdingo.sg.http.ClientApi.WALLET_BINDING;
-import static com.gxdingo.sg.http.ClientApi.WALLET_UNBINDING;
-import static com.gxdingo.sg.http.StoreApi.ADD_CARD;
-import static com.gxdingo.sg.http.StoreApi.BALANCE_CASH;
-import static com.gxdingo.sg.http.StoreApi.STORE_ACCOUNT;
-import static com.gxdingo.sg.http.StoreApi.SUPPORT_CARD_LIST;
-import static com.gxdingo.sg.http.StoreApi.UNBIND_BANK_CARD;
-import static com.gxdingo.sg.http.StoreApi.UPDATE_WITHDRAWAL_PASSWORD;
+import static com.gxdingo.sg.http.Api.ADDRESS_ADD;
+import static com.gxdingo.sg.http.Api.ADDRESS_ADDRESSES;
+import static com.gxdingo.sg.http.Api.ADDRESS_DEFAULT;
+import static com.gxdingo.sg.http.Api.ADDRESS_DELETE;
+import static com.gxdingo.sg.http.Api.ADDRESS_UPDATE;
+import static com.gxdingo.sg.http.Api.ARTICLE_DETAIL;
+import static com.gxdingo.sg.http.Api.ARTICLE_IMAGE;
+import static com.gxdingo.sg.http.Api.ARTICLE_LIST;
+import static com.gxdingo.sg.http.Api.CATEGORY_CATEGORIES;
+import static com.gxdingo.sg.http.Api.CHECK_PAY_PASSWORD;
+import static com.gxdingo.sg.http.Api.COUPON_LIST;
+import static com.gxdingo.sg.http.Api.COUPON_RECEIVE;
+import static com.gxdingo.sg.http.Api.Cash_ACCOUNT_INFO;
+import static com.gxdingo.sg.http.Api.HELP_AFTER;
+import static com.gxdingo.sg.http.Api.INVITESELLER;
+import static com.gxdingo.sg.http.Api.MINE_HOME;
+import static com.gxdingo.sg.http.Api.STORE_DETAIL;
+import static com.gxdingo.sg.http.Api.STORE_LIST;
+import static com.gxdingo.sg.http.Api.TASK_COMPLETE;
+import static com.gxdingo.sg.http.Api.TRANSACTION_RECORD;
+import static com.gxdingo.sg.http.Api.USER_EDIT;
+import static com.gxdingo.sg.http.Api.USER_MOBILE_CHANGE;
+import static com.gxdingo.sg.http.Api.VOICE_TOKEN;
+import static com.gxdingo.sg.http.Api.WALLET_BINDING;
+import static com.gxdingo.sg.http.Api.WALLET_UNBINDING;
+import static com.gxdingo.sg.http.Api.ADD_CARD;
+import static com.gxdingo.sg.http.Api.BALANCE_CASH;
+import static com.gxdingo.sg.http.Api.STORE_ACCOUNT;
+import static com.gxdingo.sg.http.Api.SUPPORT_CARD_LIST;
+import static com.gxdingo.sg.http.Api.UNBIND_BANK_CARD;
+import static com.gxdingo.sg.http.Api.UPDATE_WITHDRAWAL_PASSWORD;
 import static com.gxdingo.sg.utils.ClientLocalConstant.ALIPAY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.BANK;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.WECHAT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -228,20 +229,14 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
 
         Map<String, String> map = getJsonMap();
 
-        if (isUser) {
-            map.put(Constant.MOBILE, mobile);
-        } else {
-//            map.put(StoreLocalConstant.OLD_MOBILE, UserInfoUtils.getInstance().getUserPhone());
-//            map.put(StoreLocalConstant.NEW_MOBILE, mobile);
-        }
+        map.put(Constant.MOBILE, mobile);
         map.put(Constant.CODE, code);
 
 
-        Observable<NormalBean> observable = HttpClient.post(isUser ? USER_MOBILE_CHANGE : "USER_UPDATE_MOBILE", map)
+        Observable<NormalBean> observable = HttpClient.post(USER_MOBILE_CHANGE, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -403,7 +398,7 @@ public class ClientNetworkModel {
 
         Map<String, String> map = getJsonMap();
 
-        map.put(LocalConstant.STOREID, String.valueOf(mStoreId));
+        map.put(LocalConstant.IDENTIFIER, String.valueOf(mStoreId));
 
         if (la != 0)
             map.put(LocalConstant.LATITUDE, String.valueOf(la));
@@ -671,9 +666,7 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-
-        Observable<ClientCashInfoBean> observable = HttpClient.post(isUser ? Cash_ACCOUNT_INFO : STORE_ACCOUNT)
+        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });
@@ -686,7 +679,6 @@ public class ClientNetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
-                    resetPage();
                 }
 
             }
@@ -707,6 +699,7 @@ public class ClientNetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
     }
+
 
     /**
      * 领取优惠券
@@ -802,10 +795,18 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getBankList(Context context, boolean refresh) {
+    public void getBankList(Context context, boolean refresh, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
 
 
-        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO)
+        if (refresh)
+            resetPage();
+
+        map.put(LocalConstant.CURRENT, String.valueOf(getPage()));
+
+
+        Observable<ClientCashInfoBean> observable = HttpClient.post(Cash_ACCOUNT_INFO, map)
                 .execute(new CallClazzProxy<ApiResult<ClientCashInfoBean>, ClientCashInfoBean>(new TypeToken<ClientCashInfoBean>() {
                 }.getType()) {
                 });
@@ -826,13 +827,17 @@ public class ClientNetworkModel {
             @Override
             public void onNext(ClientCashInfoBean cashInfoBean) {
 
+                if (customResultListener != null)
+                    customResultListener.onResult(cashInfoBean.getBankList());
+                else {
+                    if (netWorkListener != null)
+                        netWorkListener.onData(refresh, cashInfoBean);
+                }
+
                 if (netWorkListener != null) {
-                    netWorkListener.onData(refresh, cashInfoBean);
                     netWorkListener.onAfters();
                     pageNext(refresh, cashInfoBean.getBankList().size());
                 }
-
-
             }
         };
 
@@ -865,6 +870,7 @@ public class ClientNetworkModel {
         map.put(ClientLocalConstant.WITHDRAWAL_PASSWORD, withdrawalPassword);
 
         map.put(ClientLocalConstant.AMOUNT, amount);
+
         if (type == 0 && bankCardId > 0)
             map.put(ClientLocalConstant.BANK_CARD_ID, String.valueOf(bankCardId));
 
@@ -883,15 +889,19 @@ public class ClientNetworkModel {
                 if (e.getCode() == 601)
                     goToPage(context, ClientSettingPayPwd1Activity.class, null);
 
-                netWorkListener.onMessage(e.getMessage());
-                netWorkListener.onAfters();
-
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                netWorkListener.onSucceed(1);
-                netWorkListener.onAfters();
+                if (netWorkListener != null) {
+                    netWorkListener.onSucceed(1);
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage("提现申请已提交");
+                }
             }
         };
 
@@ -1002,12 +1012,10 @@ public class ClientNetworkModel {
      * @param addressDetail
      * @param contact
      * @param mobile
-     * @param labelString
      * @param point
-     * @param gender
      * @param regionPath
      */
-    public void addAddressInfo(Context context, boolean isAdd, int id, String doorplate, String addressDetail, String contact, String mobile, String labelString, LatLonPoint point, int gender, String regionPath) {
+    public void addAddressInfo(Context context, boolean isAdd, int id, String doorplate, String addressDetail, String contact, String mobile, LatLonPoint point, String regionPath, String locationImage) {
 
         if (isEmpty(mobile) || !isMobileSimple(mobile)) {
             if (!isMobileSimple(mobile))
@@ -1038,7 +1046,7 @@ public class ClientNetworkModel {
 
         map.put(Constant.NAME, contact);
 
-        map.put(Constant.GENDER, String.valueOf(gender));
+        //map.put(Constant.GENDER, String.valueOf(gender));
 
         map.put(ClientLocalConstant.REGIONPATH, regionPath);
 
@@ -1046,7 +1054,10 @@ public class ClientNetworkModel {
 
         map.put(ClientLocalConstant.DOORPLATE, doorplate);
 
-        map.put(LocalConstant.TAG, labelString);
+        if (!isEmpty(locationImage))
+            map.put(ClientLocalConstant.LOCATIONIMAGE, locationImage);
+
+        //map.put(LocalConstant.TAG, labelString);
 
         map.put(LocalConstant.LATITUDE, String.valueOf(point.getLatitude()));
 
@@ -1586,7 +1597,7 @@ public class ClientNetworkModel {
 
         map.put("helpCode", helpCode);
 
-        Observable<HelpBean> observable = HttpClient.post(ClientApi.INVITE_HELP, map)
+        Observable<HelpBean> observable = HttpClient.post(INVITE_HELP, map)
                 .execute(new CallClazzProxy<ApiResult<HelpBean>, HelpBean>(new TypeToken<HelpBean>() {
                 }.getType()) {
                 });
@@ -1811,4 +1822,94 @@ public class ClientNetworkModel {
             netWorkListener.onDisposable(subscriber);
 
     }
+
+    /**
+     * 获取语音token
+     *
+     * @param context
+     */
+    public void getVoiceToken(Context context, CustomResultListener customResultListener) {
+
+//        if (netWorkListener != null)
+//            netWorkListener.onStarts();
+
+
+        Observable<UserBean> observable = HttpClient.post(VOICE_TOKEN)
+                .execute(new CallClazzProxy<ApiResult<UserBean>, UserBean>(new TypeToken<UserBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<UserBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(e.getMessage());
+                }
+                if (customResultListener != null)
+                    customResultListener.onResult(null);
+
+            }
+
+            @Override
+            public void onNext(UserBean userBean) {
+
+                if (netWorkListener != null) {
+//                    netWorkListener.onAfters();
+
+                    if (customResultListener != null)
+                        customResultListener.onResult(userBean.getToken());
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+    public void getRankingList(Context context, String cycle) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("cycle", cycle);
+//        map.put("activityIdentifier",);
+
+        Observable<RankListBean> observable = HttpClient.post(RANKING_LIST, map)
+                .execute(new CallClazzProxy<ApiResult<RankListBean>, RankListBean>(new TypeToken<RankListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<RankListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                }
+            }
+
+            @Override
+            public void onNext(RankListBean rankListBean) {
+
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onData(true, rankListBean);
+                }
+
+
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
 }

@@ -5,7 +5,9 @@ import android.widget.EditText;
 
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.UpLoadBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
@@ -15,8 +17,10 @@ import com.gxdingo.sg.model.ClientMineModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -44,6 +48,8 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     private ClientNetworkModel clientNetworkModel;
 
+    private StoreNetworkModel storeNetworkModel;
+
     private NetworkModel networkModel;
 
     private CommonModel mClientCommonModel;
@@ -52,6 +58,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
 
     public ClientMinePresenter() {
+        storeNetworkModel = new StoreNetworkModel(this);
         clientNetworkModel = new ClientNetworkModel(this);
         networkModel = new NetworkModel(this);
         mClientCommonModel = new CommonModel();
@@ -60,8 +67,13 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onSucceed(int type) {
-        if (isBViewAttached())
-            getBV().onSucceed(type);
+        if (isBViewAttached()) {
+            if (type == 100)
+                refreshStatus();
+            else
+                getBV().onSucceed(type);
+        }
+
     }
 
     @Override
@@ -78,9 +90,12 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (isViewAttached()){
+        if (isViewAttached()) {
             if (o instanceof ClientMineBean)
                 getV().onMineDataResult((ClientMineBean) o);
+            else if (o instanceof NormalBean)
+                //获取扫码核销优惠券弹窗内容回调
+                getV().onRemindResult(((NormalBean) o).remindValue);
         }
 
 
@@ -185,7 +200,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void getUserInfo() {
-        if (clientNetworkModel!=null)
+        if (clientNetworkModel != null)
             clientNetworkModel.getMineData(getContext());
     }
 
@@ -199,19 +214,25 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
 
     @Override
     public void logout() {
-        if (networkModel!=null)
+        if (networkModel != null)
             networkModel.logOut(getContext());
     }
 
     @Override
+    public void loginOff(int c) {
+        if (networkModel != null)
+            networkModel.logOff(getContext(), c);
+    }
+
+    @Override
     public void scan(RxPermissions rxPermissions) {
-        if (mClientCommonModel!=null)
+        if (mClientCommonModel != null)
             mClientCommonModel.checkPermission(rxPermissions, new String[]{CAMERA, VIBRATE}, new PermissionsListener() {
                 @Override
                 public void onNext(boolean value) {
-                    if (!value){
+                    if (!value) {
                         getBV().onFailed();
-                    }else {
+                    } else {
                         getBV().onSucceed(1);
                     }
                 }
@@ -235,6 +256,44 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
+    public void getNoRemindContent() {
+        if (storeNetworkModel != null)
+            storeNetworkModel.getScanningInfo(getContext());
+    }
+
+    @Override
+    public void storeScanCode(String scanContent) {
+        if (storeNetworkModel != null)
+            storeNetworkModel.scanCode(getContext(), scanContent);
+    }
+
+    /**
+     * 刷新状态
+     */
+    @Override
+    public void refreshStatus() {
+        if (storeNetworkModel != null)
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
+                UserBean userBean = (UserBean) o;
+
+                if (isViewAttached())
+                    getV().onStatusResult(userBean);
+
+            });
+    }
+
+    /**
+     * 获取文章图
+     *
+     * @param article
+     */
+    @Override
+    public void getArticleImg(String article) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getArticleImage(getContext(), article);
+    }
+
+    @Override
     public void onResult(List<LocalMedia> result) {
         String url = getPhotoUrl(result.get(0));
 
@@ -252,7 +311,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
                 public void loadSucceed(UpLoadBean upLoadBean) {
 
                 }
-            },0);
+            }, 0);
         }
     }
 

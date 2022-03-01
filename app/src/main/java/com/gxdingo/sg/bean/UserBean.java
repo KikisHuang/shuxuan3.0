@@ -24,6 +24,9 @@ public class UserBean implements Serializable {
     private String identifier;
     private String emasId;
 
+    public String logoffRejectText;
+    public int logoffAuditStatus;
+
     public String getEmasId() {
         return emasId;
     }
@@ -43,7 +46,17 @@ public class UserBean implements Serializable {
     private String mobile;
     private String nickname;
     private String avatar;
-    private Integer gender;
+    private int gender;
+    private int authenticationStatus;
+
+    public int getAuthenticationStatus() {
+        return authenticationStatus;
+    }
+
+    public void setAuthenticationStatus(int authenticationStatus) {
+        this.authenticationStatus = authenticationStatus;
+    }
+
     private Integer status;
     private Integer inviterId;
     private Integer isFirstLogin;

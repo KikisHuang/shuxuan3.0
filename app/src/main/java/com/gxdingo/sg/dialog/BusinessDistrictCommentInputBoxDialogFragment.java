@@ -28,9 +28,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.OauthActivity;
 import com.gxdingo.sg.fragment.IMEmotionFragment;
 import com.gxdingo.sg.fragment.IMEmotionItemFragment;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.dialog.BaseFragmentDialog;
 import com.kikis.commnlibrary.utils.BitmapUtils;
 import com.kikis.commnlibrary.utils.Constant;
@@ -48,6 +51,8 @@ import butterknife.OnClick;
 import static com.blankj.utilcode.util.KeyboardUtils.hideSoftInput;
 import static com.blankj.utilcode.util.KeyboardUtils.isSoftInputVisible;
 import static com.blankj.utilcode.util.KeyboardUtils.showSoftInput;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 
 /**
@@ -201,8 +206,15 @@ public class BusinessDistrictCommentInputBoxDialogFragment extends BaseFragmentD
                 onExpressionClick(view);
                 break;
             case R.id.btn_send_info:
-                if (mOnCommentContentListener != null)
-                    mOnCommentContentListener.commentContent(etContentInputBox.getText().toString());
+                if (UserInfoUtils.getInstance().isLogin()) {
+                    if (mOnCommentContentListener != null)
+                        mOnCommentContentListener.commentContent(etContentInputBox.getText().toString());
+                } else {
+                    HideSoftKeyBoardDialog(getActivity());
+                    UserInfoUtils.getInstance().goToOauthPage(getContext());
+                    ToastUtils.showShort(gets(R.string.please_login));
+                }
+
                 break;
         }
     }

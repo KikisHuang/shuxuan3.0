@@ -1,11 +1,12 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,19 +16,15 @@ import java.util.List;
  */
 public class ClientAccountSecurityContract {
 
-    public interface ClientAccountSecurityPresenter extends MvpPresenter<BasicsListener,ClientAccountSecurityListener>{
+    public interface ClientAccountSecurityPresenter extends MvpPresenter<BasicsListener, ClientAccountSecurityListener> {
 
-        void getAccountRecord(boolean refresh,int status,String date);
+        void getAccountRecord(boolean refresh, int status, String date);
 
         void sendVerificationCode();
 
-//        void saveStatus();
-
-//        void getUserPhone();
-
         void getCashInfo();
 
-        void bind(String code,int type);
+        void bind(String code, int type);
 
         void unbind(int type);
 
@@ -35,16 +32,14 @@ public class ClientAccountSecurityContract {
 
         void bindWechat();
 
-        void unbindThirdParty(int type);
-
         void cash(String pwd);
 
-        void loginOff();
+        void getCardList(boolean b);
     }
 
-    public interface ClientAccountSecurityListener{
+    public interface ClientAccountSecurityListener {
 
-        void onTransactionResult(boolean refresh,List<TransactionBean> transactions);
+        void onTransactionResult(boolean refresh, List<TransactionBean> transactions);
 
         void onCashInfoResult(ClientCashInfoBean cashInfoBean);
 
@@ -53,6 +48,8 @@ public class ClientAccountSecurityContract {
         long getBackCardId();
 
         int getType();
+
+        void onDataResult(ArrayList<BankcardBean> list, boolean b);
 
 //        void setUserPhone(String phone);
 //

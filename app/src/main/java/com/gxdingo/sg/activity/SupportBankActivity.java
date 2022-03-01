@@ -114,7 +114,7 @@ public class SupportBankActivity extends BaseMvpActivity<BankcardContract.Bankca
         getP().getSupportCardList();
     }
     @Override
-    public void onDataResult(List<BankcardBean> bankcardBeans) {
+    public void onDataResult(List<BankcardBean> bankcardBeans, boolean refresh) {
         mAdapter.setList(bankcardBeans);
     }
 

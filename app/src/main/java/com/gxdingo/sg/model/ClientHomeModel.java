@@ -36,7 +36,6 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
 
     public void location(Context context, AMapLocationListener mLocationListener) {
         try {
-
             //初始化定位
             try {
                 mLocationClient = new AMapLocationClient(context);
@@ -119,6 +118,18 @@ public class ClientHomeModel implements AMap.OnMyLocationChangeListener {
             SPUtils.getInstance().put(LOCATION_LATITUDE_KEY, String.valueOf(location.getLatitude()));
             SPUtils.getInstance().put(LOCATION_LONGITUDE_KEY, String.valueOf(location.getLongitude()));
         }
+
+    }
+
+
+    public void destroy() {
+
+        if (mLocationClient != null) {
+            mLocationClient.onDestroy();
+            mLocationClient = null;
+        }
+        if (mLocationOption != null)
+            mLocationOption = null;
 
     }
 }

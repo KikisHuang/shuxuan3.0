@@ -25,7 +25,7 @@ public class IMChatContract {
         /**
          * 获取聊天记录列表
          */
-        void getChatHistoryList(String shareUuid, int otherId, int otherRole);
+        void getChatHistoryList(String shareUuid, String otherId, int otherRole);
 
         /**
          * 刷新聊天记录
@@ -34,7 +34,7 @@ public class IMChatContract {
          * @param otherId
          * @param otherRole
          */
-        void refreshHistoryList(String shareUuid, int otherId, int otherRole);
+        void refreshHistoryList(String shareUuid, String otherId, int otherRole);
 
         /**
          * 发送消息
@@ -141,11 +141,6 @@ public class IMChatContract {
         void getAddressList();
 
         /**
-         * 获取默认地址
-         */
-        void getCacheAddress();
-
-        /**
          * 撤回消息
          *
          * @param id
@@ -162,6 +157,28 @@ public class IMChatContract {
          * 检测草稿
          */
         void checkDraft();
+
+        /**
+         * 语音转文字
+         *
+         * @param content
+         * @param position
+         */
+        void voiceToText(String content, int position);
+
+        /**
+         * 删除消息
+         *
+         * @param id
+         * @param position
+         */
+        void delMessage(long id, int position);
+
+        /**
+         * 复制文本
+         * @param content
+         */
+        void copyText(String content,String toast);
     }
 
     public interface IMChatListener {
@@ -218,6 +235,7 @@ public class IMChatContract {
 
         /**
          * 获取发送者 Identifier
+         *
          * @return
          */
         String getSendIdentifier();
@@ -236,12 +254,6 @@ public class IMChatContract {
          */
         void showSelectAddressDialog(List<AddressBean> list);
 
-        /**
-         * 默认地址回调
-         *
-         * @param cacheDefaultAddress
-         */
-        void onAddressResult(AddressBean cacheDefaultAddress);
 
         /**
          * 已读语音消息回调
@@ -257,5 +269,20 @@ public class IMChatContract {
          * @param position
          */
         void onMessageRevocation(int position);
+
+        /**
+         * 识别内容回调
+         *
+         * @param obj
+         * @param arg1
+         */
+        void onIdentifiedContentResult(Object obj, int arg1);
+
+        /**
+         * 消息删除回调
+         *
+         * @param position
+         */
+        void onMessageDelete(int position);
     }
 }

@@ -1,5 +1,6 @@
 package com.gxdingo.sg.fragment.client;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
@@ -11,12 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.listener.OnItemLongClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
-import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.activity.StoreHomeSearchActivity;
+import com.gxdingo.sg.adapter.IMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.biz.ClientMessageContract;
+import com.gxdingo.sg.dialog.ChatListFunctionDialog;
 import com.gxdingo.sg.presenter.ClientMessagePresenter;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -24,37 +28,37 @@ import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
+import com.kikis.commnlibrary.utils.RecycleViewUtils;
 import com.kikis.commnlibrary.utils.RxUtil;
-import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
+import java.util.Collections;
+
 import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_MESSAGE_LIST;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
-import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
 
 /**
  * @author: Weaving
  * @date: 2021/10/13
  * @page:
  */
-public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract.ClientMessagePresenter> implements ClientMessageContract.ClientMessageListener, OnItemClickListener {
+public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract.ClientMessagePresenter> implements OnItemLongClickListener, ClientMessageContract.ClientMessageListener, OnItemClickListener {
 
-    @BindView(R.id.title_layout)
-    public TemplateTitle title_layout;
-
-    @BindView(R.id.title)
-    public TextView title;
 
     @BindView(R.id.smartrefreshlayout)
     public SmartRefreshLayout smartrefreshlayout;
@@ -62,10 +66,14 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     @BindView(R.id.recyclerView)
     public RecyclerView recyclerView;
 
+    @BindView(R.id.unread_msg_num)
+    public TextView unread_msg_num;
+
     @BindView(R.id.nodata_layout)
     public View nodata_layout;
 
-    private StoreHomeIMMessageAdapter imMessageAdapter;
+
+    private IMMessageAdapter imMessageAdapter;
 
     @Override
     protected ClientMessageContract.ClientMessagePresenter createPresenter() {
@@ -80,7 +88,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -124,14 +132,11 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
 
     @Override
     protected void init() {
-        title.setTextSize(16);
-        title.getPaint().setFakeBoldText(true);
-        title_layout.setTitleText(gets(R.string.message));
-        title_layout.setBackVisible(false);
-        imMessageAdapter = new StoreHomeIMMessageAdapter();
+        imMessageAdapter = new IMMessageAdapter();
         recyclerView.setAdapter(imMessageAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         imMessageAdapter.setOnItemClickListener(this);
+        imMessageAdapter.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -143,6 +148,7 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
     protected void lazyInit() {
         super.lazyInit();
         if (UserInfoUtils.getInstance().isLogin()) {
+            getP().getUnreadMessageNum();
             if (isFirstLoad) {
                 isFirstLoad = !isFirstLoad;
                 getP().getSubscribesMessage(true);
@@ -153,14 +159,37 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         }
     }
 
+
+    @OnClick({R.id.search_img})
+    public void onViewClicked(View v) {
+        if (!checkClickInterval(v.getId()))
+            return;
+
+        switch (v.getId()) {
+            case R.id.search_img:
+                startActivity(new Intent(reference.get(), StoreHomeSearchActivity.class));
+                break;
+        }
+
+    }
+
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED) {
-            getP().getSubscribesMessage(true);
-        }  else if (type == NOTIFY_MSG_LIST_ADAPTER)
-            imMessageAdapter.notifyDataSetChanged();
+        if (type == LOGIN_SUCCEED) {
+            forceStopRecyclerViewScroll(recyclerView);
+            //返回顶部
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
 
+            getP().getSubscribesMessage(true);
+
+        } else if (type == NOTIFY_MSG_LIST_ADAPTER)
+            imMessageAdapter.notifyDataSetChanged();
+        else if (type == BACK_TOP_MESSAGE_LIST) {
+            forceStopRecyclerViewScroll(recyclerView);
+            //返回顶部
+            RecycleViewUtils.MoveToPosition((LinearLayoutManager) recyclerView.getLayoutManager(), recyclerView, 0);
+        }
     }
 
     @Override
@@ -216,6 +245,37 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
         });
     }
 
+    @Override
+    public void setUnreadMsgNum(Integer data) {
+        if (data != null && data > 0)
+            unread_msg_num.setText("(" + data + ")");
+        else
+            unread_msg_num.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSetTopResult(int pos, int sort) {
+        if (sort <= imMessageAdapter.getData().size() - 1) {
+
+            if (sort > 0) {
+                //置顶无需刷新
+                imMessageAdapter.getData().get(pos).sort = 1;
+                imMessageAdapter.getData().add(0, imMessageAdapter.getData().remove(pos));
+                imMessageAdapter.notifyDataSetChanged();
+            } else
+                //取消置顶刷新列表
+                getP().refreshList();
+        }
+    }
+
+    @Override
+    public void onSubDel(int position) {
+        if (imMessageAdapter != null) {
+            imMessageAdapter.remove(imMessageAdapter.getData().get(position));
+            imMessageAdapter.notifyItemChanged(position);
+        }
+    }
+
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
@@ -240,5 +300,23 @@ public class ClientMessageFragment extends BaseMvpFragment<ClientMessageContract
             ExitChatEvent exitChatEvent = (ExitChatEvent) object;
             getP().clearUnreadMsg(exitChatEvent.id);
         }
+    }
+
+    @Override
+    public boolean onItemLongClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new ChatListFunctionDialog(reference.get(), v -> {
+
+                    if (v.getId() == R.id.del_ll)
+                        getP().listChatDel(imMessageAdapter.getData().get(position).id, position);
+                    else if (v.getId() == R.id.settop_ll)
+                        //置顶
+                        getP().setTop(imMessageAdapter.getData().get(position).id, imMessageAdapter.getData().get(position).sort > 0 ? 0 : 1, position);
+                }, imMessageAdapter.getData().get(position).sort > 0 ? true : false).show());
+        return false;
     }
 }

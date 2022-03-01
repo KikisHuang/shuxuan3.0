@@ -51,7 +51,9 @@ public class StoreListBean {
          * classNameList : ["煤气","送水","便利店"]
          */
 
-        private Integer id;
+        private String id;
+        public String storeUserIdentifier;
+        public int businessStatus;
         private String avatar;
         private String name;
         private String contactNumber;
@@ -60,11 +62,11 @@ public class StoreListBean {
         private boolean showTop;
         private List<String> classNameList;
 
-        public Integer getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(Integer id) {
+        public void setId(String id) {
             this.id = id;
         }
 

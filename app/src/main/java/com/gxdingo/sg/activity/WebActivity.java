@@ -47,6 +47,7 @@ import static com.blankj.utilcode.util.AppUtils.isAppInstalled;
 import static com.blankj.utilcode.util.AppUtils.launchApp;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.Constant.failure;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 
 
@@ -62,6 +63,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     //是否文章
     private boolean mIsArticle = false;
+    //是否显示标题
+    private boolean mShowTitle = false;
 
     private String mUrl;
 
@@ -72,6 +75,11 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected int activityTitleLayout() {
+        mShowTitle = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 3, false);
+
+        if (mShowTitle)
+            return R.layout.module_include_custom_title;
+
         mIsArticle = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
         return mIsArticle ? R.layout.module_include_custom_title : 0;
     }
@@ -168,9 +176,10 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         webView.getSettings().setSupportMultipleWindows(false); // 设置可以访问文件
         webView.setWebChromeClient(myWebChromeClient);
         webView.getSettings().setDomStorageEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onReceivedSslError(WebView webView, SslErrorHandler handler, SslError error) {
@@ -268,7 +277,7 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
             onStarts();
         else {
             onAfters();
-            if (UserInfoUtils.getInstance().isLogin()&&UserInfoUtils.getInstance().getUserInfo().getRole()==10)
+            if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo().getRole() == 10)
                 getP().upLoadRegionCode(LocalConstant.AdCode);
         }
     }
@@ -320,6 +329,8 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
 
     @Override
     protected void onDestroy() {
+        if (LocalConstant.IS_CONTEACT_SERVER)
+            LocalConstant.IS_CONTEACT_SERVER = false;
         if (webView != null) {
             callJsBye();
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
@@ -417,7 +428,6 @@ public class WebActivity extends BaseMvpActivity<WebContract.WebPresenter> imple
         if (wheelResultBean == null) return;
 
         if (wheelResultBean.type == 20 || wheelResultBean.type == 21) {
-
 
             if (wheelResultBean.jumpType == 30) {
                 ShareUtils.UmShare(this, new UMShareListener() {

@@ -3,6 +3,7 @@ package com.gxdingo.sg.presenter;
 import android.app.Activity;
 
 import com.gxdingo.sg.bean.DistanceListBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.gxdingo.sg.bean.UpLoadBean;
@@ -71,9 +72,9 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
             DistanceListBean distanceListBean = (DistanceListBean) o;
             if (isViewAttached() && distanceListBean.getList() != null)
                 getV().onDistanceResult(distanceListBean.getList());
-        } else if (o instanceof StoreDetailBean) {
+        } else if (o instanceof StoreDetail) {
             if (isViewAttached())
-                getV().onInfoResult((StoreDetailBean) o);
+                getV().onInfoResult((StoreDetail) o);
         }
     }
 
@@ -137,9 +138,9 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
     }
 
     @Override
-    public void getStoreInfo() {
+    public void getStoreInfo(String id) {
         if (storeNetworkModel != null)
-            storeNetworkModel.getStoreDetails(getContext());
+            storeNetworkModel.getStoreDetails(getContext(),id);
     }
 
     @Override
@@ -178,6 +179,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
             storeNetworkModel.getExclusiveQRcode(getContext());
     }
 
+
     @Override
     public void updateStoreName(String name) {
         if (storeNetworkModel != null)
@@ -207,6 +209,21 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
         if (storeNetworkModel != null)
             storeNetworkModel.getAuthInfo(getContext());
     }
+
+    @Override
+    public void updateBusinessStatus(int status) {
+
+        if (storeNetworkModel != null)
+            storeNetworkModel.updateBusinessStatus(getContext(), status, o -> {
+
+
+                if (isViewAttached())
+                    getV().changeBusinessStatus(status);
+            });
+
+    }
+
+
 
     @Override
     public void onResult(List<LocalMedia> result) {

@@ -1,38 +1,40 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ActivityEvent;
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
-import com.gxdingo.sg.bean.WeChatLoginEvent;
+import com.gxdingo.sg.bean.ShareEvent;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.biz.OnContentListener;
+import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
+import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.client.SettledFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictParentFragment;
 import com.gxdingo.sg.presenter.ClientMainPresenter;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
-import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -41,39 +43,29 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
-import com.kikis.commnlibrary.utils.RxUtil;
+import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
-import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
+import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
-import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
-import static com.gxdingo.sg.utils.LocalConstant.businessDistrictRefreshTime;
-import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
 
 /**
@@ -85,7 +77,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     private List<Fragment> mFragmentList;
 
-    @BindViews({R.id.home_page_layout, R.id.message_layout, R.id.business_layout, R.id.mine_layout})
+    @BindViews({R.id.business_layout, R.id.home_page_layout, R.id.settle_in, R.id.message_layout, R.id.mine_layout})
     public List<CircularRevealButton> mMenuLayout;
 
     @BindView(R.id.msg_fl)
@@ -109,6 +101,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     //刷新商圈定时器disposable
     private Disposable mDisposable;
 
+    private BasePopupView fillCodePopupView;
 
     public static ClientActivity getInstance() {
         return instance;
@@ -136,7 +129,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     protected int StatusBarColors() {
-        return R.color.main_tone;
+        return R.color.grayf6;
     }
 
     @Override
@@ -195,7 +188,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     protected void onStart() {
         super.onStart();
-
+        getP().checkHelpCode();
 //        if (!UserInfoUtils.getInstance().isLogin()&&showLogin){
 //            goToPage(this, LoginActivity.class,null);
 //            showLogin = !showLogin;
@@ -208,17 +201,17 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().getUnreadMessageNum();
             startImService();
         }
-
-        //商家已登录则跳转到商家主界面
-        if (UserInfoUtils.getInstance().isLogin()) {
-            boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-            if (!isUse) {
-                goToPage(this, StoreActivity.class, null);
-                finish();
-            }
-        }
     }
 
+    @Override
+    public void onSucceed(int type) {
+        super.onSucceed(type);
+
+        if (type == ClientLocalConstant.FILL_SUCCESS) {
+            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
+            fillCodePopupView.dismiss();
+        }
+    }
 
     @Override
     protected void onBaseCreate() {
@@ -239,7 +232,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }
 
         if (object instanceof OneKeyLoginEvent) {
-            getP().oneKeyLogin(((OneKeyLoginEvent) object).code, ((OneKeyLoginEvent) object).isUser);
+            getP().oneKeyLogin(((OneKeyLoginEvent) object).code);
         }/* else if (object instanceof WeChatLoginEvent) {
             WeChatLoginEvent event = (WeChatLoginEvent) object;
             if (!isEmpty(event.code) && event.login)
@@ -253,7 +246,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         } else if (object instanceof ActivityEvent) {
             //活动事件
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
+            getP().checkTab(0);
         }
     }
 
@@ -268,21 +261,17 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         }*/ else if (type == LOGOUT) {
             setUnreadMsgNum(0);
             setBusinessUnreadMsgNum(null);
-            ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
+            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
-        } else if (type == LocalConstant.STORE_LOGIN_SUCCEED) {
-            finish();
-        } else if (type == CLIENT_LOGIN_SUCCEED) {
-            toBusinessCircle();
+        } else if (type == LOGIN_SUCCEED) {
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
+                showInvitationCodeDialog();
             getP().getUnreadMessageNum();
-        } else if (type == SOTRE_REVIEW_SUCCEED) {
-            //用户认证成功，关闭客户端
-            finish();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
-        } else if (type == GO_TO_BUSINESS_CIRCLE) {
-            toBusinessCircle();
+        } else if (type == GO_SETTLED) {
+            getP().checkTab(2);
         }
     }
 
@@ -294,43 +283,56 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     private void fragmentInit() {
 
         mFragmentList = new ArrayList<>();
+        mFragmentList.add(new BusinessDistrictParentFragment());
         mFragmentList.add(new ClientHomeFragment());
+        mFragmentList.add(new SettledFragment());
         mFragmentList.add(new ClientMessageFragment());
-        mFragmentList.add(new StoreBusinessDistrictFragment());
         mFragmentList.add(new ClientMineFragment());
     }
 
+    private void showInvitationCodeDialog() {
+        if (fillCodePopupView == null) {
+            fillCodePopupView = new XPopup.Builder(reference.get())
+                    .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
+                    .isDarkTheme(false)
+                    .asCustom(new FillInvitationCodePopupView(reference.get(), new OnContentListener() {
+                        @Override
+                        public void onConfirm(BasePopupView popupView, String content) {
+                            getP().fllInvitationCode(content);
+                        }
+                    })).show();
+        } else {
+            fillCodePopupView.show();
+        }
+
+    }
 
     @OnClick({R.id.home_page_layout, R.id.message_layout, R.id.settle_in, R.id.business_layout, R.id.mine_layout})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
 
-        if (v.getId() != R.id.home_page_layout && !UserInfoUtils.getInstance().isLogin()) {
+        if ((v.getId() == R.id.message_layout || v.getId() == R.id.settle_in || v.getId() == R.id.mine_layout) && !UserInfoUtils.getInstance().isLogin()) {
             getP().goLogin();
             return;
-
         }
 
         switch (v.getId()) {
             case R.id.home_page_layout:
-                ImmersionBar.with(this).statusBarDarkFont(false).statusBarColor(R.color.main_tone).init();
-                getP().checkTab(0);
-                break;
-            case R.id.message_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
                 getP().checkTab(1);
                 break;
-            case R.id.settle_in:
-                goToPage(this, ClientSettleActivity.class, null);
+            case R.id.message_layout:
+
+                getP().checkTab(3);
                 break;
-            case R.id.business_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
+            case R.id.settle_in:
                 getP().checkTab(2);
                 break;
+            case R.id.business_layout:
+                getP().checkTab(0);
+                break;
             case R.id.mine_layout:
-                ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-                getP().checkTab(3);
+                getP().checkTab(4);
                 break;
         }
     }
@@ -368,9 +370,15 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onSeleted(int checkTab, int oldTab) {
 
+        if (checkTab == 4)
+            ImmersionBar.with(reference.get()).init();
+        else
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(1 == checkTab || 0 == checkTab || 3 == checkTab ? R.color.grayf5 : R.color.white).init();
+
         mMenuLayout.get(checkTab).setonSelected(true);
 
         mMenuLayout.get(oldTab).setonSelected(false);
+
     }
 
     @Override
@@ -419,6 +427,22 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         new XPopup.Builder(reference.get())
                 .isDarkTheme(false)
                 .asCustom(sgConfirm2ButtonPopupView).show();
+    }
+
+    @Override
+    public void onHelpDataResult(HelpBean helpBean) {
+        new XPopup.Builder(reference.get())
+                .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
+                .isDarkTheme(false)
+                .asCustom(new HelpPopupView(reference.get(), helpBean, () -> getP().help()))
+                .show();
+    }
+
+
+    @Override
+    public void goToBusinessDistrict(String code) {
+        getP().checkTab(0);
+        sendEvent(new ShareEvent(code));
     }
 
     @Override
@@ -499,16 +523,5 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onUserPresent() {
 
-    }
-
-
-    //分享口令类型40登录成功跳转商圈页
-    private void toBusinessCircle() {
-        if (UserInfoUtils.getInstance().isLogin() && SPUtils.getInstance().getBoolean(TO_BUSINESS_CIRCLE, false)) {
-            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, false);
-
-            ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.white).init();
-            getP().checkTab(2);
-        }
     }
 }

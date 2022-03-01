@@ -10,16 +10,19 @@ import com.amap.api.services.route.DistanceItem;
 import com.amap.api.services.route.DistanceSearch;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
+import com.esandinfo.livingdetection.bean.EsLivingDetectResult;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.StoreActivity;
+import com.gxdingo.sg.bean.AliVerifyBean;
+import com.gxdingo.sg.bean.AuthenticationBean;
 import com.gxdingo.sg.bean.CommonlyUsedStoreBean;
 import com.gxdingo.sg.bean.IdCardOCRBean;
 import com.gxdingo.sg.bean.ItemDistanceBean;
+import com.gxdingo.sg.bean.LabelListBean;
 import com.gxdingo.sg.bean.NormalBean;
-import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.GridPhotoListener;
@@ -37,9 +40,13 @@ import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
+import com.zhouyou.http.EasyHttp;
 import com.zhouyou.http.callback.CallClazzProxy;
+import com.zhouyou.http.callback.DownloadProgressCallBack;
 import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.model.ApiResult;
+import com.zhouyou.http.model.HttpHeaders;
+import com.zhouyou.http.request.DownloadRequest;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -47,14 +54,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.FormBody;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.RegexUtils.isMobileSimple;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.gxdingo.sg.http.Api.ALICLOUDAPI_VERIFY;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_INIT;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY;
+import static com.gxdingo.sg.http.Api.AUTHENTICATION_VERIFY2;
 import static com.gxdingo.sg.http.Api.CHECK_CODE_SMS;
+import static com.gxdingo.sg.http.Api.CIRCLE_LABEL;
 import static com.gxdingo.sg.http.Api.COMPLAINT_MSG;
 import static com.gxdingo.sg.http.Api.EXTRA_CERTIFICATION;
 import static com.gxdingo.sg.http.Api.EXTRA_IDCARDOCR;
@@ -71,8 +86,6 @@ import static com.gxdingo.sg.http.Api.getBatchUpLoadImage;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.gxdingo.sg.utils.LocalConstant.COMPLAINT_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.StoreLocalConstant.INVITATION_CODE;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -281,12 +294,13 @@ public class NetworkModel {
 
                 SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
 
-                netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 
-                netWorkListener.onAfters();
-                netWorkListener.onMessage(gets(R.string.captcha_code_sent));
+                if (netWorkListener!=null){
+                    netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 
-
+                    netWorkListener.onAfters();
+                    netWorkListener.onMessage(gets(R.string.captcha_code_sent));
+                }
             }
         };
 
@@ -376,10 +390,10 @@ public class NetworkModel {
 
         map.put(Constant.MOBILE, phone);
 
-        if (SPUtils.getInstance().getBoolean(LocalConstant.LOGIN_WAY))
-            map.put(Constant.CODE, code);
-        else
-            map.put(StoreLocalConstant.CAPTCHA, code);
+//        if (SPUtils.getInstance().getBoolean(LocalConstant.LOGIN_WAY))
+        map.put(Constant.CODE, code);
+//        else
+//            map.put(StoreLocalConstant.CAPTCHA, code);
 
         Observable<NormalBean> observable = HttpClient.post(CHECK_CODE_SMS, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -471,7 +485,7 @@ public class NetworkModel {
      * @param
      * @param
      */
-    public void oneClickLogin(Context context, String accessToken, boolean isUse) {
+    public void oneClickLogin(Context context, String accessToken) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -507,21 +521,15 @@ public class NetworkModel {
                     netWorkListener.onAfters();
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
                     netWorkListener.onMessage(gets(R.string.login_succeed));
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
 
 //                    SPUtils.getInstance().put(LOGIN_WAY, isUse);//保存登录状态
 
-                    if (!isUse) {
-                        //商家
-                        if (StoreActivity.getInstance() == null)
-                            goToPage(context, StoreActivity.class, null);
-                    } else {
-                        //客户端
-                        if (ClientActivity.getInstance() == null)
-                            goToPage(context, ClientActivity.class, null);
-                    }
+                    //客户端
+                    if (ClientActivity.getInstance() == null)
+                        goToPage(context, ClientActivity.class, null);
                 }
             }
         };
@@ -538,7 +546,7 @@ public class NetworkModel {
      * @param mobile
      * @param code
      */
-    public void login(Context context, String mobile, String code, boolean isUse) {
+    public void login(Context context, String mobile, String code) {
 
         if (isEmpty(mobile)) {
             netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
@@ -581,8 +589,8 @@ public class NetworkModel {
                     netWorkListener.onAfters();
 
                 if (netWorkListener != null) {
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
 
             }
@@ -635,7 +643,7 @@ public class NetworkModel {
      * @param code
      * @param type
      */
-    public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
+    public void thirdPartyLogin(Context context, String code, String type) {
 
         if (isEmpty(code)) {
             netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
@@ -680,11 +688,11 @@ public class NetworkModel {
 
                     netWorkListener.onMessage(gets(R.string.please_bind_phone));
                     netWorkListener.onSucceed(LocalConstant.BIND_PHONE);
-                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
+                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
             }
         };
@@ -703,7 +711,7 @@ public class NetworkModel {
      * @param openid
      * @param appname
      */
-    public void bind(Context context, String mobile, String code, String openid, String appname, boolean isUse) {
+    public void bind(Context context, String mobile, String code, String openid, String appname) {
 
 
         if (isEmpty(mobile)) {
@@ -750,8 +758,8 @@ public class NetworkModel {
                     netWorkListener.onAfters();
                     netWorkListener.onMessage(gets(R.string.bind_succeed));
 
-                    netWorkListener.onSucceed(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    netWorkListener.onSucceed(LocalConstant.LOGIN_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
 
                 }
 
@@ -797,6 +805,7 @@ public class NetworkModel {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
                     netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
+                    EventBus.getDefault().post(LocalConstant.LOGOUT_SUCCEED);
                 }
                 UserInfoUtils.getInstance().clearLoginStatus();
 
@@ -818,13 +827,18 @@ public class NetworkModel {
      * 注销
      *
      * @param context
+     * @param cancel  1=取消注销申请 0=正常注销
      */
-    public void logOff(Context context) {
+    public void logOff(Context context, int cancel) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<NormalBean> observable = HttpClient.post(USER_LOGOFF)
+        Map<String, String> map = getJsonMap();
+
+        map.put("cancel", String.valueOf(cancel));
+
+        Observable<NormalBean> observable = HttpClient.post(USER_LOGOFF, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -843,13 +857,11 @@ public class NetworkModel {
 
             @Override
             public void onNext(NormalBean normalBean) {
+
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
-                    netWorkListener.onSucceed(LocalConstant.LOGOUT_SUCCEED);
+                    netWorkListener.onSucceed(100);
                 }
-                UserInfoUtils.getInstance().clearLoginStatus();
-                UserInfoUtils.getInstance().goToOauthPage(context);
-
             }
         };
 
@@ -911,6 +923,25 @@ public class NetworkModel {
         if (netWorkListener != null)
             netWorkListener.onDisposable(subscriber);
 
+    }
+
+
+    /**
+     * 下载文件
+     *
+     * @param path
+     * @param callBack
+     * @param mDownloadDisp
+     * @param filePath
+     * @param fileName
+     */
+    public void downloadFile(String path, DownloadProgressCallBack callBack, Disposable mDownloadDisp, String filePath, String fileName) {
+
+        DownloadRequest request = EasyHttp.downLoad(path)
+                .savePath(filePath)
+                .saveName(fileName);//不设置默认名字是时间戳生成的
+
+        mDownloadDisp = request.execute(callBack);
     }
 
     /**
@@ -1118,13 +1149,10 @@ public class NetworkModel {
      * @param content
      * @param list
      * @param sendIdentifier
-     * @param role
-     * @param shareUuid
      */
-    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier, int role, String shareUuid) {
+    public void complaintMessage(Context context, String reason, String content, List<String> list, String sendIdentifier) {
 
         Map<String, String> map = getJsonMap();
-
 
         map.put(LocalConstant.REASON, reason);
         map.put("content", content);
@@ -1134,12 +1162,6 @@ public class NetworkModel {
 
         if (!isEmpty(sendIdentifier))
             map.put("sendIdentifier", sendIdentifier);
-
-        if (role > 0)
-            map.put("role", String.valueOf(role));
-
-        if (!isEmpty(shareUuid))
-            map.put("shareUuid", String.valueOf(shareUuid));
 
         Observable<NormalBean> observable = HttpClient.post(COMPLAINT_MSG, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
@@ -1218,7 +1240,7 @@ public class NetworkModel {
         map.put("side", side);
         map.put("imageUrl", imgUrl);
 
-        if (netWorkListener!=null)
+        if (netWorkListener != null)
             netWorkListener.onStarts();
 
         Observable<IdCardOCRBean> observable = HttpClient.post(EXTRA_IDCARDOCR, map)
@@ -1233,11 +1255,10 @@ public class NetworkModel {
                 BaseLogUtils.e(e);
                 customResultListener.onResult(null);
 
-                if (netWorkListener != null){
+                if (netWorkListener != null) {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
 
 
             }
@@ -1297,6 +1318,276 @@ public class NetworkModel {
                 }
                 if (netWorkListener != null)
                     netWorkListener.onMessage(normalBean.msg);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
+
+
+    /**
+     * 活体实名认证接口初始化
+     *
+     * @param data
+     * @param idCardName
+     * @param idCardNumber
+     */
+    public void RPauthInit(Context context, String data, String idCardName, String idCardNumber, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("initMsg", data);
+
+        map.put("certName", idCardName);
+        map.put("certNo", idCardNumber);
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_INIT, map)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean authenticationBean) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(authenticationBean);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void AliRPauth(Context context, EsLivingDetectResult result1, CustomResultListener customResultListener) {
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put("token", result1.getToken());
+
+        map.put("verifyMsg", result1.getData());
+
+/*        FormBody body;
+        FormBody.Builder bodyBuilder = new FormBody.Builder()
+                .add("token", result1.getToken())
+                .add("verifyMsg", result1.getData());
+
+        body = bodyBuilder.build();*/
+
+        HttpHeaders headers = new HttpHeaders();
+
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE
+//        headers.put("Authorization", "APPCODE " + "a0b80eedd699448e82a1f1f7250deb31");
+        headers.put("Authorization", "APPCODE " + LocalConstant.APPCODE);
+        //根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同
+        headers.put("X-Ca-Nonce", UUID.randomUUID().toString());
+
+        Observable<String> observable = HttpClient.post(ALICLOUDAPI_VERIFY, map).headers(headers)
+                .execute(String.class);
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<String>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(String s) {
+
+                AliVerifyBean data = GsonUtil.GsonToBean(s, AliVerifyBean.class);
+                if (customResultListener != null) {
+                    customResultListener.onResult(data);
+                }
+
+                if (netWorkListener != null)
+                    netWorkListener.onAfters();
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void RPauth(Context context, AliVerifyBean result1, CustomResultListener customResultListener) {
+
+        Map<String, String> map = getJsonMap();
+
+        if (!isEmpty(result1.getCode()))
+            map.put("code", result1.getCode());
+        if (!isEmpty(result1.getMsg()))
+            map.put("msg", result1.getMsg());
+        if (!isEmpty(result1.getBizId()))
+            map.put("bizId", result1.getBizId());
+        if (!isEmpty(result1.getRequestId()))
+            map.put("requestId", result1.getRequestId());
+        if (!isEmpty(result1.getLivingType()))
+            map.put("livingType", result1.getLivingType());
+        if (!isEmpty(result1.getCertName()))
+            map.put("certName", result1.getCertName());
+        if (!isEmpty(result1.getCertNo()))
+            map.put("certNo", result1.getCertNo());
+        if (!isEmpty(result1.getBestImg()))
+            map.put("bestImg", result1.getBestImg());
+        if (!isEmpty(result1.getPass()))
+            map.put("pass", result1.getPass());
+//        map.put("rxfs", result1.getRxfs());
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_VERIFY, map)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean s) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(s);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 活体实名认证
+     */
+    public void RPauth2(Context context, EsLivingDetectResult result1, CustomResultListener customResultListener) {
+
+/*        Map<String, String> map = getJsonMap();
+
+        map.put("token", result1.getToken());
+
+        map.put("verifyMsg", result1.getData());*/
+
+        FormBody body;
+        FormBody.Builder bodyBuilder = new FormBody.Builder()
+                .add("token", result1.getToken())
+                .add("verifyMsg", result1.getData());
+
+        body = bodyBuilder.build();
+
+        HttpHeaders headers = new HttpHeaders();
+
+        //最后在header中的格式(中间是英文空格)为Authorization:APPCODE 83359fd73fe94948385f570e3c139105
+        headers.put("Authorization", "APPCODE " + LocalConstant.APPCODE);
+        //根据API的要求，定义相对应的Content-Type
+        headers.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        //需要给X-Ca-Nonce的值生成随机字符串，每次请求不能相同
+        headers.put("X-Ca-Nonce", UUID.randomUUID().toString());
+
+        Observable<AuthenticationBean> observable = HttpClient.post(AUTHENTICATION_VERIFY2).requestBody(body)
+                .execute(new CallClazzProxy<ApiResult<AuthenticationBean>, AuthenticationBean>(new TypeToken<AuthenticationBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<AuthenticationBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+
+            }
+
+            @Override
+            public void onNext(AuthenticationBean s) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(s);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+
+    }
+
+    /**
+     * 获取发布商圈标签列表
+     *
+     * @param context
+     * @param customResultListener
+     */
+    public void getLabelList(Context context, CustomResultListener customResultListener) {
+
+        Observable<LabelListBean> observable = HttpClient.post(CIRCLE_LABEL)
+                .execute(new CallClazzProxy<ApiResult<LabelListBean>, LabelListBean>(new TypeToken<LabelListBean>() {
+                }.getType()) {
+                });
+
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<LabelListBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(LabelListBean data) {
+
+                if (customResultListener != null) {
+                    customResultListener.onResult(data.list);
+                }
             }
         };
 

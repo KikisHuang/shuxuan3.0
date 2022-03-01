@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.kikis.commnlibrary.R;
@@ -270,6 +271,8 @@ public abstract class BaseFragment extends Fragment implements OnRefreshListener
         EventBus.getDefault().unregister(this);
         clearDisposable();
 
+        //防止ToastUtils 内存泄漏
+        ToastUtils.cancel();
     }
 
     public RxPermissions getRxPermissions() {

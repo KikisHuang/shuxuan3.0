@@ -3,6 +3,7 @@ package com.gxdingo.sg.biz;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
@@ -22,7 +23,7 @@ public class ClientMainContract {
 
         void checkTab(int tab);
 
-        void oneKeyLogin(String code, boolean isUser);
+        void oneKeyLogin(String code );
 
         void aliLogin();
 
@@ -41,6 +42,12 @@ public class ClientMainContract {
         void getUnreadMessageNum();
 
         void checkNotifications();
+
+        void checkHelpCode();
+
+        void help();
+
+        void fllInvitationCode(String content);
     }
 
     public interface ClientMainListener {
@@ -70,6 +77,10 @@ public class ClientMainContract {
         void setBusinessUnreadMsgNum(NumberUnreadCommentsBean bean);
 
         void showNotifyDialog();
+
+        void onHelpDataResult(HelpBean o);
+
+        void goToBusinessDistrict(String code);
     }
 
     public interface ClientMainModelListener {

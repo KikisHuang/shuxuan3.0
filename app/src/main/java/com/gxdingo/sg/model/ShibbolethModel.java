@@ -19,14 +19,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.utils.LocalConstant.GO_TO_BUSINESS_CIRCLE;
-import static com.gxdingo.sg.utils.LocalConstant.TO_BUSINESS_CIRCLE;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
 import static com.gxdingo.sg.utils.SignatureUtils.isShuXiangShibboleth;
 import static com.gxdingo.sg.utils.SignatureUtils.numberDecode;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Kikis
@@ -39,7 +34,7 @@ public class ShibbolethModel {
     /**
      * 检测口令
      */
-    public static void checkShibboleth(OnCodeListener listener, int delayTime) {
+    public static void checkShibboleth(OnCodeListener listener, int delayTime, boolean clearClipboard) {
 
         try {
             new Handler().postDelayed(() -> {
@@ -59,51 +54,17 @@ public class ShibbolethModel {
                             copyText("");
                             return;
                         }
-                        //40 保存跳转状态
-                        if (mType == 40) {
-                            SPUtils.getInstance().put(TO_BUSINESS_CIRCLE, true);
-                            if (UserInfoUtils.getInstance().isLogin())
-                                EventBus.getDefault().post(GO_TO_BUSINESS_CIRCLE);
-                        }
-
 
                         if (listener != null)
                             listener.onCode(mType, copyContent);
 
-                        String url = "";
 
-
-        /*            String tempUrl = "";
-
-                    if (!isDebug)
-                        tempUrl = Api.H5_URL;
-                    else if (isDebug && !isUat)
-                        tempUrl = Api.TEST_H5_URL;
-                    else if (isDebug && isUat)
-                        tempUrl = Api.URL.replace("/user/", "");
-
-                    switch (mType) {
-                        //全民领钱
-                        case 50:
-                            //邀请新用户注册
-                        case 10:
-                            url = tempUrl + AC1URL + INVITATIONCODE + QT + code;
-                            break;
-
-                        //一分拿
-                        case 51:
-                            url = tempUrl + AC2URL + INVITATIONCODE + QT + code;
-                            break;
-                    }*/
-//                    goToPagePutSerializable((Activity) context, WebActivity.class, getIntentEntityMap(new Object[]{false,url}));
-
-                        //清空剪贴板
-                        if (UserInfoUtils.getInstance().isLogin()) {
-                            copyText("");
-                            LocalConstant.TEMP_SHIBBOLETH = "";
+                        //商家类型口令商家处理认证时再处理
+                        if (mType == 30) {
+                            if (clearClipboard)
+                                clear();
                         } else
-                            LocalConstant.TEMP_SHIBBOLETH = copyContent;
-
+                            clear();
                     }
                 }
             }, delayTime);//1秒后执行Runnable中的run方法
@@ -112,4 +73,10 @@ public class ShibbolethModel {
         }
     }
 
+    private static void clear() {
+        //清空剪贴板
+        if (UserInfoUtils.getInstance().isLogin()) {
+            copyText("");
+        }
+    }
 }

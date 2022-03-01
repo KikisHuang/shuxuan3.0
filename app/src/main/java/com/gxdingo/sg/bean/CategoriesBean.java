@@ -23,7 +23,6 @@ public class CategoriesBean {
     private Integer id;
     private List<String> keyword;
     private Integer status;
-    public boolean isSelected;
 
     public String getImage() {
         return image;

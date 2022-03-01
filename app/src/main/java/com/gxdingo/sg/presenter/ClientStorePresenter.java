@@ -133,7 +133,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
     }
 
     @Override
-    public void getStoreDetail(RxPermissions rxPermissions, long storeId) {
+    public void getStoreDetail(RxPermissions rxPermissions, String storeId) {
         if (commonModel != null && isViewAttached())
             commonModel.checkPermission(rxPermissions, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, new PermissionsListener() {
                 @Override
@@ -149,7 +149,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                                 lon = aMapLocation.getLongitude();
 
                                 if (clientNetworkModel != null) {
-                                    clientNetworkModel.getStoreDetail(getContext(), String.valueOf(storeId), lat, lon, o -> {
+                                    clientNetworkModel.getStoreDetail(getContext(), storeId, lat, lon, o -> {
                                         StoreDetail storeDetail = (StoreDetail) o;
                                         mStoreDetail = storeDetail;
                                         mapInit(storeDetail.getLatitude(), storeDetail.getLongitude());
@@ -214,5 +214,14 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                 commonModel.goCallPage(getContext(), s);
             else
                 onMessage(gets(R.string.no_get_store_mobile_phone_number));
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+        if (model != null) {
+            model.destroy();
+            model = null;
+        }
     }
 }

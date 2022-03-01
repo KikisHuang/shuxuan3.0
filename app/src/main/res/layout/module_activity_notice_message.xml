@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="10dp"
+    android:background="@color/grayf6"
+    />
+
+
+    <TextView
+        android:id="@+id/notice_msg_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="40dp"
+        android:lineSpacingExtra="10dp"
+        android:textColor="@color/graye2e2e2"
+        tools:text="因疫情原因，部分地区因疫情原因，部分地区无法配送，奖品可以直接折算现金。" />
+
+
+</LinearLayout>

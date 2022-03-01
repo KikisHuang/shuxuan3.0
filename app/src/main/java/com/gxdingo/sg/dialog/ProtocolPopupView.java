@@ -34,15 +34,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.blankj.utilcode.util.AppUtils.getAppName;
-import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.utils.ClientLocalConstant.APP;
-import static com.gxdingo.sg.utils.ClientLocalConstant.DEVICE;
-import static com.gxdingo.sg.utils.ClientLocalConstant.YI_TARGET;
-import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
-import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
+import static com.gxdingo.sg.http.Api.CLIENT_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_SERVICE_AGREEMENT_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;

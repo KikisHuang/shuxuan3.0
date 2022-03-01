@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.gyf.immersionbar.ImmersionBar;
@@ -316,6 +317,8 @@ public abstract class BaseActivity extends RxAppCompatActivity implements OnRefr
             reference = null;
         }
         clearDisposable();
+        //防止ToastUtils 内存泄漏
+        ToastUtils.cancel();
     }
 
 

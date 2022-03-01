@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="31dp"
-            android:text="恭喜您，认证成功"
+            android:text="身份认证"
             android:textColor="@color/graye2e2e2"
             android:textSize="16sp" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="6dp"
-            android:text="身份认证通过"
+            android:text="发布商圈需要完成实名认证"
             android:textColor="@color/graya9a9a9"
             android:textSize="14sp" />
 
@@ -52,7 +52,7 @@
             android:layout_marginBottom="23dp"
             android:stateListAnimator="@null"
             android:background="@drawable/module_bg_main_color_round6"
-            android:text="@string/done"
+            android:text="@string/go_authentication"
             android:textColor="@color/white" />
     </LinearLayout>
 

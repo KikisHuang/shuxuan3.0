@@ -5,6 +5,7 @@ import android.content.Context;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictMessageCommentListBean;
@@ -14,6 +15,7 @@ import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.Api;
 import com.gxdingo.sg.http.HttpClient;
+import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -31,17 +33,19 @@ import java.util.Map;
 
 import io.reactivex.Observable;
 
-import static com.gxdingo.sg.http.ClientApi.BUSINESS_DISTRICT_COMMENT_OR_ADD;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_GET_COMMENT;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_LIST;
-import static com.gxdingo.sg.http.StoreApi.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
-import static com.gxdingo.sg.http.StoreApi.CIRCLE_LIKEDORUNLIKED;
-import static com.gxdingo.sg.http.StoreApi.DELETE_MY_OWN_COMMENT;
-import static com.gxdingo.sg.http.StoreApi.GET_NUMBER_UNREAD_COMMENTS;
-import static com.gxdingo.sg.http.StoreApi.RELEASE_BUSINESS_DISTRICT_INFO;
-import static com.gxdingo.sg.http.StoreApi.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_COMMENT_OR_ADD;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_COMMENT_OR_REPLY;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_GET_COMMENT;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_LIST;
+import static com.gxdingo.sg.http.Api.BUSINESS_DISTRICT_MESSAGE_COMMENT_LIST;
+import static com.gxdingo.sg.http.Api.CIRCLE_HEADER_ADS;
+import static com.gxdingo.sg.http.Api.CIRCLE_LIKEDORUNLIKED;
+import static com.gxdingo.sg.http.Api.DELETE_MY_OWN_COMMENT;
+import static com.gxdingo.sg.http.Api.GET_NUMBER_UNREAD_COMMENTS;
+import static com.gxdingo.sg.http.Api.RELEASE_BUSINESS_DISTRICT_INFO;
+import static com.gxdingo.sg.http.Api.STORE_DELETE_BUSINESS_DISTRICT_DYNAMICS;
+import static com.gxdingo.sg.utils.LocalConstant.lat;
+import static com.gxdingo.sg.utils.LocalConstant.lon;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 public class BusinessDistrictModel {
@@ -134,7 +138,7 @@ public class BusinessDistrictModel {
     /**
      * 获取商圈列表
      */
-    public void getBusinessDistrict(Context context, boolean refresh, int storeId) {
+    public void getBusinessDistrict(Context context, boolean refresh, String circleUserIdentifier, String circleCode) {
         if (refresh)
             resetPage();//重置页码
 
@@ -142,14 +146,24 @@ public class BusinessDistrictModel {
         map.put(StoreLocalConstant.CURRENT, String.valueOf(mPage));
         map.put(StoreLocalConstant.SIZE, String.valueOf(mPageSize));
 
+        if (lat != 0 && lon != 0) {
+            map.put(StoreLocalConstant.LONGITUDE, String.valueOf(lon));
+            map.put(StoreLocalConstant.LATITUDE, String.valueOf(lat));
+        }
+
+
         if (UserInfoUtils.getInstance().isLogin() && !isEmpty(LocalConstant.AdCode))
             map.put("area", LocalConstant.AdCode);
 
-        if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
-            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
+        if (!isEmpty(circleCode))
+            map.put("circleCode", circleCode);
 
-        if (storeId > 0)
-            map.put("storeId", String.valueOf(storeId));
+        if (UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getIdentifier()))
+            map.put("identifier", UserInfoUtils.getInstance().getIdentifier());
+
+
+        if (!isEmpty(circleUserIdentifier))
+            map.put("circleUserIdentifier", circleUserIdentifier);
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -174,8 +188,9 @@ public class BusinessDistrictModel {
             public void onNext(BusinessDistrictListBean storeDataBean) {
                 if (netWorkListener != null) {
                     netWorkListener.onAfters();
+                    netWorkListener.onData(refresh, storeDataBean);
                 }
-                netWorkListener.onData(refresh, storeDataBean);
+
 
                 if (storeDataBean != null && storeDataBean.getList() != null) {
                     //下一页
@@ -192,11 +207,24 @@ public class BusinessDistrictModel {
     /**
      * 商家发布商圈信息
      */
-    public void storeReleaseBusinessDistrict(Context context, String content, List<String> images) {
+    public void storeReleaseBusinessDistrict(Context context, String content, List<String> images, List<BusinessDistrictListBean.Labels> labels) {
 
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.CONTENT, content);
+
         map.put(StoreLocalConstant.IMAGES, GsonUtil.gsonToStr(images));
+
+        if (labels != null && labels.size() > 0) {
+            map.put(LocalConstant.LABELS, GsonUtil.gsonToStr(labels));
+        }
+
+        if (lon != 0)
+            map.put(LocalConstant.LONGITUDE, GsonUtil.gsonToStr(lon));
+        if (lat != 0)
+            map.put(LocalConstant.LATITUDE, GsonUtil.gsonToStr(lat));
+
+/*        if (!isEmpty(LocalConstant.AdCode))
+            map.put(ClientLocalConstant.REGIONPATH, LocalConstant.AdCode);*/
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -256,7 +284,6 @@ public class BusinessDistrictModel {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
             }
 
             @Override
@@ -290,7 +317,8 @@ public class BusinessDistrictModel {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
-        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY, map)
+        //UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? BUSINESS_DISTRICT_COMMENT_OR_ADD : BUSINESS_DISTRICT_COMMENT_OR_REPLY
+        Observable<BusinessDistrictCommentOrReplyBean> observable = HttpClient.post(BUSINESS_DISTRICT_COMMENT_OR_ADD, map)
                 .execute(new CallClazzProxy<ApiResult<BusinessDistrictCommentOrReplyBean>, BusinessDistrictCommentOrReplyBean>(new TypeToken<BusinessDistrictCommentOrReplyBean>() {
                 }.getType()) {
                 });
@@ -383,7 +411,6 @@ public class BusinessDistrictModel {
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
-
             }
 
             @Override
@@ -494,9 +521,9 @@ public class BusinessDistrictModel {
         Map<String, String> map = new HashMap<>();
 
         map.put(LocalConstant.STATUS, String.valueOf(status));
-
+/*
         if (UserInfoUtils.getInstance().isLogin() && UserInfoUtils.getInstance().getUserInfo() != null)
-            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));
+            map.put("role", String.valueOf(UserInfoUtils.getInstance().getUserInfo().getRole()));*/
 
         map.put("circleId", String.valueOf(id));
 
@@ -521,6 +548,37 @@ public class BusinessDistrictModel {
             }
         };
 
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+
+    }
+
+
+    /**
+     * 商圈广告/图标/通知
+     */
+    public void getBannerDataInfo(Context context, CustomResultListener customResultListener) {
+
+        Observable<BannerBean> observable = HttpClient.post(CIRCLE_HEADER_ADS)
+                .execute(new CallClazzProxy<ApiResult<BannerBean>, BannerBean>(new TypeToken<BannerBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<BannerBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+
+            }
+
+            @Override
+            public void onNext(BannerBean bannerBean) {
+
+                if (customResultListener != null)
+                    customResultListener.onResult(bannerBean);
+
+            }
+        };
         observable.subscribe(subscriber);
         netWorkListener.onDisposable(subscriber);
 

@@ -3,6 +3,7 @@ package com.gxdingo.sg.biz;
 import android.widget.EditText;
 
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -16,7 +17,6 @@ public class ClientMineContract {
 
     public interface ClientMinePresenter extends MvpPresenter<BasicsListener,ClientMineListener>{
 
-
         void editsetInit(EditText nick_name_edt, int limit);
 
         void photoItemClick(int pos);
@@ -27,9 +27,19 @@ public class ClientMineContract {
 
         void logout();
 
+        void loginOff(int cancel);
+
         void scan(RxPermissions rxPermissions);
 
         void scanCode(String content);
+
+        void getNoRemindContent();
+
+        void storeScanCode(String scanContent);
+
+        void refreshStatus();
+
+        void getArticleImg(String article);
     }
 
     public interface ClientMineListener<T>{
@@ -38,5 +48,9 @@ public class ClientMineContract {
         RxPermissions getPermissions();
 
         void onMineDataResult(ClientMineBean mineBean);
+
+        void onRemindResult(String remindValue);
+
+        void onStatusResult(UserBean userBean);
     }
 }

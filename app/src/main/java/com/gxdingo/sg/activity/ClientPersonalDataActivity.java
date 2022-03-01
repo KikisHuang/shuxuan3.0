@@ -8,6 +8,7 @@ import com.allen.library.SuperTextView;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientMineBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.ClientMineContract;
 import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -179,6 +180,16 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
 
     @Override
     public void onMineDataResult(ClientMineBean mineBean) {
+
+    }
+
+    @Override
+    public void onRemindResult(String remindValue) {
+
+    }
+
+    @Override
+    public void onStatusResult(UserBean userBean) {
 
     }
 }

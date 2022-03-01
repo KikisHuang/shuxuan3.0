@@ -23,6 +23,7 @@ import com.amap.api.services.core.PoiItem;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
+import com.gxdingo.sg.bean.SelectAddressEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
@@ -44,10 +45,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.STORE_NAMING_RULES;
-import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
-import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_SERVICE_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.STORE_NAMING_RULES;
+import static com.gxdingo.sg.http.Api.STORE_SHOP_AGREEMENT_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -161,13 +161,11 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     private PoiItem mPoiItem;//地图POI信息
 
-    private boolean isUser = false;
-
     private boolean isCheck = false;
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
-        return new StoreCertificationPresenter(isUser);
+        return new StoreCertificationPresenter();
     }
 
     @Override
@@ -233,7 +231,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
     @Override
     protected void onBaseCreate() {
         super.onBaseCreate();
-        isUser = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, false);
     }
 
     @Override
@@ -262,37 +259,14 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     public void onBackPressed() {
-        if (!isUser)
-            showBackDialog();
-        else
             super.onBackPressed();
     }
 
-    /**
-     * 退出弹出
-     */
-    private void showBackDialog() {
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .isDarkTheme(false)
-                .dismissOnTouchOutside(false)
-                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), "确定要退出登录吗？", "", () -> {
-                    if (!isUser) {
-                        getP().logout();//请求退出接口
-                        sendEvent(new ReLoginBean());//重新登录全局事件
-                    }
-                    finish();
-                }))
-                .show();
-    }
 
     @OnClick({R.id.upload_branch_information_license, R.id.iv_del_branch_information_license, R.id.et_store_name_rule, R.id.title_back, R.id.stv_avatar, R.id.stv_business_scope, R.id.stv_select_address, R.id.tv_upload_business_license, R.id.iv_del_business_license, R.id.btn_submit, R.id.btn_result_botton})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_back://返回
-                if (!isUser)
-                    showBackDialog();
-                else
                     finish();
                 break;
             case R.id.stv_avatar://头像
@@ -306,7 +280,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                 goToPage(this, StoreBusinessScopeActivity.class, null);
                 break;
             case R.id.stv_select_address://选择店铺地址
-                goToPage(this, SelectAddressActivity.class, null);
+                goToPagePutSerializable(this, SelectAddressActivity.class, getIntentEntityMap(new Object[]{false}));
                 break;
             case R.id.upload_branch_information_license://门头照
                 mType = 3;
@@ -390,11 +364,13 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
              */
             mBusinessScope = (BusinessScopeEvent) object;
             stvBusinessScope.setRightString(mBusinessScope.selectedScope);
-        } else if (object instanceof PoiItem) {
+        } else if (object instanceof SelectAddressEvent) {
             /**
              * 店铺地址
              */
-            mPoiItem = (PoiItem) object;
+            SelectAddressEvent event = (SelectAddressEvent) object;
+
+            mPoiItem = (PoiItem) event.poiItem;
             stvSelectAddress.setRightString(mPoiItem.getTitle());
         }
     }
@@ -510,13 +486,6 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
      */
     @Override
     public void certificationPassed() {
-        //如果是用户端入驻，切换全局路径，切换登录方式。
-        if (isUser) {
-            switchGlobalUrl(false);
-
-            if (StoreActivity.getInstance() == null)
-                goToPage(getContext(), StoreActivity.class, null);
-        }
         sendEvent(StoreLocalConstant.SOTRE_REVIEW_SUCCEED);
         onMessage("店铺已认证");
         finish();
@@ -534,7 +503,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         tv_status.setText("正在审核");
         tv_status.setTextColor(getc(R.color.green_dominant_tone));
 
-        ivResultStatus.setBackgroundResource(R.drawable.module_svg_store_certification_audit_status);
+        ivResultStatus.setImageResource(R.drawable.module_svg_store_certification_audit_status);
 
         btnResultBotton.setText("刷新一下");
 

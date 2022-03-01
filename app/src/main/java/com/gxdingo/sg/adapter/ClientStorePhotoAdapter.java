@@ -6,6 +6,7 @@ import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.kikis.commnlibrary.utils.GlideUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,9 +22,9 @@ public class ClientStorePhotoAdapter extends BaseQuickAdapter<String, BaseViewHo
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder baseViewHolder, String s) {
+    protected void convert(@NotNull BaseViewHolder baseViewHolder, String data) {
         ImageView photo_img = baseViewHolder.getView(R.id.photo_iv);
 
-        Glide.with(getContext()).load(s).apply(GlideUtils.getInstance().getDefaultOptions()).into(photo_img);
+        Glide.with(getContext()).load(data).apply(GlideUtils.getInstance().getDefaultOptions()).into(photo_img);
     }
 }

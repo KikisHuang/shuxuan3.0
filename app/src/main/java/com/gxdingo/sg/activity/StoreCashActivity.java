@@ -325,21 +325,5 @@ public class StoreCashActivity extends BaseMvpActivity<StoreWalletContract.Store
         if (!showAuthenticationStatusDialog)
             showAuthenticationStatusDialog = true;
 
-        new XPopup.Builder(reference.get())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .autoDismiss(true)
-                .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), mWalletBean.authStatus, mWalletBean.authImage, mWalletBean.rejectReason, status -> {
-                    if (!checkClickInterval(123))
-                        return;
-                        if (mWalletBean.authStatus == 2)
-                            getP().getWalletHome(true);
-                        else if (mWalletBean.authStatus == 3)
-                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                        else if (mWalletBean.authStatus == 1) {
-                            //认证成功0无需操作
-                        }
-
-                }).show());
     }
 }

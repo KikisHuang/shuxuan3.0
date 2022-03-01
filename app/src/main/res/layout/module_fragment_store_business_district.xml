@@ -19,7 +19,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
-            android:src="@drawable/module_svg_back_icon"
+            android:src="@drawable/module_svg_back_black_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
@@ -65,31 +65,17 @@
             app:layout_constraintEnd_toEndOf="@+id/unread_iv"
             app:layout_constraintTop_toTopOf="@+id/unread_iv" />
 
-        <!--        <RelativeLayout-->
-        <!--            android:id="@+id/rl_message_list"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_centerVertical="true"-->
-        <!--            android:layout_marginRight="45dp"-->
-        <!--            android:layout_alignParentEnd="true">-->
+        <ImageView
+            android:id="@+id/more_img"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/module_svg_more_8935"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
 
-        <!--            <ImageView-->
-        <!--                android:layout_width="wrap_content"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:src="@drawable/module_svg_store_message_bell" />-->
-
-        <!--            <TextView-->
-        <!--                android:id="@+id/tv_unread_msg_count"-->
-        <!--                android:layout_width="16dp"-->
-        <!--                android:layout_height="16dp"-->
-        <!--                android:layout_marginLeft="16dp"-->
-        <!--                android:background="@drawable/module_unread_im_msg_red_bg"-->
-        <!--                android:gravity="center"-->
-        <!--                android:text="0"-->
-        <!--                android:visibility="visible"-->
-        <!--                android:textColor="@color/white"-->
-        <!--                android:textSize="10sp" />-->
-        <!--        </RelativeLayout>-->
 
         <ImageView
             android:id="@+id/iv_send_business_district"

@@ -92,7 +92,7 @@
 #@proguard_debug_start
 # ------------------ Keep LineNumbers and properties ---------------- #
 -keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
--renamesourcefileattribute TbsSdkJava,SourceFile
+#-renamesourcefileattribute TbsSdkJava,SourceFile
 -keepattributes SourceFile,LineNumberTable
 #@proguard_debug_end
 
@@ -396,8 +396,11 @@
 -keep class com.github.mikephil.charting.**{*;}
 -keep class com.kikis.commnlibrary.bean.**{*;}
 -keep class com.gxdingo.sg.bean.**{*;}
+
 -keep class com.gxdingo.sg.utils.ThirdPartyMapsGuide{*;}
 
+#### 人脸识别 ####
+-keep class com.esandinfo.livingdetection.**{*;}
 
 ####ali push####
 -keepclasseswithmembernames class ** {

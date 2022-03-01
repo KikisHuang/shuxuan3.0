@@ -34,7 +34,14 @@ public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOthe
         mContext = context;
         mType = type;
 
-        if (mType == TYPE_STORE) {
+        mIconItems = new int[]{R.drawable.module_svg_im_other_functions_photo_album
+                , R.drawable.module_svg_im_other_functions_camera
+                , R.drawable.module_svg_im_other_functions_address
+                , R.drawable.module_svg_im_other_functions_transfer_money
+        };
+        mTitleItems = new String[]{"相册", "拍照", "地址", "转账"};
+
+     /*   if (mType == TYPE_STORE) {
             mIconItems = new int[]{R.drawable.module_svg_im_other_functions_photo_album
                     , R.drawable.module_svg_im_other_functions_camera
                     , R.drawable.module_svg_im_other_functions_address
@@ -55,7 +62,7 @@ public class IMOtherFunctionsAdapter extends PullRecyclerView.PullAdapter<IMOthe
                     , R.drawable.module_svg_im_other_functions_camera
             };
             mTitleItems = new String[]{"相册", "拍照"};
-        }
+        }*/
     }
 
     public int[] getIconItems() {

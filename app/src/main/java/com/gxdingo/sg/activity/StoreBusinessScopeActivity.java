@@ -50,7 +50,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
-        return new StoreCertificationPresenter(true);
+        return new StoreCertificationPresenter();
     }
 
     @Override

@@ -21,8 +21,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static android.text.TextUtils.isEmpty;
-import static com.blankj.utilcode.util.RegexUtils.isIDCard18;
 import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -182,7 +180,7 @@ public class AddBankcardActivity extends BaseMvpActivity<BankcardContract.Bankca
     }
 
     @Override
-    public void onDataResult(List<BankcardBean> bankcardBeans) {
+    public void onDataResult(List<BankcardBean> bankcardBeans, boolean refresh) {
 
     }
 

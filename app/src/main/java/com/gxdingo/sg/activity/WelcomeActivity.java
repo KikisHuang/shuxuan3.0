@@ -25,7 +25,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
@@ -159,9 +158,7 @@ public class WelcomeActivity extends BaseMvpActivity<LoginContract.LoginPresente
         switch (v.getId()) {
             case R.id.skip_tv:
             case R.id.go_bt:
-                boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
-                Class clas = isUser ? ClientActivity.class : StoreActivity.class;
-                goToPage(reference.get(), clas, null);
+                goToPage(reference.get(), ClientActivity.class, null);
                 finish();
                 break;
 

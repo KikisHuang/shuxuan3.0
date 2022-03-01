@@ -8,9 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.StringUtils;
@@ -24,7 +22,6 @@ import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.utils.emotion.EmotionUtils;
 import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.adapter.RecyclerViewHolder;
-import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 
 import java.text.NumberFormat;
@@ -40,30 +37,28 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
-import static android.view.Gravity.CENTER;
-import static android.view.Gravity.LEFT;
-import static android.view.Gravity.RIGHT;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
-import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.isToday;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
+import static com.gxdingo.sg.utils.LocalConstant.AddressInfoDel;
 import static com.gxdingo.sg.utils.LocalConstant.OtherAudio;
 import static com.gxdingo.sg.utils.LocalConstant.OtherImage;
+import static com.gxdingo.sg.utils.LocalConstant.OtherLocationMapInfo;
 import static com.gxdingo.sg.utils.LocalConstant.OtherLogistics;
 import static com.gxdingo.sg.utils.LocalConstant.OtherRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.OtherText;
 import static com.gxdingo.sg.utils.LocalConstant.OtherTransfer;
 import static com.gxdingo.sg.utils.LocalConstant.SelfAudio;
 import static com.gxdingo.sg.utils.LocalConstant.SelfImage;
+import static com.gxdingo.sg.utils.LocalConstant.SelfLocationMapInfo;
 import static com.gxdingo.sg.utils.LocalConstant.SelfLogistics;
 import static com.gxdingo.sg.utils.LocalConstant.SelfRevocation;
 import static com.gxdingo.sg.utils.LocalConstant.SelfText;
 import static com.gxdingo.sg.utils.LocalConstant.SelfTransfer;
 import static com.gxdingo.sg.utils.LocalConstant.UNKNOWN;
-import static com.kikis.commnlibrary.utils.MyToastUtils.customToast;
 
 /**
  * @author: Kikis
@@ -144,8 +139,17 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 return SelfTransfer;
             else
                 return OtherTransfer;
+        } else if (data.getType() == 30) {
+            //删除掉的地址显示一条文字提示
+            if (data.getDataByType() == null)
+                return AddressInfoDel;
+
+            if (self)
+                return SelfLocationMapInfo;
+            else
+                return OtherLocationMapInfo;
         } else if (data.getType() == 999) {
-            //todo 物流和地址的类型还没确定
+            //todo 物流的类型还没确定
             if (self)
                 return SelfLogistics;
             else
@@ -180,26 +184,86 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             return R.layout.module_item_chat_other_logistics;
         else if (viewType == SelfRevocation || viewType == OtherRevocation)
             return R.layout.module_item_chat_revocation;
+        else if (viewType == SelfLocationMapInfo)
+            return R.layout.module_item_chat_self_map_location_info;
+        else if (viewType == OtherLocationMapInfo)
+            return R.layout.module_item_chat_other_map_location_info;
+        else if (viewType == AddressInfoDel)
+            return R.layout.module_item_chat_revocation;
         else if (viewType == UNKNOWN)
             return R.layout.module_include_empty;
+
 
         return -1;
     }
 
     @Override
     public void bindData(RecyclerViewHolder holder, int position, Object item) {
-        if (getItemViewType(position) == -1 || getItemViewType(position) == UNKNOWN) return;
 
-        if (getItemViewType(position) == OtherRevocation || getItemViewType(position) == SelfRevocation) {
+        int itemType = getItemViewType(position);
+
+        if (itemType == -1 || itemType == UNKNOWN) return;
+
+        if (itemType == OtherRevocation || itemType == SelfRevocation) {
+            //消息撤回类型
             TextView revocation_tv = holder.getTextView(R.id.revocation_tv);
-            revocation_tv.setText(getItemViewType(position) == OtherRevocation ? "对方撤回了一条消息" : "你撤回了一条消息");
+            revocation_tv.setText(itemType == OtherRevocation ? "对方撤回了一条消息" : "你撤回了一条消息");
+            return;
+        } else if (itemType == AddressInfoDel) {
+            //地址信息删除已类型
+            holder.setText(R.id.revocation_tv, "该条地址信息已被删除");
             return;
         }
+
         ReceiveIMMessageBean data = (ReceiveIMMessageBean) item;
 
+        //通用数据设置
         genericViewDataInit(position, data, holder);
 
-        if (getItemViewType(position) == SelfText || getItemViewType(position) == OtherText) {
+        //定位地图信息类型
+        if (itemType == SelfLocationMapInfo || itemType == OtherLocationMapInfo) {
+
+            TextView address_tv = holder.getTextView(R.id.address_tv);
+            TextView addressaddress_street_tv_tv = holder.getTextView(R.id.address_street_tv);
+            TextView name_tv = holder.getTextView(R.id.name_tv);
+            TextView phone_tv = holder.getTextView(R.id.phone_tv);
+            ImageView map_img = holder.getImageView(R.id.map_img);
+            View map_ll = holder.getView(R.id.map_ll);
+
+
+            map_ll.setOnClickListener(v -> {
+                if (chatClickListener != null)
+                    chatClickListener.onLocationMapClick(position);
+            });
+
+            map_ll.setOnLongClickListener(v -> {
+                if (chatClickListener != null)
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfLocationMapInfo ? true : false);
+                return false;
+            });
+
+            if (data.getDataByType() != null) {
+
+                if (!isEmpty(data.getDataByType().getDoorplate()))
+                    addressaddress_street_tv_tv.setText(data.getDataByType().getDoorplate());
+
+                if (!isEmpty(data.getDataByType().getStreet()))
+                    address_tv.setText(data.getDataByType().getStreet());
+
+                if (!isEmpty(data.getDataByType().getName()))
+                    name_tv.setText(data.getDataByType().getName());
+
+                if (!isEmpty(data.getDataByType().getMobile()))
+                    phone_tv.setText(data.getDataByType().getMobile());
+
+                Glide.with(mContext).load(!isEmpty(data.getDataByType().locationImage) ? data.getDataByType().locationImage : R.drawable.bg_location_default).into(map_img);
+
+            }
+
+        }
+
+        //文字类型
+        if (itemType == SelfText || itemType == OtherText) {
 
             TextView content = holder.getTextView(R.id.content_tv);
             if (!StringUtils.isEmpty(data.getContent())) {
@@ -208,16 +272,16 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             }
             content.setOnLongClickListener(v -> {
                 if (chatClickListener != null) {
-                    chatClickListener.onLongClickChatItem(content, position, getItemViewType(position) == SelfText ? true : false);
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfText ? true : false);
                 }
                 return false;
             });
         }
 
         //图片内容加载
-        if (getItemViewType(position) == OtherImage || getItemViewType(position) == SelfImage) {
+        if (itemType == OtherImage || itemType == SelfImage) {
             //上传进度
-            if (getItemViewType(position) == SelfImage)
+            if (itemType == SelfImage)
                 ImgProgressBarInit(data, holder);
 
             ImageView content_img = holder.getImageView(R.id.content_img);
@@ -234,10 +298,10 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onImageClick(data.getContent());
             });
 
-            if (getItemViewType(position) == SelfImage) {
+            if (itemType == SelfImage) {
                 content_img.setOnLongClickListener(v -> {
                     if (chatClickListener != null) {
-                        chatClickListener.onLongClickChatItem(content_img, position, true);
+                        chatClickListener.onLongClickChatItem(position, true);
                     }
                     return false;
                 });
@@ -245,24 +309,29 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         }
 
         //语音类型
-        if (getItemViewType(position) == OtherAudio || getItemViewType(position) == SelfAudio) {
+        if (itemType == OtherAudio || itemType == SelfAudio) {
 
             LinearLayout voice_ll = holder.getLinearLayout(R.id.voice_ll);
             TextView tv_voice_second = holder.getTextView(R.id.tv_voice_second);
+            TextView voice_text_tv = holder.getTextView(R.id.voice_text_tv);
             ImageView iv_voice_scrolling = holder.getImageView(R.id.iv_voice_scrolling);
-            if (getItemViewType(position) == OtherAudio) {
+
+            voice_text_tv.setVisibility(!isEmpty(data.voiceText) ? View.VISIBLE : View.GONE);
+
+            if (!isEmpty(data.voiceText))
+                voice_text_tv.setText(data.voiceText);
+
+            if (itemType == OtherAudio) {
                 TextView unread_tv = holder.getTextView(R.id.unread_tv);
                 unread_tv.setVisibility(data.recipientRead == 0 ? View.VISIBLE : View.GONE);
             }
 
-            if (getItemViewType(position) == SelfAudio) {
-                voice_ll.setOnLongClickListener(v -> {
-                    if (chatClickListener != null) {
-                        chatClickListener.onLongClickChatItem(voice_ll, position, true);
-                    }
-                    return false;
-                });
-            }
+            voice_ll.setOnLongClickListener(v -> {
+                if (chatClickListener != null) {
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfAudio);
+                }
+                return false;
+            });
 
             if (data.getVoiceDuration() > 0) {
                 //动态设置语音宽度
@@ -281,7 +350,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             }
 
             if (iv_voice_scrolling.getBackground() == null) {
-                if (getItemViewType(position) == SelfAudio)
+                if (itemType == SelfAudio)
                     iv_voice_scrolling.setBackgroundResource(R.drawable.module_im_chat_oneself_voice_play_scrolling);
                 else
                     iv_voice_scrolling.setBackgroundResource(R.drawable.module_im_chat_others_voice_play_scrolling);
@@ -312,7 +381,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                                     //未有语音在播放，播放语音
                                     mTagContent = data.getContent();
                                     mTime = System.currentTimeMillis();
-                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, itemType);
                                     anim.start();
 
                                     if (chatClickListener != null) {
@@ -335,7 +404,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                                     //已经超时的播放，播放语音
                                     mTagContent = data.getContent();
                                     mTime = System.currentTimeMillis();
-                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, getItemViewType(position));
+                                    startTimer(data.getVoiceDuration(), iv_voice_scrolling, itemType);
                                     anim.start();
 
                                     if (chatClickListener != null) {
@@ -357,7 +426,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         }
 
         //转账类型
-        if (getItemViewType(position) == SelfTransfer || getItemViewType(position) == OtherTransfer) {
+        if (itemType == SelfTransfer || itemType == OtherTransfer) {
 
             ReceiveIMMessageBean.DataByType dataByType = data.getDataByType();
 
@@ -370,9 +439,16 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             cl_transfer_accounts_bg.setOnClickListener(v -> {
                 //只有stats ==1 待领取状态的他人转账消息才可点击
-                if (chatClickListener != null && getItemViewType(position) == OtherTransfer && data.getDataByType().getStatus() == 1)
+                if (chatClickListener != null && itemType == OtherTransfer && data.getDataByType().getStatus() == 1)
                     chatClickListener.onTransferClick(position, data.getId());
             });
+            cl_transfer_accounts_bg.setOnLongClickListener(v -> {
+                if (chatClickListener != null) {
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfTransfer);
+                }
+                return false;
+            });
+
 
             if (dataByType != null) {
                 cl_transfer_accounts_bg.setVisibility(View.VISIBLE);
@@ -426,7 +502,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
 
     /**
-     * 通用view数据初始化
+     * 通用view数据初始化 (头像、聊天时间)
      *
      * @param position
      * @param data
@@ -436,10 +512,10 @@ public class ChatAdapter extends BaseRecyclerAdapter {
         //头像
         ImageView avatar_img = holder.getImageView(R.id.avatar_img);
 
-        avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, mOtherAvatarInfo.getId()));
+        avatar_img.setOnClickListener(v -> chatClickListener.onAvatarClickListener(position, mOtherAvatarInfo.getSendIdentifier()));
 
         String avatarUrl = "";
-        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer) {
+        if (getItemViewType(position) == SelfText || getItemViewType(position) == SelfImage || getItemViewType(position) == SelfAudio || getItemViewType(position) == SelfTransfer || getItemViewType(position) == SelfLocationMapInfo || getItemViewType(position) == SelfLogistics) {
             if (mMyAvatarInfo != null && !isEmpty(mMyAvatarInfo.getSendAvatar()))
                 avatarUrl = mMyAvatarInfo.getSendAvatar();
         } else {

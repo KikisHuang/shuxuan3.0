@@ -25,7 +25,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.activity.StoreHomeSearchActivity;
-import com.gxdingo.sg.adapter.StoreHomeIMMessageAdapter;
+import com.gxdingo.sg.adapter.IMMessageAdapter;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.StoreHomeContract;
@@ -39,7 +39,6 @@ import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RxUtil;
-import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
 import com.lxj.xpopup.XPopup;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
@@ -54,7 +53,6 @@ import io.reactivex.schedulers.Schedulers;
 import static com.gxdingo.sg.utils.ImServiceUtils.resetImService;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
-import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.Constant.WEB_SOCKET_URL;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -66,7 +64,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  */
 public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.StoreMessagePresenter> implements StoreHomeContract.StoreMessageListener {
 
-    public StoreHomeIMMessageAdapter mStoreHomeIMMessageAdapter;
+    public IMMessageAdapter mStoreHomeIMMessageAdapter;
 
     @BindView(R.id.ll_search_layout)
     public LinearLayout llSearchLayout;
@@ -203,7 +201,7 @@ public class StoreMessageFragment extends BaseMvpFragment<StoreHomeContract.Stor
     protected void init() {
         setAppBarLayoutListener();
 
-        mStoreHomeIMMessageAdapter = new StoreHomeIMMessageAdapter();
+        mStoreHomeIMMessageAdapter = new IMMessageAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         mStoreHomeIMMessageAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override

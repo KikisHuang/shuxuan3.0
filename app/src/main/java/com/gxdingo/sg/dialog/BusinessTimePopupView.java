@@ -63,7 +63,7 @@ public class BusinessTimePopupView extends BottomPopupView implements View.OnCli
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        btn_done=findViewById(R.id.btn_done);
+        btn_done = findViewById(R.id.btn_done);
         btn_done.setOnClickListener(this);
 
 
@@ -109,6 +109,8 @@ public class BusinessTimePopupView extends BottomPopupView implements View.OnCli
         mEndMinuteView.setAdapter(mEndMinuteAdapter);
 
         Calendar calendar = Calendar.getInstance();
+
+        //设置当前时间为起始营业时间
         setHour(calendar.get(Calendar.HOUR_OF_DAY));
         setMinute(calendar.get(Calendar.MINUTE));
     }
@@ -145,12 +147,12 @@ public class BusinessTimePopupView extends BottomPopupView implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.btn_done:
-                if (onBusinessTimeListener!=null){
-                    onBusinessTimeListener.onSelected(this,mStartHourManager.getPickedPosition(),
-                            mStartMinuteManager.getPickedPosition(),mEndHourManager.getPickedPosition(),mEndMinuteManager.getPickedPosition());
+                if (onBusinessTimeListener != null) {
+                    onBusinessTimeListener.onSelected(this, mStartHourManager.getPickedPosition(),
+                            mStartMinuteManager.getPickedPosition(), mEndHourManager.getPickedPosition(), mEndMinuteManager.getPickedPosition());
                 }
                 break;
         }

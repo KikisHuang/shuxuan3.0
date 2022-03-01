@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/module_shape_bg_white_round6"
     android:paddingHorizontal="18dp"
-    android:layout_marginTop="@dimen/dp_10">
+    android:layout_marginTop="@dimen/dp_10"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <TextView
         android:id="@+id/coupon_name_tv"
@@ -14,7 +16,7 @@
         android:layout_marginTop="20dp"
         android:text="购物代金券"
         android:textSize="16sp"
-        android:textColor="#2E2E2E"
+        android:textColor="@color/graye2e2e2"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -24,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="有效期至2021.10.20"
+        tools:text="有效期至2021.10.20"
         android:textSize="12sp"
         android:textColor="@color/gray_a9"
         app:layout_constraintTop_toBottomOf="@+id/coupon_name_tv"

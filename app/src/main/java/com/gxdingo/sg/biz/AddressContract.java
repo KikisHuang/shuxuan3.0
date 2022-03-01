@@ -5,7 +5,9 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.kikis.commnlibrary.bean.AddressBean;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -43,11 +45,19 @@ public class AddressContract {
 
         void mapInit();
 
-        void moveCamera();
+        void moveCamera(LatLng latLng);
 
         void cacheAddress(AddressBean item);
 
         void getLocationInfo(RxPermissions rxPermissions, boolean b);
+
+        void goOutSideNavigation(int pos, ReceiveIMMessageBean.DataByType mDataByType);
+
+        void callPhone(ReceiveIMMessageBean.DataByType mDataByType);
+
+        void getDistance(double latitude, double longitude);
+
+        void upLoadLocationImage(String fliepath);
     }
 
     public interface AddressListener {
@@ -69,10 +79,6 @@ public class AddressContract {
 
         String getRegionPath();
 
-        String getLabelString();
-
-        int getGender();
-
         LatLonPoint getPoint();
 
         void showDelDialog();
@@ -81,9 +87,12 @@ public class AddressContract {
 
         void setCityName(String cityName);
 
-        void searchResult(boolean refresh, List<PoiItem> poiItems);
+        void searchResult(boolean refresh, List<PoiItem> poiItems,boolean isSearch);
 
         AMap getAMap();
+
+        void onDistanceResult(ItemDistanceBean bean);
+
     }
 
     public interface AddressCompileModelListener {

@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.services.core.PoiItem;
@@ -27,6 +29,9 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
 
     private String keyWord;
 
+    private int mCheckPos = -1;
+
+
     public SelectAddressAdapter() {
         super(R.layout.module_item_select_address);
     }
@@ -35,9 +40,16 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
         this.keyWord = keyWord;
     }
 
+    public void checkPost(int pos) {
+        mCheckPos = pos;
+    }
+
     @Override
     protected void convert(@NotNull BaseViewHolder baseViewHolder, PoiItem poiItem) {
         TextView tvTitle = baseViewHolder.getView(R.id.tv_district);
+        ImageView check_img = baseViewHolder.getView(R.id.check_img);
+
+
         if (!isEmpty(keyWord))
             tvTitle.setText(isEmpty(poiItem.getTitle()) ? "" : setTextHighLight(poiItem.getTitle(), new String[]{keyWord}));
         else
@@ -45,8 +57,18 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
 
         baseViewHolder.setText(R.id.tv_district, isEmpty(poiItem.getTitle()) ? "" : setTextHighLight(poiItem.getTitle(), new String[]{"银行"}));
         baseViewHolder.setText(R.id.tv_details_address, isEmpty(poiItem.getSnippet()) ? "" : poiItem.getSnippet());
-        baseViewHolder.setText(R.id.tv_distance, poiItem.getDistance() > 0 ? poiItem.getDistance() + "m" : "");
-//        baseViewHolder.setText(R.id.tv_distance,poiItem.getDistance()+"km");
+
+        if (poiItem.getDistance() > 0) {
+            if (poiItem.getDistance() < 1000)
+                baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "m");
+            else
+                baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "km");
+        } else {
+            baseViewHolder.setText(R.id.tv_distance, "");
+        }
+
+        check_img.setVisibility(getItemPosition(poiItem) == mCheckPos ? View.VISIBLE : View.GONE);
+
     }
 
     /**

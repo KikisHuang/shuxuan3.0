@@ -1,7 +1,6 @@
 package com.gxdingo.sg.fragment.store;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -9,19 +8,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -30,13 +21,10 @@ import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
 import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
-import com.gxdingo.sg.activity.WebActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
-import com.gxdingo.sg.adapter.HomePageBannerAdapter;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.HelpBean;
-import com.gxdingo.sg.bean.HomeBannerBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.StoreListBean;
 import com.gxdingo.sg.bean.UserBean;
@@ -62,8 +50,6 @@ import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.youth.banner.Banner;
-import com.youth.banner.adapter.BannerImageAdapter;
-import com.youth.banner.holder.BannerImageHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,15 +62,13 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
-import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
-import static com.gxdingo.sg.utils.LocalConstant.CLIENT_LOGIN_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.REFRESH_LOCATION;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
-import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
 /**
@@ -198,6 +182,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     protected void lazyInit() {
         super.lazyInit();
+
         categoryId = 0;
         //填写了入驻信息才查询附近商家
         UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
@@ -239,7 +224,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     public void onStart() {
         super.onStart();
-        getP().checkHelpCode();
+//        getP().checkHelpCode();
     }
 
     @OnClick({R.id.location_tv, R.id.location_tt_tv, R.id.ll_search, R.id.btn_search, R.id.btn_empower, R.id.btn_become_store, R.id.btn_invitation})
@@ -293,7 +278,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == CLIENT_LOGIN_SUCCEED) {
+        if (type == LOGIN_SUCCEED) {
             if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1) {
                 showInvitationCodeDialog();
             }
@@ -325,7 +310,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     private void addData(List<CategoriesBean> categories) {
 
-        mCategoryAdapter.clear();
+        mCategoryAdapter.getData().clear();
         mCategoryAdapter.notifyDataSetChanged();
 
         RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
@@ -343,13 +328,12 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
 
     private void switchData(List<CategoriesBean> data) {
-        mCategoryAdapter.clear();
-
-        mCategoryAdapter.addDataAll(data);
+        mCategoryAdapter.getData().clear();
+        mCategoryAdapter.notifyDataSetChanged();
 
         if (mAllTypeData.size() > 4) {
             CategoriesBean categoriesBean = new CategoriesBean();
-            mCategoryAdapter.addData(categoriesBean, mCategoryAdapter.getData().size());
+            mCategoryAdapter.addData(categoriesBean);
         }
 
         mCategoryAdapter.notifyDataSetChanged();
@@ -406,7 +390,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
             mStoreAdapter.addData(storeBeans);
     }
 
-    @Override
+/*    @Override
     public void onBannerResult(List<HomeBannerBean> bannerBeans) {
 
         if (bannerBeans.size() > 0) {
@@ -424,26 +408,13 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
         } else {
             home_banner.setVisibility(View.GONE);
         }
-    }
+    }*/
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {
 
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-        new XPopup.Builder(reference.get())
-                .maxWidth((int) (ScreenUtils.getScreenWidth(getContext())))
-                .isDarkTheme(false)
-                .asCustom(new HelpPopupView(getContext(), helpBean, new HelpListener() {
-                    @Override
-                    public void help() {
-                        getP().help();
-                    }
-                }))
-                .show();
-    }
 
     @Override
     public void onShareUrlResult(ShareBean shareBean) {
@@ -452,7 +423,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
 
     @Override
     public void onItemClick(View itemView, int pos) {
-        if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
+  /*      if (mCategoryAdapter.getData().size() > 4 && pos == mCategoryAdapter.getData().size() - 1) {
 
             boolean expan = ((CategoriesBean) mCategoryAdapter.getData().get(pos)).isSelected;
 
@@ -468,7 +439,7 @@ public class StoreHomeFragment extends BaseMvpFragment<ClientHomeContract.Client
                 getP().checkPermissions(getRxPermissions(), true);
             else
                 getP().getNearbyStore(true, true, categoryId);
-        }
+        }*/
     }
 
     @Override

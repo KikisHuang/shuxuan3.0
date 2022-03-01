@@ -16,6 +16,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientAddressAdapter;
+import com.gxdingo.sg.bean.ItemDistanceBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
@@ -119,10 +120,10 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
         return R.layout.module_activity_address_list;
     }
 
-    @OnClick({R.id.txt_more, R.id.current_location_tv, R.id.location_name_tv})
+    @OnClick({R.id.add_new_address_tv, R.id.current_location_tv, R.id.location_name_tv})
     public void onClickViews(View v) {
         switch (v.getId()) {
-            case R.id.txt_more:
+            case R.id.add_new_address_tv:
                 goToPage(this, ClientNewAddressActivity.class, null);
                 break;
             case R.id.current_location_tv:
@@ -148,7 +149,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     protected void init() {
         selectType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
         title_layout.setTitleText(gets(R.string.receiving_address));
-        title_layout.setMoreText(gets(R.string.add_address));
+
         mAdapter = new ClientAddressAdapter();
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnItemClickListener(this);
@@ -165,6 +166,7 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
             getP().getLocationInfo(getRxPermissions(), false);
         else
             location_name_tv.setText(LocalConstant.locationSelected);
+
     }
 
     @Override
@@ -242,15 +244,6 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
         return null;
     }
 
-    @Override
-    public String getLabelString() {
-        return null;
-    }
-
-    @Override
-    public int getGender() {
-        return 0;
-    }
 
     @Override
     public LatLonPoint getPoint() {
@@ -273,13 +266,18 @@ public class ClientAddressListActivity extends BaseMvpActivity<AddressContract.A
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
 
     }
 
     @Override
     public AMap getAMap() {
         return null;
+    }
+
+    @Override
+    public void onDistanceResult(ItemDistanceBean bean) {
+
     }
 
     @Override

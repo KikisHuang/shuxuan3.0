@@ -1,8 +1,9 @@
 package com.gxdingo.sg.adapter;
 
-import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -20,7 +20,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.biz.NineClickListener;
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictFragment;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.RoundImageView;
@@ -28,22 +28,18 @@ import com.kikis.commnlibrary.view.recycler_view.PullDividerItemDecoration;
 import com.kikis.commnlibrary.view.recycler_view.PullLinearLayoutManager;
 import com.kikis.commnlibrary.view.recycler_view.PullRecyclerView;
 import com.lzy.ninegrid.NineGridView;
-import com.sackcentury.shinebuttonlib.ShineButton;
-import com.sackcentury.shinebuttonlib.ShineButton.OnButtonClickListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import static com.blankj.utilcode.util.ConvertUtils.dp2px;
 import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
-import static com.blankj.utilcode.util.TimeUtils.getNowDate;
-import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
 import static com.blankj.utilcode.util.TimeUtils.string2Date;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
-import static com.kikis.commnlibrary.utils.DateUtils.getCustomDate;
 import static com.kikis.commnlibrary.utils.DateUtils.showTimeText;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
@@ -53,14 +49,14 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistrictListBean.BusinessDistrict, BaseViewHolder> {
     Context mContext;
     PullDividerItemDecoration mSpaceItemDecoration;
-    StoreBusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
+    BusinessDistrictFragment.OnChildViewClickListener mOnChildViewClickListener;
     //单张图片宽度
     private int singleWidth = 0;
 
     private int mType;
 
     public BusinessDistrictListAdapter(Context context
-            , StoreBusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener, int mType) {
+            , BusinessDistrictFragment.OnChildViewClickListener onChildViewClickListener, int mType) {
         super(R.layout.module_item_business_district_list);
         this.mContext = context;
         singleWidth = (int) (getScreenWidth() * 1 / 3);
@@ -74,6 +70,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
+        ImageView authenticated_img = baseViewHolder.findView(R.id.authenticated_img);
         RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
         TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
@@ -87,11 +84,55 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         PullRecyclerView rvCommentList = baseViewHolder.findView(R.id.rv_comment_list);
         LinearLayout llCommentUnfoldPutAwayLayout = baseViewHolder.findView(R.id.ll_comment_unfold_put_away_layout);
         TextView tvCommentUnfoldPutAwayText = baseViewHolder.findView(R.id.tv_comment_unfold_put_away_text);
-        TextView client_date_tv = baseViewHolder.findView(R.id.client_date_tv);
+        TextView distance_tv = baseViewHolder.findView(R.id.distance_tv);
+
+        TextView one_label = baseViewHolder.findView(R.id.one_label);
+        TextView two_label = baseViewHolder.findView(R.id.two_label);
 
 
-/*        //登录方式，true 用户，false 商家
-        boolean isUse = SPUtils.getInstance().getBoolean(LOGIN_WAY);*/
+        if (data.labels != null && data.labels.size() > 0) {
+            if (data.labels.size() > 1) {
+                one_label.setVisibility(View.VISIBLE);
+                two_label.setVisibility(View.VISIBLE);
+
+                GradientDrawable mGrad = (GradientDrawable) one_label.getBackground();
+                mGrad.setColor(getc(R.color.white));
+                mGrad.setStroke(dp2px(1), Color.parseColor(data.labels.get(0).getColor()));
+
+
+                GradientDrawable mGrad1 = (GradientDrawable) two_label.getBackground();
+                mGrad1.setColor(getc(R.color.white));
+                mGrad1.setStroke(dp2px(1), Color.parseColor(data.labels.get(1).getColor()));
+
+                one_label.setTextColor(Color.parseColor(data.labels.get(0).getColor()));
+                two_label.setTextColor(Color.parseColor(data.labels.get(1).getColor()));
+
+                if (!isEmpty(data.labels.get(0).getName()))
+                    one_label.setText(data.labels.get(0).getName());
+
+                if (!isEmpty(data.labels.get(1).getName()))
+                    two_label.setText(data.labels.get(1).getName());
+
+            } else {
+                one_label.setVisibility(View.VISIBLE);
+
+                GradientDrawable mGrad = (GradientDrawable) one_label.getBackground();
+                mGrad.setColor(getc(R.color.white));
+                mGrad.setStroke(dp2px(1), Color.parseColor(data.labels.get(0).getColor()));
+
+                one_label.setTextColor(Color.parseColor(data.labels.get(0).getColor()));
+
+                if (!isEmpty(data.labels.get(0).getName()))
+                    one_label.setText(data.labels.get(0).getName());
+
+                two_label.setVisibility(View.GONE);
+            }
+
+
+        } else {
+            one_label.setVisibility(View.GONE);
+            two_label.setVisibility(View.GONE);
+        }
 
 
         if (!isEmpty(data.liked) && !data.liked.equals("0"))
@@ -111,27 +152,37 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
                 mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.forwardingUrl);
         });
 
-        Glide.with(mContext).load(data.getStareAvatar()).apply(getRequestOptions()).into(ivAvatar);
+        Glide.with(mContext).load(data.getAvatar()).apply(getRequestOptions()).into(ivAvatar);
 
-        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+        if (!isEmpty(data.iconUrl))
+            Glide.with(mContext).load(data.iconUrl).apply(getRequestOptions().fitCenter()).into(authenticated_img);
 
-        tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.getStoreId()));
+        ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
 
-        tvStoreName.setText(data.getStoreName());
-        tvContent.setText(data.getContent());
+        tvStoreName.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
+
+        if (!isEmpty(data.getNickName()))
+            tvStoreName.setText(data.getNickName());
+
+        if (!isEmpty(data.getContent()))
+            tvContent.setText(data.getContent());
+
         String createTime = dealDateFormat(data.getCreateTime());
+
+        tvTime.setText(showTimeText(string2Date(createTime)));
+
+        if (!isEmpty(data.distance))
+            distance_tv.setText(data.distance);
+
         //用户端ui布局显示
         if (mType != 2) {
-            client_date_tv.setText(showTimeText(string2Date(createTime)));
-            client_date_tv.setVisibility(View.VISIBLE);
-            tvTime.setVisibility(View.GONE);
+            distance_tv.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.GONE);
         } else {
             //商家端ui布局显示
-            tvTime.setText(showTimeText(string2Date(createTime)));
-            tvTime.setVisibility(View.VISIBLE);
             ivDelete.setVisibility(View.VISIBLE);
-            client_date_tv.setVisibility(View.GONE);
+
+            distance_tv.setVisibility(View.GONE);
         }
 
         ivDelete.setOnClickListener(new View.OnClickListener() {
@@ -162,7 +213,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
         if (data.getImages() != null && data.getImages().size() > 0) {
 
             if (data.imageInfos != null && data.imageInfos.size() > 0) {
-                picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, baseViewHolder.getAdapterPosition(), new NineClickListener() {
+                picture_gridview.setAdapter(new MyNineGridViewClickAdapter(mContext, data.imageInfos, getItemPosition(data), new NineClickListener() {
                     @Override
                     public void onNineGridViewClick(int position, int index) {
 

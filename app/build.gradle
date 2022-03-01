@@ -31,8 +31,12 @@ android {
 
         ndk {
             // 设置支持的SO库架构
-            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a"
+            abiFilters  "armeabi-v7a"
 //            abiFilters 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+
+        lintOptions {
+            abortOnError false
         }
     }
 
@@ -112,15 +116,21 @@ dependencies {
     implementation(name: 'crashshield-2.1.2-release', ext: 'aar')
     implementation(name: 'logger-2.1.2-release', ext: 'aar')
     implementation(name: 'main-2.1.2-release', ext: 'aar')
-
+    //阿里云录音文件识别极速版
+    implementation(name: 'nuisdk-release', ext: 'aar')
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    //人脸识别
+    implementation 'com.esandinfo.livingdetecton:esfaceauth:1.5.1@aar'
 
     //自用工具包
     implementation project(path: ':commnlibrary')
     //alipay noutdid aar
     implementation(name: 'alipaysdk-noutdid-15.8.03.210428205839', ext: 'aar')
+
+    //内存泄漏检测工具leakcanary
+    debugImplementation rootProject.ext.dependencies.debugleakcanary
 
     //ButterKnife
     implementation rootProject.ext.dependencies.butterknife
@@ -178,6 +188,12 @@ dependencies {
     //greendao
     implementation rootProject.ext.dependencies.greendao
 
+
+
+    //跑马灯
+    api 'com.sunfusheng:MarqueeView:1.4.0'
+
+
     //九宫格控件
     api project(':ninegridview')
     //like bt
@@ -191,4 +207,6 @@ dependencies {
     implementation 'com.aliyun.ams:alicloud-android-third-push-oppo:3.7.2'
     //vivo辅助通道
     implementation 'com.aliyun.ams:alicloud-android-third-push-vivo:3.7.2'
+
+
 }

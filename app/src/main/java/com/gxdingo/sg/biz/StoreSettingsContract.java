@@ -1,6 +1,7 @@
 package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.DistanceBean;
+import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.bean.StoreDetailBean;
 import com.gxdingo.sg.bean.StoreQRCodeBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
@@ -17,7 +18,7 @@ public class StoreSettingsContract {
 
     public interface StoreSettingsPresenter extends MvpPresenter<BasicsListener,StoreSettingsListener>{
 
-        void getStoreInfo();
+        void getStoreInfo(String id);
 
         void photoItemClick(int pos);
 
@@ -34,14 +35,19 @@ public class StoreSettingsContract {
         void deliveryScope(String scope);
 
         void getAuthInfo();
+
+        void updateBusinessStatus(int code);
+
     }
 
     public interface StoreSettingsListener{
 
-        void onInfoResult(StoreDetailBean storeDetailBean);
+        void onInfoResult(StoreDetail storeDetailBean);
 
         void onQRResult(StoreQRCodeBean qrCodeBean);
 
         void onDistanceResult(List<DistanceBean> distanceBeans);
+
+        void changeBusinessStatus(int status);
     }
 }

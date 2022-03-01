@@ -3,31 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/class_item"
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:layout_marginLeft="5dp"
-    android:layout_marginTop="10dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="15dp"
     android:layout_marginRight="5dp"
     android:background="@color/transparent"
     android:orientation="vertical"
-    android:padding="6dp"
     tools:ignore="MissingConstraints">
 
     <ImageView
         android:id="@+id/class_img"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:scaleType="fitCenter"
-        tools:src="@mipmap/ic_launcher" />
-
-<!--    <de.hdodenhof.circleimageview.CircleImageView-->
-<!--        android:id="@+id/class_img"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:scaleType="fitCenter"-->
-<!--        tools:src="@mipmap/ic_launcher" />-->
+        tools:src="@mipmap/default_head_icon" />
 
     <TextView
         android:id="@+id/class_name_tv"
@@ -35,10 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="4dp"
-        android:singleLine="true"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="1dp"
         android:ellipsize="end"
-        tools:text="女裤"
-        android:textColor="@color/white"
-        android:textSize="12sp" />
+        android:singleLine="true"
+        android:textColor="@color/graya9a9a9"
+        android:textSize="12sp"
+        tools:text="女裤" />
 
 </LinearLayout>

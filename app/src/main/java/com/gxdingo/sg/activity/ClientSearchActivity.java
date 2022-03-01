@@ -44,6 +44,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.KeyboardUtils.showSoftInput;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -177,8 +178,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
         location = getIntent().getStringExtra(Constant.PARAMAS + 0);
 
-        if (!isEmpty(location))
-            location_tv.setText(location);
+        location_tv.setText(!isEmpty(location) ? location : gets(R.string.unknow));
 
         mStoreAdapter = new ClientStoreAdapter();
 
@@ -297,20 +297,12 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         }
     }
 
-    @Override
-    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
-
-    }
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {
         history_lv.setLabels(searchHistories);
     }
 
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
-
-    }
 
     @Override
     public void onShareUrlResult(ShareBean shareBean) {
@@ -339,7 +331,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         if (UserInfoUtils.getInstance().isLogin()) {
             StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
 //        goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class,getIntentEntityMap(new Object[]{item.getId()}));
-            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.getId()}));
+            goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, item.storeUserIdentifier}));
         } else {
             UserInfoUtils.getInstance().goToOauthPage(this);
         }
@@ -350,7 +342,7 @@ public class ClientSearchActivity extends BaseMvpActivity<ClientHomeContract.Cli
         StoreListBean.StoreBean item = (StoreListBean.StoreBean) adapter.getItem(position);
         switch (view.getId()) {
             case R.id.store_avatar_iv:
-                goToPagePutSerializable(this, ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
+                goToPagePutSerializable(this, ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.storeUserIdentifier}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())

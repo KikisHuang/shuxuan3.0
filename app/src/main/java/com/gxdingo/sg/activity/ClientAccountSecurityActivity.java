@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
@@ -13,12 +13,12 @@ import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
-import com.gxdingo.sg.utils.pay.WechatUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.tencent.bugly.beta.Beta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,9 +29,7 @@ import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
  * @author: Weaving
@@ -120,12 +118,13 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
                 Beta.checkUpgrade(true, false);
                 break;
             case R.id.cancel_account_stv:
-                new XPopup.Builder(reference.get())
+                goToPage(reference.get(), UnsubscribeActivity.class, null);
+                /*  new XPopup.Builder(reference.get())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isDarkTheme(false)
                         .dismissOnTouchOutside(false)
                         .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.confirm_logoff), "账号注销后无法恢复，请谨慎操作", () -> getP().loginOff()))
-                        .show();
+                        .show();*/
                 break;
         }
     }
@@ -254,7 +253,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
         if (isEmpty(cashInfoBean.getAlipay())) {
             binding_ali_stv.setRightString("去绑定");
-            binding_ali_stv.setRightTextColor(getc(R.color.blue_text));
+            binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
         } else {
             binding_ali_stv.setRightString("解绑");
             binding_ali_stv.setRightTextColor(getc(R.color.gray_a9));
@@ -262,7 +261,7 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
         if (isEmpty(cashInfoBean.getWechat())) {
             binding_wechat_stv.setRightString("去绑定");
-            binding_wechat_stv.setRightTextColor(getc(R.color.blue_text));
+            binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));
         } else {
             binding_wechat_stv.setRightString("解绑");
             binding_wechat_stv.setRightTextColor(getc(R.color.gray_a9));
@@ -282,6 +281,11 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
     @Override
     public int getType() {
         return 0;
+    }
+
+    @Override
+    public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
     }
 
 }

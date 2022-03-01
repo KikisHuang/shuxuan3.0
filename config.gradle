@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,
-            versionCode            : 37,
-            versionName            : "2.3.3",
+            versionCode            : 40,
+            versionName            : "3.0.0",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]
@@ -93,7 +93,7 @@ ext {
             videocache                    : "com.danikula:videocache:2.7.1",//视频缓存框架
             rxlifecyclecomponents         : "com.trello.rxlifecycle3:rxlifecycle-components:3.1.0",//rxlifecycle2(可将rxlifecycle改为AutoDispose这样可更优雅的解决rxjava内存泄漏的问题)
             rxlifecyclenavi               : "com.trello.rxlifecycle3:rxlifecycle-navi:3.1.0",//    implementation 'com.uber.autodispose:autodispose-android-archcomponents:1.0.0-RC2'
-            debugleakcanary               : 'com.squareup.leakcanary:leakcanary-android:2.5',//leakcanary
+            debugleakcanary               : 'com.squareup.leakcanary:leakcanary-android:2.8.1',//leakcanary
             avilibrary                    : "com.wang.avi:library:2.1.3",//loading anima
             bottombar                     : 'com.roughike:bottom-bar:2.3.1',//bottombar
             barlibrary                    : "com.gyf.immersionbar:immersionbar:3.0.0",///沉侵状态栏

@@ -29,7 +29,7 @@ public class BankcardContract {
 
     public interface BankcardListener{
 
-        void onDataResult(List<BankcardBean> bankcardBeans);
+        void onDataResult(List<BankcardBean> bankcardBeans, boolean refresh);
 
         String getBankType();
         String getPersonOfCard();

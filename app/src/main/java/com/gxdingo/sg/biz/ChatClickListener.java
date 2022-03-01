@@ -7,11 +7,13 @@ public interface ChatClickListener {
 
     void onAudioClick(String content,  boolean isPlay,int pos);
 
+    void onLocationMapClick(int pos);
+
     void clearUnread(int position, long id);
 
     void onTransferClick(int position, long id);
 
-    void onAvatarClickListener(int position, long id);
+    void onAvatarClickListener(int position, String id);
 
-    void onLongClickChatItem(View content, int position, boolean isSelf);
+    void onLongClickChatItem( int position, boolean isSelf);
 }

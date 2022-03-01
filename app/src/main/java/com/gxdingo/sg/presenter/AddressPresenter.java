@@ -7,8 +7,13 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
+import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ItemDistanceBean;
+import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
+import com.gxdingo.sg.biz.UpLoadImageListener;
+import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.AddressListBean;
@@ -18,7 +23,9 @@ import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.SelectAddressModel;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -31,9 +38,18 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.text.TextUtils.isEmpty;
+import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.ClientLocalConstant.ADDADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.COMPILEADDRESS_SUCCEED;
 import static com.gxdingo.sg.utils.ClientLocalConstant.DELADDRESS_SUCCEED;
+import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
+import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
@@ -49,6 +65,8 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     private ClientNetworkModel clientNetworkModel;
 
+    private NetworkModel mNetworkModel;
+
     private AMapLocation mMapLocation;
 
     private long delId = 0;
@@ -56,11 +74,14 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     private String cityCode;
 
     private CameraPosition mCameraPosition;
+    //定位截图
+    private String mLocationImage;
 
-
+    //是否poi关键词搜索 (false等于周边检索POI)
     private boolean isPOIAsyn = false;
 
     public AddressPresenter() {
+        mNetworkModel = new NetworkModel(this);
         model = new SelectAddressModel();
         mClientCommonModel = new CommonModel();
         clientNetworkModel = new ClientNetworkModel(this);
@@ -77,7 +98,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
         if (!isViewAttached() || clientNetworkModel == null)
             return;
 
-        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), getV().getLabelString(), getV().getPoint(), getV().getGender(), getV().getRegionPath());
+        clientNetworkModel.addAddressInfo(getContext(), isAdd, getV().getAddressId(), getV().getDoorplate(), getV().getAddressDetail(), getV().getContact(), getV().getMobile(), getV().getPoint(), getV().getRegionPath(), mLocationImage);
 
     }
 
@@ -141,22 +162,21 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     public void searchPOIAsyn(boolean refresh, String keyword, String cityCode) {
         isPOIAsyn = true;
 
-        if (refresh)
+        if (refresh && clientNetworkModel != null)
             clientNetworkModel.resetPage();
 
 //        LogUtils.d("=========城市码"+cityCode);
 //        if (!isEmpty(cityCode)) {
 
-        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
-        model.retrievalPOI(keyword, isEmpty(cityCode) ? cityCode : cityCode, new PoiSearch.OnPoiSearchListener() {
+        model.retrievalPOI(clientNetworkModel.getPage(), keyword, isEmpty(cityCode) ? cityCode : cityCode, mCameraPosition.target, new PoiSearch.OnPoiSearchListener() {
             @Override
             public void onPoiSearched(PoiResult poiResult, int errorCode) {
 
                 if (errorCode == 1000) {
                     if (isViewAttached()) {
 
-                        getV().searchResult(refresh, poiResult.getPois());
+                        getV().searchResult(refresh, poiResult.getPois(), true);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }
@@ -189,18 +209,18 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
     @Override
     public void searchBound(boolean refresh, LatLng latLng, String cityCode) {
-        BaseLogUtils.i("mNetworkModel.getPage() === " + clientNetworkModel.getPage());
 
         isPOIAsyn = false;
         model.retrievalBoundPOI("", cityCode, latLng.latitude, latLng.longitude, clientNetworkModel.getPage(), new PoiSearch.OnPoiSearchListener() {
             @Override
             public void onPoiSearched(PoiResult poiResult, int errorCode) {
+
                 if (errorCode == 1000) {
                     if (isViewAttached()) {
                         if (isBViewAttached())
                             getBV().onAfters();
 
-                        getV().searchResult(refresh, poiResult.getPois());
+                        getV().searchResult(refresh, poiResult.getPois(), false);
 
                         clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
                     }
@@ -229,15 +249,11 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 
                     mCameraPosition = cameraPosition;
 
-                    BaseLogUtils.i("CameraPosition  latitude === " + cameraPosition.target.latitude);
-                    BaseLogUtils.i("CameraPosition  longitude === " + cameraPosition.target.longitude);
-
-                    if (model != null)
+                    if (clientNetworkModel != null)
                         clientNetworkModel.resetPage();
 
                     if (isBViewAttached())
                         getBV().onStarts();
-
 
                     searchBound(true, mCameraPosition.target, cityCode);
 
@@ -247,9 +263,14 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     }
 
     @Override
-    public void moveCamera() {
-        if (model != null && model.getMyLocation() != null)
-            model.moveCamera(new LatLng(model.getMyLocation().getLatitude(), model.getMyLocation().getLongitude()));
+    public void moveCamera(LatLng latLng) {
+        if (model != null) {
+            if (latLng != null)
+                model.moveCamera(latLng);
+            else if (model.getMyLocation() != null)
+                model.moveCamera(new LatLng(model.getMyLocation().getLatitude(), model.getMyLocation().getLongitude()));
+        }
+
 
     }
 
@@ -289,7 +310,7 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                                             mClientCommonModel.clearCacheDefaultAddress();
 
                                         LocalConstant.locationSelected = aMapLocation.getPoiName();
-                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(),aMapLocation.getLongitude(),aMapLocation.getLatitude()));
+                                        EventBus.getDefault().post(new changeLocationEvent(aMapLocation.getPoiName(), aMapLocation.getLongitude(), aMapLocation.getLatitude()));
 
                                         if (isBViewAttached())
                                             getBV().onSucceed(0);
@@ -315,6 +336,102 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
                 }
             });
         }
+    }
+
+    /**
+     * 调用外部导航
+     *
+     * @param pos
+     * @param mDataByType
+     */
+    @Override
+    public void goOutSideNavigation(int pos, ReceiveIMMessageBean.DataByType mDataByType) {
+
+        switch (pos) {
+            case 0:
+                if (isAvilible(getContext(), PN_GAODE_MAP))
+                    goToGaoDeMap(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.gaode_map)));
+                break;
+            case 1:
+                if (isAvilible(getContext(), PN_BAIDU_MAP))
+                    goToBaiduActivity(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.baidu_map)));
+                break;
+            case 2:
+                if (isAvilible(getContext(), PN_TENCENT_MAP))
+                    goToTencentMap(getContext(), mDataByType.getStreet(), mDataByType.getLongitude(), mDataByType.getLatitude());
+                else
+                    getBV().onMessage(String.format(getString(R.string.uninstall_app), gets(R.string.tencent_map)));
+                break;
+
+        }
+    }
+
+    @Override
+    public void callPhone(ReceiveIMMessageBean.DataByType mDataByType) {
+        if (mClientCommonModel != null) {
+            if (!isEmpty(mDataByType.getMobile()))
+                mClientCommonModel.goCallPage(getContext(), mDataByType.getMobile());
+            else
+                onMessage(gets(R.string.no_get__mobile_phone_number));
+        }
+
+    }
+
+    /**
+     * 获取距离
+     *
+     * @param latitude
+     * @param longitude
+     */
+    @Override
+    public void getDistance(double latitude, double longitude) {
+
+        if (model != null) {
+            model.location(getContext(), aMapLocation -> {
+                if (aMapLocation.getErrorCode() == 0) {
+                    new NetworkModel(this).distanceSearch(getContext(), aMapLocation.getLongitude(), aMapLocation.getLatitude(), latitude, longitude, new CustomResultListener() {
+                        @Override
+                        public void onResult(Object o) {
+                            ItemDistanceBean bean = (ItemDistanceBean) o;
+
+                            if (isViewAttached())
+                                getV().onDistanceResult(bean);
+
+                        }
+                    });
+
+                }
+            });
+        }
+
+    }
+
+    /**
+     * 上传定位截图
+     *
+     * @param fliepath
+     */
+    @Override
+    public void upLoadLocationImage(String fliepath) {
+
+        if (mNetworkModel != null) {
+            mNetworkModel.upLoadImage(getContext(), fliepath, new UpLoadImageListener() {
+                @Override
+                public void loadSucceed(String path) {
+                    mLocationImage = path;
+                }
+
+                @Override
+                public void loadSucceed(UpLoadBean upLoadBean) {
+
+                }
+            }, 0);
+        }
+
     }
 
     @Override
@@ -415,5 +532,20 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
         addDisposable(subscriber);
+    }
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+
+        if (model != null)
+            model.destroy();
+
+        if (mMapLocation != null)
+            mMapLocation = null;
+
+        if (mCameraPosition != null)
+            mCameraPosition = null;
+
     }
 }

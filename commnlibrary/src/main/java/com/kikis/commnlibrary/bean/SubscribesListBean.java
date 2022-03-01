@@ -41,7 +41,9 @@ public class SubscribesListBean {
         private String lastMsg;//最后一条消息内容
         private int lastMsgType;//最后一条消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
         private String updateTime;//最后发送时间
-
+        public int sort; //置顶值，值越大越靠前。0=未置顶；>0 大于零已置顶
+        public String id; //订阅列表id
+        public int avatarIcon; //头像图标。0不显示；1 = 显示商家图标
 
         public String getSendAvatar() {
             return sendAvatar;

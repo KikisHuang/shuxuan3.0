@@ -3,7 +3,6 @@ package com.gxdingo.sg.fragment.store;
 import android.view.View;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -14,21 +13,15 @@ import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.StoreAuthInfoActivity;
 import com.gxdingo.sg.activity.StoreQRCodeActivity;
 import com.gxdingo.sg.activity.StoreSettingActivity;
-import com.gxdingo.sg.activity.StoreUpdateNameActivity;
 import com.gxdingo.sg.activity.WebActivity;
-import com.gxdingo.sg.bean.ClientMineBean;
 import com.gxdingo.sg.bean.StoreMineBean;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.StoreMyContract;
-import com.gxdingo.sg.biz.StoreWalletContract;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.presenter.StoreMyPresenter;
-import com.gxdingo.sg.utils.StoreLocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
-import com.kikis.commnlibrary.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
 import com.youth.banner.Banner;
 import com.youth.banner.adapter.BannerImageAdapter;
@@ -39,8 +32,8 @@ import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.WEB_URL;
+import static com.gxdingo.sg.http.Api.SERVER_URL;
+import static com.gxdingo.sg.http.Api.WEB_URL;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -147,7 +140,7 @@ public class StoreMyFragment extends BaseMvpFragment<StoreMyContract.StoreMyPres
                 goToPagePutSerializable(reference.get(), ArticleListActivity.class, getIntentEntityMap(new Object[]{0, "shuxuanshangjiaxieyi"}));
                 break;
             case R.id.contract_server_stv:
-                String url = WEB_URL + ClientApi.SERVER_URL;
+                String url = WEB_URL + SERVER_URL;
                 goToPagePutSerializable(reference.get(), WebActivity.class, getIntentEntityMap(new Object[]{false, url}));
                 break;
             case R.id.about_us_stv:

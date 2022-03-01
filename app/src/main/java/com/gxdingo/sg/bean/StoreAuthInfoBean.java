@@ -21,6 +21,7 @@ public class StoreAuthInfoBean {
     private String businessLicence;
     private String licenceCode;
     private String licenceName;
+    public int authStatus;
     private List<CategoryListBean> categoryList;
 
     public String getAddress() {

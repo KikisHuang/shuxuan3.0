@@ -8,25 +8,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
-import com.gxdingo.sg.bean.ClientAccountTransactionBean;
+import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
-import com.gxdingo.sg.biz.ClientMineContract;
-import com.gxdingo.sg.biz.ClientPickerDateListener;
 import com.gxdingo.sg.dialog.SelectDateDialog;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
-import com.gxdingo.sg.presenter.ClientMinePresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BottomPopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -38,9 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.blankj.utilcode.util.TimeUtils.getNowDate;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -204,7 +197,7 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
                 new XPopup.Builder(reference.get())
                         .isDarkTheme(false)
-                        .asCustom(new SelectDateDialog(reference.get(),date, (dialog, year, month) -> {
+                        .asCustom(new SelectDateDialog(reference.get(), date, (dialog, year, month) -> {
 
                             date_tv.setText(year + gets(R.string.common_year) + month + gets(R.string.common_month));
 
@@ -251,11 +244,13 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
     }
 
     @Override
+    public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
-        boolean isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY);
-        if (!isUser) {
-            TransactionBean item = (TransactionBean) adapter.getItem(position);
-            goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
-        }
+        TransactionBean item = (TransactionBean) adapter.getItem(position);
+        goToPagePutSerializable(reference.get(), StoreBillDetailActivity.class, getIntentEntityMap(new Object[]{item.getId()}));
     }
 }

@@ -3,22 +3,25 @@ package com.gxdingo.sg.activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
-import com.donkingliang.labels.LabelsView;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.ItemDistanceBean;
+import com.gxdingo.sg.bean.SelectAddressEvent;
+import com.gxdingo.sg.biz.MyConfirmListener;
+import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
+import com.gxdingo.sg.dialog.SgConfirmPopupView;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.biz.AddressContract;
 import com.gxdingo.sg.presenter.AddressPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.lxj.xpopup.XPopup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,10 +32,11 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
- * @author: Weaving
- * @date: 2021/10/15
+ * @author: kikis
+ * @date: 2022/1/24
  * @page:
  */
 public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.AddressPresenter> implements AddressContract.AddressListener {
@@ -49,20 +53,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @BindView(R.id.et_contacts)
     public TextView et_contacts;
 
-    @BindView(R.id.iv_sir)
-    public ImageView iv_sir;
-
-    @BindView(R.id.iv_lady)
-    public ImageView iv_lady;
-
     @BindView(R.id.et_mobile)
     public TextView et_mobile;
 
     @BindView(R.id.save_tv)
     public TextView save_tv;
-
-    @BindView(R.id.labels)
-    public LabelsView labels;
 
     @BindView(R.id.del_tv)
     public TextView del_tv;
@@ -73,9 +68,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     //类型 1新增 2修改
     private boolean isAdd = false;
-
-    //是否女生
-    private boolean mLady = false;
 
     private String regionPath = "";
 
@@ -149,8 +141,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     @Override
     protected void init() {
 
-        title_layout.setMoreText(gets(R.string.cancel));
-
         isAdd = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 0, true);
 
         addressBean = (AddressBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 1);
@@ -169,12 +159,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
         del_tv.setVisibility(isAdd ? View.GONE : View.VISIBLE);
 
-        List<String> label = new ArrayList<>();
-        label.add("家");
-        label.add("公司");
-        label.add("学校");
-
-        labels.setLabels(label);
 
         et_mobile.addTextChangedListener(Watcher);
         et_house_number.addTextChangedListener(Watcher);
@@ -189,7 +173,7 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         getP().checkCompileInfo();
     }
 
-    @OnClick({R.id.txt_more, R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address, R.id.ll_selected_sir, R.id.ll_selected_lady})
+    @OnClick({ R.id.del_tv, R.id.save_tv, R.id.title_back, R.id.cl_receive_address,})
     public void onViewClicked(View v) {
         if (!checkClickInterval(v.getId()))
             return;
@@ -200,21 +184,19 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             case R.id.save_tv:
                 getP().compileOrAdd(isAdd);
                 break;
-            case R.id.txt_more:
             case R.id.title_back:
                 finish();
                 break;
             case R.id.cl_receive_address:
 
-                goToPage(this, SelectAddressActivity.class, null);
-                break;
-            case R.id.ll_selected_sir:
-                selectGender(false);
-                break;
-            case R.id.ll_selected_lady:
-                selectGender(true);
+                goToPagePutSerializable(this, SelectAddressActivity.class, null);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -222,9 +204,14 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         super.onBaseEvent(object);
 
         //收货地址实体类回调
-        if (object instanceof PoiItem) {
+        if (object instanceof SelectAddressEvent) {
 
-            poiItem = (PoiItem) object;
+            SelectAddressEvent event = (SelectAddressEvent) object;
+
+            //上传地图截屏
+            getP().upLoadLocationImage(event.fliepath);
+
+            poiItem = (PoiItem) event.poiItem;
 
             String a = poiItem.getProvinceCode();
             String b = poiItem.getAdCode();
@@ -238,12 +225,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             tv_receive_address.setText(poiItem.getTitle());
             getP().checkCompileInfo();
         }
-    }
-
-    private void selectGender(boolean lady) {
-        mLady = lady;
-        iv_lady.setImageResource(lady ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-        iv_sir.setImageResource(lady ? R.drawable.module_svg_uncheck : R.drawable.module_svg_check);
     }
 
     TextWatcher Watcher = new TextWatcher() {
@@ -280,20 +261,9 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
             et_contacts.setText(bean.getName());
 
 
-        iv_sir.setImageResource(bean.getGender() == 1 ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-
-        iv_lady.setImageResource(bean.getGender() == 2 ? R.drawable.module_svg_check : R.drawable.module_svg_uncheck);
-
         if (!isEmpty(bean.getMobile()))
             et_mobile.setText(bean.getMobile());
 
-
-        if (labels.getLabels().get(0).equals(bean.getTag()))
-            labels.setSelects(0);
-        else if (labels.getLabels().get(1).equals(bean.getTag()))
-            labels.setSelects(1);
-        else if (labels.getLabels().get(2).equals(bean.getTag()))
-            labels.setSelects(2);
     }
 
     @Override
@@ -337,15 +307,6 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
         return regionPath;
     }
 
-    @Override
-    public String getLabelString() {
-        return (String) labels.getLabels().get(labels.getSelectLabels().get(0));
-    }
-
-    @Override
-    public int getGender() {
-        return mLady ? 2 : 1;
-    }
 
     @Override
     public LatLonPoint getPoint() {
@@ -354,13 +315,11 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
 
     @Override
     public void showDelDialog() {
-//        new XPopup.Builder(reference.get())
-//                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-//                .isDarkTheme(false)
-//                .asCustom(new SgConfirmPopupView(reference.get(), gets(R.string.confirm_del_address), "", () -> {
-//                    getP().delAddress(addressBean.getId());
-//                }).show());
-        getP().delAddress(addressBean.getId());
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .asCustom(new SgConfirm2ButtonPopupView(reference.get(), gets(R.string.confirm_del_address), () -> getP().delAddress(addressBean.getId()))).show();
     }
 
     @Override
@@ -374,14 +333,21 @@ public class ClientNewAddressActivity extends BaseMvpActivity<AddressContract.Ad
     }
 
     @Override
-    public void searchResult(boolean refresh, List<PoiItem> poiItems) {
+    public void searchResult(boolean refresh, List<PoiItem> poiItems, boolean isSearch) {
 
     }
+
 
     @Override
     public AMap getAMap() {
         return null;
     }
+
+    @Override
+    public void onDistanceResult(ItemDistanceBean bean) {
+
+    }
+
 
     @Override
     public void onSucceed(int type) {

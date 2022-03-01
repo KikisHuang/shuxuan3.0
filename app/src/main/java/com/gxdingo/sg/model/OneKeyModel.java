@@ -10,19 +10,16 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BindingPhoneActivity;
 import com.gxdingo.sg.activity.ClientActivity;
 import com.gxdingo.sg.activity.LoginActivity;
-import com.gxdingo.sg.activity.StoreActivity;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.OauthEventBean;
@@ -30,7 +27,6 @@ import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.http.Api;
-import com.gxdingo.sg.http.ClientApi;
 import com.gxdingo.sg.http.HttpClient;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -60,23 +56,14 @@ import io.reactivex.Observable;
 
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.http.Api.GET_MOBILE_KEY;
-import static com.gxdingo.sg.http.Api.HTTP;
-import static com.gxdingo.sg.http.Api.HTTPS;
-import static com.gxdingo.sg.http.Api.L;
 import static com.gxdingo.sg.http.Api.PAYMENT_ALIPAY_AUTHINFO;
 import static com.gxdingo.sg.http.Api.SM;
+import static com.gxdingo.sg.http.Api.STORE_PRIVACY_AGREEMENT_KEY;
 import static com.gxdingo.sg.http.Api.USER_OPEN_LOGIN;
-import static com.gxdingo.sg.http.Api.isUat;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PORT;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.CLIENT_SERVICE_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.HTML;
-import static com.gxdingo.sg.http.ClientApi.STORE_PRIVACY_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.ClientApi.UAT_URL;
-import static com.gxdingo.sg.http.HttpClient.switchGlobalUrl;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_WAY;
+import static com.gxdingo.sg.http.Api.CLIENT_PRIVACY_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_SERVICE_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.HTML;
 import static com.gxdingo.sg.utils.LocalConstant.SDK_AUTH_FLAG;
-import static com.gxdingo.sg.utils.LocalConstant.STORE_LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.pay.AlipayTool.auth;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.getd;
@@ -105,12 +92,8 @@ public class OneKeyModel {
 
     private NetWorkListener netWorkListener;
 
-    //客户端还是商家端
-    public boolean isUser;
     //协议是否勾选
     private boolean isCheck;
-
-    private String url = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
     private static View v;
 
@@ -138,12 +121,11 @@ public class OneKeyModel {
 
             map.put("os", "android");
 
-            String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
             if (netWorkListener != null)
                 netWorkListener.onStarts();
 
-            Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
+            Observable<NormalBean> observable = HttpClient.post(GET_MOBILE_KEY, map)
                     .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                     }.getType()) {
                     });
@@ -195,9 +177,8 @@ public class OneKeyModel {
 
         map.put("os", "android");
 
-        String newUrl = Api.URL = isUat ? HTTP + UAT_URL : !isDebug ? HTTPS + ClientApi.OFFICIAL_URL : HTTP + ClientApi.TEST_URL + SM + CLIENT_PORT + L;
 
-        Observable<NormalBean> observable = HttpClient.post(newUrl + GET_MOBILE_KEY, map)
+        Observable<NormalBean> observable = HttpClient.post(GET_MOBILE_KEY, map)
                 .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
                 }.getType()) {
                 });
@@ -252,7 +233,7 @@ public class OneKeyModel {
                             case SDK_AUTH_FLAG:
                                 AuthResult authResult = (AuthResult) msg.obj;
                                 if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY, isUser);
+                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY);
                                 } else
                                     ToastUtils.showLong("没有获取到authCode");
                                 break;
@@ -271,7 +252,7 @@ public class OneKeyModel {
      * @param code
      * @param type
      */
-    public void thirdPartyLogin(Context context, String code, String type, boolean isUse) {
+    public void thirdPartyLogin(Context context, String code, String type) {
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -310,17 +291,11 @@ public class OneKeyModel {
                 if (userBean.getIsBindMobile() == 0) {
 
                     ToastUtils.showLong(gets(R.string.please_bind_phone));
-                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type, isUse}));
+                    goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type}));
                 } else {
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
-                    if (isUse) {
-//                        SPUtils.getInstance().put(LOGIN_WAY, true);
-                        goToPage(getContext(), ClientActivity.class, null);
-                    } else {
-//                        SPUtils.getInstance().put(LOGIN_WAY, false);//保存商家登录
-                        goToPage(getContext(), StoreActivity.class, null);
-                    }
-                    EventBus.getDefault().post(isUse ? LocalConstant.CLIENT_LOGIN_SUCCEED : STORE_LOGIN_SUCCEED);
+                    goToPage(getContext(), ClientActivity.class, null);
+                    EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
                 }
             }
         };
@@ -329,8 +304,6 @@ public class OneKeyModel {
     }
 
     public void sdkInit(Context context, CustomResultListener customResultListener) {
-
-        isUser = SPUtils.getInstance().getBoolean(LOGIN_WAY, true);
 
         if (mAuthHelper != null) {
             mAuthHelper.setAuthListener(null);
@@ -356,7 +329,7 @@ public class OneKeyModel {
 //                        EventBus.getDefault().post(new OneKeyLoginEvent(tokenRet.getToken(), isUser));
 
                         if (customResultListener != null)
-                            customResultListener.onResult(new OneKeyLoginEvent(tokenRet.getToken(), isUser));
+                            customResultListener.onResult(new OneKeyLoginEvent(tokenRet.getToken()));
                     }
 
                 } catch (Exception e) {
@@ -377,16 +350,6 @@ public class OneKeyModel {
                     //除了用户取消操作的事件，其他都跳转登录页面
                     if (!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
                         UserInfoUtils.getInstance().goToLoginPage(context, "");
-/*
-                    //不是用户手动退出登录页，吐丝提示
-                    if (netWorkListener != null&&!ResultCode.CODE_ERROR_USER_CANCEL.equals(tokenRet.getCode()))
-                        netWorkListener.onMessage(tokenRet.getMsg());
-
-                    //一键登录环境获取失败，切换为用户端状态
-                    switchGlobalUrl(true);
-
-                    if (ClientActivity.getInstance() == null)
-                        goToPage(context, ClientActivity.class, null);*/
 
                     quitLoginPage();
 
@@ -414,23 +377,7 @@ public class OneKeyModel {
                     @Override
                     public void onViewCreated(View view) {
                         v = view;
-                        settingButtnStatus(isUser);
 
-                        findViewById(R.id.user_login_tv).setOnClickListener(v -> {
-
-                            settingButtnStatus(true);
-
-                        });
-                        findViewById(R.id.store_login_tv).setOnClickListener(v -> {
-                            settingButtnStatus(false);
-
-                        });
-
-                 /*       findViewById(R.id.switch_tv).setOnClickListener(v -> {
-                            isUser = !isUser;
-                            settingButtnStatus(view);
-
-                        });*/
                         findViewById(R.id.tv_other).setOnClickListener(v -> {
                             goToPage(context, LoginActivity.class, null);
                         });
@@ -472,14 +419,12 @@ public class OneKeyModel {
 
         });
 
-        String c_privacy_agreementUrl = url + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
-        String s_privacy_agreementUrl = url + HTML + "identifier=" + STORE_PRIVACY_AGREEMENT_KEY;
-        String service_agreementUrl = url + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
+        String c_privacy_agreementUrl = Api.URL + HTML + "identifier=" + CLIENT_PRIVACY_AGREEMENT_KEY;
+        String service_agreementUrl = Api.URL + HTML + "identifier=" + CLIENT_SERVICE_AGREEMENT_KEY;
         mAuthHelper.setAuthUIConfig(new AuthUIConfig.Builder()
                 .setPrivacyBefore("")
                 .setAppPrivacyOne("《服务协议》", service_agreementUrl)
-                .setAppPrivacyTwo("《用户隐私协议》", c_privacy_agreementUrl)
-                .setAppPrivacyThree("《商家隐私协议》", s_privacy_agreementUrl)
+                .setAppPrivacyTwo("《隐私协议》", c_privacy_agreementUrl)
                 .setNavColor(getc(R.color.white))
                 .setNavTextColor(getc(R.color.white))
                 .setLogoHidden(false)
@@ -509,27 +454,6 @@ public class OneKeyModel {
                 .setScreenOrientation(authPageOrientation)
                 .create());
         mAuthHelper.getLoginToken(context, 2000);
-    }
-
-    public void settingButtnStatus(boolean isU) {
-        isUser = isU;
-        if (isU) {
-            ((TextView) v.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) v.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
-
-            ((TextView) v.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            ((TextView) v.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.white));
-        } else {
-            ((TextView) v.findViewById(R.id.user_login_tv)).setBackgroundResource(R.drawable.module_bg_enter_payment_password);
-            ((TextView) v.findViewById(R.id.user_login_tv)).setTextColor(getc(R.color.green_dominant_tone));
-
-            ((TextView) v.findViewById(R.id.store_login_tv)).setBackgroundResource(R.drawable.module_bg_main_color_round6);
-            ((TextView) v.findViewById(R.id.store_login_tv)).setTextColor(getc(R.color.white));
-        }
-        ((TextView) v.findViewById(R.id.role_tv)).setText(isU ? "树选客户端" : "树选商家端");
-        switchGlobalUrl(isU);
-
-//        SPUtils.getInstance().put(LOGIN_WAY, isU);
     }
 
 

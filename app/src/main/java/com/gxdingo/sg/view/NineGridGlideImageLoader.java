@@ -29,9 +29,6 @@ public class NineGridGlideImageLoader implements NineGridView.ImageLoader {
 
     @Override
     public void onDisplayImage(Context context, ImageView imageView, String url) {
-/*
-        Glide.with(context).load(url).apply(GlideUtils.getInstance().getDefaultOptions().placeholder(R.drawable.load_faile_icon))
-                .into(imageView);*/
 
         RequestOptions options = new RequestOptions().transform(new CenterCrop());
         Glide.with(context)

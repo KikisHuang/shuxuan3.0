@@ -47,10 +47,6 @@ public class ClientHomeContract {
 
         void oauth(Context context);
 
-        void checkHelpCode();
-
-        void help();
-
         void getShareUrl();
 
         void resetPage();
@@ -65,11 +61,7 @@ public class ClientHomeContract {
 
         void onStoresResult(boolean refresh,boolean search, List<StoreListBean.StoreBean> storeBeans);
 
-        void onBannerResult(List<HomeBannerBean> bannerBeans);
-
         void onHistoryResult(List<String> searchHistories);
-
-        void onHelpDataResult(HelpBean helpBean);
 
         void onShareUrlResult(ShareBean shareBean);
     }

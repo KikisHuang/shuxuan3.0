@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
 
     <com.allen.library.SuperTextView
@@ -13,7 +15,7 @@
         app:sLeftTextString="经营范围"
         app:sLeftViewMarginLeft="20dp"
         app:sLeftTextColor="@color/gray_a9"
-        app:sRightTextString="金源CBD现代城·B座"
+        tools:sRightTextString="金源CBD现代城·B座"
         app:sRightTextColor="@color/gray_2e"
         app:sRightTextSize="@dimen/sp_14" />
 
@@ -24,7 +26,7 @@
         app:sLeftTextString="详细地址"
         app:sLeftViewMarginLeft="20dp"
         app:sLeftTextColor="@color/gray_a9"
-        app:sRightTextString="金源CBD现代城·B座一楼大厅 1-23号商铺"
+        tools:sRightTextString="金源CBD现代城·B座一楼大厅 1-23号商铺"
         app:sRightTextColor="@color/gray_2e"
         app:sRightTextSize="@dimen/sp_14" />
 
@@ -38,4 +40,18 @@
         app:sRightTextString="查看"
         app:sRightTextColor="#3D7BE8"
         app:sRightTextSize="@dimen/sp_14" />
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/certification_status_stv"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:sLeftTextString="实名认证"
+        app:sLeftTextColor="@color/gray_a9"
+        app:sRightTextString="认证中"
+        app:sRightViewMarginRight="10dp"
+        app:sRightTextColor="@color/gray_a9"
+        app:sRightTextSize="@dimen/sp_14"
+        app:sLeftViewMarginLeft="@dimen/dp20"
+        />
+
 </LinearLayout>

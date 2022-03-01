@@ -23,6 +23,7 @@ public class StoreLocalConstant {
     public static final String CONTENT = "content";
     public static final String IMAGES = "images";
 
+
     public static final String CIRCLE_ID = "circleId";
     public static final String PARENT_ID = "parentId";
 
@@ -33,7 +34,6 @@ public class StoreLocalConstant {
      */
     public static final String CURRENT = "current";
     public static final String SIZE = "size";
-
 
     public static final int SOTRE_REVIEW_SUCCEED = 9000000;//店铺审核成功（已认证）
     public static final int SOTRE_REFRESH_BUSINESS_DISTRICT_LIST = 9000001;//刷新商圈列表

@@ -32,7 +32,7 @@ public class IMComplaintContract {
         void getDataList(String identifier);
 
         //投诉
-        void complaint(String reason, String toString, ArrayList<GridPictureEditing.PictureValue> values, String sendIdentifier, int roleId, String uuid);
+        void complaint(String reason, String toString, ArrayList<GridPictureEditing.PictureValue> values, String sendIdentifier);
     }
 
     public interface IMComplaintListener {

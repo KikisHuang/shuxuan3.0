@@ -6,11 +6,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.gxdingo.sg.fragment.store.StoreBusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.BusinessDistrictFragment;
+import com.gxdingo.sg.fragment.child.RankingFragment;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.List;
+
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 
 /**
@@ -21,6 +24,7 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
 
 
     public static final int STORE_BUSINESS_DISTRICT_TAB = 1;
+    public static final int RANKING_TAB = 2;
 
     public static final String TAB = "tab";
 
@@ -43,12 +47,14 @@ public class TabPageAdapter<T> extends FragmentStatePagerAdapter {
             case STORE_BUSINESS_DISTRICT_TAB: {
                 args.putInt(Constant.PARAMAS + 0, position + 1);
                 if (position == 1) {
-                    //我的商圈，传店铺id
-                    if (UserInfoUtils.getInstance().getUserInfo().getStore() != null && UserInfoUtils.getInstance().getUserInfo().getStore().getId() > 0)
-                        args.putInt(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getStore().getId());
+                    if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().isLogin() && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getIdentifier()))
+                        //我的商圈，传自己的Identifier
+                        args.putString(Constant.SERIALIZABLE + 0, UserInfoUtils.getInstance().getUserInfo().getIdentifier());
                 }
-
-                return StoreBusinessDistrictFragment.newInstance(StoreBusinessDistrictFragment.class, args);
+                return BusinessDistrictFragment.newInstance(BusinessDistrictFragment.class, args);
+            }
+            case RANKING_TAB: {
+                return RankingFragment.newInstance(RankingFragment.class, args);
             }
 
         }

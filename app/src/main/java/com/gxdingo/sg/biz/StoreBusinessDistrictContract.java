@@ -1,10 +1,12 @@
 package com.gxdingo.sg.biz;
 
+import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 
@@ -21,7 +23,14 @@ public class StoreBusinessDistrictContract {
          *
          * @param refresh true 表示刷新，false表示加载更多
          */
-        void getBusinessDistrictList(boolean refresh, int StoreId);
+        void getBusinessDistrictList(boolean refresh, String id);
+
+        /**
+         * 分享跳转获取商圈列表
+         *
+         * @param circleCode 商圈分享口令
+         */
+        void shareGetBusinessDistrictList(String id, String circleCode);
 
         /**
          * 提交评论/回复
@@ -76,6 +85,10 @@ public class StoreBusinessDistrictContract {
 
         //分享连接
         void shareLink(String content, String imgUrl, String url);
+
+        void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier);
+
+        void getBannerDataInfo();
     }
 
     public interface StoreBusinessDistrictListener {
@@ -108,8 +121,16 @@ public class StoreBusinessDistrictContract {
         /**
          * 刷新点赞数量
          *
-         * @param position
+         * @param postition
+         * @param status
          */
-        void refreshLikeNum(String o, int position);
+        void refreshLikeNum(String o, int postition, int status);
+
+        /**
+         * 头部广告数据回调
+         *
+         * @param data
+         */
+        void onBannerResult(BannerBean data);
     }
 }

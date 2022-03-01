@@ -22,6 +22,7 @@ import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.view.TemplateTitle;
@@ -35,8 +36,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
-import static com.gxdingo.sg.http.StoreApi.CLIENT_HDGZ_AGREEMENT_KEY;
-import static com.gxdingo.sg.http.StoreApi.STORE_SHOP_AGREEMENT_KEY;
+import static com.gxdingo.sg.http.Api.CLIENT_HDGZ_AGREEMENT_KEY;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -109,8 +109,8 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
     }
 
     @Override
-    protected int initContentView() {
-        return R.layout.module_activity_client_settle;
+        protected int initContentView() {
+            return R.layout.module_activity_client_settle;
     }
 
     @Override
@@ -188,7 +188,6 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     @Override
     public void onCategoryResult(List<CategoriesBean> categories) {
-
     }
 
     @Override
@@ -196,18 +195,9 @@ public class ClientSettleActivity extends BaseMvpActivity<ClientHomeContract.Cli
 
     }
 
-    @Override
-    public void onBannerResult(List<HomeBannerBean> bannerBeans) {
-
-    }
 
     @Override
     public void onHistoryResult(List<String> searchHistories) {
-
-    }
-
-    @Override
-    public void onHelpDataResult(HelpBean helpBean) {
 
     }
 

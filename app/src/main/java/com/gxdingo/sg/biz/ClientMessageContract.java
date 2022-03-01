@@ -1,11 +1,10 @@
 package com.gxdingo.sg.biz;
 
-import com.gxdingo.sg.bean.SubscribesBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author: Weaving
@@ -21,11 +20,25 @@ public class ClientMessageContract {
         void clearUnreadMsg(String id);
 
         void refreshList();
+
+        void getUnreadMessageNum();
+
+        void sendMessage(String shareUuid, int type, String content, int voiceDuration, Map<String, Object> params);
+
+        void setTop(String shareUuid, int sort, int pos);
+
+        void listChatDel(String shareUuid, int position);
     }
 
     public interface ClientMessageListener{
         void onSubscribes(boolean refresh, SubscribesListBean subscribesListBean);
 
         void clearMessageUnreadItem(String id);
+
+        void setUnreadMsgNum(Integer data);
+
+        void onSetTopResult(int pos, int sort);
+
+        void onSubDel(int position);
     }
 }

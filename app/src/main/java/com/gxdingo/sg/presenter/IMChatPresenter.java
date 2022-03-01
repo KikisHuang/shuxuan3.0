@@ -1,9 +1,14 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 
+import com.alibaba.idst.nui.Constants;
+import com.blankj.utilcode.util.ClipboardUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.AliASRBean;
 import com.gxdingo.sg.bean.gen.DraftBeanDao;
 import com.gxdingo.sg.db.CommonDaoUtils;
 import com.gxdingo.sg.db.DaoUtilsStore;
@@ -31,6 +36,7 @@ import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.PictureSelectionModel;
 import com.luck.picture.lib.PictureSelector;
@@ -40,24 +46,32 @@ import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.trello.rxlifecycle3.LifecycleProvider;
+import com.zhouyou.http.callback.DownloadProgressCallBack;
+import com.zhouyou.http.exception.ApiException;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.blankj.utilcode.util.ArrayUtils.copy;
 import static com.blankj.utilcode.util.StringUtils.getString;
-import static com.gxdingo.sg.db.SqlUtils.EQUAL;
-import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
+import static com.gxdingo.sg.utils.LocalConstant.AAC;
+import static com.gxdingo.sg.utils.LocalConstant.TAG;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
@@ -66,6 +80,7 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToBaiduActivity;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
+import static com.kikis.commnlibrary.utils.CommonUtils.getPath;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
@@ -82,6 +97,9 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
 
+    private Disposable mDownloadDisp;
+
+    private boolean isIdentify = false;
 
     public IMChatPresenter() {
         clientNetworkModel = new ClientNetworkModel(this);
@@ -222,7 +240,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * 获取聊天记录列表
      */
     @Override
-    public void getChatHistoryList(String shareUuid, int otherId, int otherRole) {
+    public void getChatHistoryList(String shareUuid, String otherId, int otherRole) {
 
         mWebSocketModel.getChatHistoryList(getContext(), shareUuid, otherId, otherRole, new CustomResultListener<IMChatHistoryListBean>() {
             @Override
@@ -240,7 +258,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
      * @param otherRole
      */
     @Override
-    public void refreshHistoryList(String shareUuid, int otherId, int otherRole) {
+    public void refreshHistoryList(String shareUuid, String otherId, int otherRole) {
 
         mWebSocketModel.refreshChatHistoryList(getContext(), shareUuid, otherId, otherRole, (CustomResultListener<IMChatHistoryListBean>) imChatHistoryListBean -> {
             try {
@@ -657,15 +675,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
     }
 
-    /**
-     * 获取默认地址
-     */
-    @Override
-    public void getCacheAddress() {
-        if (commonModel != null)
-            getV().onAddressResult(commonModel.getCacheDefaultAddress());
-
-    }
 
     /**
      * 撤回消息
@@ -685,9 +694,17 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     }
 
     @Override
-    public void onMvpDestroy() {
-        super.onMvpDestroy();
+    public void onMvpDetachView(boolean retainInstance) {
+        if (mDownloadDisp != null) {
+            mDownloadDisp.dispose();
+            mDownloadDisp = null;
+        }
+        if (mAudioModel != null)
+            mAudioModel.delAudioFile();
+
+        super.onMvpDetachView(retainInstance);
     }
+
 
     /**
      * 保存草稿
@@ -744,4 +761,137 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         }
     }
 
+    /**
+     * 语音转文字
+     *
+     * @param content
+     * @param position
+     */
+    @Override
+    public void voiceToText(String content, int position) {
+        if (isIdentify) {
+            getBV().onMessage("语音识别中");
+            return;
+        }
+
+        if (networkModel != null) {
+
+            String filePath = getPath() + File.separator + "audio" + File.separator;
+
+            String fileName = UUID.randomUUID().toString() + AAC;
+
+            isIdentify = true;
+            networkModel.downloadFile(content, new DownloadProgressCallBack() {
+                @Override
+                public void onStart() {
+                    onStarts();
+                }
+
+                @Override
+                public void onError(ApiException e) {
+                    if (isBViewAttached())
+                        onMessage(e.getMessage());
+                    isIdentify = false;
+                    onAfters();
+                }
+
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    int progress = (int) (bytesRead * 100 / contentLength);
+
+                    BaseLogUtils.w("downLoad progress === " + progress);
+                }
+
+                @Override
+                public void onComplete(String path) {
+
+                    BaseLogUtils.w("downLoad path === " + path);
+
+                    if (clientNetworkModel != null)
+                        clientNetworkModel.getVoiceToken(getContext(), token -> {
+//                            token = "5f8b1fcf1d5744abbb72ea1b813f46bb";
+                            if (token == null) {
+                                isIdentify = false;
+                                onAfters();
+                                return;
+                            }
+
+                            if (mAudioModel != null) {
+                                mAudioModel.initAliyunNui(getContext(), (String) token, (event, resultCode, finish, asrResult, taskId) -> {
+
+                                    if (event == Constants.NuiEvent.EVENT_FILE_TRANS_UPLOADED) {
+                                        //完成上传，正在转写...
+                                    } else if (event == Constants.NuiEvent.EVENT_FILE_TRANS_RESULT) {
+                                        //识别成功 asrResult.asrResult
+                                        LogUtils.i("onFileTransEventCallback === " + asrResult.asrResult);
+
+                                        AliASRBean aliASRBean = GsonUtil.GsonToBean(asrResult.asrResult, AliASRBean.class);
+                                        Message msg = new Message();
+
+                                        if (aliASRBean.getFlash_result() != null && aliASRBean.getFlash_result().getSentences() != null && aliASRBean.getFlash_result().getSentences().size() > 0) {
+
+                                            if (mAudioModel != null) {
+                                                msg.what = 100;
+                                                mAudioModel.getASRText(getContext(), aliASRBean.getFlash_result().getSentences(), text -> {
+                                                    msg.obj = text;
+                                                    msg.arg1 = position;
+                                                });
+                                            }
+
+                                        } else {
+                                            LogUtils.i(TAG, "语音识别数据集为空");
+                                            msg.obj = gets(R.string.speech_recognition_failure);
+                                        }
+                                        mHandler.sendMessage(msg);
+                                    } else if (event == Constants.NuiEvent.EVENT_ASR_ERROR) {
+                                        //240075 录音文件识别服务失败、错误
+                                        //识别异常asrResult.asrResult
+                                        LogUtils.i(TAG, "error happened: " + resultCode);
+
+                                        Message msg = new Message();
+                                        msg.obj = gets(R.string.speech_recognition_failure);
+                                        mHandler.sendMessage(msg);
+                                    }
+
+                                });
+
+                                if (mAudioModel != null)
+                                    mAudioModel.aliYunStartFileTranscriber(filePath + fileName);
+                            }
+                        });
+
+                }
+            }, mDownloadDisp, filePath, fileName);
+        }
+    }
+
+    @Override
+    public void delMessage(long id, int position) {
+
+        if (mWebSocketModel != null)
+            mWebSocketModel.messageDel(getContext(), String.valueOf(id), t -> {
+                getV().onMessageDelete(position);
+            });
+    }
+
+    @Override
+    public void copyText(String content, String toast) {
+        //复制
+        ClipboardUtils.copyText(content);
+        if (isBViewAttached())
+            getBV().onMessage(toast);
+    }
+
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if (msg.what == 100) {
+                if (isBViewAttached())
+                    getV().onIdentifiedContentResult(msg.obj, msg.arg1);
+            } else {
+                onMessage((String) msg.obj);
+            }
+            isIdentify = false;
+            onAfters();
+        }
+    };
 }

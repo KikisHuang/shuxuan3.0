@@ -1,33 +1,44 @@
 package com.gxdingo.sg.dialog;
 
 import android.content.Context;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.gxdingo.sg.R;
+import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.biz.CustomArgsResultListener;
+import com.lxj.xpopup.core.CenterPopupView;
 import com.lxj.xpopup.core.PositionPopupView;
+
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
+import static com.blankj.utilcode.util.TimeUtils.string2Millis;
+import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 
 /**
  * @author: kikis
  * @date: 2021/12/25
  * @page:
  */
-public class ChatFunctionDialog extends PositionPopupView {
+public class ChatFunctionDialog extends CenterPopupView implements View.OnClickListener {
 
     private CustomArgsResultListener customArgsResultListener;
 
-    private TextView copy_tv;
-    private TextView revocation_tv;
+    private LinearLayout copy_ll, report_ll, del_ll, turn_the_text_ll, copy_address_info_ll;
+
     private boolean isSelf;
+    private ReceiveIMMessageBean receiveIMMessageBean;
+
     private int type = 0;
 
-    public ChatFunctionDialog(@NonNull Context context, boolean self, int type, CustomArgsResultListener listener) {
+    public ChatFunctionDialog(@NonNull Context context, boolean self, ReceiveIMMessageBean data, CustomArgsResultListener listener) {
         super(context);
         customArgsResultListener = listener;
         isSelf = self;
-        this.type = type;
+        this.receiveIMMessageBean = data;
+        this.type = receiveIMMessageBean.getType();
     }
 
     @Override
@@ -38,25 +49,89 @@ public class ChatFunctionDialog extends PositionPopupView {
     @Override
     protected void initPopupContent() {
         super.initPopupContent();
-        revocation_tv = findViewById(R.id.revocation_tv);
-        copy_tv = findViewById(R.id.copy_tv);
+        copy_ll = findViewById(R.id.copy_ll);
+        copy_address_info_ll = findViewById(R.id.copy_address_info_ll);
+        report_ll = findViewById(R.id.report_ll);
+        del_ll = findViewById(R.id.del_ll);
+        turn_the_text_ll = findViewById(R.id.turn_the_text_ll);
 
-        copy_tv.setVisibility(type == 0 ? VISIBLE : GONE);
+        ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息
+        copy_ll.setVisibility(type == 0 ? VISIBLE : GONE);
 
-//        revocation_tv.setVisibility(isSelf ? VISIBLE : GONE);
+        turn_the_text_ll.setVisibility(type == 11 ? VISIBLE : GONE);
 
-        //todo 隐藏撤回功能
-        revocation_tv.setVisibility(GONE);
+        copy_address_info_ll.setVisibility(type == 30 ? VISIBLE : GONE);
 
-        copy_tv.setOnClickListener(view -> {
-            customArgsResultListener.onResult(0);
+
+        //自己发送的
+        if (isSelf) {
+            long nowTime = getNowMills();
+
+            long sendTime = string2Millis(dealDateFormat(receiveIMMessageBean.getCreateTime()));
+
+            //小于60s显示撤回
+            if (nowTime - sendTime <= 60000 && (type != 20 || type != 21))
+                report_ll.setVisibility(VISIBLE);
+            else
+                report_ll.setVisibility(GONE);
+
+        } else
+            report_ll.setVisibility(GONE);
+
+
+        del_ll.setOnClickListener(v -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(3);
             dismiss();
         });
 
-        revocation_tv.setOnClickListener(view -> {
-            customArgsResultListener.onResult(1);
+        copy_ll.setOnClickListener(v -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(0);
+            dismiss();
+        });
+
+        report_ll.setOnClickListener(view -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(1);
+            dismiss();
+        });
+        turn_the_text_ll.setOnClickListener(view -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(2);
+            dismiss();
+        });
+        copy_address_info_ll.setOnClickListener(view -> {
+            if (customArgsResultListener != null)
+                customArgsResultListener.onResult(4);
             dismiss();
         });
     }
 
+    @Override
+    public void onClick(View v) {
+        int t = 0;
+        switch (v.getId()) {
+            case R.id.copy_ll:
+                t = 0;
+                break;
+            case R.id.del_ll:
+                t = 3;
+                break;
+            case R.id.report_ll:
+                t = 1;
+                break;
+            case R.id.turn_the_text_ll:
+                t = 2;
+                break;
+            case R.id.copy_address_info_ll:
+                t = 4;
+                break;
+        }
+
+        if (customArgsResultListener != null)
+            customArgsResultListener.onResult(t);
+        dismiss();
+
+    }
 }
