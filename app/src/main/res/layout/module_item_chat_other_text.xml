@@ -38,13 +38,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:background="@mipmap/bg_im_chat_others_content_text"
-                android:gravity="center"
+                android:gravity="center|left"
                 android:paddingVertical="10dp"
                 android:paddingLeft="14dp"
                 android:paddingRight="8dp"
                 android:textColor="@color/gray_33"
                 android:textSize="13sp"
-                tools:text="来" />
+                tools:text="来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来来" />
 
         </LinearLayout>
 

@@ -70,7 +70,7 @@ public class ChatFunctionDialog extends CenterPopupView implements View.OnClickL
             long sendTime = string2Millis(dealDateFormat(receiveIMMessageBean.getCreateTime()));
 
             //小于60s显示撤回
-            if (nowTime - sendTime <= 60000)
+            if (nowTime - sendTime <= 60000 && (type != 20 || type != 21))
                 report_ll.setVisibility(VISIBLE);
             else
                 report_ll.setVisibility(GONE);

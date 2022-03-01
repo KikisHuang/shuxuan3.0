@@ -12,7 +12,7 @@ public class Api {
     public static final String CLIENT_HDGZ_AGREEMENT_KEY = "hdgz";
 
     //uat服务器开关 ，***打包上线正式服请关闭此开关***
-    public static final boolean isUat = true;
+    public static final boolean isUat = false;
 
     //正式服测试开关 ，***本地调试正式服打开此开关即可,打开此开关后，isUat开关不生效***
     public static final boolean isOnlineTest = false;

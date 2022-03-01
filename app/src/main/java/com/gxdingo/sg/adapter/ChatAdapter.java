@@ -238,7 +238,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             map_ll.setOnLongClickListener(v -> {
                 if (chatClickListener != null)
-                chatClickListener.onLongClickChatItem(position, itemType == SelfLocationMapInfo ? true : false);
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfLocationMapInfo ? true : false);
                 return false;
             });
 
@@ -301,7 +301,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
             if (itemType == SelfImage) {
                 content_img.setOnLongClickListener(v -> {
                     if (chatClickListener != null) {
-                        chatClickListener.onLongClickChatItem( position, true);
+                        chatClickListener.onLongClickChatItem(position, true);
                     }
                     return false;
                 });
@@ -328,7 +328,7 @@ public class ChatAdapter extends BaseRecyclerAdapter {
 
             voice_ll.setOnLongClickListener(v -> {
                 if (chatClickListener != null) {
-                    chatClickListener.onLongClickChatItem( position, itemType == SelfAudio);
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfAudio);
                 }
                 return false;
             });
@@ -442,6 +442,13 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                 if (chatClickListener != null && itemType == OtherTransfer && data.getDataByType().getStatus() == 1)
                     chatClickListener.onTransferClick(position, data.getId());
             });
+            cl_transfer_accounts_bg.setOnLongClickListener(v -> {
+                if (chatClickListener != null) {
+                    chatClickListener.onLongClickChatItem(position, itemType == SelfTransfer);
+                }
+                return false;
+            });
+
 
             if (dataByType != null) {
                 cl_transfer_accounts_bg.setVisibility(View.VISIBLE);
