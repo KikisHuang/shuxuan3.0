@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.allen.library.SuperTextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
@@ -48,6 +49,7 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
     @BindView(R.id.nodata_layout)
     public View nodata_layout;
 
+
     private ClientCouponAdapter mCouponAdapter;
 
     @Override
@@ -62,7 +64,7 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -102,7 +104,7 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_activity_coupon_list;
     }
 
     @Override
@@ -162,11 +164,22 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
 
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
+
         // 状态。0=待使用；1=已使用；2=已过期
         boolean isPastDue = item.status == 1 || item.status == 2;
-        if (!isPastDue)
-            goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
-        else
+        if (!isPastDue) {
+
+            if (view.getId() == R.id.rule_tv) {
+                //todo 使用规则页面
+
+            } else {
+                sendEvent(item);
+                finish();
+                //todo 后期增加是否核销的参数
+//                goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
+
+            }
+        } else
             onMessage("优惠卷已过期");
 
     }

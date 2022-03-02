@@ -21,18 +21,20 @@ import com.lxj.xpopup.core.CenterPopupView;
 public class SgConfirmHintPopupView extends CenterPopupView implements View.OnClickListener {
 
     private MyConfirmListener confirmListener;
-    private TextView tv_title, tv_confirm,tv_hint;
+    private TextView tv_title, tv_confirm, tv_hint;
     private ImageView close_img;
-    private CharSequence title,hint, confirmText;
+    private CharSequence title, hint, confirmText;
 
 
     /**
+     *
      * @param context
      */
-    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence confirmText, MyConfirmListener confirmListener) {
+    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, MyConfirmListener confirmListener) {
         super(context);
         this.title = title;
         this.confirmText = confirmText;
+        this.hint = hint;
         this.confirmListener = confirmListener;
         addInnerContent();
     }

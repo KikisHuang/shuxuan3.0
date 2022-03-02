@@ -5,13 +5,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.ClientCertifyPayPswActivity;
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
-import com.gxdingo.sg.activity.ClientSettingPayPwd2Activity;
+import com.gxdingo.sg.bean.ClientCouponsBean;
 import com.gxdingo.sg.bean.PayBean;
 import com.gxdingo.sg.biz.IMTransferAccountsPayContract;
 import com.gxdingo.sg.biz.NetWorkListener;
+import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.WebSocketModel;
 import com.gxdingo.sg.utils.pay.AlipayTool;
 import com.gxdingo.sg.utils.pay.PayResult;
@@ -24,17 +23,19 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 import org.greenrobot.eventbus.EventBus;
 
 import static com.gxdingo.sg.utils.LocalConstant.SDK_PAY_FLAG;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListener, IMTransferAccountsPayContract.IMTransferAccountsPayListener> implements IMTransferAccountsPayContract.IMTransferAccountsPayPresenter, NetWorkListener {
+
     private WebSocketModel mWebSocketModel;
 
+    private ClientNetworkModel clientNetworkModel;
 
     public IMTransferAccountsPayPresenter() {
 
         mWebSocketModel = new WebSocketModel(this);
+
+        clientNetworkModel = new ClientNetworkModel(this);
     }
 
     @Override
@@ -86,6 +87,10 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
                 if (isBViewAttached())
                     getBV().onSucceed(0);
             }
+
+        } else if (o instanceof ClientCouponsBean) {
+            ClientCouponsBean ccb = (ClientCouponsBean) o;
+            getV().setCouponsHint(ccb.getList() != null && ccb.getList().size() > 0?"选择优惠券":"暂无可用优惠券");
 
         }
     }
@@ -163,6 +168,12 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
         if (mWebSocketModel != null)
             mWebSocketModel.transfer(getContext(), mShareUuid, type, passwd, amount);
 
+    }
+
+    @Override
+    public void getCoupons() {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getCoupons(getContext(), true);
     }
 
     /**

@@ -15,16 +15,25 @@ public class IMTransferAccountsPayContract {
     public interface IMTransferAccountsPayPresenter extends MvpPresenter<BasicsListener, IMTransferAccountsPayListener> {
         /**
          * 发起转账
-         *  @param mShareUuid
+         *
+         * @param mShareUuid
          * @param type
          * @param passwd
          * @param amount
          */
         void transfer(String mShareUuid, int type, String passwd, String amount);
+
+        /**
+         * 获取优惠券列表
+         */
+        void getCoupons();
     }
 
     public interface IMTransferAccountsPayListener {
         //转账详情
         void onSetTransferAccounts(PayBean.TransferAccountsDTO transferAccounts);
+
+        //优惠券提示回调
+        void setCouponsHint(String s);
     }
 }

@@ -41,6 +41,7 @@ import com.kikis.commnlibrary.utils.RxUtil;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
 import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.callback.CallBack;
 import com.zhouyou.http.callback.CallClazzProxy;
 import com.zhouyou.http.callback.DownloadProgressCallBack;
 import com.zhouyou.http.exception.ApiException;

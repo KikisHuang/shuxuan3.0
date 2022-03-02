@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grayf6"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <com.kikis.commnlibrary.view.TemplateTitle
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/grayf6"
+        app:backImg="@drawable/module_svg_back_black_icon"
+        app:canBack="true"/>
+
+    <include layout="@layout/module_include_refresh" />
+
+</LinearLayout>

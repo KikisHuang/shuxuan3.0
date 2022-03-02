@@ -3,17 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/divide_color">
+    android:background="@color/green_dominant_tone">
+
 
     <LinearLayout
+        android:id="@+id/top_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="@dimen/dp_10"
         android:orientation="vertical"
+        android:paddingBottom="30dp"
         android:gravity="center_horizontal"
-        android:background="@drawable/module_shape_bg_white_round6"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/module_shape_bg_white_round6">
 
         <TextView
             android:id="@+id/coupon_title_tv"
@@ -34,27 +37,24 @@
             android:id="@+id/valid_date_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="有效期至2021.10.20"
-            android:textSize="12sp"
-            android:textColor="@color/gray_a9"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_height="1dp"
-            android:background="@color/divide_color"/>
-
-        <com.allen.library.SuperTextView
-            android:id="@+id/other_coupon_stv"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:sLeftTextColor="@color/gray_2e"
-            app:sLeftTextSize="14sp"
-            app:sLeftTextString="使用其他代金券"
-            app:sLeftViewMarginLeft="20dp"
-            app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
+            android:text="优惠券核销后只能在该商家使用"
+            android:textSize="13sp"
+            android:textColor="@color/red"/>
 
     </LinearLayout>
 
+
+    <com.allen.library.SuperTextView
+        android:id="@+id/other_coupon_stv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:sLeftTextColor="@color/gray_2e"
+        android:layout_marginTop="10dp"
+        app:sBackgroundDrawableRes="@drawable/module_shape_bg_white_round6"
+        android:layout_marginHorizontal="20dp"
+        app:sLeftTextSize="14sp"
+        app:sLeftTextString="使用其他代金券"
+        app:sLeftViewMarginLeft="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/top_ll"
+        app:sRightIconRes="@drawable/module_svg_right_gray_arrow_little"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

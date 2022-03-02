@@ -118,7 +118,7 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
 
     @Override
     protected void init() {
-        title_layout.setBackgroundColor(getc(R.color.divide_color));
+        title_layout.setBackgroundColor(getc(R.color.transparent));
         mCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
     }
 

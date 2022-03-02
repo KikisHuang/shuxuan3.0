@@ -24,7 +24,7 @@ public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, Base
 
     public ClientCouponAdapter() {
         super(R.layout.module_recycle_item_coupon);
-        addChildClickViewIds(R.id.btn_use);
+        addChildClickViewIds(R.id.btn_use,R.id.rule_tv);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, Base
         TextView btn_use = baseViewHolder.findView(R.id.btn_use);
         TextView coupon_name_tv = baseViewHolder.findView(R.id.coupon_name_tv);
         TextView valid_date_tv = baseViewHolder.findView(R.id.valid_date_tv);
-        TextView discretion_tv = baseViewHolder.findView(R.id.discretion_tv);
+        TextView rule_tv = baseViewHolder.findView(R.id.rule_tv);
         TextView order_coupon_tv = baseViewHolder.findView(R.id.order_coupon_tv);
         TextView coupon_amount_tv = baseViewHolder.findView(R.id.coupon_amount_tv);
         TextView rmb_symbol = baseViewHolder.findView(R.id.rmb_symbol);
@@ -48,7 +48,6 @@ public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, Base
 
         coupon_name_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graye2e2e2));
 //        valid_date_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graya9a9a9));
-        discretion_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.app_color_9b));
         order_coupon_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#A3BC69"));
         coupon_amount_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
         rmb_symbol.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
