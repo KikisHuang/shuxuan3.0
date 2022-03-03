@@ -81,9 +81,6 @@ public class AudioModel {
 
     public static AudioModel instance;
 
-    //阿里云录音文件识别实例
-    private NativeNui nui_instance = new NativeNui();
-
     private List<String> task_list = new ArrayList<String>();
 
     private int MAX_TASKS = 1;
@@ -316,14 +313,14 @@ public class AudioModel {
         boolean create = createOrExistsDir(debug_path);
 
         //初始化SDK，注意用户需要在Auth.getAliYunTicket中填入相关ID信息才可以使用。
-        int ret = nui_instance.initialize(iNativeFileTransCallback, genInitParams(assets_path, "", token), Constants.LogLevel.LOG_LEVEL_VERBOSE);
+        int ret =  NativeNui.GetInstance().initialize(iNativeFileTransCallback, genInitParams(assets_path, "", token), Constants.LogLevel.LOG_LEVEL_VERBOSE);
 
       /*  if (ret == Constants.NuiResultCode.SUCCESS) {
             mInit = true;
         }*/
 
         //设置相关识别参数，具体参考API文档
-        nui_instance.setParams(genParams());
+        NativeNui.GetInstance().setParams(genParams());
     }
 
 
@@ -388,7 +385,7 @@ public class AudioModel {
                 task_list.clear();
                 for (int i = 0; i < MAX_TASKS; i++) {
                     byte[] task_id = new byte[32];
-                    int ret = nui_instance.startFileTranscriber(genDialogParams(mVoiceUrl), task_id);
+                    int ret = NativeNui.GetInstance().startFileTranscriber(genDialogParams(mVoiceUrl), task_id);
                     String taskId = new String(task_id);
                     task_list.add(taskId);
                     LogUtils.i("start task id " + taskId + " done with " + ret);

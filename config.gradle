@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,
-            versionCode            : 41,
-            versionName            : "3.0.1",
+            versionCode            : 42,
+            versionName            : "3.0.2",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]
