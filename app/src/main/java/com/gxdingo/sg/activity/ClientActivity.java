@@ -19,12 +19,13 @@ import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.ShareEvent;
+import com.gxdingo.sg.bean.UserReward;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.gxdingo.sg.biz.OnContentListener;
-import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
+import com.gxdingo.sg.dialog.SgConfirmHintPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
@@ -100,8 +101,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     //刷新商圈定时器disposable
     private Disposable mDisposable;
-
-    private BasePopupView fillCodePopupView;
 
     public static ClientActivity getInstance() {
         return instance;
@@ -209,7 +208,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
         if (type == ClientLocalConstant.FILL_SUCCESS) {
             SPUtils.getInstance().put(FIRST_INTER_KEY, false);
-            fillCodePopupView.dismiss();
         }
     }
 
@@ -264,8 +262,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
-                showInvitationCodeDialog();
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0)
+                showFirstLoginDialog(UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().get(0));
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
@@ -290,20 +288,18 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList.add(new ClientMineFragment());
     }
 
-    private void showInvitationCodeDialog() {
-        if (fillCodePopupView == null) {
-            fillCodePopupView = new XPopup.Builder(reference.get())
-                    .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
-                    .isDarkTheme(false)
-                    .asCustom(new FillInvitationCodePopupView(reference.get(), new OnContentListener() {
-                        @Override
-                        public void onConfirm(BasePopupView popupView, String content) {
-                            getP().fllInvitationCode(content);
-                        }
-                    })).show();
-        } else {
-            fillCodePopupView.show();
-        }
+    private void showFirstLoginDialog(UserReward.CouponListDTO userReward) {
+
+        new XPopup.Builder(reference.get())
+                .maxWidth((ScreenUtils.getScreenWidth(reference.get())))
+                .isDarkTheme(false)
+                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.getName(), userReward.getRemark(), "领取", new MyConfirmListener() {
+                    @Override
+                    public void onConfirm() {
+                        //todo 领取逻辑待实现
+
+                    }
+                })).show();
 
     }
 

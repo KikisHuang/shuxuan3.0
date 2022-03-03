@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/module_shape_bg_white_round6"
+    android:orientation="vertical"
+    tools:ignore="MissingConstraints">
+
+
+    <ImageView
+        android:id="@+id/close_img"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:src="@drawable/module_svg_close_gray"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="您的选择经营范围需要提交\n食品经营许可证"
+        android:textColor="@color/graye2e2e2"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/close_img" />
+
+    <FrameLayout
+        android:id="@+id/upload_fl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        >
+
+        <TextView
+            android:id="@+id/upload_tv"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="@drawable/module_shape_bg_graydd"
+            android:gravity="center"
+            android:text="点击上传"
+            android:textColor="@color/green68aa50" />
+
+        <ImageView
+            android:id="@+id/licence_img"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            />
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/module_shape_bg_green_6r"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/confirm"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_fl" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,4 +8,5 @@ package com.gxdingo.sg.biz;
 public interface MyConfirmListener {
 
     void onConfirm();
+
 }

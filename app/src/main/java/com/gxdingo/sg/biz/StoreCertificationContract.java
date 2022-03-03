@@ -6,9 +6,12 @@ import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
+import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商家认证契约类
@@ -25,11 +28,11 @@ public class StoreCertificationContract {
         void getCategory();
 
         //确定经营范围
-        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans);
+        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<String> licenceUrls);
 
         //提交认证信息
         void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
-                , String regionPath, String address, String businessLicence,String storeLicence, double longitude, double latitude);
+                , String regionPath, String address, String businessLicence, String storeLicence, double longitude, double latitude);
 
         //刷新登录信息
         void getLoginInfoStatus();
@@ -38,6 +41,12 @@ public class StoreCertificationContract {
         void logout();
 
         void getInvitationCode();
+
+        //上传特殊分类许可证
+        void selectedLicence(CustomResultListener customResultListener);
+
+        //批量上传图片
+        void batchUpload(Map<Integer, LocalMedia> tempLicenceMap,CustomResultListener customResultListener);
     }
 
     public interface StoreCertificationListener {

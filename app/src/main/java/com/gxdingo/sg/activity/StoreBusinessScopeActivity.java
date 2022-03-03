@@ -15,12 +15,19 @@ import com.gxdingo.sg.adapter.StoreBusinessScopeAdapter;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.biz.StoreCertificationContract;
+import com.gxdingo.sg.dialog.UpLoadLicencePopupView;
 import com.gxdingo.sg.presenter.StoreCertificationPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.view.TemplateTitle;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -46,7 +53,12 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     private StoreBusinessScopeAdapter mAdapter;
 
-    private List<StoreBusinessScopeBean.ListBean> selectedCategory = new ArrayList<>();
+    private String licenceUrl = "";
+    private BasePopupView popupView;
+
+    private Map<Integer, LocalMedia> tempLicenceMap;
+    private LocalMedia tempLicenceUrl;
+
 
     @Override
     protected StoreCertificationContract.StoreCertificationPresenter createPresenter() {
@@ -117,25 +129,13 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("经营范围");
-
+        tempLicenceMap = new HashMap<>();
         tvRightButton.setVisibility(View.VISIBLE);
-        tvRightButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getP().confirmBusinessScope(mAdapter.getData());
-                List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
-                for (int i = 0; i < data.size(); i++) {
-                    if (data.get(i).isSelect())
-                        selectedCategory.add(data.get(i));
-                }
-
-                if (selectedCategory.size() < 1) {
-                    onMessage("请至少选择一个分类");
-                    return;
-                }
-                sendEvent(selectedCategory);
-                finish();
-            }
+        tvRightButton.setOnClickListener(v -> {
+            //todo 因为接口还没有,新增的上传资质流程待测试
+            getP().batchUpload(tempLicenceMap, list -> {
+                getP().confirmBusinessScope(mAdapter.getData(), (List<String>) list);
+            });
         });
 
         mAdapter = new StoreBusinessScopeAdapter();
@@ -151,7 +151,9 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     public void uploadImage(String url) {
-
+        licenceUrl = url;
+        if (popupView != null && popupView.isShow())
+            ((UpLoadLicencePopupView) popupView).setLicenceImg(url);
     }
 
     @Override
@@ -192,7 +194,12 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         List<StoreBusinessScopeBean.ListBean> tempData = new ArrayList<>();
 
         boolean isSelect = data.get(position).isSelect();
+
         if (!isSelect) {
+            //反选删除许可证
+            if (data.get(position).getType() == 1)
+                tempLicenceMap.remove(data.get(position).getId());
+
             for (int i = 0; i < data.size(); i++) {
                 if (data.get(i).isSelect())
                     tempData.add(data.get(i));
@@ -202,9 +209,42 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                 return;
             }
         }
-        data.get(position).setSelect(!isSelect);
 
-        mAdapter.notifyDataSetChanged();
+        if (data.get(position).getType() == 1) {
+            //特殊品类需要添加经营许可证
+            if (popupView == null) {
+                popupView = new XPopup.Builder(reference.get())
+                        .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                        .isDarkTheme(false)
+                        .asCustom(new UpLoadLicencePopupView(reference.get(), "您的选择经营范围需要提交\\n食品经营许可证", (CustomResultListener<Integer>) integer -> {
+                            if (integer != null && integer == 1) {
+                                //上传食品经营许可证
+                                getP().selectedLicence(o -> {
+                                    tempLicenceUrl = (LocalMedia) o;
+                                });
+                            } else if (integer == 0) {
+                                tempLicenceMap.put(data.get(position).getId(), tempLicenceUrl);
+                                data.get(position).setSelect(!isSelect);
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+                        })).show();
+            } else
+                popupView.show();
+
+        } else {
+            data.get(position).setSelect(!isSelect);
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (popupView != null) {
+            popupView.onDestroy();
+            popupView = null;
+        }
+
+    }
 }

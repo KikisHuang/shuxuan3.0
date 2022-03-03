@@ -27,7 +27,6 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
 
 
     /**
-     *
      * @param context
      */
     public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, MyConfirmListener confirmListener) {
@@ -74,10 +73,11 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (v == close_img) {
+        if (v.getId() == R.id.close_img) {
             dismiss();
-        } else if (v == tv_confirm) {
-            if (confirmListener != null) confirmListener.onConfirm();
+        } else if (v.getId() == R.id.tv_confirm) {
+            if (confirmListener != null)
+                confirmListener.onConfirm();
             if (popupInfo.autoDismiss) dismiss();
         }
     }

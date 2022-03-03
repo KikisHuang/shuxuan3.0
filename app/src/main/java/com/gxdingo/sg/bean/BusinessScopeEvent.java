@@ -12,6 +12,7 @@ public class BusinessScopeEvent {
     public List<StoreCategoryBean> data;
 
     public String selectedScope;
+    public List<String> licenceUrls;
 
     public BusinessScopeEvent(List<StoreCategoryBean> data, String selectedScope) {
         this.data = data;
