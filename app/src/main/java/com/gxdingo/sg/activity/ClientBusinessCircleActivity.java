@@ -161,4 +161,9 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     public void onBannerResult(BannerBean data) {
 
     }
+
+    @Override
+    public void showAuthenticationDialog() {
+
+    }
 }

@@ -1,13 +1,16 @@
 package com.gxdingo.sg.presenter;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.bean.BannerBean;
 import com.gxdingo.sg.bean.BusinessDistrictListBean;
 import com.gxdingo.sg.bean.BusinessDistrictCommentOrReplyBean;
 import com.gxdingo.sg.bean.BusinessDistrictUnfoldCommentListBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
 import com.gxdingo.sg.biz.StoreBusinessDistrictContract;
@@ -15,8 +18,10 @@ import com.gxdingo.sg.model.BusinessDistrictModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.ShareUtils;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
@@ -41,6 +46,7 @@ import io.reactivex.schedulers.Schedulers;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
+import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
@@ -55,6 +61,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
         implements StoreBusinessDistrictContract.StoreBusinessDistrictPresenter, NetWorkListener, MultiParameterCallbackListener {
 
     private ClientNetworkModel clientNetworkModel;
+    private StoreNetworkModel storeNetworkModel;
 
     private BusinessDistrictModel businessDistrictModel;
     private CommonModel commonModel;
@@ -62,6 +69,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
 
 
     public BusinessDistrictPresenter() {
+        storeNetworkModel = new StoreNetworkModel(this);
         businessDistrictModel = new BusinessDistrictModel(this);
         commonModel = new CommonModel();
         mNetWorkModel = new NetworkModel(this);
@@ -300,7 +308,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
             businessDistrictModel.likedOrUnliked(getContext(), status, id, (CustomResultListener<String>) o -> {
 
                 if (isViewAttached())
-                    getV().refreshLikeNum(o, position,status);
+                    getV().refreshLikeNum(o, position, status);
 
             });
 
@@ -418,6 +426,30 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
 
             });
 
+    }
+
+    @Override
+    public void refreshUserStatus() {
+        if (storeNetworkModel != null) {
+            //todo 待测试
+            storeNetworkModel.refreshLoginStauts(getContext(), o -> {
+                UserBean userBean = (UserBean) o;
+                if (userBean.getStore() != null) {
+                    int status = userBean.getStore().getStatus();
+                    if (status == 20 || status == -1 || status == 0) {
+                        getV().showAuthenticationDialog();
+                    } else if (status > 0) {
+                        UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
+                        if (locatUserBean.getRole() == 10) {
+                            locatUserBean.setRole(11);
+                            locatUserBean.setStore(userBean.getStore());
+                            UserInfoUtils.getInstance().saveUserInfo(locatUserBean);
+                            startActivity(new Intent(getContext(), StoreBusinessDistrictReleaseActivity.class));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**

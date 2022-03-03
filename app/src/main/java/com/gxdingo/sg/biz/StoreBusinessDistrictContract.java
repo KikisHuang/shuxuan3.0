@@ -89,6 +89,8 @@ public class StoreBusinessDistrictContract {
         void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier);
 
         void getBannerDataInfo();
+
+        void refreshUserStatus();
     }
 
     public interface StoreBusinessDistrictListener {
@@ -132,5 +134,7 @@ public class StoreBusinessDistrictContract {
          * @param data
          */
         void onBannerResult(BannerBean data);
+
+        void showAuthenticationDialog();
     }
 }
