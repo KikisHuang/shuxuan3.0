@@ -20,9 +20,9 @@ import static com.kikis.commnlibrary.utils.CommonUtils.getc;
  * @date: 2021/10/25
  * @page:
  */
-public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHolder> {
+public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHolder> {
 
-    public ClientCouponAdapter() {
+    public CouponAdapter() {
         super(R.layout.module_recycle_item_coupon);
         addChildClickViewIds(R.id.btn_use,R.id.rule_tv);
     }

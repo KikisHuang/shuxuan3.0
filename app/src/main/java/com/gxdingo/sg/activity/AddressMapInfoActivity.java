@@ -78,7 +78,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 /**
  * @author: Kikis
  * @date: 2022/1/21
- * @page:
+ * @page:地图地址信息页面
  */
 public class AddressMapInfoActivity extends BaseMvpActivity<AddressContract.AddressPresenter> implements AddressContract.AddressListener, OnItemClickListener {
 

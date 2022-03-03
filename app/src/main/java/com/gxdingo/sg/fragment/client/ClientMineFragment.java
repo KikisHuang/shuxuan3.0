@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -28,8 +26,8 @@ import com.gxdingo.sg.activity.ClientAccountRecordActivity;
 import com.gxdingo.sg.activity.ClientAccountSecurityActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientCashActivity;
-import com.gxdingo.sg.activity.ClientCouponDetailsActivity;
-import com.gxdingo.sg.activity.ClientCouponListActivity;
+import com.gxdingo.sg.activity.CouponQrCodeScanActivity;
+import com.gxdingo.sg.activity.CouponListActivity;
 import com.gxdingo.sg.activity.ClientFillInvitationCodeActivity;
 import com.gxdingo.sg.activity.CustomCaptureActivity;
 import com.gxdingo.sg.activity.RankingActivity;
@@ -56,9 +54,6 @@ import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -231,7 +226,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             fill_invitation_code_cardview.setVisibility(View.GONE);
             getP().getUserInfo();
 
-            goToPage(reference.get(), ClientCouponListActivity.class, null);
+            goToPage(reference.get(), CouponListActivity.class, null);
         }
 
     }
@@ -315,7 +310,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), StoreQRCodeActivity.class, null);
                 break;
             case R.id.coupon_img:
-                goToPage(reference.get(), ClientCouponListActivity.class, null);
+                goToPage(reference.get(), CouponListActivity.class, null);
                 break;
             case R.id.auth_info_stv:
                 goToPage(getContext(), StoreAuthInfoActivity.class, null);
@@ -511,7 +506,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
+        goToPagePutSerializable(reference.get(), CouponQrCodeScanActivity.class, getIntentEntityMap(new Object[]{item}));
     }
 
     @Override

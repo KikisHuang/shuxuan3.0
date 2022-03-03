@@ -16,8 +16,6 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
-import com.gxdingo.sg.utils.DateUtils;
-import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
@@ -31,11 +29,11 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
- * @author: Weaving
- * @date: 2021/10/31
- * @page:
+ * @author: Kikis
+ * @date: 2022/3/3
+ * @page:优惠卷扫码核销页面
  */
-public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> {
+public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -156,7 +154,7 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.other_coupon_stv:
-                goToPage(this, ClientCouponListActivity.class, null);
+                goToPage(this, CouponListActivity.class, null);
                 break;
         }
     }

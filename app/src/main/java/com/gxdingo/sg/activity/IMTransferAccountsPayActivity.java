@@ -1,16 +1,12 @@
 package com.gxdingo.sg.activity;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.allen.library.SuperTextView;
@@ -24,16 +20,13 @@ import com.gxdingo.sg.dialog.EnterPaymentPasswordPopupView;
 import com.gxdingo.sg.presenter.IMTransferAccountsPayPresenter;
 import com.gxdingo.sg.utils.CashierInputFilter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.KeyboardHeightObserver;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.GlideUtils;
-import com.kikis.commnlibrary.view.NiceImageView;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.compare;
@@ -243,7 +236,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 }
                 break;
             case R.id.coupon_stv:
-                goToPage(this, ClientCouponListActivity.class, null);
+                goToPage(this, CouponListActivity.class, null);
                 break;
         }
     }

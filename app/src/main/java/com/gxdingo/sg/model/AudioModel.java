@@ -28,6 +28,7 @@ import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.RxUtil;
+import com.luck.picture.lib.entity.LocalMedia;
 import com.trello.rxlifecycle3.LifecycleProvider;
 
 import org.json.JSONException;
@@ -79,8 +80,6 @@ public class AudioModel {
 
     private HandlerThread mHanderThread;
 
-    //阿里云录音文件识别实例
-    private NativeNui nui_instance;
 
     private List<String> task_list = new ArrayList<String>();
 
@@ -89,7 +88,7 @@ public class AudioModel {
     private Handler mHandler;
 
     public AudioModel() {
-        nui_instance = new NativeNui();
+
         mHanderThread = new HandlerThread("process_thread");
         mHanderThread.start();
         mHandler = new Handler(mHanderThread.getLooper());
@@ -269,7 +268,7 @@ public class AudioModel {
         stopRecordering();
     }
 
-    public void delRecord(){
+    public void delRecord() {
         // 删除录音
         if (FileUtils.delete(mRecordPath)) {
             LogUtils.i("删除录音成功");
@@ -279,8 +278,13 @@ public class AudioModel {
     }
 
     public void destroy() {
-        if (nui_instance != null)
-            nui_instance = null;
+
+/*        new Thread(() -> {
+            //取消识别
+            for (String taskId : task_list) {
+                NativeNui.GetInstance().cancelFileTranscriber(taskId);
+            }
+        }).start();*/
 
         if (mHandler != null) {
             mHandler.removeCallbacks(mHanderThread);
@@ -289,6 +293,7 @@ public class AudioModel {
         destroyMediaPlayer();
 
         delRecord();
+
     }
 
     /**
@@ -314,14 +319,14 @@ public class AudioModel {
         boolean create = createOrExistsDir(debug_path);
 
         //初始化SDK，注意用户需要在Auth.getAliYunTicket中填入相关ID信息才可以使用。
-        int ret = nui_instance.initialize(iNativeFileTransCallback, genInitParams(assets_path, "", token), Constants.LogLevel.LOG_LEVEL_VERBOSE);
+        int ret = NativeNui.GetInstance().initialize(iNativeFileTransCallback, genInitParams(assets_path, "", token), Constants.LogLevel.LOG_LEVEL_VERBOSE);
 
       /*  if (ret == Constants.NuiResultCode.SUCCESS) {
             mInit = true;
         }*/
 
         //设置相关识别参数，具体参考API文档
-        nui_instance.setParams(genParams());
+        NativeNui.GetInstance().setParams(genParams());
     }
 
 
@@ -386,7 +391,7 @@ public class AudioModel {
                 task_list.clear();
                 for (int i = 0; i < MAX_TASKS; i++) {
                     byte[] task_id = new byte[32];
-                    int ret = nui_instance.startFileTranscriber(genDialogParams(mVoiceUrl), task_id);
+                    int ret = NativeNui.GetInstance().startFileTranscriber(genDialogParams(mVoiceUrl), task_id);
                     String taskId = new String(task_id);
                     task_list.add(taskId);
                     LogUtils.i("start task id " + taskId + " done with " + ret);
