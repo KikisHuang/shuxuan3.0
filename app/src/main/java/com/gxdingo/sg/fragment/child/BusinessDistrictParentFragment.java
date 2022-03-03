@@ -183,9 +183,9 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
             case R.id.iv_send_business_district:
                 UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
                 //登录角色 Role 10=客户 11=商家
-                if (userBean.getRole() == 10 && userBean.getAuthenticationStatus() == 0) {
-                    showAuthenticationDialog();
-                } else
+                if (userBean.getRole() == 10 && userBean.getAuthenticationStatus() == 0)
+                    getP().refreshUserStatus();
+                 else
                     startActivity(new Intent(reference.get(), StoreBusinessDistrictReleaseActivity.class));
                 break;
         }
@@ -194,7 +194,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     /**
      * 显示去实名认证弹窗
      */
-    private void showAuthenticationDialog() {
+    private void showDialog() {
 
         new XPopup.Builder(reference.get())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -287,6 +287,11 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     @Override
     public void onBannerResult(BannerBean data) {
 
+    }
+
+    @Override
+    public void showAuthenticationDialog() {
+        showDialog();
     }
 
     /**

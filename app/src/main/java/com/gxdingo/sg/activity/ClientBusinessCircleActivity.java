@@ -33,6 +33,7 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     public FrameLayout main_ll;
 
 
+
     @Override
     protected StoreBusinessDistrictContract.StoreBusinessDistrictPresenter createPresenter() {
         return new BusinessDistrictPresenter();
@@ -159,6 +160,11 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
 
     @Override
     public void onBannerResult(BannerBean data) {
+
+    }
+
+    @Override
+    public void showAuthenticationDialog() {
 
     }
 }

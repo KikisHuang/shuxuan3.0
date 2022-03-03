@@ -743,6 +743,11 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         }
     }
 
+    @Override
+    public void showAuthenticationDialog() {
+
+    }
+
 
     @Override
     public void onStart() {

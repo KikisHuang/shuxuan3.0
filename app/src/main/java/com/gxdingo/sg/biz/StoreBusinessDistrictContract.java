@@ -89,6 +89,8 @@ public class StoreBusinessDistrictContract {
         void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier);
 
         void getBannerDataInfo();
+        //刷新认证状态
+        void refreshUserStatus();
     }
 
     public interface StoreBusinessDistrictListener {
@@ -132,5 +134,10 @@ public class StoreBusinessDistrictContract {
          * @param data
          */
         void onBannerResult(BannerBean data);
+
+        /**
+         * 显示实名认证弹窗
+         */
+        void showAuthenticationDialog();
     }
 }
