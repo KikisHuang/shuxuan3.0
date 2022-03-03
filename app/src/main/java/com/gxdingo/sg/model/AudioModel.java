@@ -79,10 +79,8 @@ public class AudioModel {
 
     private HandlerThread mHanderThread;
 
-    public static AudioModel instance;
-
     //阿里云录音文件识别实例
-    private NativeNui nui_instance = new NativeNui();
+    private NativeNui nui_instance;
 
     private List<String> task_list = new ArrayList<String>();
 
@@ -90,21 +88,11 @@ public class AudioModel {
 
     private Handler mHandler;
 
-    private AudioModel() {
+    public AudioModel() {
+        nui_instance = new NativeNui();
         mHanderThread = new HandlerThread("process_thread");
         mHanderThread.start();
         mHandler = new Handler(mHanderThread.getLooper());
-    }
-
-    public static AudioModel getInstance() {
-        if (instance == null) {
-            synchronized (AudioModel.class) {
-                if (instance == null) {
-                    instance = new AudioModel();
-                }
-            }
-        }
-        return instance;
     }
 
 
@@ -118,7 +106,7 @@ public class AudioModel {
 
         //如果再播放中，就取消播放
         if (mediaPlayer != null && isplay(mediaPlayer)) {
-            destroy();
+            destroyMediaPlayer();
             //相同的播放路径，取消播放
             if (mPlayerPath.equals(path))
                 return;
@@ -141,10 +129,10 @@ public class AudioModel {
             MediaUtils.prepareMedia(mediaPlayer, mp -> {
                 play(mediaPlayer);
             }, (mp, what, extra) -> {
-                destroy();
+                destroyMediaPlayer();
                 return false;
             }, mp -> {
-                destroy()
+                destroyMediaPlayer()
                 ;
             });
 
@@ -157,7 +145,7 @@ public class AudioModel {
             }
             LogUtils.i("path === " + path);
             LogUtils.e("audio play error === " + e);
-            destroy();
+            destroyMediaPlayer();
         }
     }
 
@@ -201,7 +189,7 @@ public class AudioModel {
     /**
      * 音频销毁
      */
-    public void destroy() {
+    public void destroyMediaPlayer() {
         closeMedia(mediaPlayer);
         mediaPlayer = null;
     }
@@ -281,16 +269,26 @@ public class AudioModel {
         stopRecordering();
     }
 
-
-    /**
-     * 删除录音
-     */
-    public void removeRecord() {
+    public void delRecord(){
+        // 删除录音
         if (FileUtils.delete(mRecordPath)) {
             LogUtils.i("删除录音成功");
             mRecordPath = "";
         } else
             LogUtils.i("删除录音失败");
+    }
+
+    public void destroy() {
+        if (nui_instance != null)
+            nui_instance = null;
+
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mHanderThread);
+        }
+
+        destroyMediaPlayer();
+
+        delRecord();
     }
 
     /**

@@ -23,13 +23,14 @@ public class ClientCouponBean implements Serializable {
     private Integer id;
     private Integer couponId;
     private String couponName;
-    private Double couponAmount;
+    private String couponAmount;
     private Double orderAmount;
     private Integer storeId;
     public String expireTime;
     public int status;
     public String storeAvatar;
     private String couponIdentifier;
+    public String useAmount;
 
     public Integer getId() {
         return id;
@@ -55,11 +56,11 @@ public class ClientCouponBean implements Serializable {
         this.couponName = couponName;
     }
 
-    public Double getCouponAmount() {
+    public String getCouponAmount() {
         return couponAmount;
     }
 
-    public void setCouponAmount(Double couponAmount) {
+    public void setCouponAmount(String couponAmount) {
         this.couponAmount = couponAmount;
     }
 

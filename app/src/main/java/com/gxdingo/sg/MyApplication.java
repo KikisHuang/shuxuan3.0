@@ -55,6 +55,7 @@ import com.zhouyou.http.model.HttpHeaders;
 import io.reactivex.plugins.RxJavaPlugins;
 
 import static com.blankj.utilcode.util.AppUtils.getAppName;
+import static com.blankj.utilcode.util.AppUtils.getAppVersionName;
 import static com.blankj.utilcode.util.DeviceUtils.getUniqueDeviceId;
 import static com.esandinfo.livingdetection.EsLivingDetectionManager.Init;
 import static com.gxdingo.sg.http.Api.CLIENT_PORT;
@@ -80,7 +81,6 @@ import static com.gxdingo.sg.utils.ClientLocalConstant.DEVICE;
 import static com.gxdingo.sg.utils.ClientLocalConstant.UMENG_APP_KEY;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_TARGET;
 import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION;
-import static com.gxdingo.sg.utils.ClientLocalConstant.YI_VERSION_NUMBER;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_OFFICIAL_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.CLIENT_UAT_HTTP_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
@@ -362,7 +362,7 @@ public class MyApplication extends Application {
         //全局设置请求头
         HttpHeaders headers = new HttpHeaders();
 
-        headers.put(YI_VERSION, YI_VERSION_NUMBER);
+        headers.put(YI_VERSION, getAppVersionName());
         headers.put(YI_TARGET, APP);
         headers.put(DEVICE, getUniqueDeviceId());
 

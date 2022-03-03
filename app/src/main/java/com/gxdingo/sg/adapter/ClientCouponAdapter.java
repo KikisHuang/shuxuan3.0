@@ -38,7 +38,7 @@ public class ClientCouponAdapter extends BaseQuickAdapter<ClientCouponBean, Base
         TextView coupon_amount_tv = baseViewHolder.findView(R.id.coupon_amount_tv);
         TextView rmb_symbol = baseViewHolder.findView(R.id.rmb_symbol);
 
-        coupon_amount_tv.setText(String.valueOf(clientCouponBean.getCouponAmount()));
+        coupon_amount_tv.setText(clientCouponBean.getCouponAmount());
 
         coupon_name_tv.setText(clientCouponBean.getCouponName());
 

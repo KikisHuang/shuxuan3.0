@@ -36,6 +36,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.compare;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
+import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.PAYMENT_SUCCESS;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -79,6 +82,10 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     private IMChatHistoryListBean.OtherAvatarInfo otherInfo;
 
     private PayBean.TransferAccountsDTO transferAccounts;
+
+    //优惠券实体类
+    private ClientCouponBean couponBean;
+
 
     @Override
     protected IMTransferAccountsPayContract.IMTransferAccountsPayPresenter createPresenter() {
@@ -198,9 +205,19 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
         @Override
         public void afterTextChanged(Editable s) {
-            //todo 后期有优惠券了，要减去折扣显示金额
-            if (!isEmpty(s.toString()))
-                sum_tv.setText(s.toString());
+
+            if (!isEmpty(s.toString())) {
+                if (couponBean != null) {
+                    if (compare(etAmount.getText().toString(), couponBean.useAmount)) {
+                        //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
+                        sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
+                        coupon_stv.setRightTextColor(getc(R.color.red));
+                    } else
+                        sum_tv.setText(s.toString());
+                } else
+                    sum_tv.setText(s.toString());
+            } else
+                sum_tv.setText("0");
 
         }
     };
@@ -222,7 +239,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                                 .dismissOnTouchOutside(false)
                                 .asCustom(new EnterPaymentPasswordPopupView(reference.get(), pass -> getP().transfer(mShareUuid, mPayType, pass, etAmount.getText().toString()))).show();
                     } else
-                        getP().transfer(mShareUuid, mPayType, "", etAmount.getText().toString());
+                        getP().transfer(mShareUuid, mPayType, "", sum_tv.getText().toString());
                 }
                 break;
             case R.id.coupon_stv:
@@ -252,9 +269,19 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof ClientCouponBean){
-            ClientCouponBean ccb = (ClientCouponBean) object;
-            coupon_stv.setRightString(ccb.getCouponName());
+        if (object instanceof ClientCouponBean) {
+            couponBean = (ClientCouponBean) object;
+            coupon_stv.setRightString(couponBean.getCouponName());
+
+            if (!isEmpty(etAmount.getText().toString())) {
+                if (compare(etAmount.getText().toString(), couponBean.useAmount)) {
+                    //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
+                    sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
+                    coupon_stv.setRightTextColor(getc(R.color.red));
+                }
+            } else
+                sum_tv.setText("0");
+
         }
     }
 

@@ -24,7 +24,6 @@ public class ClientLocalConstant {
     public static final String DEVICE = "device";
     public static final String YI_TARGET = "YI-Target";
     public static final String YI_VERSION = "YI-Version";
-    public static final String YI_VERSION_NUMBER = "2.0";
 
     //http params
     public static final String REGIONPATH = "regionPath";

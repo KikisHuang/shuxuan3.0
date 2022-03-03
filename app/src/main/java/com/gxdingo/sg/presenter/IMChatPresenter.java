@@ -64,9 +64,7 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.blankj.utilcode.util.ArrayUtils.copy;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.gxdingo.sg.utils.ClientLocalConstant.RECORD_SUCCEED;
@@ -93,6 +91,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     private ClientNetworkModel clientNetworkModel;
 
     private AudioModel mAudioModel;
+
     private CommonModel commonModel;
 
     private CommonDaoUtils<DraftBean> mDraftUtils;
@@ -105,7 +104,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         clientNetworkModel = new ClientNetworkModel(this);
         networkModel = new NetworkModel(this);
         mWebSocketModel = new WebSocketModel(this);
-        mAudioModel = AudioModel.getInstance();
+
+        mAudioModel = new AudioModel();
 
         commonModel = new CommonModel();
 
@@ -536,7 +536,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
 
             } else {
                 getBV().onMessage("录制时间太短");
-                mAudioModel.removeRecord();
+                if (mAudioModel != null)
+                    mAudioModel.delRecord();
             }
         }
     }
@@ -548,7 +549,7 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
     public void cancelRecorder() {
         if (mAudioModel != null && mAudioModel.isRecording()) {
             mAudioModel.stopRecorder();
-            mAudioModel.removeRecord();
+            mAudioModel.delRecord();
         }
     }
 
@@ -894,4 +895,15 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
             onAfters();
         }
     };
+
+    @Override
+    public void onMvpDestroy() {
+        super.onMvpDestroy();
+
+        if (mAudioModel != null)
+            mAudioModel.destroy();
+
+        if (mHandler != null)
+            mHandler = null;
+    }
 }
