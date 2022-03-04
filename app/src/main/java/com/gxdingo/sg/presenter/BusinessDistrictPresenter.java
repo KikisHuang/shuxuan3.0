@@ -431,14 +431,13 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
     @Override
     public void refreshUserStatus() {
         if (storeNetworkModel != null) {
-            //todo 待测试
             storeNetworkModel.refreshLoginStauts(getContext(), o -> {
                 UserBean userBean = (UserBean) o;
                 if (userBean.getStore() != null) {
+
                     int status = userBean.getStore().getStatus();
-                    if (status == 20 || status == -1 || status == 0) {
-                        getV().showAuthenticationDialog();
-                    } else if (status > 0) {
+
+                    if (status == 10) {
                         UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
                         if (locatUserBean.getRole() == 10) {
                             locatUserBean.setRole(11);
@@ -446,7 +445,8 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
                             UserInfoUtils.getInstance().saveUserInfo(locatUserBean);
                             startActivity(new Intent(getContext(), StoreBusinessDistrictReleaseActivity.class));
                         }
-                    }
+                    } else
+                        getV().showAuthenticationDialog();
                 }
             });
         }
