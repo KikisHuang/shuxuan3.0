@@ -34,7 +34,9 @@ import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.PAYMENT_SUCCESS;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -174,7 +176,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
     @Override
     protected void initData() {
-        getP().getCoupons();
+        getP().getCoupons(otherInfo.getSendIdentifier());
 
     }
 
@@ -201,7 +203,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
             if (!isEmpty(s.toString())) {
                 if (couponBean != null) {
-                    if (compare(etAmount.getText().toString(), couponBean.useAmount)) {
+                    if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
                         //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                         sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
                         coupon_stv.setRightTextColor(getc(R.color.red));
@@ -236,7 +238,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 }
                 break;
             case R.id.coupon_stv:
-                goToPage(this, CouponListActivity.class, null);
+                goToPagePutSerializable(this, CouponListActivity.class, getIntentEntityMap(new Object[]{1,otherInfo.getSendIdentifier()}));
                 break;
         }
     }
@@ -267,7 +269,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
             coupon_stv.setRightString(couponBean.getCouponName());
 
             if (!isEmpty(etAmount.getText().toString())) {
-                if (compare(etAmount.getText().toString(), couponBean.useAmount)) {
+                if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
                     //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                     sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
                     coupon_stv.setRightTextColor(getc(R.color.red));

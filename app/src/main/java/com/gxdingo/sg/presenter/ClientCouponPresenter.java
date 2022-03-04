@@ -34,9 +34,9 @@ public class ClientCouponPresenter extends BaseMvpPresenter<BasicsListener, Clie
     }
 
     @Override
-    public void getCoupons(boolean refresh) {
+    public void getCoupons(boolean refresh,String id) {
         if (clientNetworkModel!=null)
-            clientNetworkModel.getCoupons(getContext(),refresh);
+            clientNetworkModel.getCoupons(getContext(),refresh,id);
     }
 
     @Override

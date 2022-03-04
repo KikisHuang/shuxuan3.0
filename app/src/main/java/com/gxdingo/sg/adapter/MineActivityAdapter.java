@@ -22,7 +22,7 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
  * @date: 2022/kikis/22
  * @page:
  */
-public class MineActivityAdapter extends BaseQuickAdapter<ClientMineBean.AdsListBean, BaseViewHolder> {
+public class MineActivityAdapter extends BaseQuickAdapter<ClientMineBean.AdsListDTO, BaseViewHolder> {
 
     public MineActivityAdapter() {
         super(R.layout.module_recycle_item_mine_activity);
@@ -30,7 +30,7 @@ public class MineActivityAdapter extends BaseQuickAdapter<ClientMineBean.AdsList
     }
 
     @Override
-    protected void convert(@NotNull BaseViewHolder baseViewHolder, ClientMineBean.AdsListBean data) {
+    protected void convert(@NotNull BaseViewHolder baseViewHolder, ClientMineBean.AdsListDTO data) {
 
         ImageView ac_img = baseViewHolder.itemView.findViewById(R.id.ac_img);
         ConstraintLayout item_cl = baseViewHolder.itemView.findViewById(R.id.item_cl);

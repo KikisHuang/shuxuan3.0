@@ -752,9 +752,20 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void getCoupons(Context context, boolean refresh) {
+    public void getCoupons(Context context, boolean refresh, String id) {
 
-        Observable<ClientCouponsBean> observable = HttpClient.post(COUPON_LIST)
+        if (refresh)
+            resetPage();
+
+        Map<String, String> map = getJsonMap();
+
+        map.put(LocalConstant.CURRENT, String.valueOf(getPage()));
+
+        if (!isEmpty(id))
+            map.put("otherIdentifier", id);
+
+
+        Observable<ClientCouponsBean> observable = HttpClient.post(COUPON_LIST, map)
                 .execute(new CallClazzProxy<ApiResult<ClientCouponsBean>, ClientCouponsBean>(new TypeToken<ClientCouponsBean>() {
                 }.getType()) {
                 });
@@ -780,7 +791,6 @@ public class ClientNetworkModel {
                     netWorkListener.onAfters();
                     pageNext(refresh, couponsBean.getList().size());
                 }
-
 
             }
         };

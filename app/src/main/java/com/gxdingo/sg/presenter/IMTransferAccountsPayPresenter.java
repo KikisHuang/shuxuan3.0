@@ -171,9 +171,9 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
     }
 
     @Override
-    public void getCoupons() {
+    public void getCoupons(String sendIdentifier) {
         if (clientNetworkModel != null)
-            clientNetworkModel.getCoupons(getContext(), true);
+            clientNetworkModel.getCoupons(getContext(), true,sendIdentifier);
     }
 
     /**

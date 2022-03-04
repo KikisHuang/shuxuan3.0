@@ -76,6 +76,7 @@ public class LocalConstant {
     public static final int LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
+
     public static final int NOTIFY_MSG_LIST_ADAPTER = 4545;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int DELETE_MESSAGE_CONTENT = 7775;
@@ -114,6 +115,8 @@ public class LocalConstant {
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
     public static final String SCANNING_NO_REMIND = "shuxuan_scanning_no_remind";
     public static final int GO_SETTLED = 1013;
+    //返回店铺列表页
+    public static final int GO_STORE_LIST_PAGE = 1014;
 
     public static String AdCode = "";
     public static String AoiName = "";

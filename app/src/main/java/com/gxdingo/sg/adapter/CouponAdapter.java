@@ -44,7 +44,7 @@ public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHo
 
         valid_date_tv.setText(clientCouponBean.getExpireTime());
         // 状态。0=待使用；1=已使用；2=已过期
-        boolean isPastDue = clientCouponBean.status == 1 || clientCouponBean.status == 2;
+        boolean isPastDue = clientCouponBean.getStatus() == 1 || clientCouponBean.getStatus()  == 2;
 
         coupon_name_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graye2e2e2));
 //        valid_date_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graya9a9a9));
@@ -52,9 +52,9 @@ public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHo
         coupon_amount_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
         rmb_symbol.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
 
-        if (clientCouponBean.status == 1)
+        if (clientCouponBean.getStatus()  == 1)
             btn_use.setText("已使用");
-        else if (clientCouponBean.status == 2)
+        else if (clientCouponBean.getStatus()  == 2)
             btn_use.setText("已过期");
         else
             btn_use.setText("立即使用");

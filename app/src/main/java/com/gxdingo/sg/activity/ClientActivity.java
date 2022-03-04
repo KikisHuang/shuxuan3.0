@@ -59,6 +59,7 @@ import io.reactivex.disposables.Disposable;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.GO_STORE_LIST_PAGE;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
@@ -270,6 +271,8 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().getUnreadMessageNum();
         } else if (type == GO_SETTLED) {
             getP().checkTab(2);
+        } else if (type == GO_STORE_LIST_PAGE) {
+            getP().checkTab(1);
         }
     }
 

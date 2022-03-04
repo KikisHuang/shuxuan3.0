@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -9,58 +11,39 @@ import java.util.List;
  */
 public class ClientMineBean {
 
-    /**
-     * balance : 0
-     * couponList : [{"couponName":"商家邀请新用户注册活动","couponAmount":2,"expireTime":"2021-10-27T05:10:31.000+00:00","id":20,"storeId":1,"useAmount":0}]
-     * adsList : [{"image":"http://oss.dgkjmm.com/upload/20.png","id":9,"page":"http://192./userIntroduction","title":"","type":2}]
-     * nickname : 18376632822
-     * avatar : http://oss.gxdingo.com/uplo64cb7a2a81cacff.png
-     */
-
-    private String balance;
-    public String integral;
-    public String integralLink;
-    public String openTime;
-    public String closeTime;
-    private List<ClientCouponBean> couponList;
-    public List<String> iconList;
-    private List<AdsListBean> adsList;
-    public List<StoreAuthInfoBean.CategoryListBean> categoryList;
-    private String nickname;
+    @SerializedName("adsList")
+    private List<AdsListDTO> adsList;
+    @SerializedName("avatar")
     private String avatar;
-    //用户类型。0=商家；1=用户
-    public int releaseUserType;
+    @SerializedName("balance")
+    private double balance;
+    @SerializedName("categoryList")
+    private List<CategoryListDTO> categoryList;
+    @SerializedName("closeTime")
+    private String closeTime;
+    @SerializedName("couponList")
+    private List<ClientCouponBean> couponList;
+    @SerializedName("iconList")
+    private List<String> iconList;
+    @SerializedName("integral")
+    private int integral;
+    @SerializedName("integralLink")
+    private String integralLink;
+    @SerializedName("maxDistance")
+    private String maxDistance;
+    @SerializedName("nickname")
+    private String nickname;
+    @SerializedName("openTime")
+    private String openTime;
+    @SerializedName("releaseUserType")
+    private int releaseUserType;
 
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
-    }
-
-    public List<ClientCouponBean> getCouponList() {
-        return couponList;
-    }
-
-    public void setCouponList(List<ClientCouponBean> couponList) {
-        this.couponList = couponList;
-    }
-
-    public List<AdsListBean> getAdsList() {
+    public List<AdsListDTO> getAdsList() {
         return adsList;
     }
 
-    public void setAdsList(List<AdsListBean> adsList) {
+    public void setAdsList(List<AdsListDTO> adsList) {
         this.adsList = adsList;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
     }
 
     public String getAvatar() {
@@ -71,29 +54,114 @@ public class ClientMineBean {
         this.avatar = avatar;
     }
 
+    public String getBalance() {
+        return String.valueOf(balance);
+    }
 
-    public static class AdsListBean {
-        /**
-         * image : http://oss.dgkjmm.com/upload/20.png
-         * id : 9
-         * page : http://192./userIntroduction
-         * title :
-         * type : 2
-         */
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
+    public List<CategoryListDTO> getCategoryList() {
+        return categoryList;
+    }
+
+    public void setCategoryList(List<CategoryListDTO> categoryList) {
+        this.categoryList = categoryList;
+    }
+
+    public String getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(String closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public List<?> getCouponList() {
+        return couponList;
+    }
+
+    public void setCouponList(List<ClientCouponBean> couponList) {
+        this.couponList = couponList;
+    }
+
+    public List<String> getIconList() {
+        return iconList;
+    }
+
+    public void setIconList(List<String> iconList) {
+        this.iconList = iconList;
+    }
+
+    public String getIntegral() {
+        return String.valueOf(integral);
+    }
+
+    public void setIntegral(int integral) {
+        this.integral = integral;
+    }
+
+    public String getIntegralLink() {
+        return integralLink;
+    }
+
+    public void setIntegralLink(String integralLink) {
+        this.integralLink = integralLink;
+    }
+
+    public String getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(String maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(String openTime) {
+        this.openTime = openTime;
+    }
+
+    public int getReleaseUserType() {
+        return releaseUserType;
+    }
+
+    public void setReleaseUserType(int releaseUserType) {
+        this.releaseUserType = releaseUserType;
+    }
+
+    public static class AdsListDTO {
+        @SerializedName("id")
+        private int id;
+        @SerializedName("image")
         private String image;
-        private Integer id;
+        @SerializedName("page")
         private String page;
-        private String title;
+        @SerializedName("remark")
         private String remark;
-        private Integer type;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("type")
+        private int type;
 
-        public String getRemark() {
-            return remark;
+        public int getId() {
+            return id;
         }
 
-        public void setRemark(String remark) {
-            this.remark = remark;
+        public void setId(int id) {
+            this.id = id;
         }
 
         public String getImage() {
@@ -104,20 +172,20 @@ public class ClientMineBean {
             this.image = image;
         }
 
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
         public String getPage() {
             return page;
         }
 
         public void setPage(String page) {
             this.page = page;
+        }
+
+        public String getRemark() {
+            return remark;
+        }
+
+        public void setRemark(String remark) {
+            this.remark = remark;
         }
 
         public String getTitle() {
@@ -128,12 +196,35 @@ public class ClientMineBean {
             this.title = title;
         }
 
-        public Integer getType() {
+        public int getType() {
             return type;
         }
 
-        public void setType(Integer type) {
+        public void setType(int type) {
             this.type = type;
+        }
+    }
+
+    public static class CategoryListDTO {
+        @SerializedName("name")
+        private String name;
+        @SerializedName("prove")
+        private String prove;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getProve() {
+            return prove;
+        }
+
+        public void setProve(String prove) {
+            this.prove = prove;
         }
     }
 }

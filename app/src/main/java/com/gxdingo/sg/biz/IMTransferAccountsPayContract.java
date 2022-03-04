@@ -25,8 +25,9 @@ public class IMTransferAccountsPayContract {
 
         /**
          * 获取优惠券列表
+         * @param sendIdentifier
          */
-        void getCoupons();
+        void getCoupons(String sendIdentifier);
     }
 
     public interface IMTransferAccountsPayListener {

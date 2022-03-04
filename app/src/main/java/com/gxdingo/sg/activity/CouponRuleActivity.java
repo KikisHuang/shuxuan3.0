@@ -11,6 +11,7 @@ import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
@@ -37,6 +38,10 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
     @BindView(R.id.matters_need_attention_ryc)
     public RecyclerView matters_need_attention_ryc;
+
+    private List<String> instructions;
+
+    private List<String> precautions;
 
 
     @Override
@@ -107,13 +112,13 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
-        getP().getCoupons(true);
+        getP().getCoupons(true,"");
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
-        getP().getCoupons(false);
+        getP().getCoupons(false,"");
     }
 
     @Override
@@ -121,15 +126,17 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
         title_layout.setBackgroundColor(getc(R.color.divide_color));
         title_layout.setTitleText(gets(R.string.rules_of_use));
 
-        List<String> testdat = new ArrayList<>();
-        testdat.add("");
-        testdat.add("");
-        testdat.add("");
+
+        instructions = getIntent().getStringArrayListExtra(Constant.SERIALIZABLE+0);
+        precautions = getIntent().getStringArrayListExtra(Constant.SERIALIZABLE+1);
+
+
         CouponRuleAdapter mAdapter = new CouponRuleAdapter();
+
         CouponRuleAdapter nAdapter = new CouponRuleAdapter();
 
-        nAdapter.setList(testdat);
-        mAdapter.setList(testdat);
+        nAdapter.setList(instructions);
+        mAdapter.setList(precautions);
 
         matters_need_attention_ryc.setAdapter(mAdapter);
         matters_need_attention_ryc.setLayoutManager(new LinearLayoutManager(reference.get()));
@@ -140,7 +147,6 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
     @Override
     protected void initData() {
-        getP().getCoupons(true);
     }
 
     @Override

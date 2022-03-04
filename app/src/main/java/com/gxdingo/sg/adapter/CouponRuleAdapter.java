@@ -27,5 +27,6 @@ public class CouponRuleAdapter extends BaseQuickAdapter<String, BaseViewHolder> 
     protected void convert(@NotNull BaseViewHolder baseViewHolder, String string) {
 
         TextView rule_tv = baseViewHolder.findView(R.id.rule_tv);
+        rule_tv.setText(string);
     }
 }

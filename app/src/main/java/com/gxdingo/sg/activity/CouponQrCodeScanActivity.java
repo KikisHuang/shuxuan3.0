@@ -17,15 +17,21 @@ import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.biz.IRxNextListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -49,6 +55,8 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     private ClientCouponBean mCouponBean;
 
+    private int mType = 0;
+
     @Override
     protected ClientCouponContract.ClientCouponPresenter createPresenter() {
         return new ClientCouponPresenter();
@@ -61,7 +69,7 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -71,7 +79,7 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected int StatusBarColors() {
-        return R.color.divide_color;
+        return R.color.green_dominant_tone;
     }
 
     @Override
@@ -116,8 +124,8 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected void init() {
-        title_layout.setBackgroundColor(getc(R.color.transparent));
         mCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
+        mType = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 0);
     }
 
     @Override
@@ -134,27 +142,41 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
             finish();
             return;
         }
+
         coupon_title_tv.setText("扫码立减" + mCouponBean.getCouponAmount() + "元");
 //        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
 
-        Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.storeAvatar) ? mCouponBean.storeAvatar : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
+        Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 
-                Bitmap qrCodeBitmap = CodeUtils.createImage(mCouponBean.getCouponIdentifier(), 280, 280, resource);
-
+                Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
                 qr_code_iv.setImageBitmap(qrCodeBitmap);
             }
         });
 
-        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
+        //启动4秒刷新二维码定时器
+        RxUtil.intervals(4000,  number -> {
+            Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                    Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
+
+                    qr_code_iv.setImageBitmap(qrCodeBitmap);
+                }
+            });
+        }, this);
+
+
+//        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
     }
 
     @OnClick(R.id.other_coupon_stv)
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.other_coupon_stv:
-                goToPage(this, CouponListActivity.class, null);
+                finish();
                 break;
         }
     }

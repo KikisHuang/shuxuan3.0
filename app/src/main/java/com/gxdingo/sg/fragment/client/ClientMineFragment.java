@@ -61,6 +61,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.http.Api.SERVER_URL;
 import static com.gxdingo.sg.http.Api.WEB_URL;
 import static com.gxdingo.sg.utils.SignatureUtils.getAcType;
@@ -106,7 +107,6 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     @BindView(R.id.secondary_tv)
     public TextView secondary_tv;
-
 
     @BindView(R.id.balance_tv)
     public TextView balance_tv;
@@ -262,26 +262,29 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 //返回的文本内容
                 scanContent = data.getStringExtra("success_result");
 
-                if (!isEmpty(scanContent) && scanContent.contains("activeCode=")) {
+                if (!isEmpty(scanContent) && (scanContent.contains("activeCode=") || scanContent.contains("dateContent="))) {
                     //url中获取活动码
                     String activeCode = URLRequest(scanContent).get("activeCode");
 
                     int mType = getAcType(numberDecode(activeCode));
 
-                    if (mType == 10) {
+                    if (mType == 10 && scanContent.contains("activeCode=")) {
                         //客户端扫码，或在手机浏览器少吗后领取两张优惠券，商家余额增加两元收入活动
                         getP().scanCode(activeCode);
-                    } /*else if (mType == 11) {
-                        scanContent = activeCode;
-                        //客户端点击【使用优惠券】商家端扫码核销
-                        boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
+                    } else if (mType == 11 && scanContent.contains("dateContent=")) {
+                        long date = Long.parseLong(URLRequest(scanContent).get("dateContent"));
+                        if (getNowMills() - date <= 40000) {
+                            //客户端点击【使用优惠券】商家端扫码核销
+                            boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
 
-                        if (!showDialog)
-                            getP().getNoRemindContent();
-                        else
-                            getP().storeScanCode(activeCode);
+                            if (!showDialog)
+                                getP().getNoRemindContent();
+                            else
+                                getP().storeScanCode(scanContent);
+                        } else
+                            onMessage("二维码已失效，请重新扫码");
 
-                    }*/ else
+                    } else
                         onMessage("无法识别的二维码类型");
                 } else if (getAcType(numberDecode(scanContent)) == 11) {
                     //客户端点击【使用优惠券】商家端扫码核销
@@ -402,16 +405,16 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     public void onMineDataResult(ClientMineBean mineBean) {
 
         ConstraintLayout.LayoutParams clp = (ConstraintLayout.LayoutParams) capital_panel_cl.getLayoutParams();
-        clp.topMargin = dp2px(mineBean.releaseUserType == 1 ? 35 : 15);
+        clp.topMargin = dp2px(mineBean.getReleaseUserType() == 1 ? 35 : 15);
         capital_panel_cl.setLayoutParams(clp);
 
         if (mineBean.getAdsList() != null)
             mAcAdapter.setList(mineBean.getAdsList());
 
-        btn_qr_code.setVisibility(mineBean.releaseUserType == 1 ? View.GONE : View.VISIBLE);
+        btn_qr_code.setVisibility(mineBean.getReleaseUserType() == 1 ? View.GONE : View.VISIBLE);
 
         //发布用户类型。0=商家；1=用户
-        if (mineBean.releaseUserType == 1) {
+        if (mineBean.getReleaseUserType() == 1) {
 
             name_right_arrow_img.setVisibility(View.GONE);
             Drawable drawable = getResources().getDrawable(
@@ -426,28 +429,28 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             secondary_tv.setCompoundDrawables(null, null, null, null);
             StringBuffer sb = new StringBuffer();
 
-            if (mineBean.categoryList != null) {
-                for (int i = 0; i < mineBean.categoryList.size(); i++) {
+            if (mineBean.getCategoryList() != null) {
+                for (int i = 0; i < mineBean.getCategoryList().size(); i++) {
                     if (i == 0)
-                        sb.append(mineBean.categoryList.get(i).getName());
+                        sb.append(mineBean.getCategoryList().get(i).getName());
                     else
-                        sb.append(" | " + mineBean.categoryList.get(i).getName());
+                        sb.append(" | " + mineBean.getCategoryList().get(i).getName());
                 }
-                sb.append(" " + mineBean.openTime);
-                sb.append("-" + mineBean.closeTime);
+                sb.append(" " + mineBean.getOpenTime());
+                sb.append("-" + mineBean.getCloseTime());
                 secondary_tv.setText(sb);
             }
         }
 
-        if (mineBean.iconList != null && mineBean.iconList.size() > 0) {
+        if (mineBean.getIconList() != null && mineBean.getIconList().size() > 0) {
 
             authentication_img.setVisibility(View.VISIBLE);
 
-            Glide.with(reference.get()).load(mineBean.iconList.get(0)).into(authentication_img);
+            Glide.with(reference.get()).load(mineBean.getIconList().get(0)).into(authentication_img);
 
-            if (mineBean.iconList.size() >= 2) {
+            if (mineBean.getIconList().size() >= 2) {
                 real_name_img.setVisibility(View.VISIBLE);
-                Glide.with(reference.get()).load(mineBean.iconList.get(1)).into(real_name_img);
+                Glide.with(reference.get()).load(mineBean.getIconList().get(1)).into(real_name_img);
             }
 
         } else {
@@ -464,10 +467,10 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
             balance_tv.setText(mineBean.getBalance());
 
 
-        integralLink = mineBean.integralLink;
+        integralLink = mineBean.getIntegralLink();
 
-        if (!isEmpty(mineBean.integral))
-            internal_tv.setText(mineBean.integral);
+        if (!isEmpty(mineBean.getIntegral()))
+            internal_tv.setText(mineBean.getIntegral());
 
     }
 
@@ -506,7 +509,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
-        goToPagePutSerializable(reference.get(), CouponQrCodeScanActivity.class, getIntentEntityMap(new Object[]{item}));
+        goToPagePutSerializable(reference.get(), CouponQrCodeScanActivity.class, getIntentEntityMap(new Object[]{item, 0}));
     }
 
     @Override
