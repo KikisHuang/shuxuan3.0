@@ -202,17 +202,24 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
         public void afterTextChanged(Editable s) {
 
             if (!isEmpty(s.toString())) {
+                //记录一下总金额
                 if (couponBean != null) {
                     if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
                         //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                         sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
                         coupon_stv.setRightTextColor(getc(R.color.red));
-                    } else
+                    } else {
                         sum_tv.setText(s.toString());
-                } else
+                    }
+                } else {
                     sum_tv.setText(s.toString());
-            } else
+                }
+
+            } else {
+
                 sum_tv.setText("0");
+            }
+
 
         }
     };
@@ -232,13 +239,13 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                                 .isDarkTheme(false)
                                 .dismissOnTouchOutside(false)
-                                .asCustom(new EnterPaymentPasswordPopupView(reference.get(), pass -> getP().transfer(mShareUuid, mPayType, pass, etAmount.getText().toString()))).show();
+                                .asCustom(new EnterPaymentPasswordPopupView(reference.get(), pass -> getP().transfer(mShareUuid, mPayType, pass, sum_tv.getText().toString(), couponBean, etAmount.getText().toString()))).show();
                     } else
-                        getP().transfer(mShareUuid, mPayType, "", sum_tv.getText().toString());
+                        getP().transfer(mShareUuid, mPayType, "", sum_tv.getText().toString(), couponBean, etAmount.getText().toString());
                 }
                 break;
             case R.id.coupon_stv:
-                goToPagePutSerializable(this, CouponListActivity.class, getIntentEntityMap(new Object[]{1,otherInfo.getSendIdentifier()}));
+                goToPagePutSerializable(this, CouponListActivity.class, getIntentEntityMap(new Object[]{1, otherInfo.getSendIdentifier()}));
                 break;
         }
     }

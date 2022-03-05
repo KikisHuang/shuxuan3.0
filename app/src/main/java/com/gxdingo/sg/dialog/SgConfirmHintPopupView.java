@@ -13,6 +13,8 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.lxj.xpopup.core.CenterPopupView;
 
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+
 /**
  * @author: Kikis
  * @date: 2022/3/1
@@ -20,21 +22,20 @@ import com.lxj.xpopup.core.CenterPopupView;
  */
 public class SgConfirmHintPopupView extends CenterPopupView implements View.OnClickListener {
 
-    private MyConfirmListener confirmListener;
     private TextView tv_title, tv_confirm, tv_hint;
     private ImageView close_img;
     private CharSequence title, hint, confirmText;
-
+    private int step;
 
     /**
      * @param context
      */
-    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, MyConfirmListener confirmListener) {
+    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, int step) {
         super(context);
         this.title = title;
         this.confirmText = confirmText;
         this.hint = hint;
-        this.confirmListener = confirmListener;
+        this.step = step;
         addInnerContent();
     }
 
@@ -76,9 +77,19 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
         if (v.getId() == R.id.close_img) {
             dismiss();
         } else if (v.getId() == R.id.tv_confirm) {
-            if (confirmListener != null)
-                confirmListener.onConfirm();
-            if (popupInfo.autoDismiss) dismiss();
+            if (popupInfo.autoDismiss) {
+
+                if (step == 0) {
+                    step++;
+                    tv_title.setText("领取成功");
+                    tv_hint.setText("连续登录3天后再得25元代金券");
+                    tv_confirm.setText(gets(R.string.done));
+                } else if (step == 1)
+                    dismiss();
+
+            }
+
+
         }
     }
 

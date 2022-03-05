@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.activity.StoreBusinessDistrictReleaseActivity;
 import com.gxdingo.sg.activity.StoreCertificationActivity;
 import com.gxdingo.sg.bean.BannerBean;
@@ -496,6 +497,7 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
                      */
                     NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
                     getV().onNumberUnreadComments(unreadCommentsBean);
+
                 }
             }
         }

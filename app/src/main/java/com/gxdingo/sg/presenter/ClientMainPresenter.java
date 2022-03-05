@@ -321,6 +321,12 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
                     NumberUnreadCommentsBean unreadCommentsBean = (NumberUnreadCommentsBean) objects[0];
                     if (isViewAttached())
                         getV().setBusinessUnreadMsgNum(unreadCommentsBean);
+
+                    if (SPUtils.getInstance().getBoolean(LocalConstant.GET_CONTINUOUS_LOGIN_AWARD, false) && unreadCommentsBean.getPopupCouponList() != null && unreadCommentsBean.getPopupCouponList().size() > 0) {
+                        if (isViewAttached()) {
+                            getV().showContinuousLoginAwardDialog(unreadCommentsBean.getPopupCouponList());
+                        }
+                    }
                 }
             });
         }
@@ -346,9 +352,9 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
             if (type == 40)
                 //分享跳转商圈
                 getV().goToBusinessDistrict(code);
-             else if (type == 50)
+            else if (type == 50)
                 goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{code}));
-             else if (type != 30) {
+            else if (type != 30) {
                 if (UserInfoUtils.getInstance().isLogin()) {
                     helpCode = code;
                     if (clientNetworkModel != null)

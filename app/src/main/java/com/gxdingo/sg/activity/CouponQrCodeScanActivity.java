@@ -32,6 +32,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
@@ -136,6 +137,23 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        //启动4秒刷新二维码定时器
+        RxUtil.intervals(4000, number -> {
+            Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                    Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
+
+                    qr_code_iv.setImageBitmap(qrCodeBitmap);
+                }
+            });
+        }, this);
+    }
+
+    @Override
     protected void initData() {
         if (mCouponBean == null) {
             onMessage("未获取到优惠劵信息!");
@@ -155,21 +173,14 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
             }
         });
 
-        //启动4秒刷新二维码定时器
-        RxUtil.intervals(4000,  number -> {
-            Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
-                    Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
-
-                    qr_code_iv.setImageBitmap(qrCodeBitmap);
-                }
-            });
-        }, this);
-
 
 //        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancel();
     }
 
     @OnClick(R.id.other_coupon_stv)

@@ -6,6 +6,7 @@ import android.os.Message;
 import android.text.TextUtils;
 
 import com.gxdingo.sg.activity.ClientSettingPayPwd1Activity;
+import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.ClientCouponsBean;
 import com.gxdingo.sg.bean.PayBean;
 import com.gxdingo.sg.biz.IMTransferAccountsPayContract;
@@ -156,17 +157,18 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
 
     /**
      * 发起转账
-     *
      * @param mShareUuid
      * @param type
      * @param passwd
      * @param amount
+     * @param couponBean
+     * @param mTotalAmount
      */
     @Override
-    public void transfer(String mShareUuid, int type, String passwd, String amount) {
+    public void transfer(String mShareUuid, int type, String passwd, String amount, ClientCouponBean couponBean, String mTotalAmount) {
 
         if (mWebSocketModel != null)
-            mWebSocketModel.transfer(getContext(), mShareUuid, type, passwd, amount);
+            mWebSocketModel.transfer(getContext(), mShareUuid, type, passwd, amount,couponBean,mTotalAmount);
 
     }
 

@@ -22,7 +22,6 @@ import com.gxdingo.sg.bean.ShareEvent;
 import com.gxdingo.sg.bean.UserReward;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
-import com.gxdingo.sg.biz.OnContentListener;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
 import com.gxdingo.sg.dialog.SgConfirmHintPopupView;
@@ -46,7 +45,6 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,8 +261,10 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0)
-                showFirstLoginDialog(UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().get(0));
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0) {
+                List<UserReward.CouponListDTO> couponList = UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList();
+                showAwardDialog(couponList);
+            }
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
@@ -291,18 +291,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList.add(new ClientMineFragment());
     }
 
-    private void showFirstLoginDialog(UserReward.CouponListDTO userReward) {
-
+    private void showAwardDialog(List<UserReward.CouponListDTO> userReward) {
+        //todo 等待增加 list position 1的数据
         new XPopup.Builder(reference.get())
                 .maxWidth((ScreenUtils.getScreenWidth(reference.get())))
                 .isDarkTheme(false)
-                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.getName(), userReward.getRemark(), "领取", new MyConfirmListener() {
-                    @Override
-                    public void onConfirm() {
-                        //todo 领取逻辑待实现
-
-                    }
-                })).show();
+                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.get(0).getName(), userReward.get(0).getRemark(), "领取", 0)).show();
 
     }
 
@@ -443,6 +437,13 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         getP().checkTab(0);
         sendEvent(new ShareEvent(code));
     }
+
+    @Override
+    public void showContinuousLoginAwardDialog(List<UserReward.CouponListDTO> popupCouponList) {
+        //todo 待测试连续登录弹窗
+        showAwardDialog(popupCouponList);
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -16,6 +16,7 @@ import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.utils.Constant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -167,4 +168,5 @@ public class ClientBusinessCircleActivity extends BaseMvpActivity<StoreBusinessD
     public void showAuthenticationDialog() {
 
     }
+
 }

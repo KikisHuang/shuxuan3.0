@@ -3,6 +3,7 @@ package com.gxdingo.sg.model;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.PayBean;
@@ -531,7 +532,7 @@ public class WebSocketModel {
     /**
      * 发起转账
      */
-    public void transfer(Context context, String shareuuid, int type, String pass, String amount) {
+    public void transfer(Context context, String shareuuid, int type, String pass, String amount, ClientCouponBean couponBean, String mTotalAmount) {
 
         if (netWorkListener != null)
             netWorkListener.onStarts();
@@ -546,6 +547,12 @@ public class WebSocketModel {
         map.put("payType", String.valueOf(type));
 
         map.put("amount", String.valueOf(amount));
+
+        if (couponBean != null && !isEmpty(couponBean.getCouponIdentifier())) {
+            map.put("totalAmount", String.valueOf(mTotalAmount));
+            map.put("couponIdentifier", String.valueOf(couponBean.getCouponIdentifier()));
+        }
+
 
         PostRequest request = HttpClient.imPost(IM_URL + TRANSFER, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());

@@ -277,10 +277,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                             //客户端点击【使用优惠券】商家端扫码核销
                             boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
 
-                            if (!showDialog)
+                            if (!showDialog) {
+                                scanContent = activeCode;
                                 getP().getNoRemindContent();
-                            else
-                                getP().storeScanCode(scanContent);
+                            } else
+                                getP().storeScanCode(activeCode);
                         } else
                             onMessage("二维码已失效，请重新扫码");
 

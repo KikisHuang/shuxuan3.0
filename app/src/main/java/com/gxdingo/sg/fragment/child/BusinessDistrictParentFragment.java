@@ -294,6 +294,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
         showDialog();
     }
 
+
     /**
      * MagicIndicator 通用标题初始化方法
      */

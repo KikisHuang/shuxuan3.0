@@ -12,6 +12,8 @@ public class LocalConstant {
 
     public static final int REFRESH_LOCATION = 41456;
 
+    public static final String GET_CONTINUOUS_LOGIN_AWARD = "get_continuous_login_award";
+
     //聊天常量
     //自己发送的文本类型
     public static final int SelfText = 7776;
