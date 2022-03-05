@@ -49,15 +49,13 @@ public class ExampleUnitTest {
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
-        long qrcodeTime = 1646386031329l;
 
+        long old = 1646475072378l;
+
+        boolean da = (getNowMills()-old)>10000;
 
         System.out.println(" time === " + getNowMills());
-
-        boolean isPastDue = (getNowMills() - qrcodeTime) <= 40000;
-        //dWKULklfNvKfWdp
-        System.out.println(" is ok === " + isPastDue);
-        System.out.println(" time 1 === " + (getNowMills() - qrcodeTime));
+        System.out.println(" time === " + da);
 
 
     }

@@ -273,7 +273,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                         getP().scanCode(activeCode);
                     } else if (mType == 11 && scanContent.contains("dateContent=")) {
                         long date = Long.parseLong(URLRequest(scanContent).get("dateContent"));
-                        if (getNowMills() - date <= 40000) {
+                        if (getNowMills() - date <= 4000) {
                             //客户端点击【使用优惠券】商家端扫码核销
                             boolean showDialog = SPUtils.getInstance().getBoolean(LocalConstant.SCANNING_NO_REMIND, false);
 

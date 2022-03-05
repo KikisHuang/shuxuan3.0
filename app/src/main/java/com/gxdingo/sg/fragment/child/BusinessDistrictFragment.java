@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ChatActivity;
@@ -71,6 +72,7 @@ import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
@@ -317,6 +319,16 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         if (isFirstLoad) {
             isFirstLoad = !isFirstLoad;
             getP().checkLocationPermission(getRxPermissions(), mcircleUserIdentifier);
+        }else {
+            long lastViewTime = SPUtils.getInstance().getLong(LocalConstant.LAST_VIEW_TIME,0);
+
+            if (getNowMills() - lastViewTime>LocalConstant.REFRESH_BUSINESS_DISTRICT_TIME){
+                if (refreshLayout!=null){
+                    refreshLayout.autoRefresh();
+                    RecycleViewUtils.MoveToPositionTop(recyclerView, 0);
+                }
+            }else
+                new Thread(() -> SPUtils.getInstance().put(LocalConstant.LAST_VIEW_TIME,getNowMills())).start();
         }
     }
 

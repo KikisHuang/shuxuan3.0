@@ -7,12 +7,15 @@ public class LocalConstant {
 
     public static String SHARE_BUSINESS_DISTRICT_URL = "https://dgkjmm.oss-cn-shenzhen.aliyuncs.com/log/shuxuan.jpg";
 
-    //刷新商圈未读消息时间
-    public static final int businessDistrictRefreshTime = 30000;
+    public static final int REFRESH_BUSINESS_DISTRICT_TIME = 900000;
 
     public static final int REFRESH_LOCATION = 41456;
 
     public static final String GET_CONTINUOUS_LOGIN_AWARD = "get_continuous_login_award";
+
+
+    public static final String LAST_VIEW_TIME = "last_view_time";
+
 
     //聊天常量
     //自己发送的文本类型

@@ -50,6 +50,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.ADD;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -192,6 +193,8 @@ public class BusinessDistrictPresenter extends BaseMvpPresenter<BasicsListener, 
      */
     @Override
     public void getBusinessDistrictList(boolean refresh, String circleUserIdentifier) {
+        new Thread(() -> SPUtils.getInstance().put(LocalConstant.LAST_VIEW_TIME,getNowMills())).start();
+
         businessDistrictModel.getBusinessDistrict(getContext(), refresh, circleUserIdentifier, "");
 
     }
