@@ -54,6 +54,8 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.youth.banner.Banner;
+import com.youth.banner.indicator.CircleIndicator;
+import com.youth.banner.indicator.RectangleIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -717,6 +719,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         if (mBanner != null && data.getAppHomeHeader() != null) {
 
             mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), data.getAppHomeHeader()));
+
+            mBanner.setIndicator(new RectangleIndicator(reference.get()));
+
             mBanner.setOnBannerListener((d, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) d;
 

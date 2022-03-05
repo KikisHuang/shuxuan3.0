@@ -12,6 +12,12 @@
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:banner_indicator_normal_width="4dp"
+        app:banner_indicator_selected_width="12dp"
+        app:banner_indicator_selected_color="@color/white"
+        app:banner_indicator_normal_color="@color/white8"
+        app:banner_indicator_height="4dp"
+        app:banner_indicator_radius="2dp"
         android:layout_marginTop="5dp" />
 
     <androidx.recyclerview.widget.RecyclerView
