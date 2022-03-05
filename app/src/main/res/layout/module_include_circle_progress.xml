@@ -4,13 +4,9 @@
     android:id="@+id/shadow_bg_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black4"
     android:visibility="gone"
     >
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black4"></TextView>
 
     <cn.bingoogolapple.progressbar.BGAProgressBar
         android:id="@+id/circle_progress_bar"

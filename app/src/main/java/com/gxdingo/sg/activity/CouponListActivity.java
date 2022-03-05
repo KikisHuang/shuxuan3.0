@@ -178,13 +178,10 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
         boolean isPastDue = item.getStatus() == 1 || item.getStatus() == 2;
         if (!isPastDue) {
             //规则
-            if (view.getId() == R.id.rule_tv) {
-
+            if (view.getId() == R.id.rule_tv)
                 goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{item.getInstructions(), item.getPrecautions()}));
-
-            } else {
+             else {
                 if (mType == 0) {
-
                     if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 1) {
                         // 状态。0=待使用；1=已使用；2=已过期
                         if (item.getStatus() == 0){
@@ -192,12 +189,12 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
                             return;
                         }
                     }
-                    //我的页面进入使用优惠券跳转店铺列表
+                    //我的页面进入，跳转店铺列表
                     sendEvent(LocalConstant.GO_STORE_LIST_PAGE);
                     finish();
                     return;
                 } else if (mType == 1) {
-                    //转账页面进入
+                    //转账页面进入,核销或者直接使用
 
                     // 是否需要核销0 = 否 1 = 是
                     // 核销状态 0 = 未核销 1 = 已核销

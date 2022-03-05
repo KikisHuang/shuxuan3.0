@@ -160,9 +160,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private AnimationDrawable mRecordedVoiceAnimation;//录制语音动画
 
-    //最早的一条消息时间
-    private String lastMsgTime = "";
-
     //发布者与订阅者的共享唯一id，使用该值查出聊天记录
     private String mShareUuid = "";
 
@@ -430,14 +427,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     @Override
     protected void onBaseEvent(Object object) {
-/*
-        if (object instanceof NewMessage) {
-            NewMessage unReadMessage = ((NewMessage) object);
 
-            if (unReadMessage != null && unReadMessage.getSubscribeId() == mShareUuid)
-                receiveNewMsg(unReadMessage);
-
-        }*/
         //地址信息消息发送事件
         if (object instanceof AddressBean) {
             AddressBean addressBean = (AddressBean) object;
@@ -452,7 +442,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         //发送消息事件
         if (object instanceof SendMessageBean) {
             SendMessageBean smb = (SendMessageBean) object;
-
             getP().sendMessage(mShareUuid, 0, smb.content, 0, null);
         }
 
@@ -475,15 +464,6 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                         receiveNewMsg(receiveIMMessageBean);
                 }
             }
-        }
-
-        if (object instanceof PayBean.TransferAccountsDTO) {
-/*            PayBean.TransferAccountsDTO data = (PayBean.TransferAccountsDTO) object;
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", data.getId());
-            //转账成功
-            getP().sendMessage(mShareUuid, 21, "", 0,map );*/
-
         }
 
         /**
@@ -811,10 +791,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         super.onDestroy();
     }
 
-
+    /**
+     * 上传本地图片
+     *
+     * @param url
+     */
     private void upLoadFile(String url) {
 
-        onStarts();
+//        onStarts();
         ReceiveIMMessageBean cb = new ReceiveIMMessageBean();
         cb.upload_progress = 1;
         cb.setType(10);
@@ -835,11 +819,14 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
         Observable<NormalBean> observable = HttpClient.postUpLoad(getUpLoadImage(), map, (done, progress) -> {
             if (done) {
+
                 if (pos <= mChatDatas.size() - 1 && mAdapter != null)
                     //上传成功
                     mChatDatas.get(pos).upload_progress = 100;
+
             } else {
                 if (pos <= mChatDatas.size() - 1 && mAdapter != null) {
+
                     mChatDatas.get(pos).upload_progress = progress;
                     mAdapter.notifyItemChanged(pos);
                 }
@@ -857,13 +844,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 if (pos <= mChatDatas.size() - 1)
                     mChatDatas.remove(pos);
                 mAdapter.notifyDataSetChanged();
-                onAfters();
+//                onAfters();
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                onAfters();
-
+//                onAfters();
                 if (pos <= mChatDatas.size() - 1) {
                     mChatDatas.get(pos).upload_progress = 100;
                     mChatDatas.get(pos).setContent(normalBean.url);
