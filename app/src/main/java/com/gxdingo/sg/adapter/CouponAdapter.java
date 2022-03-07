@@ -24,7 +24,7 @@ public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHo
 
     public CouponAdapter() {
         super(R.layout.module_recycle_item_coupon);
-        addChildClickViewIds(R.id.btn_use,R.id.rule_tv);
+        addChildClickViewIds(R.id.btn_use, R.id.rule_tv);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHo
 
         valid_date_tv.setText(clientCouponBean.getExpireTime());
         // 状态。0=待使用；1=已使用；2=已过期
-        boolean isPastDue = clientCouponBean.getStatus() == 1 || clientCouponBean.getStatus()  == 2;
+        boolean isPastDue = clientCouponBean.getStatus() == 1 || clientCouponBean.getStatus() == 2;
 
         coupon_name_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graye2e2e2));
 //        valid_date_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : getc(R.color.graya9a9a9));
@@ -52,16 +52,17 @@ public class CouponAdapter extends BaseQuickAdapter<ClientCouponBean, BaseViewHo
         coupon_amount_tv.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
         rmb_symbol.setTextColor(isPastDue ? getc(R.color.graya9a9a9) : Color.parseColor("#C30404"));
 
-        if (clientCouponBean.getStatus()  == 1)
+        if (clientCouponBean.getStatus() == 1)
             btn_use.setText("已使用");
-        else if (clientCouponBean.getStatus()  == 2)
+        else if (clientCouponBean.getStatus() == 2)
             btn_use.setText("已过期");
         else
             btn_use.setText("立即使用");
 
         btn_use.setBackgroundResource(isPastDue ? R.drawable.module_shape_bg_grey_15r : R.drawable.module_shape_bg_green_15r);
 
-//        if (clientCouponBean.getOrderAmount() == 0)
-//            baseViewHolder.setText(R.id.order_coupon_tv,"无门槛");
+        baseViewHolder.setText(R.id.order_coupon_tv, Float.valueOf(clientCouponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + clientCouponBean.getUseAmount() + "减" + clientCouponBean.getCouponAmount());
+
+
     }
 }

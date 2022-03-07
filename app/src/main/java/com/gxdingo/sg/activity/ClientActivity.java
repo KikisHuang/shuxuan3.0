@@ -310,6 +310,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             return;
         }
 
+        if (v.getId() == R.id.mine_layout)
+            ImmersionBar.with(reference.get()).init();
+        else
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId()==R.id.settle_in ? R.color.white : R.color.grayf5).init();
+
+
         switch (v.getId()) {
             case R.id.home_page_layout:
                 getP().checkTab(1);
@@ -362,11 +368,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onSeleted(int checkTab, int oldTab) {
-
-        if (checkTab == 4)
-            ImmersionBar.with(reference.get()).init();
-        else
-            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(1 == checkTab || 0 == checkTab || 3 == checkTab ? R.color.grayf5 : R.color.white).init();
 
         mMenuLayout.get(checkTab).setonSelected(true);
 

@@ -272,14 +272,19 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
         if (object instanceof ClientCouponBean) {
+
             couponBean = (ClientCouponBean) object;
-            coupon_stv.setRightString(couponBean.getCouponName());
+
+            coupon_stv.setRightString(Float.valueOf(couponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + couponBean.getUseAmount() + "减" + couponBean.getCouponAmount());
+
+            if (couponBean != null && couponBean.getStatus() == 0)
+                coupon_stv.setRightTextColor(getc(R.color.red));
 
             if (!isEmpty(etAmount.getText().toString())) {
                 if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
                     //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                     sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
-                    coupon_stv.setRightTextColor(getc(R.color.red));
+
                 }
             } else
                 sum_tv.setText("0");
