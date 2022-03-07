@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import com.gxdingo.sg.R;
 
 import static com.blankj.utilcode.util.ConvertUtils.dp2px;
+import static com.blankj.utilcode.util.ConvertUtils.px2sp;
 
 /**
  * Created by jjj on 2017/7/19.
@@ -41,6 +42,7 @@ public class CircularRevealButton extends LinearLayout {
     private String mDesc; // 底部文字描述
     private boolean mAnimShow; // 是否显示动画效果
     private boolean mIsSelected; // 是否被选中
+    private boolean mHideIcon; // 隐藏图标
 
     //ivFocuse 选中img ,ivDeFocuse 未选中 img
     private ImageView ivDeFocuse, ivFocuse;
@@ -56,7 +58,10 @@ public class CircularRevealButton extends LinearLayout {
         init(context, attrs);
         setGravity(Gravity.CENTER);
         setOrientation(VERTICAL);
-        addFrameLayout(context);
+
+        if (!mHideIcon)
+            addFrameLayout(context);
+
         addTextView(context);
     }
 
@@ -70,6 +75,7 @@ public class CircularRevealButton extends LinearLayout {
         mTextSize = ta.getDimensionPixelSize(R.styleable.CircularRevealButton_textsize, 10);
         mAnimShow = ta.getBoolean(R.styleable.CircularRevealButton_anim_show, false);
         mIsSelected = ta.getBoolean(R.styleable.CircularRevealButton_is_selected, false);
+        mHideIcon = ta.getBoolean(R.styleable.CircularRevealButton_hide_icon, false);
         ta.recycle();
     }
 
@@ -93,6 +99,7 @@ public class CircularRevealButton extends LinearLayout {
         ivFocuse = new ImageView(context);
         ivFocuse.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         ivFocuse.setImageDrawable(mFocusDrawable);
+
         ivFocuse.setVisibility(mIsSelected ? VISIBLE : INVISIBLE);
 
 
@@ -107,7 +114,7 @@ public class CircularRevealButton extends LinearLayout {
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 4, 0, 0);
         textView.setLayoutParams(layoutParams);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSize);
+        textView.setTextSize(px2sp(mTextSize));
         textView.setTextColor(mIsSelected ? mFocusColor : mDeFocusColor);
         textView.setText(mDesc);
         addView(textView);
@@ -120,11 +127,15 @@ public class CircularRevealButton extends LinearLayout {
      */
     public void setonSelected(Boolean isSelected) {
         if (isSelected) {
-            if (ivFocuse.getVisibility() == INVISIBLE) {
+            if (mHideIcon){
                 textView.setTextColor(mFocusColor);
-                ivFocuse.setVisibility(VISIBLE);
+                return;
+            }
+            if (ivFocuse.getVisibility() ==  INVISIBLE) {
+                textView.setTextColor(mFocusColor);
+                    ivFocuse.setVisibility(VISIBLE);
 
-                if (mAnimShow&& Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                if (mAnimShow && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     handleAnimate(ivFocuse);
                 else
                     ivDeFocuse.setVisibility(INVISIBLE);
@@ -132,11 +143,16 @@ public class CircularRevealButton extends LinearLayout {
             }
 
         } else {
+            if (mHideIcon){
+                textView.setTextColor(mDeFocusColor);
+                return;
+            }
+
             if (ivFocuse.getVisibility() == VISIBLE) {
                 textView.setTextColor(mDeFocusColor);
                 ivFocuse.setVisibility(INVISIBLE);
 
-                if (ivDeFocuse.getVisibility() == INVISIBLE)
+                if (ivDeFocuse.getVisibility() ==  INVISIBLE)
                     ivDeFocuse.setVisibility(VISIBLE);
             }
         }

@@ -41,10 +41,12 @@
                 android:layout_marginVertical="6dp"
                 app:anim_show="false"
                 app:defocus_color="@color/title_color"
+                app:hide_icon="true"
                 app:defocus_icon="@drawable/module_svg_main_menu_client_business_district_unselected"
                 app:focus_color="@color/green_dominant_tone"
                 app:focus_icon="@drawable/module_svg_main_menu_client_business_district_selected"
                 app:is_selected="true"
+                app:textsize="14sp"
                 app:text="@string/business_district" />
 
 
@@ -71,6 +73,8 @@
             android:layout_marginVertical="6dp"
             android:layout_weight="1"
             app:anim_show="false"
+            app:hide_icon="true"
+            app:textsize="14sp"
             app:defocus_color="@color/title_color"
             app:defocus_icon="@drawable/module_svg_main_menu_client_home_unselected"
             app:focus_color="@color/green_dominant_tone"
@@ -89,7 +93,7 @@
             app:focus_color="@color/title_color"
             app:focus_icon="@drawable/module_svg_main_menu_client_settle_in"
             app:is_selected="false"
-            app:text="@string/settle_in" />
+            app:text="" />
 
         <FrameLayout
             android:id="@+id/msg_fl"
@@ -103,10 +107,12 @@
                 android:layout_height="match_parent"
                 android:layout_marginVertical="6dp"
                 app:anim_show="false"
+                app:textsize="14sp"
                 app:defocus_color="@color/title_color"
                 app:defocus_icon="@drawable/module_svg_main_menu_client_message_unselected"
                 app:focus_color="@color/green_dominant_tone"
                 app:focus_icon="@drawable/module_svg_main_menu_client_message_selected"
+                app:hide_icon="true"
                 app:is_selected="false"
                 app:text="@string/message" />
 
@@ -133,6 +139,8 @@
             android:layout_marginVertical="6dp"
             android:layout_weight="1"
             app:anim_show="false"
+            app:hide_icon="true"
+            app:textsize="14sp"
             app:defocus_color="@color/title_color"
             app:defocus_icon="@drawable/module_svg_main_menu_client_mine_unselected"
             app:focus_color="@color/green_dominant_tone"

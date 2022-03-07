@@ -9,6 +9,7 @@
         <attr name="textsize" format="dimension" />
         <attr name="anim_show" format="boolean" />
         <attr name="is_selected" format="boolean" />
+        <attr name="hide_icon" format="boolean" />
     </declare-styleable>
 
     <!--密码输入layout-->

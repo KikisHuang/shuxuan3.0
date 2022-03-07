@@ -814,7 +814,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
 
     private void upLoadFile(String url) {
 
-        onStarts();
+//        onStarts();
         ReceiveIMMessageBean cb = new ReceiveIMMessageBean();
         cb.upload_progress = 1;
         cb.setType(10);
@@ -828,6 +828,8 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
         moveTo(mChatDatas.size() - 1);
 
         int pos = mChatDatas.size() - 1;
+
+        mAdapter.notifyItemChanged(pos);
 
         Map<String, Object> map = getObjMap();
 
@@ -857,12 +859,12 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
                 if (pos <= mChatDatas.size() - 1)
                     mChatDatas.remove(pos);
                 mAdapter.notifyDataSetChanged();
-                onAfters();
+//                onAfters();
             }
 
             @Override
             public void onNext(NormalBean normalBean) {
-                onAfters();
+//                onAfters();
 
                 if (pos <= mChatDatas.size() - 1) {
                     mChatDatas.get(pos).upload_progress = 100;
