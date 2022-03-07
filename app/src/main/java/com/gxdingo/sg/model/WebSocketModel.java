@@ -548,11 +548,10 @@ public class WebSocketModel {
 
         map.put("amount", String.valueOf(amount));
 
-        if (couponBean != null && !isEmpty(couponBean.getCouponIdentifier())) {
-            map.put("totalAmount", String.valueOf(mTotalAmount));
-            map.put("couponIdentifier", String.valueOf(couponBean.getCouponIdentifier()));
-        }
+        map.put("totalAmount", String.valueOf(mTotalAmount));
 
+        if (couponBean != null && !isEmpty(couponBean.getCouponIdentifier()))
+            map.put("couponIdentifier", String.valueOf(couponBean.getCouponIdentifier()));
 
         PostRequest request = HttpClient.imPost(IM_URL + TRANSFER, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());

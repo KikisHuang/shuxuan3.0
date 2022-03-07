@@ -445,19 +445,6 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                             if (isViewAttached())
                                 getV().onUploadImageUrl(url);
                         }
-
-                        /*    networkModel.upLoadImage(getContext(), url, new UpLoadImageListener() {
-                            @Override
-                            public void loadSucceed(String path) {
-                                getV().onUploadImageUrl(path);
-                                getBV().onAfters();
-                            }
-
-                            @Override
-                            public void loadSucceed(UpLoadBean upLoadBean) {
-                                System.out.println();
-                            }
-                        });*/
                     }
 
                     @Override
