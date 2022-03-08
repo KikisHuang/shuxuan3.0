@@ -66,7 +66,7 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
@@ -187,13 +187,9 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof CouponVerificationEvent) {
-            CouponVerificationEvent event = (CouponVerificationEvent) object;
-            if (!isEmpty(event.content))
-                onMessage(event.content);
-
+        if (object instanceof CouponVerificationEvent)
             finish();
-        }
+
     }
 
     @OnClick(R.id.other_coupon_stv)

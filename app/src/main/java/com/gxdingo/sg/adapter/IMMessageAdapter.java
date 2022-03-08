@@ -89,7 +89,7 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         else
             settop_img.setVisibility(View.GONE);
 
-        Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
+        Glide.with(getContext()).load(!isEmpty(subscribesMessage.getSendAvatar())?subscribesMessage.getSendAvatar(): R.drawable.module_svg_client_default_avatar).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
 
         DraftBean draftBean = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(subscribesMessage.getShareUuid()));
         //转发列表不显示
