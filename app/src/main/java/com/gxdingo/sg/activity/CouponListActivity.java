@@ -11,6 +11,7 @@ import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.CouponAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
+import com.gxdingo.sg.bean.CouponVerificationEvent;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -28,6 +29,7 @@ import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
@@ -169,6 +171,14 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
     }
 
     @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof CouponVerificationEvent) {
+            getP().getCoupons(true, mIdentifie);
+        }
+    }
+
+    @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
 
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
@@ -179,11 +189,11 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
             //规则
             if (view.getId() == R.id.rule_tv)
                 goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{item.getInstructions(), item.getPrecautions()}));
-             else {
+            else {
                 if (mType == 0) {
                     if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 1) {
                         // 状态。0=待使用；1=已使用；2=已过期
-                        if (item.getStatus() == 0){
+                        if (item.getStatus() == 0) {
                             goToPagePutSerializable(reference.get(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.userIdentifier}));
                             return;
                         }

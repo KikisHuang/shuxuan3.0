@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gxdingo.sg.MyApplication;
+import com.gxdingo.sg.bean.CouponVerificationEvent;
 import com.gxdingo.sg.bean.ExitChatEvent;
 import com.gxdingo.sg.bean.SocketLoginEvent;
 import com.gxdingo.sg.http.HttpClient;
@@ -166,6 +167,10 @@ public class ImMessageUtils {
                         if (messageBean != null && messageBean.getType() == 1001 || messageBean.getType() == 1002) {
                             //商圈未读通知、商圈被评论通知
                             EventBus.getDefault().post(messageBean.getType() == 1001 ? LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT : messageBean.getDataByType());
+                            return;
+                        }else if (messageBean != null && messageBean.getType() == 2001){
+                            //2001=优惠券核销通知
+                            EventBus.getDefault().post(new CouponVerificationEvent(messageBean.getContent()));
                             return;
                         }
                         //消息接收

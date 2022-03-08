@@ -14,6 +14,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientCouponBean;
+import com.gxdingo.sg.bean.CouponVerificationEvent;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
@@ -181,6 +182,18 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
     protected void onStop() {
         super.onStop();
         cancel();
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof CouponVerificationEvent) {
+            CouponVerificationEvent event = (CouponVerificationEvent) object;
+            if (!isEmpty(event.content))
+                onMessage(event.content);
+
+            finish();
+        }
     }
 
     @OnClick(R.id.other_coupon_stv)
