@@ -33,8 +33,8 @@ public class StoreDetail {
     private String distance;
     @SerializedName("followCount")
     private int followCount;
-    @SerializedName("iconUrl")
-    private String iconUrl;
+    @SerializedName("iconList")
+    public List<String> iconList;
     @SerializedName("id")
     private int id;
     @SerializedName("introduction")
@@ -160,14 +160,6 @@ public class StoreDetail {
 
     public void setFollowCount(int followCount) {
         this.followCount = followCount;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
     }
 
     public int getId() {

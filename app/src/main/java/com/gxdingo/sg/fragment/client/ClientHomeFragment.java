@@ -10,7 +10,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
@@ -18,18 +17,11 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientAddressListActivity;
 import com.gxdingo.sg.activity.ClientSearchActivity;
-import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.StoreDetailsActivity;
 import com.gxdingo.sg.adapter.ClientCategoryAdapter;
 import com.gxdingo.sg.adapter.ClientStoreAdapter;
-import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.ShareBean;
 import com.gxdingo.sg.bean.changeLocationEvent;
-import com.gxdingo.sg.biz.HelpListener;
-import com.gxdingo.sg.biz.OnContentListener;
-import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
-import com.gxdingo.sg.dialog.HelpPopupView;
-import com.gxdingo.sg.utils.ClientLocalConstant;
-import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.CategoriesBean;
 import com.gxdingo.sg.bean.StoreListBean;
@@ -37,16 +29,12 @@ import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.dialog.ClientCallPhoneDialog;
 import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.utils.UserInfoUtils;
-import com.kikis.commnlibrary.adapter.BaseRecyclerAdapter;
 import com.kikis.commnlibrary.fragment.BaseMvpFragment;
 import com.kikis.commnlibrary.utils.RecycleViewUtils;
-import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -57,7 +45,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_SHOP;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
-import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.REFRESH_LOCATION;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -66,7 +53,6 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.PermissionUtils.gotoPermission;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.forceStopRecyclerViewScroll;
-import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 import static com.scwang.smart.refresh.layout.util.SmartUtil.dp2px;
 
 /**
@@ -390,7 +376,7 @@ public class ClientHomeFragment extends BaseMvpFragment<ClientHomeContract.Clien
         switch (view.getId()) {
             case R.id.store_avatar_iv:
 
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.storeUserIdentifier}));
+                goToPagePutSerializable(getContext(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.storeUserIdentifier}));
                 break;
             case R.id.call_phone_iv:
                 new XPopup.Builder(reference.get())

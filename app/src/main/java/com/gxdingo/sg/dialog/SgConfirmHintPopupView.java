@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -25,17 +26,17 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
     private TextView tv_title, tv_confirm, tv_hint;
     private ImageView close_img;
     private CharSequence title, hint, confirmText;
-    private int step;
+    private CustomResultListener customResultListener;
 
     /**
      * @param context
      */
-    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, int step) {
+    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, CustomResultListener customResultListener) {
         super(context);
         this.title = title;
         this.confirmText = confirmText;
         this.hint = hint;
-        this.step = step;
+        this.customResultListener = customResultListener;
         addInnerContent();
     }
 
@@ -78,18 +79,10 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
             dismiss();
         } else if (v.getId() == R.id.tv_confirm) {
             if (popupInfo.autoDismiss) {
-
-                if (step == 0) {
-                    step++;
-                    tv_title.setText("领取成功");
-                    tv_hint.setText("连续登录3天后再得25元代金券");
-                    tv_confirm.setText(gets(R.string.done));
-                } else if (step == 1)
-                    dismiss();
-
+                if (customResultListener != null)
+                    customResultListener.onResult("");
+                dismiss();
             }
-
-
         }
     }
 

@@ -8,28 +8,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.allen.library.CircleImageView;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStorePhotoAdapter;
-import com.gxdingo.sg.bean.CategoriesBean;
+import com.gxdingo.sg.adapter.ShopsIconAdapter;
 import com.gxdingo.sg.bean.StoreDetail;
-import com.gxdingo.sg.bean.StoreListBean;
-import com.gxdingo.sg.biz.ClientHomeContract;
 import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
-import com.gxdingo.sg.presenter.ClientHomePresenter;
 import com.gxdingo.sg.presenter.ClientStorePresenter;
 import com.gxdingo.sg.utils.ShareUtils;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -40,15 +32,13 @@ import com.kikis.commnlibrary.utils.GlideUtils;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.text.TextUtils.isEmpty;
+import static android.widget.LinearLayout.HORIZONTAL;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.gxdingo.sg.utils.DateUtils.dealDateFormat;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -63,7 +53,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
  * @date: 2021/10/19
  * @page:
  */
-public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> implements ClientStoreContract.ClientStoreListener {
+public class StoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> implements ClientStoreContract.ClientStoreListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -95,8 +85,8 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     @BindView(R.id.avatar_img)
     public ImageView avatar_img;
 
-    @BindView(R.id.tag_img)
-    public ImageView tag_img;
+    @BindView(R.id.icon_rcy)
+    public RecyclerView icon_rcy;
 
     @BindView(R.id.name_tv)
     public TextView name_tv;
@@ -113,6 +103,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
     private ClientStorePhotoAdapter mPhotoAdapter;
 
     private GestureDetector gestureDetector;
+    private ShopsIconAdapter mIconAdapter;
 
     private SgConfirm2ButtonPopupView mLoginDialog;
 
@@ -168,7 +159,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     @Override
     protected int initContentView() {
-        return R.layout.module_activity_client_store_details;
+        return R.layout.module_activity_store_details;
     }
 
     @Override
@@ -195,11 +186,15 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
         if (mapView != null)
             mapView.onCreate(savedInstanceState);
 
+        //商家相册图RecyclerView
         mPhotoAdapter = new ClientStorePhotoAdapter();
         store_photo_rv.setAdapter(mPhotoAdapter);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(reference.get());
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        store_photo_rv.setLayoutManager(linearLayoutManager);
+        store_photo_rv.setLayoutManager(new LinearLayoutManager(reference.get(),LinearLayoutManager.HORIZONTAL,false));
+
+        //认证图标RecyclerView
+        icon_rcy.setLayoutManager(new LinearLayoutManager(reference.get(),LinearLayoutManager.HORIZONTAL,false));
+        mIconAdapter = new ShopsIconAdapter();
+        icon_rcy.setAdapter(mIconAdapter);
 
         gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
             @Override
@@ -244,7 +239,12 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
     }
 
-    @OnClick({R.id.avatar_img,R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
+    @Override
+    protected void initData() {
+        getP().getStoreDetail(getRxPermissions(), storeId);
+    }
+
+    @OnClick({R.id.avatar_img, R.id.btn_more, R.id.ll_navigation, R.id.business_district_cl, R.id.ll_send_message, R.id.ll_phone_contract})
     public void onClickViews(View v) {
 
         if (!UserInfoUtils.getInstance().isLogin()) {
@@ -284,7 +284,7 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
                 break;
             case R.id.avatar_img:
                 if (mStoreDetail != null)
-                getImagePreviewInstance(reference.get(), NetworkAuto, 0, true).setImage(mStoreDetail.getAvatar()).start();
+                    getImagePreviewInstance(reference.get(), NetworkAuto, 0, true).setImage(mStoreDetail.getAvatar()).start();
 
                 break;
         }
@@ -367,11 +367,6 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
         }
     }
 
-    @Override
-    protected void initData() {
-        getP().getStoreDetail(getRxPermissions(), storeId);
-    }
-
 
     @Override
     public void onStoreDetailResult(StoreDetail storeDetail) {
@@ -389,19 +384,14 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
 
         StringBuffer label = new StringBuffer();
 
+        if (storeDetail.iconList != null && storeDetail.iconList.size() > 0)
+            mIconAdapter.setList(storeDetail.iconList);
+
         // 用户类型0=商家 1=用户
         if (storeDetail.getReleaseUserType() == 0) {
             mapView.setVisibility(View.VISIBLE);
             address_cl.setVisibility(View.VISIBLE);
             ll_navigation.setVisibility(View.VISIBLE);
-            if (storeDetail.getIsAuthentication() == 0) {
-                tag_img.setVisibility(View.GONE);
-            } else {
-                tag_img.setVisibility(View.VISIBLE);
-                int tag = storeDetail.getIsAuthentication() == 1 ? R.drawable.module_svg_certification : R.drawable.module_svg_v_certification;
-                Glide.with(reference.get()).load(tag).apply(GlideUtils.getInstance().getDefaultOptions()).into(tag_img);
-            }
-
 
             for (int i = 0; i < storeDetail.getClassNameList().size(); i++) {
                 if (i == 0)
@@ -419,11 +409,6 @@ public class ClientStoreDetailsActivity extends BaseMvpActivity<ClientStoreContr
             mapView.setVisibility(View.GONE);
             ll_navigation.setVisibility(View.GONE);
             address_cl.setVisibility(View.GONE);
-            if (storeDetail.getAuthStatus() == 1) {
-                tag_img.setVisibility(View.VISIBLE);
-                Glide.with(reference.get()).load(R.drawable.module_svg_user_certification).apply(GlideUtils.getInstance().getDefaultOptions()).into(tag_img);
-            } else
-                tag_img.setVisibility(View.GONE);
 
             if (storeDetail.getAuthStatus() == 0) {
                 label.append("未认证");

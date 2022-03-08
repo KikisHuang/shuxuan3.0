@@ -7,11 +7,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.StringUtils;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.StoreDetailsActivity;
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.UserReward;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.BusinessDistrictModel;
@@ -83,6 +83,8 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     public void onSucceed(int type) {
         if (isBViewAttached())
             getBV().onSucceed(type);
+
+
     }
 
     @Override
@@ -324,7 +326,9 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
 
                     if (SPUtils.getInstance().getBoolean(LocalConstant.GET_CONTINUOUS_LOGIN_AWARD, false) && unreadCommentsBean.getPopupCouponList() != null && unreadCommentsBean.getPopupCouponList().size() > 0) {
                         if (isViewAttached()) {
-                            getV().showContinuousLoginAwardDialog(unreadCommentsBean.getPopupCouponList());
+                            //todo 待测试连续登录弹窗
+                            if (unreadCommentsBean.getPopupCouponList() != null && unreadCommentsBean.getPopupCouponList().size() > 0)
+                                getV().showAwardDialog(unreadCommentsBean.getPopupCouponList().get(0), 2);
                         }
                     }
                 }
@@ -353,7 +357,7 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
                 //分享跳转商圈
                 getV().goToBusinessDistrict(code);
             else if (type == 50)
-                goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{code}));
+                goToPagePutSerializable(getContext(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{code}));
             else if (type != 30) {
                 if (UserInfoUtils.getInstance().isLogin()) {
                     helpCode = code;
@@ -372,12 +376,17 @@ public class ClientMainPresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
     @Override
-    public void fllInvitationCode(String code) {
-        if (StringUtils.isEmpty(code)) {
-            onMessage("请填写商家邀请码");
-            return;
-        }
+    public void receiveCoupon(String couponIdentifier) {
         if (clientNetworkModel != null)
-            clientNetworkModel.receiveCoupon(getContext(), code);
+            clientNetworkModel.receiveCoupon(getContext(), couponIdentifier, data -> {
+                if (isViewAttached()) {
+                    UserReward.CouponListDTO ucd = new UserReward.CouponListDTO();
+                    ucd.setName("领取成功");
+                    ucd.setRemark(String.valueOf(data));
+                    getV().showAwardDialog(ucd, 1);
+                }
+
+            });
     }
+
 }

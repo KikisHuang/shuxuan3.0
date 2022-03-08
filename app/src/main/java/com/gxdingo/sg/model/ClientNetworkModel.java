@@ -706,7 +706,7 @@ public class ClientNetworkModel {
      *
      * @param context
      */
-    public void receiveCoupon(Context context, String activeCode) {
+    public void receiveCoupon(Context context, String activeCode, CustomResultListener customResultListener) {
         Map<String, String> map = getJsonMap();
 
         map.put(ClientLocalConstant.ACTIVE_CODE, activeCode);
@@ -731,13 +731,13 @@ public class ClientNetworkModel {
 
             @Override
             public void onNext(NormalBean normalBean) {
-
-                if (netWorkListener != null) {
+                if (customResultListener != null)
+                    customResultListener.onResult(normalBean.successPrompt);
+                 else if (netWorkListener != null) {
                     netWorkListener.onSucceed(ClientLocalConstant.FILL_SUCCESS);
                     EventBus.getDefault().post(ClientLocalConstant.FILL_SUCCESS);
                     netWorkListener.onAfters();
                 }
-
 
             }
         };

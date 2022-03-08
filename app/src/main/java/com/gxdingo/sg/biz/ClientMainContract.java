@@ -48,7 +48,7 @@ public class ClientMainContract {
 
         void help();
 
-        void fllInvitationCode(String content);
+        void receiveCoupon(String couponIdentifier);
     }
 
     public interface ClientMainListener {
@@ -84,10 +84,10 @@ public class ClientMainContract {
         void goToBusinessDistrict(String code);
 
         /**
-         * 显示连续登录奖励弹窗
+         * 登录奖励弹窗
          * @param popupCouponList
          */
-        void showContinuousLoginAwardDialog(List<UserReward.CouponListDTO> popupCouponList);
+        void showAwardDialog(UserReward.CouponListDTO popupCouponList,int type);
     }
 
     public interface ClientMainModelListener {

@@ -35,6 +35,7 @@ import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -205,9 +206,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     public void onSucceed(int type) {
         super.onSucceed(type);
 
-        if (type == ClientLocalConstant.FILL_SUCCESS) {
-            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
-        }
     }
 
     @Override
@@ -262,8 +260,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
             if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0) {
-                List<UserReward.CouponListDTO> couponList = UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList();
-                showAwardDialog(couponList);
+                showAwardDialog(UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().get(0), 0);
             }
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
@@ -291,12 +288,22 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList.add(new ClientMineFragment());
     }
 
-    private void showAwardDialog(List<UserReward.CouponListDTO> userReward) {
-        //todo 等待增加 list position 1的数据
+    /**
+     * 显示优惠券领取弹窗
+     *
+     * @param userReward
+     * @param type       0新用户注册优惠券 1领取成功 2连续登录优惠券
+     */
+    public void showAwardDialog(UserReward.CouponListDTO userReward, int type) {
+
         new XPopup.Builder(reference.get())
                 .maxWidth((ScreenUtils.getScreenWidth(reference.get())))
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .isDarkTheme(false)
-                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.get(0).getName(), userReward.get(0).getRemark(), "领取", 0)).show();
+                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.getName(), userReward.getRemark(), type == 1 ? "完成" : "领取", o -> {
+                    if (type != 1)
+                        getP().receiveCoupon(userReward.getCouponIdentifier());
+                })).show();
 
     }
 
@@ -313,7 +320,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         if (v.getId() == R.id.mine_layout)
             ImmersionBar.with(reference.get()).init();
         else
-            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId()==R.id.settle_in ? R.color.white : R.color.grayf5).init();
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.settle_in ? R.color.white : R.color.grayf5).init();
 
 
         switch (v.getId()) {
@@ -437,12 +444,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     public void goToBusinessDistrict(String code) {
         getP().checkTab(0);
         sendEvent(new ShareEvent(code));
-    }
-
-    @Override
-    public void showContinuousLoginAwardDialog(List<UserReward.CouponListDTO> popupCouponList) {
-        //todo 待测试连续登录弹窗
-        showAwardDialog(popupCouponList);
     }
 
 

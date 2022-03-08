@@ -35,6 +35,7 @@ public class NormalBean {
     public String key;
     public String auth;
     public String invitationCode;
+    public String successPrompt;
 
     /**
      * url : http://example.com/d5f6677d1a2c3b.jpg

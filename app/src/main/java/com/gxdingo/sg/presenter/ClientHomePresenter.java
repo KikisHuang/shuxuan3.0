@@ -193,15 +193,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
 
-    @Override
-    public void fllInvitationCode(String code) {
-        if (isEmpty(code)) {
-            onMessage("请填写商家邀请码");
-            return;
-        }
-        if (clientNetworkModel != null)
-            clientNetworkModel.receiveCoupon(getContext(), code);
-    }
 
 
     @Override

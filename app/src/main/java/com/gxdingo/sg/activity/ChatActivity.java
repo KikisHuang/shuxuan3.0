@@ -4,7 +4,6 @@ package com.gxdingo.sg.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -12,14 +11,11 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,9 +27,6 @@ import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ChatAdapter;
-import com.gxdingo.sg.db.CommonDaoUtils;
-import com.gxdingo.sg.db.DaoUtilsStore;
-import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.dialog.ChatFunctionDialog;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
 import com.gxdingo.sg.utils.ImMessageUtils;
@@ -42,8 +35,6 @@ import com.kikis.commnlibrary.bean.AddressBean;
 import com.gxdingo.sg.bean.FunctionsItem;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
-import com.gxdingo.sg.bean.PayBean;
-import com.gxdingo.sg.biz.ProgressListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendMessageBean;
@@ -58,7 +49,6 @@ import com.gxdingo.sg.utils.emotion.EmotiomComplateFragment;
 import com.gxdingo.sg.utils.emotion.EmotionMainFragment;
 import com.gxdingo.sg.view.MyBaseSubscriber;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.dialog.BaseActionSheetPopupView;
 import com.kikis.commnlibrary.utils.AnimationUtil;
 import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.utils.RxUtil;
@@ -85,10 +75,7 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.Manifest.permission.RECORD_AUDIO;
-import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_UP;
 import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
 import static com.blankj.utilcode.util.FileUtils.createOrExistsDir;
@@ -97,26 +84,16 @@ import static com.blankj.utilcode.util.KeyboardUtils.unregisterSoftInputChangedL
 import static com.blankj.utilcode.util.PermissionUtils.isGranted;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.blankj.utilcode.util.TimeUtils.getNowString;
-import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_ROLE;
-import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_STORE;
-import static com.gxdingo.sg.adapter.IMOtherFunctionsAdapter.TYPE_USER;
-import static com.gxdingo.sg.db.SqlUtils.EQUAL;
-import static com.gxdingo.sg.db.SqlUtils.WHERE;
 import static com.gxdingo.sg.http.Api.getUpLoadImage;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.EMOTION_LAYOUT_IS_SHOWING;
-import static com.gxdingo.sg.utils.LocalConstant.NOTIFY_MSG_LIST_ADAPTER;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.CHAT_ID;
 import static com.gxdingo.sg.utils.emotion.EmotionMainFragment.ROLE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
-import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.KEY;
-import static com.kikis.commnlibrary.utils.Constant.isDebug;
 import static com.kikis.commnlibrary.utils.GsonUtil.getObjMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.RecycleViewUtils.MoveToPositionTop;
 
@@ -389,7 +366,7 @@ public class ChatActivity extends BaseMvpActivity<IMChatContract.IMChatPresenter
             case R.id.img_more:
 //                showBaseDialog();
                 if (mMessageDetails != null && mMessageDetails.getOtherAvatarInfo() != null && !isEmpty(mMessageDetails.getOtherAvatarInfo().getSendIdentifier()))
-                    goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier()}));
+                    goToPagePutSerializable(reference.get(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{mMessageDetails.getOtherAvatarInfo().getSendIdentifier()}));
 
                 break;
         }

@@ -49,49 +49,50 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-    <ImageView
-        android:id="@+id/authenticated_img"
-        android:layout_width="wrap_content"
-        android:layout_height="18dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/icon_rcy"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/module_svg_store_authenticated"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         app:layout_constraintStart_toStartOf="@+id/store_name_ll"
-        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"></ImageView>
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 
     <TextView
         android:id="@+id/one_label"
         android:layout_width="wrap_content"
         android:layout_height="18dp"
-        android:layout_marginLeft="6dp"
         android:background="@drawable/module_bg_business_district_today_new_products"
         android:gravity="center"
+        android:layout_marginTop="5dp"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        tools:text="新品上架"
         android:textColor="#599252"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"
-        app:layout_constraintLeft_toRightOf="@+id/authenticated_img"
-        app:layout_constraintTop_toTopOf="@+id/authenticated_img" />
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"
+        app:layout_constraintLeft_toRightOf="@+id/icon_rcy"
+        tools:text="新品上架" />
 
     <TextView
         android:id="@+id/two_label"
         android:layout_width="wrap_content"
         android:layout_height="18dp"
-        android:layout_marginLeft="6dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/module_bg_business_district_today_new_products"
         android:gravity="center"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
-        tools:text="新品上架"
         android:textColor="#599252"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@+id/authenticated_img"
+        app:layout_constraintTop_toBottomOf="@+id/store_name_ll"
         app:layout_constraintLeft_toRightOf="@+id/one_label"
-        app:layout_constraintTop_toTopOf="@+id/authenticated_img" />
+        tools:text="新品上架" />
 
     <ImageView
         android:id="@+id/iv_delete"
@@ -100,8 +101,8 @@
         android:layout_marginTop="9dp"
         android:layout_marginRight="25dp"
         android:padding="6dp"
-        android:visibility="gone"
         android:src="@drawable/module_svg_delete_grey"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,12 +110,12 @@
         android:id="@+id/distance_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginRight="25dp"
         android:textColor="@color/gray_a9"
         android:textSize="12sp"
-        android:layout_marginRight="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/store_name_ll"
         app:layout_constraintRight_toLeftOf="@+id/iv_delete"
         app:layout_constraintTop_toTopOf="@+id/store_name_ll"
-        app:layout_constraintBottom_toBottomOf="@+id/store_name_ll"
         tools:text="距离 1.5km" />
 
     <TextView
@@ -122,7 +123,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="45dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="40dp"
         android:lineSpacingExtra="3dp"
         android:text="今日上架元气森林山楂味气泡水，6元一瓶56元一箱，一箱/10瓶"
@@ -130,7 +131,7 @@
         android:textSize="15sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/authenticated_img" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_avatar" />
 
     <FrameLayout
         android:id="@+id/picture_fml"
@@ -263,8 +264,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableRight="@drawable/module_svg_business_district_comment_put_away"
-                android:text="收起"
                 android:gravity="center"
+                android:text="收起"
                 android:textColor="#FFA9A9A9"
                 android:textSize="12sp" />
 

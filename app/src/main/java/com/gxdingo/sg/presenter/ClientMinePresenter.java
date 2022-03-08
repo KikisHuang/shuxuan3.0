@@ -252,7 +252,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void scanCode(String content) {
         if (clientNetworkModel != null)
-            clientNetworkModel.receiveCoupon(getContext(), content);
+            clientNetworkModel.receiveCoupon(getContext(), content,null);
     }
 
     @Override

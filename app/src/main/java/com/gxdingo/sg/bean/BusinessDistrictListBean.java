@@ -51,7 +51,7 @@ public class BusinessDistrictListBean implements Serializable {
         private String nickName;
         private String avatar;
         public String forwardingUrl;
-        public String iconUrl;
+        public List<String> iconList;
         public List<Labels> labels;
         public int likedStatus;
         public String liked;

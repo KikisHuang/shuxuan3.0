@@ -231,7 +231,7 @@
 
         <!--客户端店铺详情页面 -->
         <activity
-            android:name=".activity.ClientStoreDetailsActivity"
+            android:name=".activity.StoreDetailsActivity"
             android:screenOrientation="portrait">
 
         </activity>

@@ -27,7 +27,6 @@ import butterknife.BindView;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 
 /**
@@ -185,7 +184,7 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
                     if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 1) {
                         // 状态。0=待使用；1=已使用；2=已过期
                         if (item.getStatus() == 0){
-                            goToPagePutSerializable(reference.get(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.userIdentifier}));
+                            goToPagePutSerializable(reference.get(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.userIdentifier}));
                             return;
                         }
                     }
