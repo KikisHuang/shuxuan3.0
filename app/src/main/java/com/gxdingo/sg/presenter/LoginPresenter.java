@@ -128,11 +128,11 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
             getBV().onStarts();
     }
 
+
     @Override
     public void onDisposable(BaseSubscriber subscriber) {
         addDisposable(subscriber);
     }
-
 
 
     @Override
@@ -247,8 +247,8 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void onMvpDestroy() {
         super.onMvpDestroy();
-//        if (oneKeyModel != null)
-//            oneKeyModel.quitLoginPage();
+        if (oneKeyModel != null)
+            oneKeyModel.destroy();
     }
 
     private Handler handler = new Handler() {

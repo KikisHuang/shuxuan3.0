@@ -95,7 +95,6 @@ public class OneKeyModel {
     //协议是否勾选
     private boolean isCheck;
 
-    private static View v;
 
     public OneKeyModel() {
 
@@ -376,7 +375,6 @@ public class OneKeyModel {
                 .setLayout(R.layout.module_activity_one_key_login, new AbstractPnsViewDelegate() {
                     @Override
                     public void onViewCreated(View view) {
-                        v = view;
 
                         findViewById(R.id.tv_other).setOnClickListener(v -> {
                             goToPage(context, LoginActivity.class, null);
@@ -458,13 +456,17 @@ public class OneKeyModel {
 
 
     public void quitLoginPage() {
+        destroy();
+        EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
+    }
+
+    public void destroy() {
+        ToastUtils.cancel();
         if (mAuthHelper != null) {
-            v = null;
             mAuthHelper.setAuthListener(null);
             mAuthHelper.quitLoginPage();
             mAuthHelper = null;
 
-            EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
         }
     }
 

@@ -11,6 +11,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AliASRBean;
 import com.gxdingo.sg.bean.gen.DraftBeanDao;
 import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoManager;
 import com.gxdingo.sg.db.DaoUtilsStore;
 import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.utils.LocalConstant;
@@ -112,6 +113,9 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
         DaoUtilsStore mStore = DaoUtilsStore.getInstance();
 
         mDraftUtils = mStore.getDratfUtils();
+        //关闭数据库
+        DaoManager.getInstance().closeConnection();
+
     }
 
     @Override
@@ -726,6 +730,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
             }
             EventBus.getDefault().post(LocalConstant.NOTIFY_MSG_LIST_ADAPTER);
 
+            //关闭数据库
+            DaoManager.getInstance().closeConnection();
         }
     }
 
@@ -745,6 +751,8 @@ public class IMChatPresenter extends BaseMvpPresenter<BasicsListener, IMChatCont
                     LogUtils.w(" draft id === " + db.id);
 
                 getV().getMessageEdttext().setText(db.draft);
+                //关闭数据库
+                DaoManager.getInstance().closeConnection();
             }
         }
     }

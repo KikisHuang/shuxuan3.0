@@ -252,7 +252,10 @@ public class StoreNetworkModel {
         Map<String, String> map = new HashMap<>();
         map.put(StoreLocalConstant.AVATAR, avatar);
         map.put(StoreLocalConstant.NAME, name);
-        map.put(StoreLocalConstant.STORE_CATEGORY, GsonUtil.gsonToStr(storeCategory));
+
+        if (storeCategory != null)
+            map.put(StoreLocalConstant.STORE_CATEGORY, GsonUtil.gsonToStr(storeCategory));
+
         map.put(StoreLocalConstant.REGION_PATH, regionPath);
         map.put(StoreLocalConstant.ADDRESS, address);
         map.put(StoreLocalConstant.BUSINESS_LICENCE, businessLicence);

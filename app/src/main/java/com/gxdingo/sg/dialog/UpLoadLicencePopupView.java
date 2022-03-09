@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 
 import com.blankj.utilcode.util.ScreenUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.MyConfirmListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
@@ -83,6 +85,9 @@ public class UpLoadLicencePopupView extends CenterPopupView implements View.OnCl
     }
 
     public void setLicenceImg(String url) {
-        Glide.with(getContext()).load(url).apply(GlideUtils.getInstance().getDefaultOptions()).into(licence_img);
+        Glide.with(getContext()).load(url).apply(new RequestOptions()
+                .dontAnimate()
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)).into(licence_img);
     }
 }

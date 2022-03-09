@@ -135,9 +135,12 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         tempLicenceMap = new ArrayList<>();
         tvRightButton.setVisibility(View.VISIBLE);
         tvRightButton.setOnClickListener(v -> {
-            getP().batchUpload(tempLicenceMap, list -> {
-                getP().confirmBusinessScope(mAdapter.getData(), (List<StoreCategoryBean>) list);
-            });
+            if (tempLicenceMap != null && tempLicenceMap.size() > 0) {
+                getP().batchUpload(tempLicenceMap, list -> {
+                    getP().confirmBusinessScope(mAdapter.getData(), (List<StoreCategoryBean>) list);
+                });
+            } else
+                getP().confirmBusinessScope(mAdapter.getData(), null);
         });
 
         mAdapter = new StoreBusinessScopeAdapter();
@@ -214,26 +217,29 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
         if (data.get(position).getType() == 1) {
             //特殊品类需要添加经营许可证
-            if (popupView == null) {
-                popupView = new XPopup.Builder(reference.get())
-                        .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
-                        .isDarkTheme(false)
-                        .asCustom(new UpLoadLicencePopupView(reference.get(), "您的选择经营范围需要提交\\n食品经营许可证", (CustomResultListener<Integer>) integer -> {
-                            if (integer != null && integer == 1) {
-                                //上传食品经营许可证
-                                getP().selectedLicence(o -> {
-                                    tempLicenceUrl = (LocalMedia) o;
-                                });
-                            } else if (integer == 0) {
+            if (popupView != null){
+                popupView.onDestroy();
+                popupView =null;
+            }
 
-                                tempLicenceMap.add(new StoreCategoryBean(data.get(position).getId(), getPhotoUrl(tempLicenceUrl)));
-                                data.get(position).setSelect(!isSelect);
-                                mAdapter.notifyDataSetChanged();
-                            }
+            popupView = new XPopup.Builder(reference.get())
+                    .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
+                    .isDarkTheme(false)
+                    .asCustom(new UpLoadLicencePopupView(reference.get(), "您的选择经营范围需要提交\n食品经营许可证", (CustomResultListener<Integer>) integer -> {
+                        if (integer != null && integer == 1) {
+                            //上传食品经营许可证
+                            getP().selectedLicence(o -> {
+                                tempLicenceUrl = (LocalMedia) o;
+                                uploadImage(getPhotoUrl(tempLicenceUrl));
+                            });
+                        } else if (integer == 0) {
+                            tempLicenceMap.add(new StoreCategoryBean(data.get(position).getId(), getPhotoUrl(tempLicenceUrl)));
+                            data.get(position).setSelect(!isSelect);
+                            mAdapter.notifyDataSetChanged();
+                        }
 
-                        })).show();
-            } else
-                popupView.show();
+                    })).show();
+
 
         } else {
             data.get(position).setSelect(!isSelect);
