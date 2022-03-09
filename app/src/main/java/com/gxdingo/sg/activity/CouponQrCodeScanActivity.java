@@ -187,8 +187,17 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
     @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
-        if (object instanceof CouponVerificationEvent)
+        if (object instanceof CouponVerificationEvent) {
+            CouponVerificationEvent event = (CouponVerificationEvent) object;
+            if (mCouponBean != null)
+                sendEvent(mCouponBean);
+
+            if (!isEmpty(event.content))
+                onMessage(event.content);
+
             finish();
+        }
+
 
     }
 

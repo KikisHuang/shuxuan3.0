@@ -143,4 +143,21 @@ public class BigDecimalUtils {
             return false;
     }
 
+    /**
+     * 比较大小，大于等于
+     *
+     * @param v1 被比较数
+     * @param v2 比较数
+     * @return 如果v1 大于v2 则 返回true 否则false
+     */
+    public static boolean compares(String v1, String v2) {
+        BigDecimal b1 = new BigDecimal(v1);
+        BigDecimal b2 = new BigDecimal(v2);
+        int bj = b1.compareTo(b2);
+        if (bj >= 0)
+            return true;
+        else
+            return false;
+    }
+
 }

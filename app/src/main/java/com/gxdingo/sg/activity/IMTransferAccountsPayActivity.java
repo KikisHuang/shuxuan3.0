@@ -30,12 +30,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.compare;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.compares;
 import static com.kikis.commnlibrary.utils.BigDecimalUtils.sub;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.Constant.PAYMENT_SUCCESS;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
-import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
@@ -204,7 +204,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
             if (!isEmpty(s.toString())) {
                 //记录一下总金额
                 if (couponBean != null) {
-                    if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
+                    if (compares(etAmount.getText().toString(), couponBean.getUseAmount())) {
                         //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                         sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
                         coupon_stv.setRightTextColor(getc(R.color.red));
@@ -281,7 +281,7 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 coupon_stv.setRightTextColor(getc(R.color.red));
 
             if (!isEmpty(etAmount.getText().toString())) {
-                if (compare(etAmount.getText().toString(), couponBean.getUseAmount())) {
+                if (compares(etAmount.getText().toString(), couponBean.getUseAmount())) {
                     //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                     sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
 

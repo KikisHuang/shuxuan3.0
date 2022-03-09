@@ -174,11 +174,9 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
         if (object instanceof CouponVerificationEvent) {
-            CouponVerificationEvent event = (CouponVerificationEvent) object;
-            if (!isEmpty(event.content))
-                onMessage(event.content);
 
-            getP().getCoupons(true, mIdentifie);
+
+            finish();
         }
     }
 
