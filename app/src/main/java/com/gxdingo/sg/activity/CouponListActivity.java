@@ -1,6 +1,8 @@
 package com.gxdingo.sg.activity;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -57,6 +59,7 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
     //商家 mIdentifie
     private String mIdentifie;
+    private LinearLayout footLayout;
 
     @Override
     protected ClientCouponContract.ClientCouponPresenter createPresenter() {
@@ -137,6 +140,10 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
     @Override
     protected void init() {
+
+        mType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+        mIdentifie = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
+
         title_layout.setBackgroundColor(getc(R.color.divide_color));
         title_layout.setTitleText("选择优惠券");
         mCouponAdapter = new CouponAdapter();
@@ -146,9 +153,19 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
         recyclerView.setBackgroundColor(getc(R.color.divide_color));
         mCouponAdapter.setOnItemChildClickListener(this);
 
-        mType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
 
-        mIdentifie = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
+        if (mType == 1) {
+            footLayout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_coupon_foot, new LinearLayout(reference.get()));
+            mCouponAdapter.addFooterView(footLayout);
+            footLayout.setOnClickListener(v -> {
+                sendEvent(new ClientCouponBean());
+                finish();
+            });
+        }
+
+
+
+
     }
 
     @Override
@@ -163,9 +180,13 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
     @Override
     public void onCouponsResult(boolean refresh, List<ClientCouponBean> couponBeans) {
-        if (refresh)
+
+        if (refresh) {
+            if (couponBeans == null || couponBeans.size() <= 0)
+                mCouponAdapter.removeFooterView(footLayout);
+
             mCouponAdapter.setList(couponBeans);
-        else
+        } else
             mCouponAdapter.addData(couponBeans);
 
     }

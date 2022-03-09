@@ -207,28 +207,26 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     @Override
     public void getCategory() {
-        storeNetworkModel.businessScope(getContext());
+        if (storeNetworkModel != null)
+            storeNetworkModel.businessScope(getContext());
     }
 
     @Override
-    public void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<String> licenceUrl) {
+    public void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<StoreCategoryBean> licenceUrl) {
         if (isViewAttached())
             RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
-                List<StoreCategoryBean> data = new ArrayList<>();
                 String scopeName = "";
+                //拼接选中的经营范围名称
                 for (StoreBusinessScopeBean.ListBean scb : businessScopeBeans) {
                     if (scb.isSelect()) {
-                        StoreCategoryBean bsb = new StoreCategoryBean(scb.getId(), scb.getPath());
-                        data.add(bsb);
                         if (!isEmpty(scopeName)) {
                             scopeName += "," + scb.getName();
                         } else {
                             scopeName = scb.getName();
                         }
-
                     }
                 }
-                e.onNext(new BusinessScopeEvent(data, scopeName));
+                e.onNext(new BusinessScopeEvent(licenceUrl, scopeName));
                 e.onComplete();
             }), (LifecycleProvider) getContext()).subscribe(o -> {
                 BusinessScopeEvent data = (BusinessScopeEvent) o;
@@ -236,7 +234,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                 if (data.data.size() <= 0)
                     onMessage("请最少选择一个品类");
                 else {
-                    data.licenceUrls = licenceUrl;
+                    data.data = licenceUrl;
                     getV().closeBusinessScope(data);
                 }
             });
@@ -358,12 +356,15 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
     }
 
     @Override
-    public void batchUpload(Map<Integer, LocalMedia> tempLicenceMap, CustomResultListener customResultListener) {
+    public void batchUpload(List<StoreCategoryBean> tempLicenceMap, CustomResultListener customResultListener) {
 
         List<LocalMedia> data = new ArrayList<>();
 
+        //转换成需要上传的List<LocalMedia> list 格式
         for (int i = 0; i < tempLicenceMap.size(); i++) {
-            data.add(tempLicenceMap.get(i));
+            LocalMedia localMedia = new LocalMedia();
+            localMedia.setPath(tempLicenceMap.get(i).getProve());
+            data.add(localMedia);
         }
 
         if (networkModel != null)
@@ -375,8 +376,16 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
                 @Override
                 public void loadSucceed(UpLoadBean upLoadBean) {
-                    if (customResultListener != null)
-                        customResultListener.onResult(upLoadBean.urls);
+
+                    if (upLoadBean.urls != null && upLoadBean.urls.size() == tempLicenceMap.size()) {
+
+                        //讲上传的网络图片赋值回去
+                        for (int j = 0; j < tempLicenceMap.size(); j++) {
+                            tempLicenceMap.get(j).setProve(upLoadBean.urls.get(j));
+                        }
+                        if (customResultListener != null)
+                            customResultListener.onResult(tempLicenceMap);
+                    }
                 }
             });
     }

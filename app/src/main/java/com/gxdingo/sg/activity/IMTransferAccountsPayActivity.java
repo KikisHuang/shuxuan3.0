@@ -275,7 +275,23 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
             couponBean = (ClientCouponBean) object;
 
-            coupon_stv.setRightString(Float.valueOf(couponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + couponBean.getUseAmount() + "减" + couponBean.getCouponAmount());
+            //不使用优惠券
+            if (couponBean.getId() <= 0)
+                couponBean = null;
+
+            if (couponBean != null)
+                coupon_stv.setRightString(Float.valueOf(couponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + couponBean.getUseAmount() + "减" + couponBean.getCouponAmount());
+            else {
+                //不使用优惠券
+                getP().getCoupons(otherInfo.getSendIdentifier());
+
+                coupon_stv.setRightTextColor(getc(R.color.graycc));
+                //清空折扣金额
+                if (!isEmpty(etAmount.getText().toString()))
+                    sum_tv.setText(etAmount.getText().toString());
+
+                return;
+            }
 
             if (couponBean != null && couponBean.getStatus() == 0)
                 coupon_stv.setRightTextColor(getc(R.color.red));
@@ -284,7 +300,6 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 if (compares(etAmount.getText().toString(), couponBean.getUseAmount())) {
                     //如果消费超过优惠券的使用门槛，则使用优惠券抵扣金额
                     sum_tv.setText(sub(etAmount.getText().toString(), couponBean.getCouponAmount(), 2));
-
                 }
             } else
                 sum_tv.setText("0");

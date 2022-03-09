@@ -28,7 +28,7 @@ public class StoreCertificationContract {
         void getCategory();
 
         //确定经营范围
-        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<String> licenceUrls);
+        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<StoreCategoryBean> licenceUrls);
 
         //提交认证信息
         void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
@@ -46,7 +46,7 @@ public class StoreCertificationContract {
         void selectedLicence(CustomResultListener customResultListener);
 
         //批量上传图片
-        void batchUpload(Map<Integer, LocalMedia> tempLicenceMap,CustomResultListener customResultListener);
+        void batchUpload(List<StoreCategoryBean> tempLicenceMap,CustomResultListener customResultListener);
     }
 
     public interface StoreCertificationListener {

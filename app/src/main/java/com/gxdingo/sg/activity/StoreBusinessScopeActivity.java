@@ -14,6 +14,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.StoreBusinessScopeAdapter;
 import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
+import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.gxdingo.sg.biz.StoreCertificationContract;
 import com.gxdingo.sg.dialog.UpLoadLicencePopupView;
 import com.gxdingo.sg.presenter.StoreCertificationPresenter;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+
+import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 
 /**
  * 商家经营范围
@@ -56,7 +59,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     private String licenceUrl = "";
     private BasePopupView popupView;
 
-    private Map<Integer, LocalMedia> tempLicenceMap;
+    private List<StoreCategoryBean> tempLicenceMap;
     private LocalMedia tempLicenceUrl;
 
 
@@ -129,12 +132,11 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     protected void init() {
         titleLayout.setTitleTextSize(16);
         titleLayout.setTitleText("经营范围");
-        tempLicenceMap = new HashMap<>();
+        tempLicenceMap = new ArrayList<>();
         tvRightButton.setVisibility(View.VISIBLE);
         tvRightButton.setOnClickListener(v -> {
-            //todo 因为接口还没有,新增的上传资质流程待测试
             getP().batchUpload(tempLicenceMap, list -> {
-                getP().confirmBusinessScope(mAdapter.getData(), (List<String>) list);
+                getP().confirmBusinessScope(mAdapter.getData(), (List<StoreCategoryBean>) list);
             });
         });
 
@@ -223,7 +225,8 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                                     tempLicenceUrl = (LocalMedia) o;
                                 });
                             } else if (integer == 0) {
-                                tempLicenceMap.put(data.get(position).getId(), tempLicenceUrl);
+
+                                tempLicenceMap.add(new StoreCategoryBean(data.get(position).getId(), getPhotoUrl(tempLicenceUrl)));
                                 data.get(position).setSelect(!isSelect);
                                 mAdapter.notifyDataSetChanged();
                             }
