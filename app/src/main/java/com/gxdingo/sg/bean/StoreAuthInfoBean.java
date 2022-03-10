@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -71,7 +73,20 @@ public class StoreAuthInfoBean {
          */
 
         private String name;
+
         private String prove;
+
+        public String licenceName;
+
+        @SerializedName("rejectReason")
+        private String rejectReason;
+        @SerializedName("type")
+        private int type;
+        @SerializedName("proveStatus")
+        private int proveStatus;
+
+        public transient boolean unUpload;
+
 
         public String getName() {
             return name;
@@ -87,6 +102,30 @@ public class StoreAuthInfoBean {
 
         public void setProve(String prove) {
             this.prove = prove;
+        }
+
+        public String getRejectReason() {
+            return rejectReason;
+        }
+
+        public void setRejectReason(String rejectReason) {
+            this.rejectReason = rejectReason;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getProveStatus() {
+            return proveStatus;
+        }
+
+        public void setProveStatus(int proveStatus) {
+            this.proveStatus = proveStatus;
         }
     }
 }

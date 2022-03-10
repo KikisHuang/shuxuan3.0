@@ -200,7 +200,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), null, status -> {
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), status -> {
                     if (status == -1)
                         goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
                 }).show());

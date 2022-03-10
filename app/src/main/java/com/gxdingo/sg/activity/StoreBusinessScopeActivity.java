@@ -217,15 +217,15 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
         if (data.get(position).getType() == 1) {
             //特殊品类需要添加经营许可证
-            if (popupView != null){
+            if (popupView != null) {
                 popupView.onDestroy();
-                popupView =null;
+                popupView = null;
             }
 
             popupView = new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                     .isDarkTheme(false)
-                    .asCustom(new UpLoadLicencePopupView(reference.get(), "您的选择经营范围需要提交\n食品经营许可证", (CustomResultListener<Integer>) integer -> {
+                    .asCustom(new UpLoadLicencePopupView(reference.get(), "您的选择经营范围需要提交\n" + data.get(position).licenceName, (CustomResultListener<Integer>) integer -> {
                         if (integer != null && integer == 1) {
                             //上传食品经营许可证
                             getP().selectedLicence(o -> {

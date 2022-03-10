@@ -11,13 +11,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.allen.library.SuperTextView;
 import com.blankj.utilcode.util.SPUtils;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
+import com.gxdingo.sg.bean.UserBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.OnAccountSelectListener;
@@ -28,19 +29,15 @@ import com.gxdingo.sg.dialog.OneSentenceHintPopupView;
 import com.gxdingo.sg.dialog.PayPasswordPopupView;
 import com.gxdingo.sg.presenter.ClientAccountSecurityPresenter;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.gxdingo.sg.view.PasswordLayout;
 import com.gxdingo.sg.view.RegexEditText;
-import com.kikis.commnlibrary.activitiy.BaseActivity;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.kikis.commnlibrary.bean.SubscribesListBean;
 import com.kikis.commnlibrary.utils.BigDecimalUtils;
 import com.kikis.commnlibrary.utils.Constant;
-import com.kikis.commnlibrary.utils.GlideUtils;
-import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BottomPopupView;
 import com.lxj.xpopup.core.CenterPopupView;
 
 import java.util.ArrayList;
@@ -53,7 +50,6 @@ import io.reactivex.schedulers.Schedulers;
 
 import static android.text.TextUtils.isEmpty;
 import static com.gxdingo.sg.utils.LocalConstant.AUTHENTICATION_SUCCEEDS;
-import static com.kikis.commnlibrary.utils.CommonUtils.getd;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
@@ -78,6 +74,8 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
 
     private String mBottomExplain = "";
     private String amount = "0.0";
+    //是否需要重新上传特殊资质
+    private boolean noQualification;
 
     //0銀行卡 10微信 20支付寶
     private int mtype = -1;
@@ -161,7 +159,9 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
         title_layout.setTitleText(gets(R.string.balance_cash));
         et_cash_amount.addTextChangedListener(textWatcher);
         title_layout.setMoreText("说明");
-        amount = getIntent().getStringExtra(Constant.PARAMAS + 0);
+        amount = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+        noQualification = getIntent().getBooleanExtra(Constant.SERIALIZABLE + 1, false);
+
         et_cash_amount.setHint("可转出到卡" + amount + "元");
         et_cash_amount.setText(amount + "");
         et_cash_amount.setSelection(et_cash_amount.getText().toString().length());
@@ -210,37 +210,60 @@ public class ClientCashActivity extends BaseMvpActivity<ClientAccountSecurityCon
                 break;
             case R.id.btn_confirm:
 
-                if (cashInfoBean != null) {
-                    //已认证
-                    if (cashInfoBean.authStatus == 1) {
-
-                        String balance = et_cash_amount.getText().toString();
-                        if (isEmpty(balance)) {
-                            onMessage("请输入提现金额");
-                            return;
-                        }
-                        if (!BigDecimalUtils.compare(balance, "0")) {
-                            onMessage("请输入有效提现金额");
-                            return;
-                        }
-
-                        if (mtype != -1)
-                            showPayPswDialog();
-                        else
-                            onMessage("请选择提现方式");
-                    } else {
-                        //未认证状态直接跳转认证页面
-                        if (cashInfoBean.authStatus == 0) {
-                            goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
-                            onMessage("请先填写实名认证信息");
-                            return;
-                        }
-                    }
-                }
-
+                if (noQualification)
+                    getP().getStoreQualifications(UserInfoUtils.getInstance().getIdentifier());
+                else
+                    checkAuthStatus();
 
                 break;
         }
+    }
+
+    public void checkAuthStatus() {
+
+        if (cashInfoBean != null) {
+            //已认证
+            if (cashInfoBean.authStatus == 1) {
+
+                String balance = et_cash_amount.getText().toString();
+                if (isEmpty(balance)) {
+                    onMessage("请输入提现金额");
+                    return;
+                }
+                if (!BigDecimalUtils.compare(balance, "0")) {
+                    onMessage("请输入有效提现金额");
+                    return;
+                }
+
+                if (mtype != -1)
+                    showPayPswDialog();
+                else
+                    onMessage("请选择提现方式");
+            } else {
+                //未认证状态直接跳转认证页面
+                if (cashInfoBean.authStatus == 0) {
+                    goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
+                    onMessage("请先填写实名认证信息");
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void showHintDialog(StoreAuthInfoBean.CategoryListBean bean) {
+
+        new XPopup.Builder(reference.get())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .autoDismiss(true)
+                .hasShadowBg(true)
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), bean, status -> {
+
+                    if (status == 3)
+                        goToPage(reference.get(), UploadSpecialQualificationActivity.class, null);
+
+                }).show());
+
     }
 
     private void showCashSelectDialog() {

@@ -182,8 +182,6 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
     public void onCouponsResult(boolean refresh, List<ClientCouponBean> couponBeans) {
 
         if (refresh) {
-            if (couponBeans == null || couponBeans.size() <= 0)
-                mCouponAdapter.removeFooterView(footLayout);
 
             mCouponAdapter.setList(couponBeans);
         } else

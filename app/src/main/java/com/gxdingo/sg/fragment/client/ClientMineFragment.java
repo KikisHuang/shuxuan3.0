@@ -132,6 +132,8 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
 
     private String scanContent = "";
 
+    private boolean qualification;
+
     @Override
     protected ClientMineContract.ClientMinePresenter createPresenter() {
         return new ClientMinePresenter();
@@ -341,7 +343,7 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
                 goToPage(getContext(), ClientAccountRecordActivity.class, null);
                 break;
             case R.id.btn_cash:
-                goToPage(getContext(), ClientCashActivity.class, getIntentMap(new String[]{balance_tv.getText().toString()}));
+                goToPagePutSerializable(getContext(), ClientCashActivity.class, getIntentEntityMap(new Object[]{balance_tv.getText().toString(),qualification}));
                 break;
             case R.id.address_manage_stv:
                 goToPage(getContext(), ClientAddressListActivity.class, null);
@@ -490,6 +492,11 @@ public class ClientMineFragment extends BaseMvpFragment<ClientMineContract.Clien
     @Override
     public void onStatusResult(UserBean userBean) {
 
+    }
+
+    @Override
+    public void onQualification(Object v) {
+        qualification = (boolean) v;
     }
 
     @Override

@@ -60,6 +60,7 @@ import static com.gxdingo.sg.http.Api.STORE_QR_CODE;
 import static com.gxdingo.sg.http.Api.STORE_SCAN_CODE;
 import static com.gxdingo.sg.http.Api.STORE_UPDATE;
 import static com.gxdingo.sg.http.Api.TRANSACTION_DETAILS;
+import static com.gxdingo.sg.http.Api.UPDATE_QUALIFICATION;
 import static com.gxdingo.sg.http.Api.USER_STATUS;
 import static com.gxdingo.sg.http.Api.WALLET_BINDING;
 import static com.gxdingo.sg.http.Api.WALLET_HOME;
@@ -996,9 +997,12 @@ public class StoreNetworkModel {
     /**
      * 店铺获取店铺资质
      */
-    public void getAuthInfo(Context context) {
+    public void getAuthInfo(Context context,String identifier) {
 
-        Observable<StoreAuthInfoBean> observable = HttpClient.post(CHECK_QUALIFICATION)
+        Map<String, String> map = new HashMap<>();
+        map.put("identifier", identifier);
+
+        Observable<StoreAuthInfoBean> observable = HttpClient.post(CHECK_QUALIFICATION,map)
                 .execute(new CallClazzProxy<ApiResult<StoreAuthInfoBean>, StoreAuthInfoBean>(new TypeToken<StoreAuthInfoBean>() {
                 }.getType()) {
                 });
@@ -1022,7 +1026,37 @@ public class StoreNetworkModel {
         netWorkListener.onDisposable(subscriber);
     }
 
+    /**
+     * 店铺获取店铺资质
+     */
+    public void getAuthInfo(Context context,String identifier,CustomResultListener customResultListener) {
 
+        Map<String, String> map = new HashMap<>();
+        map.put("identifier", identifier);
+
+        Observable<StoreAuthInfoBean> observable = HttpClient.post(CHECK_QUALIFICATION,map)
+                .execute(new CallClazzProxy<ApiResult<StoreAuthInfoBean>, StoreAuthInfoBean>(new TypeToken<StoreAuthInfoBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<StoreAuthInfoBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null)
+                    netWorkListener.onMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(StoreAuthInfoBean authInfoBean) {
+                if (customResultListener != null)
+                    customResultListener.onResult(authInfoBean);
+            }
+        };
+
+        observable.subscribe(subscriber);
+        netWorkListener.onDisposable(subscriber);
+    }
     /**
      * 刷新登录信息状态
      *
@@ -1109,5 +1143,46 @@ public class StoreNetworkModel {
             netWorkListener.onDisposable(subscriber);
     }
 
+    /**
+     * 更新店铺资质信息
+     * @param context
+     * @param list
+     */
+    public void upDateQulification(Context context,List<StoreAuthInfoBean.CategoryListBean> list) {
 
+        Map<String, String> map = new HashMap<>();
+
+        if (netWorkListener != null)
+            netWorkListener.onStarts();
+
+        map.put("storeCategory",GsonUtil.gsonToStr(list));
+
+        Observable<NormalBean> observable = HttpClient.post(UPDATE_QUALIFICATION,map)
+                .execute(new CallClazzProxy<ApiResult<NormalBean>, NormalBean>(new TypeToken<NormalBean>() {
+                }.getType()) {
+                });
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<NormalBean>(context) {
+            @Override
+            public void onError(ApiException e) {
+                super.onError(e);
+                LogUtils.e(e);
+                if (netWorkListener != null) {
+                    netWorkListener.onMessage(e.getMessage());
+                    netWorkListener.onAfters();
+                }
+            }
+
+            @Override
+            public void onNext(NormalBean normalBean) {
+                if (netWorkListener != null) {
+                    netWorkListener.onAfters();
+                    netWorkListener.onSucceed(100);
+                }
+            }
+        };
+
+        observable.subscribe(subscriber);
+        if (netWorkListener != null)
+            netWorkListener.onDisposable(subscriber);
+    }
 }

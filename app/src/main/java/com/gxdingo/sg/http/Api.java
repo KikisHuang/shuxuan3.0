@@ -561,6 +561,10 @@ public class Api {
      */
     public static final String CHECK_QUALIFICATION = HIERARCHY + "store/qualifications";
     /**
+     * 更新店铺资质
+     */
+    public static final String UPDATE_QUALIFICATION = HIERARCHY + "store/update/qualifications";
+    /**
      * 忽略订单
      */
     public static final String ORDER_IGNORE = HIERARCHY + "order/ignore";

@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientStorePhotoAdapter;
 import com.gxdingo.sg.adapter.ShopsIconAdapter;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.dialog.PostionFunctionDialog;
@@ -33,6 +34,8 @@ import com.kikis.commnlibrary.view.TemplateTitle;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -306,12 +309,12 @@ public class StoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.Cl
                     switch (v.getId()) {
                         case R.id.certification_ll:
                             if (mStoreDetail != null && mStoreDetail.getLicence() != null)
-                                goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence()}));
+                                goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{mStoreDetail.getLicence().getBusinessLicence(),storeId}));
                             break;
                         case R.id.share_ll:
-                            if (mStoreDetail != null && !isEmpty(mStoreDetail.forwardingUrl)) {
+                            if (mStoreDetail != null && !isEmpty(mStoreDetail.forwardingUrl))
                                 ShareUtils.UmShare(reference.get(), null, mStoreDetail.forwardingUrl, "分享店铺", mStoreDetail.getIntroduction(), R.mipmap.ic_app_logo, SHARE_MEDIA.WEIXIN);
-                            }
+
                             break;
                         case R.id.report_ll:
                             goToPagePutSerializable(reference.get(), IMComplaintActivity.class, getIntentEntityMap(new Object[]{storeId}));
@@ -445,6 +448,11 @@ public class StoreDetailsActivity extends BaseMvpActivity<ClientStoreContract.Cl
     @Override
     public AMap getMap() {
         return mapView.getMap();
+    }
+
+    @Override
+    public void onQualificationsDataResult(List<StoreAuthInfoBean.CategoryListBean> newData) {
+
     }
 
 

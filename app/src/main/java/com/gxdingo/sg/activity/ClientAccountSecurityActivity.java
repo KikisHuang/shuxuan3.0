@@ -6,6 +6,7 @@ import com.allen.library.SuperTextView;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.ThirdPartyBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
@@ -285,6 +286,16 @@ public class ClientAccountSecurityActivity extends BaseMvpActivity<ClientAccount
 
     @Override
     public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
+    }
+
+    @Override
+    public void checkAuthStatus() {
+
+    }
+
+    @Override
+    public void showHintDialog(StoreAuthInfoBean.CategoryListBean bean) {
 
     }
 

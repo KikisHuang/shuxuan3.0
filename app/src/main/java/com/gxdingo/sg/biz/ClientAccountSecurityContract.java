@@ -2,6 +2,7 @@ package com.gxdingo.sg.biz;
 
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
@@ -35,6 +36,8 @@ public class ClientAccountSecurityContract {
         void cash(String pwd);
 
         void getCardList(boolean b);
+
+        void getStoreQualifications(String identifier);
     }
 
     public interface ClientAccountSecurityListener {
@@ -50,6 +53,10 @@ public class ClientAccountSecurityContract {
         int getType();
 
         void onDataResult(ArrayList<BankcardBean> list, boolean b);
+
+        void checkAuthStatus();
+
+        void showHintDialog(StoreAuthInfoBean.CategoryListBean bean);
 
 //        void setUserPhone(String phone);
 //

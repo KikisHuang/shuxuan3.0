@@ -243,6 +243,12 @@
 
         </activity>
 
+        <!--上传特殊資質页面 -->
+        <activity
+            android:name=".activity.UploadSpecialQualificationActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
         <!--客户端账户记录页面 -->
         <activity
             android:name=".activity.ClientAccountRecordActivity"

@@ -18,7 +18,7 @@ public class ClientMineBean {
     @SerializedName("balance")
     private double balance;
     @SerializedName("categoryList")
-    private List<CategoryListDTO> categoryList;
+    private List<StoreAuthInfoBean.CategoryListBean> categoryList;
     @SerializedName("closeTime")
     private String closeTime;
     @SerializedName("couponList")
@@ -62,11 +62,11 @@ public class ClientMineBean {
         this.balance = balance;
     }
 
-    public List<CategoryListDTO> getCategoryList() {
+    public List<StoreAuthInfoBean.CategoryListBean> getCategoryList() {
         return categoryList;
     }
 
-    public void setCategoryList(List<CategoryListDTO> categoryList) {
+    public void setCategoryList(List<StoreAuthInfoBean.CategoryListBean> categoryList) {
         this.categoryList = categoryList;
     }
 

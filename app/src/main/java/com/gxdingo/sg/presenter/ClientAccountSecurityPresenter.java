@@ -11,17 +11,21 @@ import androidx.annotation.NonNull;
 
 import com.alipay.sdk.app.OpenAuthTask;
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.activity.UploadSpecialQualificationActivity;
 import com.gxdingo.sg.bean.AuthResult;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.BankcardListBean;
 import com.gxdingo.sg.bean.ClientAccountTransactionBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.model.ChangePhoneModel;
+import com.gxdingo.sg.model.ClientMineModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.LoginModel;
 import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -45,6 +49,7 @@ import static com.gxdingo.sg.utils.pay.AlipayTool.simpleAuth;
 import static com.kikis.commnlibrary.utils.CommonUtils.HideMobile;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.isWeixinAvilible;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 
 /**
  * @author: Weaving
@@ -57,6 +62,9 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
     private NetworkModel mNetworkModel;
 
     private ClientNetworkModel clientNetworkModel;
+    private StoreNetworkModel storeNetworkModel;
+
+    private ClientMineModel mineModel;
 
     private LoginModel mModdel;
 
@@ -64,8 +72,10 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
 //    private String phone = "18878759765";
 
     public ClientAccountSecurityPresenter() {
+        mineModel = new ClientMineModel();
         mNetworkModel = new NetworkModel(this);
         clientNetworkModel = new ClientNetworkModel(this);
+        storeNetworkModel = new StoreNetworkModel(this);
         mModdel = new LoginModel();
     }
 
@@ -230,7 +240,41 @@ public class ClientAccountSecurityPresenter extends BaseMvpPresenter<BasicsListe
         if (clientNetworkModel != null)
             clientNetworkModel.getBankList(getContext(), b, o -> {
                 if (isViewAttached())
-                    getV().onDataResult(((ArrayList<BankcardBean>) o),b);
+                    getV().onDataResult(((ArrayList<BankcardBean>) o), b);
+            });
+    }
+
+    @Override
+    public void getStoreQualifications(String identifier) {
+        if (storeNetworkModel != null)
+            storeNetworkModel.getAuthInfo(getContext(), identifier, data -> {
+                StoreAuthInfoBean d = (StoreAuthInfoBean) data;
+                if (mineModel != null)
+                    mineModel.getQualificationStatus(getContext(), d.getCategoryList(), o -> {
+                        StoreAuthInfoBean.CategoryListBean clb = (StoreAuthInfoBean.CategoryListBean) o;
+                        if (isViewAttached()) {
+                            // 特殊品类审核状态 0 = 未审核 1 = 已审核 2 = 审核中 3 = 审核驳回
+                            int status = clb.getProveStatus();
+
+                            switch (status) {
+                                case 1:
+                                    getV().checkAuthStatus();
+                                    break;
+                                case 0:
+                                    onMessage("请补充经营许可证");
+                                    goToPage(getContext(), UploadSpecialQualificationActivity.class, null);
+                                    break;
+                                case 2:
+                                case 3:
+                                    getV().showHintDialog(clb);
+                                    break;
+
+                            }
+
+
+                        }
+
+                    });
             });
     }
 

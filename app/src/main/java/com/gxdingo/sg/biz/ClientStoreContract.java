@@ -1,10 +1,14 @@
 package com.gxdingo.sg.biz;
 
 import com.amap.api.maps.AMap;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.StoreDetail;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.util.List;
 
 /**
  * @author: Weaving
@@ -21,6 +25,12 @@ public class ClientStoreContract {
         void goOutSideNavigation(int pos);
 
         void callStore(String s);
+
+        void getStoreQualifications(String id);
+
+        void chooseAnAlbum( CustomResultListener customResultListener);
+
+        void submit(List<StoreAuthInfoBean.CategoryListBean> data);
     }
 
     public interface ClientStoreListener {
@@ -28,5 +38,7 @@ public class ClientStoreContract {
         void onStoreDetailResult(StoreDetail storeDetail);
 
         AMap getMap();
+
+        void onQualificationsDataResult(List<StoreAuthInfoBean.CategoryListBean> newData);
     }
 }
