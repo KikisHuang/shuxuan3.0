@@ -26,11 +26,13 @@ public class ClientStoreContract {
 
         void callStore(String s);
 
-        void getStoreQualifications(String id);
+        void getStoreQualifications(String id,boolean returnSpecial);
 
         void chooseAnAlbum( CustomResultListener customResultListener);
 
         void submit(List<StoreAuthInfoBean.CategoryListBean> data);
+
+        void viewHdImage(String s);
     }
 
     public interface ClientStoreListener {

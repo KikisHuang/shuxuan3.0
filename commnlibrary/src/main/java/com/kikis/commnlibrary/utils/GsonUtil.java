@@ -45,6 +45,7 @@ public class GsonUtil {
      */
     public static Gson getIntGson() {
         Gson gson = new GsonBuilder().
+                setExclusionStrategies(new FooAnnotationExclusionStrategy()).
                 registerTypeAdapter(Double.class, new JsonSerializer<Double>() {
 
                     @Override

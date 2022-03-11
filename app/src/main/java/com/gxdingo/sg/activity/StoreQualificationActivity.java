@@ -31,9 +31,9 @@ import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
- * @author: Weaving
- * @date: 2021/11/17
- * @page:
+ * @author: Kikis
+ * @date: 2022/3/11
+ * @page:店铺资质页面
  */
 public class StoreQualificationActivity extends BaseMvpActivity<ClientStoreContract.ClientStorePresenter> {
 
@@ -128,11 +128,14 @@ public class StoreQualificationActivity extends BaseMvpActivity<ClientStoreContr
         recyclerView.setAdapter(mAdapter);
         data.add(imageUrl);
         mAdapter.setList(data);
+        mAdapter.setOnItemClickListener((a,v,pos) -> {
+            getP().viewHdImage(mAdapter.getData().get(pos));
+        });
     }
 
     @Override
     protected void initData() {
-        getP().getStoreQualifications(id);
+        getP().getStoreQualifications(id, false);
 
     }
 

@@ -32,6 +32,7 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
 import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
@@ -43,6 +44,8 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
 import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 /**
@@ -242,11 +245,14 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
 
     /**
      * 获取店铺资质
+     *
+     * @param id
+     * @param returnSpecial 是否只返回特殊分类的集合
      */
     @Override
-    public void getStoreQualifications(String id) {
+    public void getStoreQualifications(String id, boolean returnSpecial) {
         if (storeNetworkModel != null)
-            storeNetworkModel.getAuthInfo(getContext(), id, o -> {
+            storeNetworkModel.getAuthInfo(getContext(), id, returnSpecial ? o -> {
                 StoreAuthInfoBean data = (StoreAuthInfoBean) o;
                 List<StoreAuthInfoBean.CategoryListBean> newData = new ArrayList<>();
                 for (StoreAuthInfoBean.CategoryListBean clb : data.getCategoryList()) {
@@ -259,7 +265,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                 if (isViewAttached())
                     getV().onQualificationsDataResult(newData);
 
-            });
+            } : null);
     }
 
     @Override
@@ -301,6 +307,7 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
 
         //转换成需要上传的List<LocalMedia> list 格式
         for (int i = 0; i < bean.size(); i++) {
+
             LocalMedia localMedia = new LocalMedia();
             localMedia.setPath(bean.get(i).getProve());
             data.add(localMedia);
@@ -325,6 +332,19 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                 }
             }
         });
+
+    }
+
+    /**
+     * 查看大图
+     *
+     * @param s
+     */
+    @Override
+    public void viewHdImage(String s) {
+
+        if (!isEmpty(s))
+            getImagePreviewInstance((Activity) getContext(), NetworkAuto, 0, false).setImage(s).start();
 
     }
 

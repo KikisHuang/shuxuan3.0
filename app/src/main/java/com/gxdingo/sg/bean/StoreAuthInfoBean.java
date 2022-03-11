@@ -1,6 +1,7 @@
 package com.gxdingo.sg.bean;
 
 import com.google.gson.annotations.SerializedName;
+import com.kikis.commnlibrary.biz.FooAnnotation;
 
 import java.util.List;
 
@@ -71,17 +72,24 @@ public class StoreAuthInfoBean {
          * name : 特殊品类名称
          * prove : http://oss.gxdingo.com.png
          */
-
-        private String name;
+        @FooAnnotation
+        private  String name;
 
         private String prove;
+        @FooAnnotation
+        public  String licenceName;
 
-        public String licenceName;
+        public String categoryId;
 
+        @FooAnnotation
         @SerializedName("rejectReason")
         private String rejectReason;
+
+        @FooAnnotation
         @SerializedName("type")
-        private int type;
+        private  int type;
+
+        @FooAnnotation
         @SerializedName("proveStatus")
         private int proveStatus;
 

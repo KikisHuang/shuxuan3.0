@@ -129,7 +129,7 @@ public class UploadSpecialQualificationActivity extends BaseMvpActivity<ClientSt
 
     @Override
     protected void initData() {
-        getP().getStoreQualifications(UserInfoUtils.getInstance().getIdentifier());
+        getP().getStoreQualifications(UserInfoUtils.getInstance().getIdentifier(),true);
     }
 
     @Override

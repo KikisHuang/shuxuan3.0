@@ -21,6 +21,10 @@ import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
  * @page:一键登录唤起页
  */
 public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
+
+
+    private static OauthActivity instance;
+
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
         return new LoginPresenter();
@@ -86,9 +90,13 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         return false;
     }
 
+    public static OauthActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void init() {
-
+        instance = this;
     }
 
     @Override
@@ -116,7 +124,7 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onBaseEvent(object);
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
-            if (weChatLoginType==0){
+            if (weChatLoginType == 0) {
                 WeChatLoginEvent event = (WeChatLoginEvent) object;
                 if (!TextUtils.isEmpty(event.code))
                     getP().oauthWeChatLogin(event.code);
@@ -128,12 +136,19 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.LOGIN_SUCCEED || type == QUITLOGINPAGE){
-            if (type!=QUITLOGINPAGE)
+        if (type == LocalConstant.LOGIN_SUCCEED || type == QUITLOGINPAGE) {
+            if (type != QUITLOGINPAGE)
                 getP().quitlogin();
 
             finish();
         }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (instance != null)
+            instance = null;
     }
 }

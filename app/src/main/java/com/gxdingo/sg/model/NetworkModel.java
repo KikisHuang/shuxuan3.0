@@ -293,9 +293,6 @@ public class NetworkModel {
             @Override
             public void onNext(NormalBean findBean) {
 
-                SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
-
-
                 if (netWorkListener!=null){
                     netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 

@@ -26,7 +26,7 @@ import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 /**
  * @author: Weaving
  * @date: 2021/10/14
- * @page:
+ * @page:绑定手机 -> 输入验证码页面
  */
 public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract.LoginPresenter> implements LoginContract.LoginListener {
 
@@ -127,7 +127,7 @@ public class InputVerificationCodeActivity extends BaseMvpActivity<LoginContract
         }
         title_layout.setTitleText(gets(R.string.please_input_verification_code));
 //        getP().getPhoneHint(mPhoneNumber);
-        verification_code_send_hint_tv.setText("验证码已发送至+86"+getUserPhone(mPhoneNumber));
+        verification_code_send_hint_tv.setText("验证码已发送至+86" + getUserPhone(mPhoneNumber));
         getP().getVerificationCodeTime();
     }
 
