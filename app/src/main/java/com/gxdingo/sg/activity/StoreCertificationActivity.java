@@ -545,4 +545,9 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
         branch_information_layout.setVisibility(View.VISIBLE);
 
     }
+
+    @Override
+    public void setOssSpecialQualificationsImg(int position, String path) {
+
+    }
 }

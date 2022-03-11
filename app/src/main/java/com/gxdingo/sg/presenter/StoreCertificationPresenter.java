@@ -33,7 +33,6 @@ import com.zhouyou.http.subsciber.BaseSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -355,38 +354,24 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     }
 
+
     @Override
-    public void batchUpload(List<StoreCategoryBean> tempLicenceMap, CustomResultListener customResultListener) {
+    public void uploadOss(int position, String photoUrl) {
 
-        List<LocalMedia> data = new ArrayList<>();
-
-        //转换成需要上传的List<LocalMedia> list 格式
-        for (int i = 0; i < tempLicenceMap.size(); i++) {
-            LocalMedia localMedia = new LocalMedia();
-            localMedia.setPath(tempLicenceMap.get(i).getProve());
-            data.add(localMedia);
-        }
-
-        if (networkModel != null)
-            networkModel.upLoadImages(getContext(), data, new UpLoadImageListener() {
+        if (isViewAttached() && !isEmpty(photoUrl) && networkModel != null) {
+            networkModel.upLoadImage(getContext(), photoUrl, new UpLoadImageListener() {
                 @Override
                 public void loadSucceed(String path) {
 
+                    getV().setOssSpecialQualificationsImg(position, path);
                 }
 
                 @Override
                 public void loadSucceed(UpLoadBean upLoadBean) {
 
-                    if (upLoadBean.urls != null && upLoadBean.urls.size() == tempLicenceMap.size()) {
-
-                        //讲上传的网络图片赋值回去
-                        for (int j = 0; j < tempLicenceMap.size(); j++) {
-                            tempLicenceMap.get(j).setProve(upLoadBean.urls.get(j));
-                        }
-                        if (customResultListener != null)
-                            customResultListener.onResult(tempLicenceMap);
-                    }
                 }
-            });
+            }, 0);
+
+        }
     }
 }

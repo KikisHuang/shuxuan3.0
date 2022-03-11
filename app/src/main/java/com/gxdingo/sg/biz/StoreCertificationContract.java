@@ -8,10 +8,8 @@ import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
-import com.luck.picture.lib.entity.LocalMedia;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 商家认证契约类
@@ -45,8 +43,7 @@ public class StoreCertificationContract {
         //上传特殊分类许可证
         void selectedLicence(CustomResultListener customResultListener);
 
-        //批量上传图片
-        void batchUpload(List<StoreCategoryBean> tempLicenceMap,CustomResultListener customResultListener);
+        void uploadOss(int position, String photoUrl);
     }
 
     public interface StoreCertificationListener {
@@ -70,5 +67,7 @@ public class StoreCertificationContract {
 
         //显示活动类型布局
         void showActivityTypeLayout(int type);
+
+        void setOssSpecialQualificationsImg(int position, String path);
     }
 }

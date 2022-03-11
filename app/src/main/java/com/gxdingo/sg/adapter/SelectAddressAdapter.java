@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.text.TextUtils.isEmpty;
+import static com.kikis.commnlibrary.utils.BigDecimalUtils.div;
 
 /**
  * @author: Weaving
@@ -62,7 +63,7 @@ public class SelectAddressAdapter extends BaseQuickAdapter<PoiItem, BaseViewHold
             if (poiItem.getDistance() < 1000)
                 baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "m");
             else
-                baseViewHolder.setText(R.id.tv_distance, " | " + poiItem.getDistance() + "km");
+                baseViewHolder.setText(R.id.tv_distance, " | " + div(String.valueOf(poiItem.getDistance()), "1000", 1) + "km");
         } else {
             baseViewHolder.setText(R.id.tv_distance, "");
         }

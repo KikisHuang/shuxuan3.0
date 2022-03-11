@@ -56,7 +56,6 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     private StoreBusinessScopeAdapter mAdapter;
 
-    private String licenceUrl = "";
     private BasePopupView popupView;
 
     private List<StoreCategoryBean> tempLicenceMap;
@@ -135,12 +134,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         tempLicenceMap = new ArrayList<>();
         tvRightButton.setVisibility(View.VISIBLE);
         tvRightButton.setOnClickListener(v -> {
-            if (tempLicenceMap != null && tempLicenceMap.size() > 0) {
-                getP().batchUpload(tempLicenceMap, list -> {
-                    getP().confirmBusinessScope(mAdapter.getData(), (List<StoreCategoryBean>) list);
-                });
-            } else
-                getP().confirmBusinessScope(mAdapter.getData(), null);
+            getP().confirmBusinessScope(mAdapter.getData(), tempLicenceMap);
         });
 
         mAdapter = new StoreBusinessScopeAdapter();
@@ -156,7 +150,6 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     public void uploadImage(String url) {
-        licenceUrl = url;
         if (popupView != null && popupView.isShow())
             ((UpLoadLicencePopupView) popupView).setLicenceImg(url);
     }
@@ -194,25 +187,42 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     }
 
     @Override
+    public void setOssSpecialQualificationsImg(int position, String path) {
+        //将网络oss图片赋值
+        if (position <= tempLicenceMap.size() - 1)
+            tempLicenceMap.get(position).setProve(path);
+
+        tempLicenceMap.add(new StoreCategoryBean(mAdapter.getData().get(position).getId(), path));
+        mAdapter.getData().get(position).setSelect(true);
+        mAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
         List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
-        List<StoreBusinessScopeBean.ListBean> tempData = new ArrayList<>();
 
-        boolean isSelect = data.get(position).isSelect();
+        //反选还是选中
+        boolean isSelect = !data.get(position).isSelect();
+
+
+        if (isSelect && tempLicenceMap.size() == 2) {
+            onMessage("最多选2个品类");
+            return;
+        }
 
         if (!isSelect) {
-            //反选删除许可证
-            if (data.get(position).getType() == 1)
-                tempLicenceMap.remove(data.get(position).getId());
-
+            //反选删除
             for (int i = 0; i < data.size(); i++) {
-                if (data.get(i).isSelect())
-                    tempData.add(data.get(i));
+                for (int j = 0; j < tempLicenceMap.size(); j++) {
+                    if (data.get(i).getId() == tempLicenceMap.get(j).getCategoryId())
+                        tempLicenceMap.remove(j);
+
+                }
             }
-            if (tempData.size() >= 2) {
-                onMessage("最多选2个品类");
-                return;
-            }
+            data.get(position).setSelect(false);
+            mAdapter.notifyDataSetChanged();
+            return;
         }
 
         if (data.get(position).getType() == 1) {
@@ -230,19 +240,21 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                             //上传食品经营许可证
                             getP().selectedLicence(o -> {
                                 tempLicenceUrl = (LocalMedia) o;
+                                //先用本地图片显示给用户看
                                 uploadImage(getPhotoUrl(tempLicenceUrl));
                             });
                         } else if (integer == 0) {
-                            tempLicenceMap.add(new StoreCategoryBean(data.get(position).getId(), getPhotoUrl(tempLicenceUrl)));
-                            data.get(position).setSelect(!isSelect);
-                            mAdapter.notifyDataSetChanged();
+                            //点击确定后上传资质图片到oss
+                            getP().uploadOss(position, getPhotoUrl(tempLicenceUrl));
+
                         }
 
                     })).show();
 
 
         } else {
-            data.get(position).setSelect(!isSelect);
+            tempLicenceMap.add(new StoreCategoryBean(data.get(position).getId(), ""));
+            data.get(position).setSelect(true);
             mAdapter.notifyDataSetChanged();
         }
     }
