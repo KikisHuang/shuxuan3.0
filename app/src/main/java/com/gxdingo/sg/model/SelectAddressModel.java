@@ -103,7 +103,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
             query.setPageNum(page);
             poiSearch = new PoiSearch(mContext, query);
             poiSearch.setOnPoiSearchListener(listener);
-            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latLng.latitude, latLng.longitude), 2000));
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latLng.latitude, latLng.longitude), 50000));
             poiSearch.searchPOIAsyn();
         } catch (Exception e) {
             LogUtils.e(e);
@@ -129,7 +129,7 @@ public class SelectAddressModel implements AMap.OnMyLocationChangeListener, AMap
             poiSearch = new PoiSearch(mContext, query);
             query.setPageNum(page);
             poiSearch.setOnPoiSearchListener(listener);
-            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 1000));
+            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(latitude, longitude), 2000));
 
             poiSearch.searchPOIAsyn();
         } catch (Exception e) {
