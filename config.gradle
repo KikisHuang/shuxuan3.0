@@ -5,8 +5,8 @@ ext {
             applicationId          : "com.gxdingo.sg",
             minSdkVersion          : 21,
             targetSdkVersion       : 26,
-            versionCode            : 44,
-            versionName            : "3.0.4",
+            versionCode            : 45,
+            versionName            : "3.0.5",
             commnlibraryversionCode: 1,
             commnlibraryversionName: "1.0.0",
     ]
@@ -19,6 +19,7 @@ ext {
             minSdkVersion                 : 21,
             targetSdkVersion              : 29,
             versionCode                   : 20,
+
             versionName                   : "2.5.0",
             ucropVersionCode              : 22,
             ucropVersionName              : "2.2.0-native",

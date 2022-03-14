@@ -196,6 +196,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         mAdapter.getData().get(position).setSelect(true);
         mAdapter.notifyDataSetChanged();
 
+        tempLicenceUrl = null;
     }
 
     @Override
@@ -206,20 +207,18 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
         boolean isSelect = !data.get(position).isSelect();
 
 
-        if (isSelect && tempLicenceMap.size() == 2) {
+        if (isSelect && tempLicenceMap.size() >= 2) {
             onMessage("最多选2个品类");
             return;
         }
 
         if (!isSelect) {
             //反选删除
-            for (int i = 0; i < data.size(); i++) {
-                for (int j = 0; j < tempLicenceMap.size(); j++) {
-                    if (data.get(i).getId() == tempLicenceMap.get(j).getCategoryId())
-                        tempLicenceMap.remove(j);
-
-                }
+            for (int j = 0; j < tempLicenceMap.size(); j++) {
+                if (data.get(position).getId() == tempLicenceMap.get(j).getCategoryId())
+                    tempLicenceMap.remove(j);
             }
+
             data.get(position).setSelect(false);
             mAdapter.notifyDataSetChanged();
             return;
@@ -244,9 +243,11 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                                 uploadImage(getPhotoUrl(tempLicenceUrl));
                             });
                         } else if (integer == 0) {
-                            //点击确定后上传资质图片到oss
-                            getP().uploadOss(position, getPhotoUrl(tempLicenceUrl));
-
+                            if (tempLicenceUrl != null)
+                                //点击确定后上传资质图片到oss
+                                getP().uploadOss(position, getPhotoUrl(tempLicenceUrl));
+                            else
+                                onMessage("请上传特殊资质图片");
                         }
 
                     })).show();
