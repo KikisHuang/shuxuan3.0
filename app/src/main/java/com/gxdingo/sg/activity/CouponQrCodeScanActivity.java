@@ -160,14 +160,8 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
         coupon_title_tv.setText("扫码立减" + mCouponBean.getCouponAmount() + "元");
 //        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
 
-        Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
-                Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
-                qr_code_iv.setImageBitmap(qrCodeBitmap);
-            }
-        });
+        Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, null);
+        qr_code_iv.setImageBitmap(qrCodeBitmap);
 
 
 //        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
@@ -196,11 +190,14 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
 
     }
 
-    @OnClick(R.id.other_coupon_stv)
+    @OnClick({R.id.other_coupon_stv,R.id.rule_tv})
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.other_coupon_stv:
                 finish();
+                break;
+            case R.id.rule_tv:
+                goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{mCouponBean}));
                 break;
         }
     }
