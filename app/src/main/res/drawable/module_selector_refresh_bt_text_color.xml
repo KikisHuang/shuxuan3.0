@@ -5,6 +5,6 @@
     <item android:color="@color/white" android:state_pressed="false"  />
 
     <!-- 标签的正常文字颜色 -->
-    <item android:color="@color/black"  />
+    <item android:color="@color/gray"  />
 
 </selector>
