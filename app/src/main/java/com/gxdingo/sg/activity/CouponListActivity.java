@@ -209,7 +209,7 @@ public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.Cli
         if (!isPastDue) {
             //规则
             if (view.getId() == R.id.rule_tv)
-                goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{item.getInstructions(), item.getPrecautions()}));
+                goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{item}));
             else {
                 if (mType == 0) {
                     if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 1) {

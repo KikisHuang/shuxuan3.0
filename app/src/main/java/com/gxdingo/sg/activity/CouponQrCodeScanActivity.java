@@ -142,16 +142,11 @@ public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContra
         super.onStart();
         //启动4秒刷新二维码定时器
         RxUtil.intervals(4000, number -> {
-            Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.getStoreAvatar()) ? mCouponBean.getStoreAvatar() : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 
-                    Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, resource);
+            Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, null);
 
-                    qr_code_iv.setImageBitmap(qrCodeBitmap);
-                }
-            });
-        }, this);
+            qr_code_iv.setImageBitmap(qrCodeBitmap);
+        }, reference.get());
     }
 
     @Override

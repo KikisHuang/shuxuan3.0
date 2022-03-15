@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import butterknife.BindView;
 
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Kikis
@@ -42,6 +44,17 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
     private List<String> instructions;
 
     private List<String> precautions;
+
+    @BindView(R.id.condition_tv)
+    public TextView condition_tv;
+
+    @BindView(R.id.coupon_name_tv)
+    public TextView coupon_name_tv;
+
+    @BindView(R.id.date_tv)
+    public TextView date_tv;
+
+    private ClientCouponBean mClientCouponBean;
 
 
     @Override
@@ -112,13 +125,13 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
-        getP().getCoupons(true,"");
+        getP().getCoupons(true, "");
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
-        getP().getCoupons(false,"");
+        getP().getCoupons(false, "");
     }
 
     @Override
@@ -127,8 +140,15 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
         title_layout.setTitleText(gets(R.string.rules_of_use));
 
 
-        instructions = getIntent().getStringArrayListExtra(Constant.SERIALIZABLE+0);
-        precautions = getIntent().getStringArrayListExtra(Constant.SERIALIZABLE+1);
+        mClientCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
+
+        if (mClientCouponBean == null) {
+            onMessage("没有获取到优惠券数据");
+            finish();
+        }
+
+        instructions = mClientCouponBean.getInstructions();
+        precautions = mClientCouponBean.getPrecautions();
 
 
         CouponRuleAdapter mAdapter = new CouponRuleAdapter();
@@ -143,6 +163,16 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
 
         notice_for_use_ryc.setAdapter(nAdapter);
         notice_for_use_ryc.setLayoutManager(new LinearLayoutManager(reference.get()));
+
+//        condition_tv.setText(mClientCouponBean.get);
+
+        if (!isEmpty(mClientCouponBean.getExpireTime()))
+            date_tv.setText(mClientCouponBean.getExpireTime());
+
+        if (!isEmpty(mClientCouponBean.getCouponName()))
+            coupon_name_tv.setText(mClientCouponBean.getCouponName());
+
+            condition_tv.setText(Float.valueOf(mClientCouponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + mClientCouponBean.getUseAmount() + "减" + mClientCouponBean.getCouponAmount());
     }
 
     @Override
