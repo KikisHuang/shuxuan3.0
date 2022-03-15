@@ -214,7 +214,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     if (userBean.getStore().getId() <= 0 || status == 20) {
                         goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
                     } else if (status == 0) {
-                        onMessage("店铺审核中！");
+//                        onMessage("店铺审核中！");
+                        goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
                     } else if (status > 0) {
                         UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
 

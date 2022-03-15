@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 标签选中时的背景 -->
+    <item android:drawable="@drawable/module_shape_grayf5_6r"  android:state_pressed="true" android:state_enabled="true"
+     ></item>
+    <!-- 标签的正常背景 -->
+    <item android:drawable="@drawable/module_bg_main_color_round6" android:state_enabled="false">
+
+    </item>
+
+</selector>

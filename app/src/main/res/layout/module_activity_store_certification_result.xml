@@ -32,7 +32,7 @@
         android:id="@+id/btn_result_botton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/module_btn_theme_button_can_be_clicked"
+        android:background="@drawable/module_selector_refresh_bt"
         android:padding="5dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -40,8 +40,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:text="刷新一下"
-        android:textColor="@color/white"
+        android:textColor="@drawable/module_selector_refresh_bt_text_color"
         android:textSize="14sp"
         android:stateListAnimator="@null"
         app:layout_constraintTop_toBottomOf="@+id/tv_status" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

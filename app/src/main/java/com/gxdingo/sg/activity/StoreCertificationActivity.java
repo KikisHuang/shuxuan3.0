@@ -323,6 +323,7 @@ public class StoreCertificationActivity extends BaseMvpActivity<StoreCertificati
                         , mPoiItem.getLatLonPoint().getLongitude(), mPoiItem.getLatLonPoint().getLatitude());
                 break;
             case R.id.btn_result_botton:
+
                 if (btnResultBotton.getText().equals("重新认证")) {
                     businessLayout.setVisibility(View.VISIBLE);
                     llCertificationResultLayout.setVisibility(View.GONE);

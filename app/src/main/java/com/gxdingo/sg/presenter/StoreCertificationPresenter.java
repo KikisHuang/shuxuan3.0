@@ -261,6 +261,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                     if (data.getStore().getId() == 0) {
                         //未提交认证流程
                     } else if (data.getStore().getStatus() == 20) {
+                        onMessage("店铺审核被驳回");
                         //回调显示被驳回
                         getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
@@ -274,6 +275,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().certificationPassed();
 
                     } else if (data.getStore().getStatus() == 0) {
+                        onMessage("店铺正在审核中");
                         //回调显示在审核
                         getV().onReview();
                     }

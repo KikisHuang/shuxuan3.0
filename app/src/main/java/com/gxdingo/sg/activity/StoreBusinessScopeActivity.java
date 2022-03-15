@@ -47,10 +47,13 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @BindView(R.id.rv_business_scope)
     public RecyclerView rv_business_scope;
+
     @BindView(R.id.title_layout)
     TemplateTitle titleLayout;
+
     @BindView(R.id.tv_right_button)
     TextView tvRightButton;
+
     @BindView(R.id.tv_right_image_button)
     ImageView tvRightImageButton;
 
@@ -59,6 +62,7 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
     private BasePopupView popupView;
 
     private List<StoreCategoryBean> tempLicenceMap;
+
     private LocalMedia tempLicenceUrl;
 
 
@@ -201,11 +205,11 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
 
     @Override
     public void onItemClick(@NonNull BaseQuickAdapter<?, ?> adapter, @NonNull View view, int position) {
+
         List<StoreBusinessScopeBean.ListBean> data = mAdapter.getData();
 
         //反选还是选中
         boolean isSelect = !data.get(position).isSelect();
-
 
         if (isSelect && tempLicenceMap.size() >= 2) {
             onMessage("最多选2个品类");
@@ -230,7 +234,6 @@ public class StoreBusinessScopeActivity extends BaseMvpActivity<StoreCertificati
                 popupView.onDestroy();
                 popupView = null;
             }
-
             popupView = new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(false) //对于只使用一次的弹窗，推荐设置这个
                     .isDarkTheme(false)
