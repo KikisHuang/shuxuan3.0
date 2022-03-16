@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
@@ -14,6 +15,7 @@ import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Kikis
@@ -128,6 +130,7 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
                 WeChatLoginEvent event = (WeChatLoginEvent) object;
                 if (!TextUtils.isEmpty(event.code))
                     getP().oauthWeChatLogin(event.code);
+
             }
 
         }
@@ -136,12 +139,10 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.LOGIN_SUCCEED || type == QUITLOGINPAGE) {
-            if (type != QUITLOGINPAGE)
-                getP().quitlogin();
-
+        if (type == LocalConstant.LOGIN_SUCCEED) {
+            getP().quitlogin();
+        } else if (type == QUITLOGINPAGE)
             finish();
-        }
     }
 
     @Override

@@ -6,12 +6,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ActivityEvent;
@@ -63,6 +65,7 @@ import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 import static com.kikis.commnlibrary.utils.CommonUtils.goNotifySetting;
 import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
@@ -182,6 +185,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         screenListener.begin(this);
 
         getP().checkNotifications();
+
     }
 
     @Override
@@ -259,6 +263,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             ImmersionBar.with(this).statusBarDarkFont(true, 0.2f).statusBarColor(R.color.grayf6).init();
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
+
+            Toast.makeText(reference.get(),gets(R.string.login_succeed),Toast.LENGTH_SHORT).show();
+
+//            onMessage(gets(R.string.login_succeed));
+
             if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0) {
                 showAwardDialog(UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().get(0), 0);
             }

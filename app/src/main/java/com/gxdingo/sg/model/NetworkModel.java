@@ -293,7 +293,7 @@ public class NetworkModel {
             @Override
             public void onNext(NormalBean findBean) {
 
-                if (netWorkListener!=null){
+                if (netWorkListener != null) {
                     netWorkListener.onSucceed(LocalConstant.CODE_SEND);
 
                     netWorkListener.onAfters();
@@ -644,10 +644,12 @@ public class NetworkModel {
     public void thirdPartyLogin(Context context, String code, String type) {
 
         if (isEmpty(code)) {
-            netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
+            if (netWorkListener != null)
+                netWorkListener.onMessage(gets(R.string.phone_number_can_not_null));
             return;
         } else if (isEmpty(type)) {
-            netWorkListener.onMessage(gets(R.string.verification_code_can_not_null));
+            if (netWorkListener != null)
+                netWorkListener.onMessage(gets(R.string.verification_code_can_not_null));
             return;
         }
 

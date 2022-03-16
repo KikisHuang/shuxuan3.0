@@ -15,7 +15,7 @@ public class Api {
     public static final boolean isUat = true;
 
     //正式服测试开关 ，***本地调试正式服打开此开关即可,打开此开关后，isUat开关不生效***
-    public static final boolean isOnlineTest = false;
+    public static final boolean isOnlineTest = true;
 
     public static final String SM = ":";
 
@@ -26,6 +26,30 @@ public class Api {
     public static final String HTTP = "http://";
 
     public static final String HIERARCHY = "";
+
+
+    //测试路径
+    public static final String TEST_URL = "192.168.110.248";
+
+    //端口
+    public static final String CLIENT_PORT = "8080";
+
+
+    public static String WEB_URL = "http://192.168.110.248:8181";
+
+    public static final String TEST_WEB_URL = "http://192.168.110.248:8181";
+
+    public static final String UAT_WEB_URL = "http://uat.gxdingo.com/html";
+
+    public static final String HTML = "article/html?";
+
+    public static final String OFFICIAL_WEB_URL = "shuxuan.gxdingo.com/h5";
+
+    //代付path
+    public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";
+
+    //平台客服path
+    public static final String SERVER_URL = "/#/pages/message/chat";
 
     //测试oss上传路径
     public static final String TEST_OSS_UPLOAD_URL = "192.168.110.248:8080/";
@@ -44,7 +68,7 @@ public class Api {
     //im 测试
     public static final String IM_TEST_URL = "192.168.110.236:8083/";
     //im 正式
-    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsgr/";
+    public static String IM_OFFICIAL_URL = "shuxuan.gxdingo.com/exmsg/";
 
     //oss路径
     public static String OSS_URL = "192.168.110.248:8080/";
@@ -230,7 +254,7 @@ public class Api {
     public static final String UAT_URL = "uat.gxdingo.com/exuser/";
 
     //正式路径
-    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/exuser/";
+    public static final String OFFICIAL_URL = "shuxuan.gxdingo.com/app/";
 
     //客户端隐私协议文章
     public static final String CLIENT_PRIVACY_AGREEMENT_KEY = "shuxuankehuxieyi";
@@ -258,30 +282,6 @@ public class Api {
 
     //店铺命名规则
     public static final String STORE_NAMING_RULES = "mingmingguize";
-
-
-    //测试路径
-    public static final String TEST_URL = "192.168.110.248";
-
-    //端口
-    public static final String CLIENT_PORT = "8080";
-
-
-    public static String WEB_URL = "http://192.168.110.248:8181";
-
-    public static final String TEST_WEB_URL = "http://192.168.110.248:8181";
-
-    public static final String UAT_WEB_URL = "http://uat.gxdingo.com/html";
-
-    public static final String HTML = "article/html?";
-
-    public static final String OFFICIAL_WEB_URL = "shuxuan.gxdingo.com/h5";
-
-    //代付path
-    public static final String NSTEAD_PAYING_URL = "/#/pages/app/daifu?orderId=";
-
-    //平台客服path
-    public static final String SERVER_URL = "/#/pages/message/chat";
 
 
     /**

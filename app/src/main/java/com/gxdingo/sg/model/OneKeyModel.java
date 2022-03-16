@@ -232,7 +232,8 @@ public class OneKeyModel {
                             case SDK_AUTH_FLAG:
                                 AuthResult authResult = (AuthResult) msg.obj;
                                 if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY);
+                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY,netWorkListener);
+
                                 } else
                                     ToastUtils.showLong("没有获取到authCode");
                                 break;
@@ -251,7 +252,8 @@ public class OneKeyModel {
      * @param code
      * @param type
      */
-    public void thirdPartyLogin(Context context, String code, String type) {
+    public void thirdPartyLogin(Context context, String code, String type,NetWorkListener netWorkListener) {
+
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -292,9 +294,11 @@ public class OneKeyModel {
                     ToastUtils.showLong(gets(R.string.please_bind_phone));
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type}));
                 } else {
+
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     goToPage(getContext(), ClientActivity.class, null);
                     EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
+
                 }
             }
         };

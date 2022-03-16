@@ -233,7 +233,7 @@ public class LoginPresenter extends BaseMvpPresenter<BasicsListener, LoginContra
     @Override
     public void oauthWeChatLogin(String code) {
         if (oneKeyModel != null)
-            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT);
+            oneKeyModel.thirdPartyLogin(getContext(), code, ClientLocalConstant.WECHAT,this);
 
     }
 
