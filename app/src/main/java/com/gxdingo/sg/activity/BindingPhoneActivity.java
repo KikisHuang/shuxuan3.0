@@ -15,6 +15,7 @@ import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.CODE_SEND;
+import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
@@ -109,7 +110,7 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
 
     }
 
-    @OnClick({R.id.send_verification_code_bt})
+    @OnClick({R.id.send_verification_code_bt,R.id.btn_back})
     public void bindPhone(View v){
         if (!checkClickInterval(v.getId()))
             return;
@@ -117,7 +118,18 @@ public class BindingPhoneActivity extends BaseMvpActivity<LoginContract.LoginPre
             case R.id.send_verification_code_bt:
                 getP().sendVerificationCode();
                 break;
+            case R.id.btn_back:
+                sendEvent(QUITLOGINPAGE);
+                finish();
+                break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sendEvent(QUITLOGINPAGE);
+        finish();
     }
 
     @Override
