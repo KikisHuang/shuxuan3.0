@@ -213,11 +213,11 @@ public class IMChatContract {
         void onSendMessageSuccessResultPos(ReceiveIMMessageBean receiveIMMessageBean, int pos);
 
         /**
-         * 回调上传图片URL
+         * 本地选择的图片URL
          *
-         * @param url 服务器返回上传后的URL
+         * @param localurl 本地相册选中后的URL
          */
-        void onUploadImageUrl(String url);
+        void onUploadImageUrl(String localurl);
 
         /**
          * 获取uuid

@@ -21,7 +21,7 @@ public class MyToastUtils {
             return;
         ToastUtils.showShort(msg);
 
-        //make().setNotUseSystemToast().setBgColor(getc(R.color.white)).setTextColor(getc(R.color.gray202)).setTextSize(13).show(msg);
+//        make().setNotUseSystemToast().setBgColor(getc(R.color.white)).setTextColor(getc(R.color.gray202)).setTextSize(13).show(msg);
     }
 
     /**

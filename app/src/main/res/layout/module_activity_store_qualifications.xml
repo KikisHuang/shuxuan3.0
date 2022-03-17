@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/photo_img"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="7dp"
-    android:scaleType="centerCrop"
-    android:layout_margin="@dimen/dp_10">
+    android:layout_margin="@dimen/dp_10"
+    android:scaleType="centerCrop">
 
-</ImageView>
+    <include layout="@layout/module_include_standard_recycle" />
+
+</LinearLayout>

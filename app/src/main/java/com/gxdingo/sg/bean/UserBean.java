@@ -66,6 +66,8 @@ public class UserBean implements Serializable {
     private String token;
     private String crossToken;
 
+    public UserReward userReward;
+
     public Integer getIsBindMobile() {
         return isBindMobile;
     }

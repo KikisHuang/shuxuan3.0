@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
+import com.gxdingo.sg.bean.UserReward;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
@@ -23,7 +24,7 @@ public class ClientMainContract {
 
         void checkTab(int tab);
 
-        void oneKeyLogin(String code );
+        void oneKeyLogin(String code);
 
         void aliLogin();
 
@@ -47,7 +48,7 @@ public class ClientMainContract {
 
         void help();
 
-        void fllInvitationCode(String content);
+        void receiveCoupon(String couponIdentifier);
     }
 
     public interface ClientMainListener {
@@ -81,6 +82,12 @@ public class ClientMainContract {
         void onHelpDataResult(HelpBean o);
 
         void goToBusinessDistrict(String code);
+
+        /**
+         * 登录奖励弹窗
+         * @param popupCouponList
+         */
+        void showAwardDialog(UserReward.CouponListDTO popupCouponList,int type);
     }
 
     public interface ClientMainModelListener {

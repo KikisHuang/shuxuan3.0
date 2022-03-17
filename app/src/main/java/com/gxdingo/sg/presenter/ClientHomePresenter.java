@@ -193,15 +193,6 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
     }
 
 
-    @Override
-    public void fllInvitationCode(String code) {
-        if (isEmpty(code)) {
-            onMessage("请填写商家邀请码");
-            return;
-        }
-        if (clientNetworkModel != null)
-            clientNetworkModel.receiveCoupon(getContext(), code);
-    }
 
 
     @Override
@@ -223,7 +214,8 @@ public class ClientHomePresenter extends BaseMvpPresenter<BasicsListener, Client
                     if (userBean.getStore().getId() <= 0 || status == 20) {
                         goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
                     } else if (status == 0) {
-                        onMessage("店铺审核中！");
+//                        onMessage("店铺审核中！");
+                        goToPagePutSerializable(getContext(), StoreCertificationActivity.class, getIntentEntityMap(new Object[]{true}));
                     } else if (status > 0) {
                         UserBean locatUserBean = UserInfoUtils.getInstance().getUserInfo();
 

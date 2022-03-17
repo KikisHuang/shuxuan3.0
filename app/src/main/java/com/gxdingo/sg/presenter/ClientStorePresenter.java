@@ -1,23 +1,41 @@
 package com.gxdingo.sg.presenter;
 
+import android.app.Activity;
+
 import com.gxdingo.sg.R;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.StoreDetail;
+import com.gxdingo.sg.bean.UpLoadBean;
 import com.gxdingo.sg.biz.ClientStoreContract;
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PermissionsListener;
+import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.ClientHomeModel;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.CommonModel;
+import com.gxdingo.sg.model.NetworkModel;
+import com.gxdingo.sg.model.StoreNetworkModel;
+import com.gxdingo.sg.utils.GlideEngine;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
+import com.luck.picture.lib.PictureSelectionModel;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.zhouyou.http.subsciber.BaseSubscriber;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static cc.shinichi.library.ImagePreview.LoadStrategy.NetworkAuto;
 import static com.blankj.utilcode.util.StringUtils.getString;
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
+import static com.gxdingo.sg.utils.PhotoUtils.getPhotoUrl;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_BAIDU_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_GAODE_MAP;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.PN_TENCENT_MAP;
@@ -26,6 +44,9 @@ import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToGaoDeMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.goToTencentMap;
 import static com.gxdingo.sg.utils.ThirdPartyMapsGuide.isAvilible;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
+import static com.kikis.commnlibrary.utils.IntentUtils.getImagePreviewInstance;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.luck.picture.lib.config.PictureMimeType.ofImage;
 
 /**
  * @author: Weaving
@@ -39,6 +60,8 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
     private ClientHomeModel model;
 
     private ClientNetworkModel clientNetworkModel;
+    private NetworkModel networkModel;
+    private StoreNetworkModel storeNetworkModel;
 
     private double lon, lat;
 
@@ -47,13 +70,17 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
     public ClientStorePresenter() {
         commonModel = new CommonModel();
         model = new ClientHomeModel();
+        networkModel = new NetworkModel(this);
         clientNetworkModel = new ClientNetworkModel(this);
+        storeNetworkModel = new StoreNetworkModel(this);
     }
 
     @Override
     public void onSucceed(int type) {
         if (isBViewAttached())
             getBV().onSucceed(type);
+        if (type == 100)
+            onMessage("店铺资质信息上传成功");
     }
 
     @Override
@@ -214,6 +241,111 @@ public class ClientStorePresenter extends BaseMvpPresenter<BasicsListener, Clien
                 commonModel.goCallPage(getContext(), s);
             else
                 onMessage(gets(R.string.no_get_store_mobile_phone_number));
+    }
+
+    /**
+     * 获取店铺资质
+     *
+     * @param id
+     * @param returnSpecial 是否只返回特殊分类的集合
+     */
+    @Override
+    public void getStoreQualifications(String id, boolean returnSpecial) {
+        if (storeNetworkModel != null)
+            storeNetworkModel.getAuthInfo(getContext(), id, returnSpecial ? o -> {
+                StoreAuthInfoBean data = (StoreAuthInfoBean) o;
+                List<StoreAuthInfoBean.CategoryListBean> newData = new ArrayList<>();
+                for (StoreAuthInfoBean.CategoryListBean clb : data.getCategoryList()) {
+
+                    if (clb.getType() == 1 && (clb.getProveStatus() != 1 || clb.getProveStatus() != 2)) {
+                        newData.add(clb);
+                    }
+                }
+
+                if (isViewAttached())
+                    getV().onQualificationsDataResult(newData);
+
+            } : null);
+    }
+
+    @Override
+    public void chooseAnAlbum(CustomResultListener customResultListener) {
+
+        PictureSelector selector = PictureSelector.create((Activity) getContext());
+
+        PictureSelectionModel model = selector.openGallery(ofImage());
+
+        model.selectionMode(PictureConfig.SINGLE).
+                loadImageEngine(GlideEngine.createGlideEngine())// 图片加载引擎 需要 implements ImageEngine接口
+                .isEnableCrop(false)
+                .compress(true)//是否压缩
+                .minimumCompressSize(2048)//小于2048kb不压缩
+                .synOrAsy(true)//开启同步or异步压缩
+                .forResult(new OnResultCallbackListener<LocalMedia>() {
+
+                    @Override
+                    public void onResult(List<LocalMedia> result) {
+
+                        if (customResultListener != null)
+                            customResultListener.onResult(getPhotoUrl(result.get(0)));
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+
+
+    }
+
+    @Override
+    public void submit(List<StoreAuthInfoBean.CategoryListBean> bean) {
+
+        List<LocalMedia> data = new ArrayList<>();
+
+        //转换成需要上传的List<LocalMedia> list 格式
+        for (int i = 0; i < bean.size(); i++) {
+
+            LocalMedia localMedia = new LocalMedia();
+            localMedia.setPath(bean.get(i).getProve());
+            data.add(localMedia);
+        }
+        networkModel.upLoadImages(getContext(), data, new UpLoadImageListener() {
+            @Override
+            public void loadSucceed(String path) {
+
+            }
+
+            @Override
+            public void loadSucceed(UpLoadBean upLoadBean) {
+                if (upLoadBean.urls != null && upLoadBean.urls.size() == bean.size()) {
+                    //讲上传的网络图片赋值回去
+                    for (int j = 0; j < bean.size(); j++) {
+                        bean.get(j).setProve(upLoadBean.urls.get(j));
+                    }
+                    if (bean.size() > 0)
+                        storeNetworkModel.upDateQulification(getContext(), bean);
+                    else
+                        onMessage("上传图片发生了错误，请重新选择后提交");
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 查看大图
+     *
+     * @param s
+     */
+    @Override
+    public void viewHdImage(String s) {
+
+        if (!isEmpty(s))
+            getImagePreviewInstance((Activity) getContext(), NetworkAuto, 0, false).setImage(s).start();
+
     }
 
     @Override

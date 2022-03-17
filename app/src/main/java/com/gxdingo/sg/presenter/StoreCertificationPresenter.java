@@ -35,9 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.blankj.utilcode.util.StringUtils.isEmpty;
@@ -209,43 +206,36 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
 
     @Override
     public void getCategory() {
-        storeNetworkModel.businessScope(getContext());
+        if (storeNetworkModel != null)
+            storeNetworkModel.businessScope(getContext());
     }
 
     @Override
-    public void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans) {
+    public void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<StoreCategoryBean> licenceUrl) {
         if (isViewAttached())
-            RxUtil.observe(Schedulers.newThread(), Observable.create(new ObservableOnSubscribe<Object>() {
-                @Override
-                public void subscribe(ObservableEmitter<Object> e) throws Exception {
-                    List<StoreCategoryBean> data = new ArrayList<>();
-                    String scopeName = "";
-                    for (StoreBusinessScopeBean.ListBean scb : businessScopeBeans) {
-                        if (scb.isSelect()) {
-                            StoreCategoryBean bsb = new StoreCategoryBean(scb.getId(), scb.getPath());
-                            data.add(bsb);
-                            if (!isEmpty(scopeName)) {
-                                scopeName += "," + scb.getName();
-                            } else {
-                                scopeName = scb.getName();
-                            }
-
+            RxUtil.observe(Schedulers.newThread(), Observable.create(e -> {
+                String scopeName = "";
+                //拼接选中的经营范围名称
+                for (StoreBusinessScopeBean.ListBean scb : businessScopeBeans) {
+                    if (scb.isSelect()) {
+                        if (!isEmpty(scopeName)) {
+                            scopeName += "," + scb.getName();
+                        } else {
+                            scopeName = scb.getName();
                         }
                     }
-                    e.onNext(new BusinessScopeEvent(data, scopeName));
-                    e.onComplete();
                 }
-            }), (LifecycleProvider) getContext()).subscribe(new Consumer<Object>() {
-                @Override
-                public void accept(Object o) throws Exception {
-                    BusinessScopeEvent data = (BusinessScopeEvent) o;
-                    if (data.data.size() <= 0)
-                        onMessage("请最少选择一个品类");
-                    else {
-                        getV().closeBusinessScope(data);
-                    }
-                }
+                e.onNext(new BusinessScopeEvent(licenceUrl, scopeName));
+                e.onComplete();
+            }), (LifecycleProvider) getContext()).subscribe(o -> {
+                BusinessScopeEvent data = (BusinessScopeEvent) o;
 
+                if (data.data.size() <= 0)
+                    onMessage("请最少选择一个品类");
+                else {
+                    data.data = licenceUrl;
+                    getV().closeBusinessScope(data);
+                }
             });
 
     }
@@ -271,6 +261,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                     if (data.getStore().getId() == 0) {
                         //未提交认证流程
                     } else if (data.getStore().getStatus() == 20) {
+                        onMessage("店铺审核被驳回");
                         //回调显示被驳回
                         getV().rejected(data.getStore().rejectReason);
                     } else if (data.getStore().getStatus() == 10) {
@@ -284,6 +275,7 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                         getV().certificationPassed();
 
                     } else if (data.getStore().getStatus() == 0) {
+                        onMessage("店铺正在审核中");
                         //回调显示在审核
                         getV().onReview();
                     }
@@ -325,5 +317,63 @@ public class StoreCertificationPresenter extends BaseMvpPresenter<BasicsListener
                 });
             }
         }*/
+    }
+
+    /**
+     * 选择许可证
+     *
+     * @param customResultListener
+     */
+    @Override
+    public void selectedLicence(CustomResultListener customResultListener) {
+
+        PictureSelector selector = PictureSelector.create((Activity) getContext());
+
+        PictureSelectionModel model = selector.openGallery(ofImage());
+
+        model.selectionMode(PictureConfig.SINGLE).
+                loadImageEngine(GlideEngine.createGlideEngine())// 图片加载引擎 需要 implements ImageEngine接口
+                .isEnableCrop(false)
+                .compress(true)//是否压缩
+                .minimumCompressSize(2048)//小于2048kb不压缩
+                .synOrAsy(true)//开启同步or异步压缩
+                .forResult(new OnResultCallbackListener<LocalMedia>() {
+
+                    @Override
+                    public void onResult(List<LocalMedia> result) {
+
+                        if (customResultListener != null)
+                            customResultListener.onResult(result.get(0));
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+
+                    }
+                });
+
+    }
+
+
+    @Override
+    public void uploadOss(int position, String photoUrl) {
+
+        if (isViewAttached() && !isEmpty(photoUrl) && networkModel != null) {
+            networkModel.upLoadImage(getContext(), photoUrl, new UpLoadImageListener() {
+                @Override
+                public void loadSucceed(String path) {
+
+                    getV().setOssSpecialQualificationsImg(position, path);
+                }
+
+                @Override
+                public void loadSucceed(UpLoadBean upLoadBean) {
+
+                }
+            }, 0);
+
+        }
     }
 }

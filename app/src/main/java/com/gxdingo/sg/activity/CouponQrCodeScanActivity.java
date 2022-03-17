@@ -14,28 +14,34 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ClientCouponBean;
+import com.gxdingo.sg.bean.CouponVerificationEvent;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
-import com.gxdingo.sg.utils.DateUtils;
-import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.biz.IRxNextListener;
 import com.kikis.commnlibrary.utils.Constant;
+import com.kikis.commnlibrary.utils.RxUtil;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
+import static com.kikis.commnlibrary.utils.IntentUtils.getIntentMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.RxUtil.cancel;
 import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
- * @author: Weaving
- * @date: 2021/10/31
- * @page:
+ * @author: Kikis
+ * @date: 2022/3/3
+ * @page:优惠卷扫码核销页面
  */
-public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> {
+public class CouponQrCodeScanActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -51,6 +57,8 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
 
     private ClientCouponBean mCouponBean;
 
+    private int mType = 0;
+
     @Override
     protected ClientCouponContract.ClientCouponPresenter createPresenter() {
         return new ClientCouponPresenter();
@@ -58,12 +66,12 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -73,7 +81,7 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
 
     @Override
     protected int StatusBarColors() {
-        return R.color.divide_color;
+        return R.color.green_dominant_tone;
     }
 
     @Override
@@ -118,8 +126,8 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
 
     @Override
     protected void init() {
-        title_layout.setBackgroundColor(getc(R.color.divide_color));
         mCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
+        mType = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 0);
     }
 
     @Override
@@ -130,33 +138,66 @@ public class ClientCouponDetailsActivity extends BaseMvpActivity<ClientCouponCon
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        //启动4秒刷新二维码定时器
+        RxUtil.intervals(4000, number -> {
+
+            Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, null);
+
+            qr_code_iv.setImageBitmap(qrCodeBitmap);
+        }, reference.get());
+    }
+
+    @Override
     protected void initData() {
         if (mCouponBean == null) {
             onMessage("未获取到优惠劵信息!");
             finish();
             return;
         }
+
         coupon_title_tv.setText("扫码立减" + mCouponBean.getCouponAmount() + "元");
 //        Bitmap qrCodeBitmap = QRCodeUtil.createQRCodeBitmap(mCouponBean.getCouponIdentifier(), 200, 200);
 
-        Glide.with(reference.get()).asBitmap().load(!isEmpty(mCouponBean.storeAvatar) ? mCouponBean.storeAvatar : R.mipmap.ic_user_default_avatar).into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+        Bitmap qrCodeBitmap = CodeUtils.createImage("https://www.gxdingo.com/shugou/test?activeCode=" + mCouponBean.getCouponIdentifier() + "&dateContent=" + getNowMills(), 280, 280, null);
+        qr_code_iv.setImageBitmap(qrCodeBitmap);
 
-                Bitmap qrCodeBitmap = CodeUtils.createImage(mCouponBean.getCouponIdentifier(), 280, 280, resource);
 
-                qr_code_iv.setImageBitmap(qrCodeBitmap);
-            }
-        });
-
-        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
+//        valid_date_tv.setText("有效期至：" + mCouponBean.getExpireTime());
     }
 
-    @OnClick(R.id.other_coupon_stv)
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cancel();
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof CouponVerificationEvent) {
+            CouponVerificationEvent event = (CouponVerificationEvent) object;
+            if (mCouponBean != null)
+                sendEvent(mCouponBean);
+
+            if (!isEmpty(event.content))
+                onMessage(event.content);
+
+            finish();
+        }
+
+
+    }
+
+    @OnClick({R.id.other_coupon_stv,R.id.rule_tv})
     public void OnClickViews(View v) {
         switch (v.getId()) {
             case R.id.other_coupon_stv:
-                goToPage(this, ClientCouponListActivity.class, null);
+                finish();
+                break;
+            case R.id.rule_tv:
+                goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{mCouponBean}));
                 break;
         }
     }

@@ -15,7 +15,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
  */
 public class ClientMineContract {
 
-    public interface ClientMinePresenter extends MvpPresenter<BasicsListener,ClientMineListener>{
+    public interface ClientMinePresenter extends MvpPresenter<BasicsListener, ClientMineListener> {
 
         void editsetInit(EditText nick_name_edt, int limit);
 
@@ -42,7 +42,7 @@ public class ClientMineContract {
         void getArticleImg(String article);
     }
 
-    public interface ClientMineListener<T>{
+    public interface ClientMineListener<T> {
         void changeAvatar(T t);
 
         RxPermissions getPermissions();
@@ -52,5 +52,8 @@ public class ClientMineContract {
         void onRemindResult(String remindValue);
 
         void onStatusResult(UserBean userBean);
+
+        //是否需要上传特殊许可证状态
+        void onQualification(Object v);
     }
 }

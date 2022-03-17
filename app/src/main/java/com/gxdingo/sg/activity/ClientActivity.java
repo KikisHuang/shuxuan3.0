@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.ActivityEvent;
@@ -20,12 +21,12 @@ import com.gxdingo.sg.bean.HelpBean;
 import com.gxdingo.sg.bean.NumberUnreadCommentsBean;
 import com.gxdingo.sg.bean.OneKeyLoginEvent;
 import com.gxdingo.sg.bean.ShareEvent;
+import com.gxdingo.sg.bean.UserReward;
 import com.gxdingo.sg.biz.ClientMainContract;
 import com.gxdingo.sg.biz.MyConfirmListener;
-import com.gxdingo.sg.biz.OnContentListener;
-import com.gxdingo.sg.dialog.FillInvitationCodePopupView;
 import com.gxdingo.sg.dialog.HelpPopupView;
 import com.gxdingo.sg.dialog.SgConfirm2ButtonPopupView;
+import com.gxdingo.sg.dialog.SgConfirmHintPopupView;
 import com.gxdingo.sg.fragment.client.ClientHomeFragment;
 import com.gxdingo.sg.fragment.client.ClientMessageFragment;
 import com.gxdingo.sg.fragment.client.ClientMineFragment;
@@ -36,6 +37,7 @@ import com.gxdingo.sg.utils.ClientLocalConstant;
 import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -46,7 +48,6 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +60,9 @@ import io.reactivex.disposables.Disposable;
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
 import static com.gxdingo.sg.utils.ImServiceUtils.startImService;
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_INTER_KEY;
+import static com.gxdingo.sg.utils.LocalConstant.GO_STORE_LIST_PAGE;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.GO_SETTLED;
-import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -103,8 +104,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     //刷新商圈定时器disposable
     private Disposable mDisposable;
-
-    private BasePopupView fillCodePopupView;
 
     public static ClientActivity getInstance() {
         return instance;
@@ -186,6 +185,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         screenListener.begin(this);
 
         getP().checkNotifications();
+
     }
 
     @Override
@@ -210,10 +210,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     public void onSucceed(int type) {
         super.onSucceed(type);
 
-        if (type == ClientLocalConstant.FILL_SUCCESS) {
-            SPUtils.getInstance().put(FIRST_INTER_KEY, false);
-            fillCodePopupView.dismiss();
-        }
     }
 
     @Override
@@ -268,16 +264,21 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
 
-            Toast.makeText(reference.get(), gets(R.string.login_succeed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(reference.get(),gets(R.string.login_succeed),Toast.LENGTH_SHORT).show();
 
-            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1)
-                showInvitationCodeDialog();
+//            onMessage(gets(R.string.login_succeed));
+
+            if (UserInfoUtils.getInstance().getUserInfo().getIsFirstLogin() == 1 && UserInfoUtils.getInstance().getUserInfo().userReward != null && UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().size() > 0) {
+                showAwardDialog(UserInfoUtils.getInstance().getUserInfo().userReward.getCouponList().get(0), 0);
+            }
             getP().getUnreadMessageNum();
         } else if (type == SHOW_BUSINESS_DISTRICT_UN_READ_DOT) {
             //商圈有未读消息数
             getP().getUnreadMessageNum();
         } else if (type == GO_SETTLED) {
             getP().checkTab(2);
+        } else if (type == GO_STORE_LIST_PAGE) {
+            getP().checkTab(1);
         }
     }
 
@@ -296,20 +297,22 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         mFragmentList.add(new ClientMineFragment());
     }
 
-    private void showInvitationCodeDialog() {
-        if (fillCodePopupView == null) {
-            fillCodePopupView = new XPopup.Builder(reference.get())
-                    .maxWidth((int) (ScreenUtils.getScreenWidth(reference.get())))
-                    .isDarkTheme(false)
-                    .asCustom(new FillInvitationCodePopupView(reference.get(), new OnContentListener() {
-                        @Override
-                        public void onConfirm(BasePopupView popupView, String content) {
-                            getP().fllInvitationCode(content);
-                        }
-                    })).show();
-        } else {
-            fillCodePopupView.show();
-        }
+    /**
+     * 显示优惠券领取弹窗
+     *
+     * @param userReward
+     * @param type       0新用户注册优惠券 1领取成功 2连续登录优惠券
+     */
+    public void showAwardDialog(UserReward.CouponListDTO userReward, int type) {
+
+        new XPopup.Builder(reference.get())
+                .maxWidth((ScreenUtils.getScreenWidth(reference.get())))
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDarkTheme(false)
+                .asCustom(new SgConfirmHintPopupView(reference.get(), userReward.getName(), userReward.getRemark(), type == 1 ? "完成" : "领取", o -> {
+                    if (type != 1)
+                        getP().receiveCoupon(userReward.getCouponIdentifier());
+                })).show();
 
     }
 
@@ -322,6 +325,12 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().goLogin();
             return;
         }
+
+        if (v.getId() == R.id.mine_layout)
+            ImmersionBar.with(reference.get()).init();
+        else
+            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(v.getId() == R.id.settle_in ? R.color.white : R.color.grayf5).init();
+
 
         switch (v.getId()) {
             case R.id.home_page_layout:
@@ -375,11 +384,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onSeleted(int checkTab, int oldTab) {
-
-        if (checkTab == 4)
-            ImmersionBar.with(reference.get()).init();
-        else
-            ImmersionBar.with(reference.get()).statusBarDarkFont(true, 0.2f).statusBarColor(1 == checkTab || 0 == checkTab || 3 == checkTab ? R.color.grayf5 : R.color.white).init();
 
         mMenuLayout.get(checkTab).setonSelected(true);
 
@@ -450,6 +454,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         getP().checkTab(0);
         sendEvent(new ShareEvent(code));
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

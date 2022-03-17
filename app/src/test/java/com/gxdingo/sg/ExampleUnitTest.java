@@ -49,11 +49,13 @@ public class ExampleUnitTest {
 //        String json = "{\"msg\":\"请求成功\",\"code\":0,\"data\":{}}";
 //        NormalBean normalBean = GsonUtil.GsonToBean(json, NormalBean.class);
 
-        String time = DateUtils.dealDateFormat("2022-02-21T07:59:35.000+00:00");
 
-        boolean isPastDue = string2Millis(time) < getNowMills();
-        //dWKULklfNvKfWdp
-        System.out.println(" is past due === " + isPastDue);
+        long old = 1646475072378l;
+
+        boolean da = (getNowMills()-old)>10000;
+
+        System.out.println(" time === " + getNowMills());
+        System.out.println(" time === " + da);
 
 
     }

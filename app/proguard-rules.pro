@@ -167,6 +167,7 @@
     native <methods>;
 }
 
+
 #保持自定义控件类不被混淆
 -keepclasseswithmembers class * {
     public <init>(android.content.Context, android.util.AttributeSet);
@@ -398,6 +399,10 @@
 -keep class com.gxdingo.sg.bean.**{*;}
 
 -keep class com.gxdingo.sg.utils.ThirdPartyMapsGuide{*;}
+
+
+#阿里云智能语音识别混淆配置
+-keep class com.alibaba.idst.nui.*{*;}
 
 #### 人脸识别 ####
 -keep class com.esandinfo.livingdetection.**{*;}

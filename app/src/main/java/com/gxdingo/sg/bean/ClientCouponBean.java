@@ -1,6 +1,9 @@
 package com.gxdingo.sg.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author: Weaving
@@ -9,43 +12,36 @@ import java.io.Serializable;
  */
 public class ClientCouponBean implements Serializable {
 
-    /**
-     * id : 11
-     * couponId : 2
-     * couponName : 天天神卷
-     * couponAmount : 5.0
-     * orderAmount : 0.0
-     * storeId : 26
-     * expireTime : 2021-08-28T09:22:36.000+00:00
-     * couponIdentifier : S51J2V4NGZ
-     */
-
-    private Integer id;
-    private Integer couponId;
+    @SerializedName("couponName")
     private String couponName;
-    private Double couponAmount;
-    private Double orderAmount;
-    private Integer storeId;
-    public String expireTime;
-    public int status;
-    public String storeAvatar;
+    @SerializedName("couponAmount")
+    private double couponAmount;
+    @SerializedName("expireTime")
+    private String expireTime;
+    @SerializedName("storeAvatar")
+    private String storeAvatar;
+    @SerializedName("storeName")
+    private String storeName;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("status")
+    private int status;
+    @SerializedName("storeId")
+    private int storeId;
+    @SerializedName("useAmount")
+    private double useAmount;
+    @SerializedName("couponIdentifier")
     private String couponIdentifier;
+    @SerializedName("writeOff")
+    private int writeOff;
+    @SerializedName("isNeedWriteOff")
+    private int isNeedWriteOff;
+    @SerializedName("instructions")
+    private List<String> instructions;
+    @SerializedName("precautions")
+    private List<String> precautions;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getCouponId() {
-        return couponId;
-    }
-
-    public void setCouponId(Integer couponId) {
-        this.couponId = couponId;
-    }
+    public String userIdentifier;
 
     public String getCouponName() {
         return couponName;
@@ -55,28 +51,12 @@ public class ClientCouponBean implements Serializable {
         this.couponName = couponName;
     }
 
-    public Double getCouponAmount() {
-        return couponAmount;
+    public String getCouponAmount() {
+        return String.valueOf(couponAmount);
     }
 
-    public void setCouponAmount(Double couponAmount) {
+    public void setCouponAmount(double couponAmount) {
         this.couponAmount = couponAmount;
-    }
-
-    public Double getOrderAmount() {
-        return orderAmount;
-    }
-
-    public void setOrderAmount(Double orderAmount) {
-        this.orderAmount = orderAmount;
-    }
-
-    public Integer getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Integer storeId) {
-        this.storeId = storeId;
     }
 
     public String getExpireTime() {
@@ -87,11 +67,91 @@ public class ClientCouponBean implements Serializable {
         this.expireTime = expireTime;
     }
 
+    public String getStoreAvatar() {
+        return storeAvatar;
+    }
+
+    public void setStoreAvatar(String storeAvatar) {
+        this.storeAvatar = storeAvatar;
+    }
+
+    public String getStoreName() {
+        return storeName;
+    }
+
+    public void setStoreName(String storeName) {
+        this.storeName = storeName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
+    }
+
+    public String getUseAmount() {
+        return String.valueOf(useAmount);
+    }
+
+    public void setUseAmount(double useAmount) {
+        this.useAmount = useAmount;
+    }
+
     public String getCouponIdentifier() {
         return couponIdentifier;
     }
 
     public void setCouponIdentifier(String couponIdentifier) {
         this.couponIdentifier = couponIdentifier;
+    }
+
+    public int getWriteOff() {
+        return writeOff;
+    }
+
+    public void setWriteOff(int writeOff) {
+        this.writeOff = writeOff;
+    }
+
+    public int getIsNeedWriteOff() {
+        return isNeedWriteOff;
+    }
+
+    public void setIsNeedWriteOff(int isNeedWriteOff) {
+        this.isNeedWriteOff = isNeedWriteOff;
+    }
+
+    public List<String> getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(List<String> instructions) {
+        this.instructions = instructions;
+    }
+
+    public List<String> getPrecautions() {
+        return precautions;
+    }
+
+    public void setPrecautions(List<String> precautions) {
+        this.precautions = precautions;
     }
 }

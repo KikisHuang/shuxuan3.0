@@ -192,4 +192,9 @@ public class ClientPersonalDataActivity extends BaseMvpActivity<ClientMineContra
     public void onStatusResult(UserBean userBean) {
 
     }
+
+    @Override
+    public void onQualification(Object v) {
+
+    }
 }

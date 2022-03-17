@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.donkingliang.labels.LabelsView;
@@ -15,6 +14,7 @@ import com.gxdingo.sg.R;
 import com.gxdingo.sg.adapter.ClientTransactionRecordAdapter;
 import com.gxdingo.sg.bean.BankcardBean;
 import com.gxdingo.sg.bean.ClientCashInfoBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.gxdingo.sg.bean.TransactionBean;
 import com.gxdingo.sg.biz.ClientAccountSecurityContract;
 import com.gxdingo.sg.dialog.SelectDateDialog;
@@ -245,6 +245,16 @@ public class ClientAccountRecordActivity extends BaseMvpActivity<ClientAccountSe
 
     @Override
     public void onDataResult(ArrayList<BankcardBean> list, boolean b) {
+
+    }
+
+    @Override
+    public void checkAuthStatus() {
+
+    }
+
+    @Override
+    public void showHintDialog(StoreAuthInfoBean.CategoryListBean bean) {
 
     }
 

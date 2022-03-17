@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -70,7 +72,7 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         TextView tvTime = baseViewHolder.findView(R.id.tv_time);
         ImageView ivDelete = baseViewHolder.findView(R.id.iv_delete);
-        ImageView authenticated_img = baseViewHolder.findView(R.id.authenticated_img);
+        RecyclerView icon_rcy = baseViewHolder.findView(R.id.icon_rcy);
         RoundImageView ivAvatar = baseViewHolder.findView(R.id.iv_avatar);
         TextView tvStoreName = baseViewHolder.findView(R.id.tv_store_name);
         TextView tvContent = baseViewHolder.findView(R.id.tv_content);
@@ -154,8 +156,23 @@ public class BusinessDistrictListAdapter extends BaseQuickAdapter<BusinessDistri
 
         Glide.with(mContext).load(data.getAvatar()).apply(getRequestOptions()).into(ivAvatar);
 
-        if (!isEmpty(data.iconUrl))
-            Glide.with(mContext).load(data.iconUrl).apply(getRequestOptions().fitCenter()).into(authenticated_img);
+        if (data.iconList != null && data.iconList.size() > 0) {
+            if (icon_rcy.getAdapter() != null && icon_rcy.getAdapter().getItemCount() > 0)
+                icon_rcy.removeAllViews();
+
+            icon_rcy.setVisibility(View.VISIBLE);
+
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+            linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+            icon_rcy.setLayoutManager(linearLayoutManager);
+
+            ShopsIconAdapter adapter = new ShopsIconAdapter();
+            adapter.setList(data.iconList);
+            icon_rcy.setAdapter(adapter);
+        }else
+            icon_rcy.setVisibility(View.GONE);
+
 
         ivAvatar.setOnClickListener(v -> mOnChildViewClickListener.item(v, getItemPosition(data), getItemPosition(data), data.circleUserIdentifier));
 

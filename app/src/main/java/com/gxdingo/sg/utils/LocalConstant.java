@@ -7,10 +7,15 @@ public class LocalConstant {
 
     public static String SHARE_BUSINESS_DISTRICT_URL = "https://dgkjmm.oss-cn-shenzhen.aliyuncs.com/log/shuxuan.jpg";
 
-    //刷新商圈未读消息时间
-    public static final int businessDistrictRefreshTime = 30000;
+    public static final int REFRESH_BUSINESS_DISTRICT_TIME = 900000;
 
     public static final int REFRESH_LOCATION = 41456;
+
+    public static final String GET_CONTINUOUS_LOGIN_AWARD = "get_continuous_login_award";
+
+
+    public static final String LAST_VIEW_TIME = "last_view_time";
+
 
     //聊天常量
     //自己发送的文本类型
@@ -76,6 +81,7 @@ public class LocalConstant {
     public static final int LOGIN_SUCCEED = 20;
     public static final int ALIPAY_LOGIN_EVENT = 254;
     public static final int WECHAT_LOGIN_EVENT = 934946;
+
     public static final int NOTIFY_MSG_LIST_ADAPTER = 4545;
     public static final int CLIENT_REFRESH_BANKCARD_LIST = 38;
     public static final int DELETE_MESSAGE_CONTENT = 7775;
@@ -114,6 +120,8 @@ public class LocalConstant {
     public static final String SHARE_SHIBBOLETH = "shuxuan_share_shibboleth_key";
     public static final String SCANNING_NO_REMIND = "shuxuan_scanning_no_remind";
     public static final int GO_SETTLED = 1013;
+    //返回店铺列表页
+    public static final int GO_STORE_LIST_PAGE = 1014;
 
     public static String AdCode = "";
     public static String AoiName = "";

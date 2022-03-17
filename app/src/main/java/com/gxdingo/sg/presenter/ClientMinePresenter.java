@@ -19,6 +19,7 @@ import com.gxdingo.sg.model.CommonModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
@@ -91,9 +92,18 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void onData(boolean refresh, Object o) {
         if (isViewAttached()) {
-            if (o instanceof ClientMineBean)
-                getV().onMineDataResult((ClientMineBean) o);
-            else if (o instanceof NormalBean)
+            if (o instanceof ClientMineBean) {
+                ClientMineBean cmb = (ClientMineBean) o;
+                getV().onMineDataResult(cmb);
+                if (mineModel != null&& UserInfoUtils.getInstance().getUserInfo().getRole()==11){
+                    mineModel.getQualification(getContext(), cmb.getCategoryList(), v -> {
+                        if (isViewAttached())
+                            getV().onQualification(v);
+
+                    });
+                }
+
+            } else if (o instanceof NormalBean)
                 //获取扫码核销优惠券弹窗内容回调
                 getV().onRemindResult(((NormalBean) o).remindValue);
         }
@@ -252,7 +262,7 @@ public class ClientMinePresenter extends BaseMvpPresenter<BasicsListener, Client
     @Override
     public void scanCode(String content) {
         if (clientNetworkModel != null)
-            clientNetworkModel.receiveCoupon(getContext(), content);
+            clientNetworkModel.receiveCoupon(getContext(), content, null);
     }
 
     @Override

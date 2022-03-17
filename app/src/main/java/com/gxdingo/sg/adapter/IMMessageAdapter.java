@@ -13,6 +13,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.gen.DraftBeanDao;
 import com.gxdingo.sg.db.CommonDaoUtils;
+import com.gxdingo.sg.db.DaoManager;
 import com.gxdingo.sg.db.DaoUtilsStore;
 import com.gxdingo.sg.db.bean.DraftBean;
 import com.gxdingo.sg.utils.DateUtils;
@@ -50,7 +51,8 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         DaoUtilsStore mStore = DaoUtilsStore.getInstance();
 
         mDraftUtils = mStore.getDratfUtils();
-
+        //关闭数据库
+        DaoManager.getInstance().closeConnection();
     }
 
     public IMMessageAdapter(boolean isforward) {
@@ -60,6 +62,9 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
 
         mDraftUtils = mStore.getDratfUtils();
         mIsForward = isforward;
+        //关闭数据库
+        DaoManager.getInstance().closeConnection();
+
     }
 
     @Override
@@ -89,9 +94,12 @@ public class IMMessageAdapter extends BaseQuickAdapter<SubscribesListBean.Subscr
         else
             settop_img.setVisibility(View.GONE);
 
-        Glide.with(getContext()).load(subscribesMessage.getSendAvatar()).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
+        Glide.with(getContext()).load(!isEmpty(subscribesMessage.getSendAvatar())?subscribesMessage.getSendAvatar(): R.drawable.module_svg_client_default_avatar).apply(GlideUtils.getInstance().getGlideRoundOptions(6)).into(nivAvatar);
 
         DraftBean draftBean = mDraftUtils.queryByQueryBuilderUnique(DraftBeanDao.Properties.Uuid.eq(subscribesMessage.getShareUuid()));
+
+        //关闭数据库
+        DaoManager.getInstance().closeConnection();
         //转发列表不显示
         if (!mIsForward) {
             //草稿

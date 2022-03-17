@@ -26,17 +26,17 @@ public class ClientCouponPresenter extends BaseMvpPresenter<BasicsListener, Clie
 
     @Override
     public void receive() {
-        if (isEmpty(getV().getCode())){
+        if (isEmpty(getV().getCode())) {
             onMessage("请输入商家邀请码");
             return;
         }
-        clientNetworkModel.receiveCoupon(getContext(),getV().getCode());
+        clientNetworkModel.receiveCoupon(getContext(), getV().getCode(), null);
     }
 
     @Override
-    public void getCoupons(boolean refresh) {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.getCoupons(getContext(),refresh);
+    public void getCoupons(boolean refresh, String id) {
+        if (clientNetworkModel != null)
+            clientNetworkModel.getCoupons(getContext(), refresh, id);
     }
 
     @Override
@@ -59,10 +59,10 @@ public class ClientCouponPresenter extends BaseMvpPresenter<BasicsListener, Clie
 
     @Override
     public void onData(boolean refresh, Object o) {
-        if (o instanceof ClientCouponsBean){
+        if (o instanceof ClientCouponsBean) {
             ClientCouponsBean couponsBean = (ClientCouponsBean) o;
-            if (couponsBean.getList()!=null)
-                getV().onCouponsResult(refresh,couponsBean.getList());
+            if (couponsBean.getList() != null)
+                getV().onCouponsResult(refresh, couponsBean.getList());
         }
     }
 

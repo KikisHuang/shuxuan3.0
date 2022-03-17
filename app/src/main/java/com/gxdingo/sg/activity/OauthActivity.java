@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.WeChatLoginEvent;
 import com.gxdingo.sg.biz.LoginContract;
 import com.gxdingo.sg.presenter.LoginPresenter;
@@ -14,6 +15,7 @@ import butterknife.OnClick;
 
 import static com.gxdingo.sg.utils.LocalConstant.QUITLOGINPAGE;
 import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Kikis
@@ -21,6 +23,10 @@ import static com.gxdingo.sg.utils.WechatUtils.weChatLoginType;
  * @page:一键登录唤起页
  */
 public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
+
+
+    private static OauthActivity instance;
+
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
         return new LoginPresenter();
@@ -86,9 +92,13 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         return false;
     }
 
+    public static OauthActivity getInstance() {
+        return instance;
+    }
+
     @Override
     protected void init() {
-
+        instance = this;
     }
 
     @Override
@@ -116,10 +126,11 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onBaseEvent(object);
         //微信登录事件
         if (object instanceof WeChatLoginEvent) {
-            if (weChatLoginType==0){
+            if (weChatLoginType == 0) {
                 WeChatLoginEvent event = (WeChatLoginEvent) object;
                 if (!TextUtils.isEmpty(event.code))
                     getP().oauthWeChatLogin(event.code);
+
             }
 
         }
@@ -128,12 +139,17 @@ public class OauthActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
     @Override
     protected void onTypeEvent(Integer type) {
         super.onTypeEvent(type);
-        if (type == LocalConstant.LOGIN_SUCCEED || type == QUITLOGINPAGE){
-            if (type!=QUITLOGINPAGE)
-                getP().quitlogin();
-
+        if (type == LocalConstant.LOGIN_SUCCEED) {
+            getP().quitlogin();
+        } else if (type == QUITLOGINPAGE)
             finish();
-        }
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (instance != null)
+            instance = null;
     }
 }

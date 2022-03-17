@@ -231,7 +231,7 @@
 
         <!--客户端店铺详情页面 -->
         <activity
-            android:name=".activity.ClientStoreDetailsActivity"
+            android:name=".activity.StoreDetailsActivity"
             android:screenOrientation="portrait">
 
         </activity>
@@ -243,6 +243,12 @@
 
         </activity>
 
+        <!--上传特殊資質页面 -->
+        <activity
+            android:name=".activity.UploadSpecialQualificationActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
         <!--客户端账户记录页面 -->
         <activity
             android:name=".activity.ClientAccountRecordActivity"
@@ -410,15 +416,22 @@
 
         <!--客户端使用优惠劵页面 -->
         <activity
-            android:name=".activity.ClientCouponDetailsActivity"
+            android:name=".activity.CouponQrCodeScanActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
         </activity>
 
-        <!--客户端优惠劵列表页面 -->
+        <!--优惠劵列表页面 -->
         <activity
-            android:name=".activity.ClientCouponListActivity"
+            android:name=".activity.CouponListActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <!--优惠劵规则页面 -->
+        <activity
+            android:name=".activity.CouponRuleActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
 

@@ -18,9 +18,12 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.Glide;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.bean.AuthenticationBean;
+import com.gxdingo.sg.bean.StoreAuthInfoBean;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.GlideUtils;
 import com.lxj.xpopup.core.CenterPopupView;
+
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Kikis
@@ -41,7 +44,11 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
     private CustomResultListener listener;
 
+    //实名认证实体类
     private AuthenticationBean authenticationBean;
+
+    //特使资质实体类
+    private StoreAuthInfoBean.CategoryListBean categoryListBean;
 
 
     public AuthenticationStatusPopupView(@NonNull Context context, AuthenticationBean authenticationBean, CustomResultListener<Integer> listener) {
@@ -51,6 +58,22 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
 
         addInnerContent();
     }
+
+    public AuthenticationStatusPopupView(@NonNull Context context, CustomResultListener<Integer> listener) {
+        super(context);
+        this.listener = listener;
+        addInnerContent();
+    }
+
+
+    public AuthenticationStatusPopupView(@NonNull Context context, StoreAuthInfoBean.CategoryListBean categoryListBean, CustomResultListener<Integer> listener) {
+        super(context);
+        this.listener = listener;
+        this.categoryListBean = categoryListBean;
+
+        addInnerContent();
+    }
+
 
     @Override
     protected void initPopupContent() {
@@ -80,6 +103,26 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
             hint2 = authenticationBean.getMsg();
             hint_one_tv.setText(hint1);
             hint_two_tv.setText(hint2);
+        } else if (categoryListBean != null) {
+
+            Glide.with(getContext()).load(categoryListBean.getProveStatus() == 3 ? R.drawable.ic_audit_failed : R.drawable.ic_audit_in).apply(GlideUtils.getInstance().getDefaultOptions()).into(status_img);
+
+            String hint1 = "";
+            String hint2 = "";
+
+            if (categoryListBean.getProveStatus() == 3) {
+                hint2 = categoryListBean.getRejectReason();
+                hint1 = "等待审核";
+                done_bt.setText("重新认证");
+            } else {
+                hint1 = "您的证件已提交";
+                hint2 = "等待审核";
+                done_bt.setText(gets(R.string.confirm));
+            }
+
+            hint_one_tv.setText(hint1);
+            hint_two_tv.setText(hint2);
+
         }
 
     }
@@ -98,7 +141,14 @@ public class AuthenticationStatusPopupView extends CenterPopupView implements Vi
                 break;
             case R.id.done_bt:
                 if (listener != null)
-                    listener.onResult(authenticationBean!=null?authenticationBean.getAuthenticationStatus():-1);
+                    if (authenticationBean != null)
+                        listener.onResult(authenticationBean.getAuthenticationStatus());
+                    else if (categoryListBean != null)
+                        listener.onResult(categoryListBean.getProveStatus());
+                    else
+                        listener.onResult(-1);
+
+
                 this.dismiss();
                 break;
         }

@@ -210,6 +210,11 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     }
 
     @Override
+    public void onQualification(Object v) {
+
+    }
+
+    @Override
     protected void onBaseEvent(Object object) {
         super.onBaseEvent(object);
         if (object instanceof ArticleImage) {

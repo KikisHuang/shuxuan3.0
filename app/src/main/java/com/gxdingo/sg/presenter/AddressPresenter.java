@@ -168,27 +168,28 @@ public class AddressPresenter extends BaseMvpPresenter<BasicsListener, AddressCo
 //        LogUtils.d("=========城市码"+cityCode);
 //        if (!isEmpty(cityCode)) {
 
+        if (model != null && clientNetworkModel != null && mCameraPosition != null) {
+            model.retrievalPOI(clientNetworkModel.getPage(), keyword, isEmpty(cityCode) ? cityCode : cityCode, mCameraPosition.target, new PoiSearch.OnPoiSearchListener() {
+                @Override
+                public void onPoiSearched(PoiResult poiResult, int errorCode) {
 
-        model.retrievalPOI(clientNetworkModel.getPage(), keyword, isEmpty(cityCode) ? cityCode : cityCode, mCameraPosition.target, new PoiSearch.OnPoiSearchListener() {
-            @Override
-            public void onPoiSearched(PoiResult poiResult, int errorCode) {
+                    if (errorCode == 1000) {
 
-                if (errorCode == 1000) {
-                    if (isViewAttached()) {
+                        if (isViewAttached()) {
+                            getV().searchResult(refresh, poiResult.getPois(), true);
+                            clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
+                        }
 
-                        getV().searchResult(refresh, poiResult.getPois(), true);
+                    } else
+                        clientNetworkModel.pageReset(refresh, "请求失败");
+                }
 
-                        clientNetworkModel.pageNext(refresh, poiResult.getPois().size());
-                    }
-                } else
-                    clientNetworkModel.pageReset(refresh, "请求失败");
-            }
+                @Override
+                public void onPoiItemSearched(PoiItem poiItem, int i) {
 
-            @Override
-            public void onPoiItemSearched(PoiItem poiItem, int i) {
-
-            }
-        });
+                }
+            });
+        }
 //        }
     }
 

@@ -151,6 +151,8 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         setTextHighLightWithClick(agreement_tv.getText().toString(), new String[]{"《服务协议》", "《隐私政策》"});
 
         getP().getVerificationCodeTime();
+        if (OauthActivity.getInstance() != null)
+            OauthActivity.getInstance().finish();
     }
 
     @Override
@@ -183,7 +185,6 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         super.onSucceed(type);
         if (type == CODE_SEND) {
             SPUtils.getInstance().put(Constant.SMS_CODE_KEY, getNowMills());
-//            onMessage(gets(R.string.captcha_code_sent));
             send_verification_code_bt.setText(gets(R.string.resend));
             send_verification_code_bt.setTotalTime(60);
             send_verification_code_bt.start();
@@ -213,6 +214,12 @@ public class LoginActivity extends BaseMvpActivity<LoginContract.LoginPresenter>
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (send_verification_code_bt != null)
+            send_verification_code_bt.destroy();
+    }
 
     @Override
     public String getCode() {

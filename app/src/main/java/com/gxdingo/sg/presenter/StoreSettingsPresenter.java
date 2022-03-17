@@ -13,6 +13,7 @@ import com.gxdingo.sg.biz.UpLoadImageListener;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.model.StoreNetworkModel;
 import com.gxdingo.sg.utils.GlideEngine;
+import com.gxdingo.sg.utils.UserInfoUtils;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.luck.picture.lib.PictureSelectionModel;
@@ -140,7 +141,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
     @Override
     public void getStoreInfo(String id) {
         if (storeNetworkModel != null)
-            storeNetworkModel.getStoreDetails(getContext(),id);
+            storeNetworkModel.getStoreDetails(getContext(), id);
     }
 
     @Override
@@ -207,7 +208,7 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
     @Override
     public void getAuthInfo() {
         if (storeNetworkModel != null)
-            storeNetworkModel.getAuthInfo(getContext());
+            storeNetworkModel.getAuthInfo(getContext(), UserInfoUtils.getInstance().getIdentifier());
     }
 
     @Override
@@ -222,7 +223,6 @@ public class StoreSettingsPresenter extends BaseMvpPresenter<BasicsListener, Sto
             });
 
     }
-
 
 
     @Override

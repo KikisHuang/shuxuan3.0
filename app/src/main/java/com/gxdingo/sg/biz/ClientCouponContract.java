@@ -13,15 +13,15 @@ import java.util.List;
  */
 public class ClientCouponContract {
 
-    public interface ClientCouponPresenter extends MvpPresenter<BasicsListener,ClientCouponListener>{
+    public interface ClientCouponPresenter extends MvpPresenter<BasicsListener, ClientCouponListener> {
         void receive();
 
-        void getCoupons(boolean refresh);
+        void getCoupons(boolean refresh, String id);
     }
 
-    public interface ClientCouponListener{
+    public interface ClientCouponListener {
         String getCode();
 
-        void onCouponsResult(boolean refresh,List<ClientCouponBean> couponBeans);
+        void onCouponsResult(boolean refresh, List<ClientCouponBean> couponBeans);
     }
 }

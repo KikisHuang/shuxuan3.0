@@ -9,6 +9,7 @@ import com.kikis.commnlibrary.biz.MvpPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 商家端商圈契约类
@@ -89,7 +90,7 @@ public class StoreBusinessDistrictContract {
         void checkLocationPermission(RxPermissions rxPermissions, String mcircleUserIdentifier);
 
         void getBannerDataInfo();
-
+        //刷新认证状态
         void refreshUserStatus();
     }
 
@@ -135,6 +136,10 @@ public class StoreBusinessDistrictContract {
          */
         void onBannerResult(BannerBean data);
 
+        /**
+         * 显示实名认证弹窗
+         */
         void showAuthenticationDialog();
+
     }
 }

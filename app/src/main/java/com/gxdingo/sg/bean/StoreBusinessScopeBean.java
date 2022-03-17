@@ -34,6 +34,8 @@ public class StoreBusinessScopeBean {
         private Integer type;
         private String typeDescr;
         private boolean isSelect;
+        public String typeDescribe;
+        public String licenceName;
 
         public Integer getId() {
             return id;

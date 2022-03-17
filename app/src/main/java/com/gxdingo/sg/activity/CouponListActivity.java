@@ -1,6 +1,8 @@
 package com.gxdingo.sg.activity;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,12 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemChildClickListener;
 import com.gxdingo.sg.R;
-import com.gxdingo.sg.adapter.ClientCouponAdapter;
+import com.gxdingo.sg.adapter.CouponAdapter;
 import com.gxdingo.sg.bean.ClientCouponBean;
+import com.gxdingo.sg.bean.CouponVerificationEvent;
 import com.gxdingo.sg.biz.ClientCouponContract;
 import com.gxdingo.sg.presenter.ClientCouponPresenter;
-import com.gxdingo.sg.utils.DateUtils;
+import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
+import com.kikis.commnlibrary.utils.Constant;
 import com.kikis.commnlibrary.view.TemplateTitle;
 import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
@@ -23,18 +27,18 @@ import java.util.List;
 
 import butterknife.BindView;
 
-import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.blankj.utilcode.util.TimeUtils.string2Millis;
 import static com.kikis.commnlibrary.utils.CommonUtils.getc;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
  * @date: 2021/10/31
  * @page:
  */
-public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> implements ClientCouponContract.ClientCouponListener, OnItemChildClickListener {
+public class CouponListActivity extends BaseMvpActivity<ClientCouponContract.ClientCouponPresenter> implements ClientCouponContract.ClientCouponListener, OnItemChildClickListener {
 
     @BindView(R.id.title_layout)
     public TemplateTitle title_layout;
@@ -48,7 +52,14 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
     @BindView(R.id.nodata_layout)
     public View nodata_layout;
 
-    private ClientCouponAdapter mCouponAdapter;
+    private CouponAdapter mCouponAdapter;
+
+    //0 我的页面进入 1 转账页面进入
+    private int mType = 0;
+
+    //商家 mIdentifie
+    private String mIdentifie;
+    private LinearLayout footLayout;
 
     @Override
     protected ClientCouponContract.ClientCouponPresenter createPresenter() {
@@ -57,12 +68,12 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected boolean eventBusRegister() {
-        return false;
+        return true;
     }
 
     @Override
     protected int activityTitleLayout() {
-        return R.layout.module_include_custom_title;
+        return 0;
     }
 
     @Override
@@ -102,7 +113,7 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     protected int initContentView() {
-        return R.layout.module_include_refresh;
+        return R.layout.module_activity_coupon_list;
     }
 
     @Override
@@ -118,30 +129,48 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
     @Override
     public void onRefresh(RefreshLayout refreshLayout) {
         super.onRefresh(refreshLayout);
-        getP().getCoupons(true);
+        getP().getCoupons(true, mIdentifie);
     }
 
     @Override
     public void onLoadMore(RefreshLayout refreshLayout) {
         super.onLoadMore(refreshLayout);
-        getP().getCoupons(false);
+        getP().getCoupons(false, mIdentifie);
     }
 
     @Override
     protected void init() {
+
+        mType = getIntent().getIntExtra(Constant.SERIALIZABLE + 0, 0);
+        mIdentifie = getIntent().getStringExtra(Constant.SERIALIZABLE + 1);
+
         title_layout.setBackgroundColor(getc(R.color.divide_color));
         title_layout.setTitleText("选择优惠券");
-        mCouponAdapter = new ClientCouponAdapter();
+        mCouponAdapter = new CouponAdapter();
         recyclerView.setAdapter(mCouponAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(reference.get()));
         recyclerView.setPadding(20, 0, 20, 0);
         recyclerView.setBackgroundColor(getc(R.color.divide_color));
         mCouponAdapter.setOnItemChildClickListener(this);
+
+
+        if (mType == 1) {
+            footLayout = (LinearLayout) LayoutInflater.from(reference.get()).inflate(R.layout.module_include_coupon_foot, new LinearLayout(reference.get()));
+            mCouponAdapter.addFooterView(footLayout);
+            footLayout.setOnClickListener(v -> {
+                sendEvent(new ClientCouponBean());
+                finish();
+            });
+        }
+
+
+
+
     }
 
     @Override
     protected void initData() {
-        getP().getCoupons(true);
+        getP().getCoupons(true, mIdentifie);
     }
 
     @Override
@@ -151,22 +180,65 @@ public class ClientCouponListActivity extends BaseMvpActivity<ClientCouponContra
 
     @Override
     public void onCouponsResult(boolean refresh, List<ClientCouponBean> couponBeans) {
-        if (refresh)
+
+        if (refresh) {
+
             mCouponAdapter.setList(couponBeans);
-        else
+        } else
             mCouponAdapter.addData(couponBeans);
 
+    }
+
+    @Override
+    protected void onBaseEvent(Object object) {
+        super.onBaseEvent(object);
+        if (object instanceof CouponVerificationEvent) {
+
+
+            finish();
+        }
     }
 
     @Override
     public void onItemChildClick(@NonNull BaseQuickAdapter adapter, @NonNull View view, int position) {
 
         ClientCouponBean item = (ClientCouponBean) adapter.getItem(position);
+
         // 状态。0=待使用；1=已使用；2=已过期
-        boolean isPastDue = item.status == 1 || item.status == 2;
-        if (!isPastDue)
-            goToPagePutSerializable(reference.get(), ClientCouponDetailsActivity.class, getIntentEntityMap(new Object[]{item}));
-        else
+        boolean isPastDue = item.getStatus() == 1 || item.getStatus() == 2;
+        if (!isPastDue) {
+            //规则
+            if (view.getId() == R.id.rule_tv)
+                goToPagePutSerializable(reference.get(), CouponRuleActivity.class, getIntentEntityMap(new Object[]{item}));
+            else {
+                if (mType == 0) {
+                    if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 1) {
+                        // 状态。0=待使用；1=已使用；2=已过期
+                        if (item.getStatus() == 0) {
+                            goToPagePutSerializable(reference.get(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{item.userIdentifier}));
+                            return;
+                        }
+                    }
+                    //我的页面进入，跳转店铺列表
+                    sendEvent(LocalConstant.GO_STORE_LIST_PAGE);
+                    finish();
+                    return;
+                } else if (mType == 1) {
+                    //转账页面进入,核销或者直接使用
+
+                    // 是否需要核销0 = 否 1 = 是
+                    // 核销状态 0 = 未核销 1 = 已核销
+                    if (item.getIsNeedWriteOff() == 1 && item.getWriteOff() == 0) {
+                        // 状态。0=待使用；1=已使用；2=已过期
+                        if (item.getStatus() == 0)
+                            goToPagePutSerializable(reference.get(), CouponQrCodeScanActivity.class, getIntentEntityMap(new Object[]{item, mType}));
+                    } else {
+                        sendEvent(item);
+                        finish();
+                    }
+                }
+            }
+        } else
             onMessage("优惠卷已过期");
 
     }

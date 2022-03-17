@@ -127,7 +127,7 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
     @OnClick(R.id.business_license_stv)
     public void onClickViews(View v) {
         if (authInfoBean != null)
-            goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{authInfoBean.getBusinessLicence()}));
+            goToPage(this, StoreQualificationActivity.class, getIntentMap(new String[]{authInfoBean.getBusinessLicence(), UserInfoUtils.getInstance().getIdentifier()}));
         else
             onMessage("没有获取到信息");
     }
@@ -152,14 +152,14 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
 
             UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
 
-            if (userBean.getRole()==10){
-                business_scope_stv.setVisibility( View.GONE);
-                details_address_stv.setVisibility( View.GONE);
-                business_license_stv.setVisibility( View.GONE);
-            }else {
-                business_scope_stv.setVisibility( View.VISIBLE);
-                details_address_stv.setVisibility( View.VISIBLE);
-                business_license_stv.setVisibility( View.VISIBLE);
+            if (userBean.getRole() == 10) {
+                business_scope_stv.setVisibility(View.GONE);
+                details_address_stv.setVisibility(View.GONE);
+                business_license_stv.setVisibility(View.GONE);
+            } else {
+                business_scope_stv.setVisibility(View.VISIBLE);
+                details_address_stv.setVisibility(View.VISIBLE);
+                business_license_stv.setVisibility(View.VISIBLE);
 
                 StringBuffer stringBuffer = new StringBuffer();
                 for (int i = 0; i < authInfoBean.getCategoryList().size(); i++) {
@@ -171,20 +171,20 @@ public class StoreAuthInfoActivity extends BaseMvpActivity<StoreSettingsContract
                 details_address_stv.setRightString(authInfoBean.getAddress());
             }
 
-                String status = "";
+            String status = "";
 
-                //实名认证状态。0=未实名认证；1=已实名认证；2=待审核
-                if (authInfoBean.authStatus == 0) {
-                    certification_status_stv.setRightIcon(R.drawable.module_svg_right_gray_arrow_little);
-                    status = "未认证";
-                } else if (authInfoBean.authStatus == 1)
-                    status = "已认证";
-                else if (authInfoBean.authStatus == 2)
-                    status = "认证中";
-                else if (authInfoBean.authStatus == 3)
-                    status = "认证失败";
+            //实名认证状态。0=未实名认证；1=已实名认证；2=待审核
+            if (authInfoBean.authStatus == 0) {
+                certification_status_stv.setRightIcon(R.drawable.module_svg_right_gray_arrow_little);
+                status = "未认证";
+            } else if (authInfoBean.authStatus == 1)
+                status = "已认证";
+            else if (authInfoBean.authStatus == 2)
+                status = "认证中";
+            else if (authInfoBean.authStatus == 3)
+                status = "认证失败";
 
-                certification_status_stv.setRightString(status);
+            certification_status_stv.setRightString(status);
         }
     }
 }

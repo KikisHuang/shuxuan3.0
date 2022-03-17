@@ -95,7 +95,6 @@ public class OneKeyModel {
     //协议是否勾选
     private boolean isCheck;
 
-    private static View v;
 
     public OneKeyModel() {
 
@@ -233,7 +232,8 @@ public class OneKeyModel {
                             case SDK_AUTH_FLAG:
                                 AuthResult authResult = (AuthResult) msg.obj;
                                 if (!TextUtils.isEmpty(authResult.getAuthCode())) {
-                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY);
+                                    thirdPartyLogin(context, authResult.getAuthCode(), ClientLocalConstant.ALIPAY,netWorkListener);
+
                                 } else
                                     ToastUtils.showLong("没有获取到authCode");
                                 break;
@@ -252,7 +252,8 @@ public class OneKeyModel {
      * @param code
      * @param type
      */
-    public void thirdPartyLogin(Context context, String code, String type) {
+    public void thirdPartyLogin(Context context, String code, String type,NetWorkListener netWorkListener) {
+
         if (netWorkListener != null)
             netWorkListener.onStarts();
 
@@ -293,9 +294,11 @@ public class OneKeyModel {
                     ToastUtils.showLong(gets(R.string.please_bind_phone));
                     goToPagePutSerializable(context, BindingPhoneActivity.class, getIntentEntityMap(new Object[]{userBean.getOpenid(), type}));
                 } else {
+
                     UserInfoUtils.getInstance().saveLoginUserInfo(userBean);
                     goToPage(getContext(), ClientActivity.class, null);
                     EventBus.getDefault().post(LocalConstant.LOGIN_SUCCEED);
+
                 }
             }
         };
@@ -376,7 +379,6 @@ public class OneKeyModel {
                 .setLayout(R.layout.module_activity_one_key_login, new AbstractPnsViewDelegate() {
                     @Override
                     public void onViewCreated(View view) {
-                        v = view;
 
                         findViewById(R.id.tv_other).setOnClickListener(v -> {
                             goToPage(context, LoginActivity.class, null);
@@ -458,13 +460,17 @@ public class OneKeyModel {
 
 
     public void quitLoginPage() {
+        destroy();
+        EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
+    }
+
+    public void destroy() {
+        ToastUtils.cancel();
         if (mAuthHelper != null) {
-            v = null;
             mAuthHelper.setAuthListener(null);
             mAuthHelper.quitLoginPage();
             mAuthHelper = null;
 
-            EventBus.getDefault().post(LocalConstant.QUITLOGINPAGE);
         }
     }
 

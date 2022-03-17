@@ -1,5 +1,7 @@
 package com.gxdingo.sg.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -21,4 +23,5 @@ public class BusinessScopeEvent {
     public BusinessScopeEvent(List<StoreCategoryBean> data) {
         this.data = data;
     }
+
 }

@@ -28,11 +28,11 @@ import static com.blankj.utilcode.util.ScreenUtils.getScreenWidth;
 /**
  * 自定我的页面banner布局
  */
-public class MineBannerAdapter extends BannerAdapter<ClientMineBean.AdsListBean, MineBannerAdapter.BannerViewHolder> {
+public class MineBannerAdapter extends BannerAdapter<ClientMineBean.AdsListDTO, MineBannerAdapter.BannerViewHolder> {
 
     private Context mContext;
 
-    public MineBannerAdapter(Context context, List<ClientMineBean.AdsListBean> mDatas) {
+    public MineBannerAdapter(Context context, List<ClientMineBean.AdsListDTO> mDatas) {
         //设置数据，也可以调用banner提供的方法,或者自己在adapter中实现
         super(mDatas);
         mContext = context;
@@ -48,7 +48,7 @@ public class MineBannerAdapter extends BannerAdapter<ClientMineBean.AdsListBean,
 
 
     @Override
-    public void onBindView(BannerViewHolder holder, ClientMineBean.AdsListBean data, int position, int size) {
+    public void onBindView(BannerViewHolder holder, ClientMineBean.AdsListDTO data, int position, int size) {
 
         Glide.with(mContext)
                 .load(data.getImage())

@@ -2,13 +2,10 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 标签选中时的背景 -->
-    <item android:state_selected="true"
-        android:drawable="@drawable/module_bg_main_color_round6"
-        >
-    </item>
+    <item android:drawable="@drawable/module_bg_main_color_round6" android:state_selected="true"></item>
     <!-- 标签的正常背景 -->
-    <item android:drawable="@drawable/module_bg_enter_payment_password"
-        >
+    <item android:drawable="@drawable/module_bg_enter_payment_password">
 
     </item>
+
 </selector>

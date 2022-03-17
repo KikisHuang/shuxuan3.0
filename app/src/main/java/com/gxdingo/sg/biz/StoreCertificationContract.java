@@ -6,6 +6,7 @@ import com.gxdingo.sg.bean.BusinessScopeEvent;
 import com.gxdingo.sg.bean.StoreBusinessScopeBean;
 import com.gxdingo.sg.bean.StoreCategoryBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.biz.MvpPresenter;
 
 import java.util.List;
@@ -25,11 +26,11 @@ public class StoreCertificationContract {
         void getCategory();
 
         //确定经营范围
-        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans);
+        void confirmBusinessScope(List<StoreBusinessScopeBean.ListBean> businessScopeBeans, List<StoreCategoryBean> licenceUrls);
 
         //提交认证信息
         void submitCertification(Context context, String avatar, String name, List<StoreCategoryBean> storeCategory
-                , String regionPath, String address, String businessLicence,String storeLicence, double longitude, double latitude);
+                , String regionPath, String address, String businessLicence, String storeLicence, double longitude, double latitude);
 
         //刷新登录信息
         void getLoginInfoStatus();
@@ -38,6 +39,11 @@ public class StoreCertificationContract {
         void logout();
 
         void getInvitationCode();
+
+        //上传特殊分类许可证
+        void selectedLicence(CustomResultListener customResultListener);
+
+        void uploadOss(int position, String photoUrl);
     }
 
     public interface StoreCertificationListener {
@@ -61,5 +67,7 @@ public class StoreCertificationContract {
 
         //显示活动类型布局
         void showActivityTypeLayout(int type);
+
+        void setOssSpecialQualificationsImg(int position, String path);
     }
 }

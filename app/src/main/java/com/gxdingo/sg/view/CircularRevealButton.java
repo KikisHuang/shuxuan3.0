@@ -133,7 +133,7 @@ public class CircularRevealButton extends LinearLayout {
             }
             if (ivFocuse.getVisibility() ==  INVISIBLE) {
                 textView.setTextColor(mFocusColor);
-                    ivFocuse.setVisibility(VISIBLE);
+                ivFocuse.setVisibility(VISIBLE);
 
                 if (mAnimShow && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                     handleAnimate(ivFocuse);

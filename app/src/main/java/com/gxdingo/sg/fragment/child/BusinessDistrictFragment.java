@@ -2,9 +2,7 @@ package com.gxdingo.sg.fragment.child;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,11 +13,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.activity.BusinessDistrictMessageActivity;
 import com.gxdingo.sg.activity.ChatActivity;
 import com.gxdingo.sg.activity.ClientActivity;
-import com.gxdingo.sg.activity.ClientStoreDetailsActivity;
+import com.gxdingo.sg.activity.StoreDetailsActivity;
 import com.gxdingo.sg.activity.NoticeMessageActivity;
 import com.gxdingo.sg.activity.RankingActivity;
 import com.gxdingo.sg.activity.StoreActivity;
@@ -54,6 +53,7 @@ import com.scwang.smart.refresh.layout.SmartRefreshLayout;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.sunfusheng.marqueeview.MarqueeView;
 import com.youth.banner.Banner;
+import com.youth.banner.indicator.RectangleIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +69,8 @@ import io.reactivex.disposables.Disposable;
 
 import static android.text.TextUtils.isEmpty;
 import static com.blankj.utilcode.util.ClipboardUtils.copyText;
+import static com.blankj.utilcode.util.TimeUtils.getNowMills;
 import static com.gxdingo.sg.utils.LocalConstant.BACK_TOP_BUSINESS_DISTRICT;
-import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.SHOW_BUSINESS_DISTRICT_UN_READ_DOT;
 import static com.gxdingo.sg.utils.StoreLocalConstant.SOTRE_REVIEW_SUCCEED;
 import static com.kikis.commnlibrary.utils.CommonUtils.gets;
@@ -315,6 +315,16 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         if (isFirstLoad) {
             isFirstLoad = !isFirstLoad;
             getP().checkLocationPermission(getRxPermissions(), mcircleUserIdentifier);
+        }else {
+            long lastViewTime = SPUtils.getInstance().getLong(LocalConstant.LAST_VIEW_TIME,0);
+
+            if (getNowMills() - lastViewTime>LocalConstant.REFRESH_BUSINESS_DISTRICT_TIME){
+                if (refreshLayout!=null){
+                    refreshLayout.autoRefresh();
+                    RecycleViewUtils.MoveToPositionTop(recyclerView, 0);
+                }
+            }else
+                new Thread(() -> SPUtils.getInstance().put(LocalConstant.LAST_VIEW_TIME,getNowMills())).start();
         }
     }
 
@@ -538,7 +548,7 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
                     goToPagePutSerializable(reference.get(), ChatActivity.class, getIntentEntityMap(new Object[]{null, 11, mAdapter.getData().get(parentPosition).circleUserIdentifier}));
                 else {
                     String id = String.valueOf(object);
-                    goToPagePutSerializable(getContext(), ClientStoreDetailsActivity.class, getIntentEntityMap(new Object[]{id}));
+                    goToPagePutSerializable(getContext(), StoreDetailsActivity.class, getIntentEntityMap(new Object[]{id}));
                 }
 
             } else if (view.getId() == R.id.like_tv) {
@@ -717,6 +727,9 @@ public class BusinessDistrictFragment extends BaseMvpFragment<StoreBusinessDistr
         if (mBanner != null && data.getAppHomeHeader() != null) {
 
             mBanner.setAdapter(new HomePageBannerAdapter(reference.get(), data.getAppHomeHeader()));
+
+            mBanner.setIndicator(new RectangleIndicator(reference.get()));
+
             mBanner.setOnBannerListener((d, position) -> {
                 HomeBannerBean bannerBean = (HomeBannerBean) d;
 

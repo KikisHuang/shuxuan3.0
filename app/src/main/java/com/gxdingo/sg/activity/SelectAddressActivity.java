@@ -112,6 +112,7 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
 
     private SelectAddressEvent selectAddressEvent;
 
+    //是否截屏
     private boolean mIsScreenshots = true;
 
     @Override
@@ -287,9 +288,12 @@ public class SelectAddressActivity extends BaseMvpActivity<AddressContract.Addre
      * 对地图进行截屏
      */
     private void mapScreenShot() {
+
         //不截屏直接退出
-        if (!mIsScreenshots)
+        if (!mIsScreenshots){
+            sendEvent(selectAddressEvent);
             finish();
+        }
 
         onStarts();
         getAMap().getMapScreenShot(new AMap.OnMapScreenShotListener() {

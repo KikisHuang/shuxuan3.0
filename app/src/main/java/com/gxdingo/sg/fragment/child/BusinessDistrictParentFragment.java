@@ -51,7 +51,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.blankj.utilcode.util.ActivityUtils.startActivity;
 import static com.gxdingo.sg.adapter.TabPageAdapter.STORE_BUSINESS_DISTRICT_TAB;
 import static com.gxdingo.sg.utils.LocalConstant.LOGIN_SUCCEED;
 import static com.gxdingo.sg.utils.LocalConstant.LOGOUT_SUCCEED;
@@ -184,9 +183,9 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
             case R.id.iv_send_business_district:
                 UserBean userBean = UserInfoUtils.getInstance().getUserInfo();
                 //登录角色 Role 10=客户 11=商家
-                if (userBean.getRole() == 10 && userBean.getAuthenticationStatus() == 0) {
+                if (userBean.getRole() == 10 && userBean.getAuthenticationStatus() == 0)
                     getP().refreshUserStatus();
-                } else
+                 else
                     startActivity(new Intent(reference.get(), StoreBusinessDistrictReleaseActivity.class));
                 break;
         }
@@ -201,7 +200,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .autoDismiss(true)
                 .hasShadowBg(true)
-                .asCustom(new AuthenticationStatusPopupView(reference.get(), null, status -> {
+                .asCustom(new AuthenticationStatusPopupView(reference.get(), status -> {
                     if (status == -1)
                         goToPage(reference.get(), RealNameAuthenticationActivity.class, null);
                 }).show());
@@ -294,6 +293,7 @@ public class BusinessDistrictParentFragment extends BaseMvpFragment<StoreBusines
     public void showAuthenticationDialog() {
         showDialog();
     }
+
 
     /**
      * MagicIndicator 通用标题初始化方法

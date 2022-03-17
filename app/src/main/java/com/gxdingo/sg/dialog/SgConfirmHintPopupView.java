@@ -11,7 +11,10 @@ import androidx.annotation.NonNull;
 import com.blankj.utilcode.util.ScreenUtils;
 import com.gxdingo.sg.R;
 import com.gxdingo.sg.biz.MyConfirmListener;
+import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.lxj.xpopup.core.CenterPopupView;
+
+import static com.kikis.commnlibrary.utils.CommonUtils.gets;
 
 /**
  * @author: Kikis
@@ -20,20 +23,20 @@ import com.lxj.xpopup.core.CenterPopupView;
  */
 public class SgConfirmHintPopupView extends CenterPopupView implements View.OnClickListener {
 
-    private MyConfirmListener confirmListener;
-    private TextView tv_title, tv_confirm,tv_hint;
+    private TextView tv_title, tv_confirm, tv_hint;
     private ImageView close_img;
-    private CharSequence title,hint, confirmText;
-
+    private CharSequence title, hint, confirmText;
+    private CustomResultListener customResultListener;
 
     /**
      * @param context
      */
-    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence confirmText, MyConfirmListener confirmListener) {
+    public SgConfirmHintPopupView(@NonNull Context context, CharSequence title, CharSequence hint, CharSequence confirmText, CustomResultListener customResultListener) {
         super(context);
         this.title = title;
         this.confirmText = confirmText;
-        this.confirmListener = confirmListener;
+        this.hint = hint;
+        this.customResultListener = customResultListener;
         addInnerContent();
     }
 
@@ -72,11 +75,14 @@ public class SgConfirmHintPopupView extends CenterPopupView implements View.OnCl
 
     @Override
     public void onClick(View v) {
-        if (v == close_img) {
+        if (v.getId() == R.id.close_img) {
             dismiss();
-        } else if (v == tv_confirm) {
-            if (confirmListener != null) confirmListener.onConfirm();
-            if (popupInfo.autoDismiss) dismiss();
+        } else if (v.getId() == R.id.tv_confirm) {
+            if (popupInfo.autoDismiss) {
+                if (customResultListener != null)
+                    customResultListener.onResult("");
+                dismiss();
+            }
         }
     }
 
