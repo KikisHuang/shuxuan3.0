@@ -136,10 +136,14 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
     @Override
     protected void initData() {
 
-
-        String article = UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "sxyg_user_logoff_instruction" : "sxyg_store_logoff_instruction";
-        getP().getArticleImg(article);
-        getP().refreshStatus();
+        if (UserInfoUtils.getInstance().getUserInfo() != null && UserInfoUtils.getInstance().getUserInfo().getRole() != null) {
+            String article = UserInfoUtils.getInstance().getUserInfo().getRole() == 10 ? "sxyg_user_logoff_instruction" : "sxyg_store_logoff_instruction";
+            getP().getArticleImg(article);
+            getP().refreshStatus();
+        } else {
+            onMessage("无法获取到用户数据");
+            finish();
+        }
 
     }
 
@@ -219,7 +223,7 @@ public class UnsubscribeActivity extends BaseMvpActivity<ClientMineContract.Clie
         super.onBaseEvent(object);
         if (object instanceof ArticleImage) {
             ArticleImage articleImage = (ArticleImage) object;
-            Glide.with(this).load(articleImage.getImage()).apply(GlideUtils.getInstance().getDefaultOptions().fitCenter()).override(1080,1920).into(article_img);
+            Glide.with(this).load(articleImage.getImage()).apply(GlideUtils.getInstance().getDefaultOptions().fitCenter()).override(1080, 1920).into(article_img);
         }
 
     }

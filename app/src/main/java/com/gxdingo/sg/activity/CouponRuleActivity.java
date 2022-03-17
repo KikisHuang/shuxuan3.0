@@ -139,6 +139,8 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
         title_layout.setBackgroundColor(getc(R.color.divide_color));
         title_layout.setTitleText(gets(R.string.rules_of_use));
 
+        instructions =new ArrayList<>();
+        precautions =new ArrayList<>();
 
         mClientCouponBean = (ClientCouponBean) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 0);
 
@@ -146,9 +148,11 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
             onMessage("没有获取到优惠券数据");
             finish();
         }
+        if (mClientCouponBean.getInstructions() != null)
+            instructions = mClientCouponBean.getInstructions();
 
-        instructions = mClientCouponBean.getInstructions();
-        precautions = mClientCouponBean.getPrecautions();
+        if (mClientCouponBean.getPrecautions() != null)
+            precautions = mClientCouponBean.getPrecautions();
 
 
         CouponRuleAdapter mAdapter = new CouponRuleAdapter();
@@ -172,7 +176,7 @@ public class CouponRuleActivity extends BaseMvpActivity<ClientCouponContract.Cli
         if (!isEmpty(mClientCouponBean.getCouponName()))
             coupon_name_tv.setText(mClientCouponBean.getCouponName());
 
-            condition_tv.setText(Float.valueOf(mClientCouponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + mClientCouponBean.getUseAmount() + "减" + mClientCouponBean.getCouponAmount());
+        condition_tv.setText(Float.valueOf(mClientCouponBean.getUseAmount()) <= 0 ? "无门槛" : "满" + mClientCouponBean.getUseAmount() + "减" + mClientCouponBean.getCouponAmount());
     }
 
     @Override

@@ -1,13 +1,18 @@
 package com.gxdingo.sg.presenter;
 
+import android.widget.Toast;
+
 import com.gxdingo.sg.biz.NetWorkListener;
 import com.gxdingo.sg.biz.PayPwdContract;
 import com.gxdingo.sg.model.ClientNetworkModel;
 import com.gxdingo.sg.model.NetworkModel;
 import com.gxdingo.sg.utils.UserInfoUtils;
+import com.kikis.commnlibrary.bean.ReLoginBean;
 import com.kikis.commnlibrary.biz.BasicsListener;
 import com.kikis.commnlibrary.presenter.BaseMvpPresenter;
 import com.zhouyou.http.subsciber.BaseSubscriber;
+
+import org.greenrobot.eventbus.EventBus;
 
 import static android.text.TextUtils.isEmpty;
 
@@ -22,10 +27,19 @@ public class PayPwdPresenter extends BaseMvpPresenter<BasicsListener, PayPwdCont
 
     private NetworkModel mNetworkModel;
 
-    private String phone  =  UserInfoUtils.getInstance().getUserInfo().getMobile();
+    private String phone;
 //    private String phone = "18878759765";
 
     public PayPwdPresenter() {
+        if (UserInfoUtils.getInstance().getUserInfo() != null && !isEmpty(UserInfoUtils.getInstance().getUserInfo().getMobile()))
+            phone = UserInfoUtils.getInstance().getUserInfo().getMobile();
+        else {
+            Toast.makeText(getContext(), "获取用户信息异常，请重新登录", Toast.LENGTH_SHORT).show();
+            UserInfoUtils.getInstance().clearLoginStatus();
+            EventBus.getDefault().post(new ReLoginBean(0, ""));
+            UserInfoUtils.getInstance().goToOauthPage(getContext());
+        }
+
         clientNetworkModel = new ClientNetworkModel(this);
         mNetworkModel = new NetworkModel(this);
     }
@@ -47,23 +61,23 @@ public class PayPwdPresenter extends BaseMvpPresenter<BasicsListener, PayPwdCont
 
     @Override
     public void certify() {
-        if (mNetworkModel!=null )
+        if (mNetworkModel != null)
             mNetworkModel.checkSMSCode(getContext(), phone, getV().getCode(), o -> getV().next());
     }
 
     @Override
     public void certifyPwd(String pwd) {
-        if (clientNetworkModel!=null)
-            clientNetworkModel.checkPayPwd(getContext(),pwd);
+        if (clientNetworkModel != null)
+            clientNetworkModel.checkPayPwd(getContext(), pwd);
     }
 
     @Override
     public void changePayPwd(String code, String oldPasswd) {
-        if (!getV().getCode().equals(getV().getFirstPwd())){
+        if (!getV().getCode().equals(getV().getFirstPwd())) {
             onMessage("两次输入的密码不一致，请重新输入！");
             return;
         }
-        clientNetworkModel.updatePayPassword(getContext(),getV().getCode(), oldPasswd,code);
+        clientNetworkModel.updatePayPassword(getContext(), getV().getCode(), oldPasswd, code);
     }
 
     @Override

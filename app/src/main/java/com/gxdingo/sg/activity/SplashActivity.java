@@ -13,9 +13,12 @@ import com.gxdingo.sg.dialog.ProtocolPopupView;
 import com.gxdingo.sg.presenter.LoginPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.model.HttpHeaders;
 
 import butterknife.OnClick;
 import cn.net.shoot.sharetracesdk.AppData;
@@ -24,13 +27,14 @@ import cn.net.shoot.sharetracesdk.ShareTraceWakeUpListener;
 
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
  * @date: 2021/10/12
  * @page:
  */
-public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
+public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter> implements ShareTraceWakeUpListener {
 
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
@@ -97,9 +101,17 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         return false;
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // 应用在后台被调起来时获取一键调起参数
+        ShareTrace.getWakeUpTrace(intent, this::onWakeUp);
+    }
+
 
     @Override
     protected void init() {
+        ShareTrace.getWakeUpTrace(getIntent(), this::onWakeUp);
 
         if (SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true)) {
             new XPopup.Builder(reference.get())
@@ -155,5 +167,17 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         if (object instanceof MyApplication) {
             LogUtils.w(" ====== MyApplication ====== ");
         }
+    }
+
+    @Override
+    public void onWakeUp(AppData data) {
+        BaseLogUtils.i("onWakeUp sharetrace appData=" + (data == null ? null : data.toString()));
+
+        if (data != null && !isEmpty(data.toString())) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.put("AppData", String.valueOf(data));
+            EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
+        }
+
     }
 }

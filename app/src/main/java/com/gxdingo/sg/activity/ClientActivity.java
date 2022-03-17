@@ -87,7 +87,7 @@ import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
  * @date: 2021/10/13
  * @page:
  */
-public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, ClientMainContract.ClientMainListener, ShareTraceInstallListener, ShareTraceWakeUpListener {
+public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, ClientMainContract.ClientMainListener, ShareTraceInstallListener {
 
     private List<Fragment> mFragmentList;
 
@@ -187,16 +187,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        // 应用在后台被调起来时获取一键调起参数
-        ShareTrace.getWakeUpTrace(intent, this::onWakeUp);
-    }
-
-
-    @Override
     protected void init() {
-        ShareTrace.getWakeUpTrace(getIntent(), this::onWakeUp);
 
         instance = this;
         fragmentInit();
@@ -572,19 +563,6 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onError(int i, String s) {
-
-    }
-
-    @Override
-    public void onWakeUp(AppData data) {
-
-        BaseLogUtils.i("sharetrace appData=" + (data == null ? null : data.toString()));
-
-        if (data != null && !isEmpty(data.toString())) {
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.put("AppData", String.valueOf(data));
-            EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
-        }
 
     }
 }
