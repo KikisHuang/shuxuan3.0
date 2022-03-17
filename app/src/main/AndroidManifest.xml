@@ -116,6 +116,10 @@
             android:name="notch.config"
             android:value="portrait|landscape" />
 
+        <!--sharetrace 推广渠道sdk-->
+        <meta-data
+            android:name="com.sharetrace.APP_KEY"
+            android:value="da2015d7957ace3b"/>
 
         <!--测试Activity-->
         <activity
@@ -144,6 +148,14 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="um.6073de2b18b72d2d244f05cf" />
+            </intent-filter>
+
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="stda2015d7957ace3b" />
             </intent-filter>
 
         </activity>

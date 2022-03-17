@@ -52,6 +52,7 @@ import com.zhouyou.http.cache.model.CacheMode;
 import com.zhouyou.http.cookie.CookieManger;
 import com.zhouyou.http.model.HttpHeaders;
 
+import cn.net.shoot.sharetracesdk.ShareTrace;
 import io.reactivex.plugins.RxJavaPlugins;
 
 import static com.blankj.utilcode.util.AppUtils.getAppName;
@@ -133,6 +134,8 @@ public class MyApplication extends Application {
         nineGridLayout();
         //人脸检测sdk初始化
         Init();
+        //推广sdk初始化
+        ShareTrace.init(this);
     }
 
     @Override

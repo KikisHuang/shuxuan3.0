@@ -211,5 +211,6 @@ dependencies {
     //vivo辅助通道
     implementation 'com.aliyun.ams:alicloud-android-third-push-vivo:3.7.2'
 
-
+    // sharetrace
+    implementation 'com.sharetrace:sharetrace-android-sdk:2.1.3'
 }

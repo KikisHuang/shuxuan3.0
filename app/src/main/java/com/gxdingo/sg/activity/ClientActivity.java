@@ -1,6 +1,7 @@
 package com.gxdingo.sg.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.blankj.utilcode.util.Utils;
@@ -38,6 +40,7 @@ import com.gxdingo.sg.utils.ImMessageUtils;
 import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.CustomResultListener;
+import com.kikis.commnlibrary.utils.BaseLogUtils;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -48,6 +51,8 @@ import com.kikis.commnlibrary.bean.GoNoticePageEvent;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
+import com.zhouyou.http.EasyHttp;
+import com.zhouyou.http.model.HttpHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +60,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.OnClick;
+import cn.net.shoot.sharetracesdk.AppData;
+import cn.net.shoot.sharetracesdk.ShareTrace;
+import cn.net.shoot.sharetracesdk.ShareTraceInstallListener;
+import cn.net.shoot.sharetracesdk.ShareTraceWakeUpListener;
 import io.reactivex.disposables.Disposable;
 
 import static com.blankj.utilcode.util.AppUtils.registerAppStatusChangedListener;
@@ -71,13 +80,14 @@ import static com.kikis.commnlibrary.utils.Constant.LOGOUT;
 import static com.kikis.commnlibrary.utils.IntentUtils.getIntentEntityMap;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPagePutSerializable;
 import static com.kikis.commnlibrary.utils.ScreenUtils.dp2px;
+import static com.kikis.commnlibrary.utils.StringUtils.isEmpty;
 
 /**
  * @author: Weaving
  * @date: 2021/10/13
  * @page:
  */
-public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, ClientMainContract.ClientMainListener {
+public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMainPresenter> implements ScreenListener.ScreenStateListener, Utils.OnAppStatusChangedListener, ClientMainContract.ClientMainListener, ShareTraceInstallListener, ShareTraceWakeUpListener {
 
     private List<Fragment> mFragmentList;
 
@@ -104,6 +114,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     //刷新商圈定时器disposable
     private Disposable mDisposable;
+
 
     public static ClientActivity getInstance() {
         return instance;
@@ -174,8 +185,19 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         return false;
     }
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // 应用在后台被调起来时获取一键调起参数
+        ShareTrace.getWakeUpTrace(intent, this::onWakeUp);
+    }
+
+
     @Override
     protected void init() {
+        ShareTrace.getWakeUpTrace(getIntent(), this::onWakeUp);
+
         instance = this;
         fragmentInit();
         getP().persenterInit();
@@ -185,7 +207,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
         screenListener.begin(this);
 
         getP().checkNotifications();
-
+        ShareTrace.getInstallTrace(this);
     }
 
     @Override
@@ -264,7 +286,7 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
             getP().checkTab(0);
         } else if (type == LOGIN_SUCCEED) {
 
-            Toast.makeText(reference.get(),gets(R.string.login_succeed),Toast.LENGTH_SHORT).show();
+            Toast.makeText(reference.get(), gets(R.string.login_succeed), Toast.LENGTH_SHORT).show();
 
 //            onMessage(gets(R.string.login_succeed));
 
@@ -533,6 +555,36 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
 
     @Override
     public void onUserPresent() {
+
+    }
+
+    @Override
+    public void onInstall(AppData data) {
+
+        BaseLogUtils.i("onInstall appData=" + (data == null ? null : data.toString()));
+
+        if (data != null && !isEmpty(data.toString())) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.put("AppData", String.valueOf(data));
+            EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
+        }
+    }
+
+    @Override
+    public void onError(int i, String s) {
+
+    }
+
+    @Override
+    public void onWakeUp(AppData data) {
+
+        BaseLogUtils.i("sharetrace appData=" + (data == null ? null : data.toString()));
+
+        if (data != null && !isEmpty(data.toString())) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.put("AppData", String.valueOf(data));
+            EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
+        }
 
     }
 }

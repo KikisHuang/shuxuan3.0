@@ -1,5 +1,6 @@
 package com.gxdingo.sg.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -17,6 +18,9 @@ import com.lxj.xpopup.XPopup;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import butterknife.OnClick;
+import cn.net.shoot.sharetracesdk.AppData;
+import cn.net.shoot.sharetracesdk.ShareTrace;
+import cn.net.shoot.sharetracesdk.ShareTraceWakeUpListener;
 
 import static com.gxdingo.sg.utils.LocalConstant.FIRST_LOGIN_KEY;
 import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
@@ -27,6 +31,7 @@ import static com.kikis.commnlibrary.utils.IntentUtils.goToPage;
  * @page:
  */
 public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter> {
+
     @Override
     protected LoginContract.LoginPresenter createPresenter() {
         return new LoginPresenter();
@@ -92,8 +97,10 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         return false;
     }
 
+
     @Override
     protected void init() {
+
         if (SPUtils.getInstance().getBoolean(FIRST_LOGIN_KEY, true)) {
             new XPopup.Builder(reference.get())
                     .isDestroyOnDismiss(true)
@@ -107,6 +114,7 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
                             AMapLocationClient.updatePrivacyShow(this, true, true);
                             AMapLocationClient.updatePrivacyAgree(this, true);
                             MyApplication.getInstance().init();
+
                             goToPage(reference.get(), WelcomeActivity.class, null);
                         }
                         finish();
@@ -114,7 +122,6 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
         } else {
             AMapLocationClient.updatePrivacyShow(this, true, true);
             AMapLocationClient.updatePrivacyAgree(this, true);
-
             goToPage(reference.get(), ClientActivity.class, null);
 
             finish();

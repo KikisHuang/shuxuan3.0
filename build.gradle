@@ -5,7 +5,7 @@ buildscript {
 
         google()
         jcenter()
-
+        mavenCentral() // share trace
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/releases/' }
 //        maven { url 'https://dl.bintray.com/umsdk/release' }
         maven { url 'https://repo1.maven.org/maven2/' }
