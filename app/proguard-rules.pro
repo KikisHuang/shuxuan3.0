@@ -522,6 +522,8 @@
 ###rxandroid-1.2.1
 -keepclassmembers class rx.android.**{*;}
 
+-keep class com.alibaba.idst.nui.*{*;}
+
 ###svga
 -keep class com.squareup.wire.** { *; }
 -keep class com.opensource.svgaplayer.proto.** { *; }
