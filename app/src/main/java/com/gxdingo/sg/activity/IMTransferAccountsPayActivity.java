@@ -151,8 +151,11 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
     protected void init() {
         titleLayout.setTitleText("转账支付");
 //        etAmount.setInputType(InputType.TYPE_NULL);
+
         mShareUuid = getIntent().getStringExtra(Constant.SERIALIZABLE + 0);
+
         mPayType = getIntent().getIntExtra(Constant.SERIALIZABLE + 1, 30);
+
         otherInfo = (IMChatHistoryListBean.OtherAvatarInfo) getIntent().getSerializableExtra(Constant.SERIALIZABLE + 2);
 
 
@@ -176,7 +179,8 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
 
     @Override
     protected void initData() {
-        getP().getCoupons(otherInfo.getSendIdentifier());
+        if (!isEmpty(otherInfo.getSendIdentifier()))
+            getP().getCoupons(otherInfo.getSendIdentifier());
 
     }
 
@@ -245,7 +249,10 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 }
                 break;
             case R.id.coupon_stv:
-                goToPagePutSerializable(this, CouponListActivity.class, getIntentEntityMap(new Object[]{1, otherInfo.getSendIdentifier()}));
+                if (otherInfo != null && !isEmpty(otherInfo.getSendIdentifier()))
+                    goToPagePutSerializable(this, CouponListActivity.class, getIntentEntityMap(new Object[]{1, otherInfo.getSendIdentifier()}));
+                else
+                    onMessage("没有优惠券信息");
                 break;
         }
     }
