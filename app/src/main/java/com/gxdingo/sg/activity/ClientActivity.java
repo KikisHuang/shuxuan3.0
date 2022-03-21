@@ -41,6 +41,7 @@ import com.gxdingo.sg.utils.ImServiceUtils;
 import com.gxdingo.sg.utils.LocalConstant;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.MessageCountManager;
 import com.gxdingo.sg.utils.ScreenListener;
 import com.gxdingo.sg.utils.UserInfoUtils;
@@ -552,11 +553,11 @@ public class ClientActivity extends BaseMvpActivity<ClientMainContract.ClientMai
     @Override
     public void onInstall(AppData data) {
 
-        BaseLogUtils.i("onInstall appData=" + (data == null ? null : data.toString()));
+        BaseLogUtils.i("onInstall appData=" + (data == null ? null : GsonUtil.gsonToStr(data)));
 
-        if (data != null && !isEmpty(data.toString())) {
+        if (data != null) {
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.put("AppData", String.valueOf(data));
+            httpHeaders.put("AppData", GsonUtil.gsonToStr(data));
             EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
         }
     }

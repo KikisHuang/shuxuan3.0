@@ -1,33 +1,14 @@
 package com.gxdingo.sg.activity;
 
 import android.view.View;
-import android.view.WindowManager;
 
-import com.amap.api.location.AMapLocationClient;
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
-import com.gxdingo.sg.MyApplication;
-import com.gxdingo.sg.biz.LoginContract;
-import com.gxdingo.sg.dialog.ProtocolPopupView;
-import com.gxdingo.sg.presenter.LoginPresenter;
 import com.kikis.commnlibrary.activitiy.BaseActivity;
-import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
-import com.lxj.xpopup.XPopup;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.OnClick;
+
+import static com.gxdingo.sg.utils.RSAEncrypt.decryptByPrivateKey;
+import static com.gxdingo.sg.utils.RSAUtils.getPrivateKeyPath;
 
 
 /**
@@ -109,56 +90,26 @@ public class TestActivity extends BaseActivity {
     protected void init() {
 
 
-        for (int i = 0; i < MAX_THREAD; i++) {
-         LogUtils.i("ping ==== " + ping(ip, 50, 500));
-        }
-
-    }
-
-    public static boolean ping(String ipAddress, int pingTimes, int timeOut) {
-        BufferedReader in = null;
-        Runtime r = Runtime.getRuntime();  // 将要执行的ping命令,此命令是windows格式的命令
-        String pingCommand = "ping " + ipAddress + " -n " + pingTimes + " -w " + timeOut;
-        try {   // 执行命令并获取输出
-            System.out.println(pingCommand);
-            Process p = r.exec(pingCommand);
-            if (p == null) {
-                return false;
-            }
-            in = new BufferedReader(new InputStreamReader(p.getInputStream()));   // 逐行检查输出,计算类似出现=23ms TTL=62字样的次数
-            int connectedCount = 0;
-            String line = null;
-            while ((line = in.readLine()) != null) {
-                connectedCount += getCheckResult(line);
-            }   // 如果出现类似=23ms TTL=62这样的字样,出现的次数=测试次数则返回真
-            return connectedCount == pingTimes;
-        } catch (Exception ex) {
-            ex.printStackTrace();   // 出现异常则返回假
-            return false;
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    //若line含有=18ms TTL=16字样,说明已经ping通,返回1,否則返回0.
-    private static int getCheckResult(String line) {  // System.out.println("控制台输出的结果为:"+line);
-        Pattern pattern = Pattern.compile("(\\d+ms)(\\s+)(TTL=\\d+)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(line);
-        while (matcher.find()) {
-            return 1;
-        }
-        return 0;
     }
 
 
     @Override
-    protected void initData() {
+    protected void initData()  {
+
+        String data = "KGwMXhHIoAq2RoaCT8iY2jk87DEtZA/7IRC8rnk49dJXVCjMmL1D3uI97TVjwJ2CkGFrzR20fPh0\\r\\niCNoudTh5WDpfwb0360h6L+soPu8W8+H7PT97yiGAQatQbPKgdtmcco6xRD9hTbu9Kd8/kqnfBJi\\r\\nOor6SeCKyjwQzv8xtzl+qI+6hyBrecaFXn/P6eKjeUr1hD1f+GQ1+Y2gLYGeWuvM6ZI2wPBFJKII\\r\\nHE6KxcGLGoyACFJa9Y8oP26DIVGV3DcBvjqKXD2twLsS0RTWNfj4Wrvz2oMfyy6neFgjCaNr+r6X\\r\\nfJU07eAuYcjqiC8l2OaydMEQOdeCO/c5NImVyA==";
+
+        String decodeData = null;
+        try {
+            decodeData = decryptByPrivateKey(data,getPrivateKeyPath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        LogUtils.i("Test decodeData === " + decodeData);
+
 
     }
+
 
     @Override
     protected void onBaseCreate() {

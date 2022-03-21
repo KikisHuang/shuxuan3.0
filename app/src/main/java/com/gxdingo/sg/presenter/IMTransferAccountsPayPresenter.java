@@ -64,10 +64,13 @@ public class IMTransferAccountsPayPresenter extends BaseMvpPresenter<BasicsListe
         if (o instanceof PayBean) {
             PayBean payBean = (PayBean) o;
             if (payBean.getAlipayInfo() != null) {
+
                 if (isViewAttached())
                     getV().onSetTransferAccounts(payBean.getTransferAccounts());
+
                 //支付宝支付
                 AlipayTool alipayTool = new AlipayTool();
+
                 alipayTool.pay((Activity) getContext(), payBean.getAlipayInfo(), mHandler);
 
 

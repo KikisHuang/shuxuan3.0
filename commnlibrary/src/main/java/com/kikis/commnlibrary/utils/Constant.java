@@ -60,15 +60,8 @@ public class Constant {
     //bugly appid 9c912b9d6d
     public static String BUGLYAPPID = "9c912b9d6d";
 
-    //小程序原始id
-    public static String MINI_ID = "gh_f194a10139ee";
-
-    //QQappid
-    public static String QQ_APPID = "101807113";
     //微信appid
     public static String WECHAT_APPID = "wx71be9c923a6c1d7f";
-    //阿里appid
-    public static String ALI_APPID = "2021002138680668";
     //小米appid
     public static String MI_APPID = "2882303761520002033";
 

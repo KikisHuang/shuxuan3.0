@@ -2,11 +2,14 @@ package com.gxdingo.sg.model;
 
 import android.content.Context;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.google.gson.reflect.TypeToken;
+import com.gxdingo.sg.bean.BaseTransferResult;
 import com.gxdingo.sg.bean.ClientCouponBean;
 import com.gxdingo.sg.bean.IMChatHistoryListBean;
 import com.gxdingo.sg.bean.NormalBean;
 import com.gxdingo.sg.bean.PayBean;
+import com.gxdingo.sg.bean.TransferBean;
 import com.kikis.commnlibrary.bean.ReceiveIMMessageBean;
 import com.gxdingo.sg.bean.SendIMMessageBean;
 import com.kikis.commnlibrary.bean.SubscribesListBean;
@@ -43,6 +46,8 @@ import static com.gxdingo.sg.http.Api.MESSAGE_WITHDRAW;
 import static com.gxdingo.sg.http.Api.SUBSCRIBE_DELETE;
 import static com.gxdingo.sg.http.Api.SUM_UNREAD;
 import static com.gxdingo.sg.http.Api.TRANSFER;
+import static com.gxdingo.sg.utils.RSAEncrypt.decryptByPrivateKey;
+import static com.gxdingo.sg.utils.RSAUtils.getPrivateKeyPath;
 import static com.kikis.commnlibrary.utils.BadgerManger.resetBadger;
 import static com.kikis.commnlibrary.utils.GsonUtil.getJsonMap;
 
@@ -555,12 +560,12 @@ public class WebSocketModel {
 
         PostRequest request = HttpClient.imPost(IM_URL + TRANSFER, map);
         request.headers(LocalConstant.CROSSTOKEN, UserInfoUtils.getInstance().getUserInfo().getCrossToken());
-        Observable<PayBean> observable = request
-                .execute(new CallClazzProxy<ApiResult<PayBean>, PayBean>(new TypeToken<PayBean>() {
+        Observable<String> observable = request
+                .execute(new CallClazzProxy<BaseTransferResult<String>, String>(new TypeToken<String>() {
                 }.getType()) {
                 });
 
-        MyBaseSubscriber subscriber = new MyBaseSubscriber<PayBean>(context) {
+        MyBaseSubscriber subscriber = new MyBaseSubscriber<String>(context) {
             @Override
             public void onError(ApiException e) {
                 super.onError(e);
@@ -569,17 +574,48 @@ public class WebSocketModel {
                     //未设置提现密码
                     if (e.getCode() == 601)
                         netWorkListener.onSucceed(601);
+
                     netWorkListener.onMessage(e.getMessage());
                     netWorkListener.onAfters();
                 }
             }
 
             @Override
-            public void onNext(PayBean payBean) {
-                if (netWorkListener != null) {
-                    netWorkListener.onAfters();
-                    netWorkListener.onData(true, payBean);
+            public void onNext(String data) {
+                //解密
+                TransferBean transferBean = GsonUtil.GsonToBean(data, TransferBean.class);
+                if (transferBean.getCode()==0){
+                    String docodeJson = "";
+                    try {
+                        docodeJson = decryptByPrivateKey(transferBean.getInfo(), getPrivateKeyPath());
+                    } catch (Exception e) {
+                        LogUtils.e(e);
+                        if (netWorkListener != null)
+                            netWorkListener.onMessage("转账信息解密异常");
+                        return;
+                    }
+
+                    if (!isEmpty(docodeJson)) {
+                        PayBean payBean = GsonUtil.GsonToBean(docodeJson, PayBean.class);
+                        if (netWorkListener != null) {
+                            netWorkListener.onAfters();
+                            netWorkListener.onData(true, payBean);
+                        }
+                    } else {
+                        if (netWorkListener != null)
+                            netWorkListener.onMessage("解密信息为空");
+                    }
+                }else {
+                    if (netWorkListener != null) {
+                        //未设置提现密码
+                        if (transferBean.getCode() == 601)
+                            netWorkListener.onSucceed(601);
+
+                        netWorkListener.onMessage(transferBean.getMsg());
+                        netWorkListener.onAfters();
+                    }
                 }
+
             }
         };
 

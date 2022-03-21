@@ -14,6 +14,7 @@ import com.gxdingo.sg.presenter.LoginPresenter;
 import com.kikis.commnlibrary.activitiy.BaseMvpActivity;
 import com.kikis.commnlibrary.biz.CustomResultListener;
 import com.kikis.commnlibrary.utils.BaseLogUtils;
+import com.kikis.commnlibrary.utils.GsonUtil;
 import com.kikis.commnlibrary.utils.ScreenUtils;
 import com.lxj.xpopup.XPopup;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
@@ -171,11 +172,11 @@ public class SplashActivity extends BaseMvpActivity<LoginContract.LoginPresenter
 
     @Override
     public void onWakeUp(AppData data) {
-        BaseLogUtils.i("onWakeUp sharetrace appData=" + (data == null ? null : data.toString()));
+        BaseLogUtils.i("onWakeUp sharetrace appData=" + (data == null ? null :GsonUtil.gsonToStr(data)));
 
-        if (data != null && !isEmpty(data.toString())) {
+        if (data != null ) {
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.put("AppData", String.valueOf(data));
+            httpHeaders.put("AppData", GsonUtil.gsonToStr(data));
             EasyHttp.getInstance().getCommonHeaders().put(httpHeaders);
         }
 
