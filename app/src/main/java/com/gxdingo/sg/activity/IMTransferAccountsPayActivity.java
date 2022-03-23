@@ -236,16 +236,29 @@ public class IMTransferAccountsPayActivity extends BaseMvpActivity<IMTransferAcc
                 //设置1秒点击间隔
                 if (clickInterval != 1000)
                     clickInterval = 1000;
+
                 if (checkClickInterval(view.getId())) {
-                    //余额支付密码弹窗
-                    if (mPayType == 30) {
-                        new XPopup.Builder(reference.get())
-                                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                                .isDarkTheme(false)
-                                .dismissOnTouchOutside(false)
-                                .asCustom(new EnterPaymentPasswordPopupView(reference.get(), pass -> getP().transfer(mShareUuid, mPayType, pass, sum_tv.getText().toString(), couponBean, etAmount.getText().toString()))).show();
+
+                    if (!isEmpty(etAmount.getText())) {
+
+                        if (Float.valueOf(etAmount.getText().toString()) > 0){
+                            //余额支付密码弹窗
+                            if (mPayType == 30) {
+                                new XPopup.Builder(reference.get())
+                                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                                        .isDarkTheme(false)
+                                        .dismissOnTouchOutside(false)
+                                        .asCustom(new EnterPaymentPasswordPopupView(reference.get(), pass -> getP().transfer(mShareUuid, mPayType, pass, sum_tv.getText().toString(), couponBean, etAmount.getText().toString()))).show();
+                            } else
+                                getP().transfer(mShareUuid, mPayType, "", sum_tv.getText().toString(), couponBean, etAmount.getText().toString());
+                        }else
+                            onMessage("转账金额必须大于0");
+
+
                     } else
-                        getP().transfer(mShareUuid, mPayType, "", sum_tv.getText().toString(), couponBean, etAmount.getText().toString());
+                        onMessage("转账金额不能为空");
+
+
                 }
                 break;
             case R.id.coupon_stv:
