@@ -297,14 +297,12 @@ public class ChatAdapter extends BaseRecyclerAdapter {
                     chatClickListener.onImageClick(data.getContent());
             });
 
-            if (itemType == SelfImage) {
                 content_img.setOnLongClickListener(v -> {
                     if (chatClickListener != null) {
                         chatClickListener.onLongClickChatItem(position, true);
                     }
                     return false;
                 });
-            }
         }
 
         //语音类型

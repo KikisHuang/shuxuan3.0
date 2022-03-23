@@ -53,6 +53,7 @@ public class ChatFunctionDialog extends CenterPopupView implements View.OnClickL
         copy_address_info_ll = findViewById(R.id.copy_address_info_ll);
         report_ll = findViewById(R.id.report_ll);
         del_ll = findViewById(R.id.del_ll);
+        //撤回
         turn_the_text_ll = findViewById(R.id.turn_the_text_ll);
 
         ////消息类型 0=文本 1=表情 10=图片 11=语音 12=视频 20=转账 21=收款 30=定位位置信息

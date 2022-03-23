@@ -41,13 +41,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="72dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/store_avatar_iv"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
+            android:layout_marginVertical="10dp"
             android:src="@drawable/module_svg_client_default_avatar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
